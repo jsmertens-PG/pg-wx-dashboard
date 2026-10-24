@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-24T16:50+00:00",
+ "generated": "2026-10-24T16:57+00:00",
  "sample": false,
  "models": {
   "HRRR": "ncep_hrrr_conus",
@@ -42,7 +42,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-10-24T15:00+00:00",
-   "fetched": "2026-10-24T16:41+00:00",
+   "fetched": "2026-10-24T16:50+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -52,7 +52,7 @@
    "id": "ncep_rrfs_conus",
    "status": "ok",
    "run": "2026-10-24T12:00+00:00",
-   "fetched": "2026-10-24T16:42+00:00",
+   "fetched": "2026-10-24T16:50+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -62,7 +62,7 @@
    "id": "ncep_nam_conus",
    "status": "ok",
    "run": "2026-10-24T12:00+00:00",
-   "fetched": "2026-10-24T16:42+00:00",
+   "fetched": "2026-10-24T16:50+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -72,7 +72,7 @@
    "id": "gfs_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-24T16:42+00:00",
+   "fetched": "2026-10-24T16:50+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -82,7 +82,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": "2026-10-24T06:00+00:00",
-   "fetched": "2026-10-24T16:42+00:00",
+   "fetched": "2026-10-24T16:50+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -92,7 +92,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-24T16:44+00:00",
+   "fetched": "2026-10-24T16:52+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -102,7 +102,7 @@
    "id": "gfs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-24T16:45+00:00",
+   "fetched": "2026-10-24T16:53+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -112,7 +112,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-24T16:47+00:00",
+   "fetched": "2026-10-24T16:56+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -122,7 +122,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-24T16:50+00:00",
+   "fetched": "2026-10-24T16:57+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -132,7 +132,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-10-24T11:41:00+00:00",
-   "fetched": "2026-10-24T16:50+00:00",
+   "fetched": "2026-10-24T16:57+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   }
  ],
