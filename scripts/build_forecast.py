@@ -1009,12 +1009,21 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             ]
             if ridge:
                 factors[0]["q"] = round(clamp((agl_ft or 0) / 1200), 2)
-            sp_here = sp.get((s.get("parent", s["id"]), dstr), []) if len(out_days) < 3 else []
+            # altitude: Soaring Predictor when it has this site and day, otherwise the models
+            sp_here = sp.get((s.get("parent", s["id"]), dstr), [])
+            if s.get("launch_name"):
+                sp_here = [x for x in sp_here if x["name"].lower().startswith(s["launch_name"].lower())]
+            scale = 1200 if ridge else target
             if sp_here:
-                best_sp = max(x["ceiling_ft"] for x in sp_here)
-                scale = 1200 if ridge else target
-                factors[0]["sp_q"] = round(clamp((best_sp - launch_ft) / scale), 2)
-                factors[0]["sp"] = " · ".join(f"{x['name']} {x['ceiling_ft']:,} ft" for x in sp_here)
+                best = max(sp_here, key=lambda x: x["ceiling_ft"])
+                top = best["ceiling_ft"] / FT
+                agl_ft = best["ceiling_ft"] - launch_ft
+                src = "Soaring Predictor"
+            else:
+                src = "models: " + ", ".join(m for m in ("HRRR", "RRFS", "NAM", "ECMWF", "GFS", "ICON") if m in D) if D else "ensembles"
+            factors[0].update({"v": f"{round(top * FT, -2):,.0f} ft" if top else "–",
+                               "sub": (f"{round(agl_ft, -2):,.0f} ft over launch · " if agl_ft is not None else "") + src,
+                               "q": round(clamp((agl_ft or 0) / scale), 2)})
             lead_view = dict(lead, label=label, top=top if top is not None else lead.get("top"), shower_p=shower_p) if lead else None
             drow["sites"][s["id"]] = {
                 "rating": round(rating, 1), "label": label, "tags": tags, "xc": xc,
@@ -1026,7 +1035,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 "wstar": round(wstar, 1) if wstar is not None else None,
                 "sunset": fmt_clock(lead["sunset"]) if lead else None,
                 "factors": factors,
-                "sp": sp.get((s.get("parent", s["id"]), dstr), []) if len(out_days) < 3 else [],
+                "alt_source": src,
                 "ground_ft": lead.get("ground_ft") if lead else None,
                 "launch_ft": s["launch_ft"],
                 "diag": {k: {"r": round(v["rating"], 1), "top": round(v["top"] * FT, -2) if v["top"] else None,
