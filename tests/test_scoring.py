@@ -72,7 +72,7 @@ class Physics(unittest.TestCase):
         self.assertTrue(bf.wrap_in(10, 330, 30))
         self.assertFalse(bf.wrap_in(90, 330, 30))
 
-    def test_north_wind_aloft_kills_laguna(self):
+    def test_north_wind_aloft_kills_laguna_horse(self):
         sites = json.loads((ROOT / "sites.json").read_text())["sites"]
         lag = next(x for x in sites if x["id"] == "lagunahorse")
         hr = {"temperature_2m": [20], "dew_point_2m": [2], "precipitation": [0], "cape": [0],
@@ -83,11 +83,41 @@ class Physics(unittest.TestCase):
         self.assertLess(h["q"], 0.2)
         self.assertEqual(h["xc_s"], 0.0)
 
+    def test_laguna_horse_takes_either_wind(self):
+        # Horse faces west, Laguna east: either wind is on, a north wind is over the back
+        sites = json.loads((ROOT / "sites.json").read_text())["sites"]
+        lag = next(x for x in sites if x["id"] == "lagunahorse")
+        base = {"temperature_2m": [18], "dew_point_2m": [2], "precipitation": [0], "cape": [0], "shortwave_radiation": [600],
+                "temperature_850hPa": [16], "wind_speed_850hPa": [4], "wind_direction_850hPa": [90],
+                "temperature_700hPa": [4], "wind_speed_700hPa": [5], "wind_direction_700hPa": [100]}
+        east = bf.score_hour(lag, dict(base, wind_speed_10m=[6], wind_direction_10m=[90]), 0, [850, 700], 1676)
+        west = bf.score_hour(lag, dict(base, wind_speed_10m=[8], wind_direction_10m=[260]), 0, [850, 700], 1676)
+        north = bf.score_hour(lag, dict(base, wind_speed_10m=[10], wind_direction_10m=[0]), 0, [850, 700], 1676)
+        self.assertNotIn("otb", east["codes"])
+        self.assertNotIn("otb", west["codes"])
+        self.assertIn("otb", north["codes"])
+        self.assertEqual(north["launch"], "over the back")
+
     def test_offshore_hour_is_no_go(self):
         site = json.loads((ROOT / "sites.json").read_text())["sites"][0]   # Little Black
         hr = {"temperature_2m": [24], "dew_point_2m": [5], "precipitation": [0], "cape": [0],
               "wind_speed_10m": [12], "wind_direction_10m": [60]}
         self.assertEqual(bf.score_hour(site, hr, 0, [], 150)["q"], 0.0)
+
+
+class NwsSummary(unittest.TestCase):
+    def test_rule_summary_is_short_and_whole(self):
+        text = (ROOT / "tests" / "fixtures" / "afd_sgx_2026-10-22.txt").read_text()
+        r = bf.summary_rules(text)
+        self.assertTrue(r["pattern"] and r["flying"])
+        for b in r["pattern"] + r["flying"]:
+            self.assertNotIn("…", b)
+            self.assertNotIn("tide", b.lower())
+
+    def test_no_key_no_llm(self):
+        import os
+        os.environ.pop("ANTHROPIC_API_KEY", None)
+        self.assertIsNone(bf.summarize_llm("text", []))
 
 
 class NwsText(unittest.TestCase):
