@@ -79,7 +79,7 @@ details.fold > :not(summary) { margin-top: 10px; }
 
 /* day cards */
 .days { display: grid; gap: 14px; }
-.day { border: 1px solid var(--line); border-left: 6px solid var(--qc); background: color-mix(in srgb, var(--qc) 6%, var(--surface)); display: grid; scroll-margin-top: 12px; }
+.day { border: 1px solid var(--line); border-left: 4px solid var(--qc); background: color-mix(in srgb, var(--qc) 3%, var(--surface)); display: grid; scroll-margin-top: 12px; }
 .day > .hd { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 4px 18px; align-items: baseline; padding: 12px 16px 10px; border-bottom: 1px solid var(--line); }
 @media (max-width: 640px) { .day > .hd { grid-template-columns: minmax(0, 1fr) auto; } .day > .hd .headline { grid-column: 1 / -1; grid-row: 2; } }
 .day .when { font-family: var(--font-display); font-size: 1.45rem; white-space: nowrap; }
@@ -88,24 +88,40 @@ details.fold > :not(summary) { margin-top: 10px; }
 .big { font-family: var(--font-data); font-size: 1.5rem; line-height: 1; white-space: nowrap; }
 .big small { font-size: .7rem; color: var(--muted); }
 
-.mains { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-@media (max-width: 760px) { .mains { grid-template-columns: 1fr; } }
-.main { padding: 12px 16px; display: grid; gap: 6px; align-content: start; text-align: left; border: 0; background: transparent; min-height: 0; width: 100%; cursor: pointer; }
-.main + .main { border-left: 1px solid var(--line); }
-@media (max-width: 760px) { .main + .main { border-left: 0; border-top: 1px solid var(--line); } }
-.main:hover, .main[aria-expanded="true"], .row:hover, .row[aria-expanded="true"], .mini:hover, .mini[aria-expanded="true"] { background: color-mix(in srgb, var(--ink) 4%, transparent); }
-.main .top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
-.main .nm { font-family: var(--font-display); font-size: 1.3rem; }
+.list { display: grid; padding: 4px 0 6px; }
+.srow { display: grid; grid-template-columns: 128px minmax(70px, 180px) 30px minmax(0, 1fr); gap: 4px 14px; align-items: center;
+  padding: 7px 18px; border: 0; background: transparent; width: 100%; text-align: left; min-height: 0; cursor: pointer; color: var(--ink); }
+.srow:hover, .srow[aria-expanded="true"] { background: color-mix(in srgb, var(--ink) 4%, transparent); }
+.srow .nm { font-family: var(--font-display); font-size: 1.12rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.srow .rt { font-family: var(--font-data); font-size: 1rem; text-align: right; }
+.srow .tx { display: flex; flex-wrap: wrap; gap: 2px 8px; align-items: baseline; min-width: 0; }
+.srow.coast { border-top: 1px solid var(--line); margin-top: 4px; padding-top: 9px; }
+.minor { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); border-top: 1px solid var(--line); margin-top: 4px; padding-top: 3px; }
+.srow.small { padding-block: 5px; grid-template-columns: 128px minmax(60px, 110px) 30px minmax(0, 1fr); }
+.srow.small .nm { font-family: var(--font-body); font-size: .82rem; color: var(--muted); }
+.srow.small .rt { font-size: .82rem; color: var(--muted); }
+.srow.small .note, .srow.small .lab { font-size: .74rem; }
+.srow.small .note { color: var(--muted); }
+.srow.small { grid-template-columns: 110px minmax(50px, 90px) 24px minmax(0, 1fr); }
+.srow.small .tx { flex-wrap: nowrap; overflow: hidden; white-space: nowrap; }
+.srow.small .tx .note { overflow: hidden; text-overflow: ellipsis; }
+.srow.small .tag { display: none; }
+@media (max-width: 640px) {
+  .srow, .srow.small { grid-template-columns: minmax(0, 1fr) 90px 26px; padding-inline: 14px; }
+  .srow .tx { grid-column: 1 / -1; }
+  .srow .tag { display: none; }
+  .srow.small .tx { white-space: normal; flex-wrap: wrap; }
+}
 .label { display: inline-flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 .lab { font-size: .7rem; text-transform: uppercase; letter-spacing: .12em; font-weight: 600; }
 .note { font-size: .86rem; margin: 0; }
 
 /* 0-10 bar with flyable (3.5) and XC (6) marks */
-.bar { height: 10px; background: var(--sunk); position: relative; display: block; }
+.bar { height: 8px; background: var(--sunk); position: relative; display: block; }
 .bar i { position: absolute; inset: 0 auto 0 0; display: block; }
 .bar::before, .bar::after { content: ""; position: absolute; top: -2px; bottom: -2px; width: 1px; background: var(--muted); opacity: .5; }
 .bar::before { left: 35%; } .bar::after { left: 60%; }
-.bar.thin { height: 6px; }
+.bar.thin { height: 5px; }
 
 .row { display: grid; grid-template-columns: 110px minmax(80px, 200px) 46px minmax(0, 1fr); gap: 12px; align-items: center; padding: 8px 16px; border: 0; border-top: 1px solid var(--line); background: transparent; width: 100%; text-align: left; min-height: 0; cursor: pointer; }
 .row .nm { font-family: var(--font-display); font-size: 1.05rem; }
@@ -171,14 +187,9 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   .day > .hd { padding: 10px 14px 8px; }
   .day .when { font-size: 1.25rem; }
   .big { font-size: 1.25rem; }
-  .main { padding: 8px 14px; gap: 4px; }
-  .main .nm { font-size: 1.1rem; }
-  .main .big { font-size: 1.1rem !important; }
-  .row { padding: 7px 14px; }
-  .mini { padding: 7px 14px; }
   .note { font-size: .82rem; }
   .legend { display: none; }
-  .main .label { column-gap: 8px; }
+  
   .factor { grid-template-columns: 96px minmax(0, 1fr) 80px; }
 }
 .empty { padding: 30px; border: 1px dashed var(--ink); text-align: center; }
@@ -264,7 +275,7 @@ const q = (r) => (r >= 8 ? 5 : r >= 6.5 ? 4 : r >= 5 ? 3 : r >= 3.5 ? 2 : r >= 2
 const qv = (r) => `var(--q${q(r)})`;
 const ft = (v) => (v == null ? "–" : (Math.round(v / 100) * 100).toLocaleString());
 const pct = (p) => (p == null ? "–" : `${Math.round(p * 100)}%`);
-const r1 = (r) => (r == null ? "–" : r.toFixed(1));
+const r1 = (r) => (r == null ? "–" : String(Math.max(1, Math.min(10, Math.round(r)))));
 
 const setTheme = (t) => {
   try { localStorage.setItem("radar-theme", t); } catch (e) {}
@@ -328,9 +339,11 @@ function render(data) {
         <p class="headline">${esc(d.headline || "")}</p>
         <span class="big" title="Best home site">${r1(bm?.rating)}<small>/10</small></span>
       </div>
-      <div class="mains">${main.map((s) => mainPanel(d, s, i)).join("")}</div>
-      ${coast.map((s) => rowPanel(d, s, i)).join("")}
-      <div class="others">${other.map((s) => miniPanel(d, s, i)).join("")}</div>
+      <div class="list">
+        ${main.map((s) => siteRow(d, s, i, "")).join("")}
+        ${coast.map((s) => siteRow(d, s, i, "coast")).join("")}
+        <div class="minor">${other.map((s) => siteRow(d, s, i, "small")).join("")}</div>
+      </div>
       <div class="det" id="det-${i}" hidden></div>
     </article>`;
   }).join("") || '<div class="empty">No forecast days in the data.</div>';
@@ -367,30 +380,13 @@ const chipHtml = (c, prefix) => `<span class="chip"><i style="background:${qv(c.
 const labelHtml = (c) => `<span class="label"><span class="lab" style="color:${qv(c.rating)}">${esc(c.label)}</span>${c.xc ? '<span class="xcmark">XC</span>' : ""}${(c.tags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join("")}</span>`;
 const bar = (r, thin) => `<span class="bar${thin ? " thin" : ""}"><i style="width:${Math.max(2, Math.min(100, r * 10))}%;background:${qv(r)}"></i></span>`;
 
-function mainPanel(d, s, i) {
+function siteRow(d, s, i, kind) {
   const c = d.sites[s.id];
-  if (!c) return `<div class="main"><span class="nm">${esc(s.name)}</span><span class="muted">no data</span></div>`;
-  return `<button type="button" class="main" data-site="${s.id}" data-day="${i}" aria-expanded="false">
-    <span class="top"><span class="nm">${esc(s.id === "lb" ? "Little Black" : s.short)}</span><span class="big" style="font-size:1.25rem">${r1(c.rating)}</span></span>
-    ${bar(c.rating)}
-    <span class="label">${labelHtml(c)}<span class="note">${esc(c.note)}</span></span>
-  </button>`;
-}
-function rowPanel(d, s, i) {
-  const c = d.sites[s.id];
-  if (!c) return "";
-  return `<button type="button" class="row" data-site="${s.id}" data-day="${i}" aria-expanded="false">
-    <span class="nm">${esc(s.short)}</span>${bar(c.rating)}<span class="mono">${r1(c.rating)}</span>
-    <span class="note"><span class="lab" style="color:${qv(c.rating)}">${esc(c.label)}</span> · ${esc(c.note)}</span>
-  </button>`;
-}
-function miniPanel(d, s, i) {
-  const c = d.sites[s.id];
-  if (!c) return `<div class="mini"><span class="muted">${esc(s.short)}: no data</span></div>`;
-  return `<button type="button" class="mini" data-site="${s.id}" data-day="${i}" aria-expanded="false">
-    <span class="t"><span>${esc(s.short)}</span><span class="mono">${r1(c.rating)}${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span></span>
-    ${bar(c.rating, true)}
-    <span class="note">${esc(c.label)} · ${esc(c.note)}</span>
+  const name = s.id === "lb" ? "Little Black" : s.short;
+  if (!c) return `<div class="srow ${kind}"><span class="nm">${esc(name)}</span><span class="muted">no data</span></div>`;
+  return `<button type="button" class="srow ${kind}" data-site="${s.id}" data-day="${i}" aria-expanded="false">
+    <span class="nm">${esc(name)}</span>${bar(c.rating, kind === "small")}<span class="rt">${r1(c.rating)}</span>
+    <span class="tx"><span class="lab" style="color:${qv(c.rating)}">${esc(c.label)}</span>${c.xc ? '<span class="xcmark">XC</span>' : ""}<span class="note">${esc(c.note)}</span>${(c.tags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join("")}</span>
   </button>`;
 }
 
@@ -407,7 +403,7 @@ function detail(d, s) {
       <h3 style="font-size:1.2rem">${esc(s.name)} <span class="muted mono" style="font-size:.85rem">${r1(c.rating)}/10</span></h3>${labelHtml(c)}</div>
     <p class="note">${esc(c.note)}</p>
     <div class="factors">${rows}</div>
-    <span class="muted" style="font-size:.76rem">Chance flyable ${pct(c.p_fly)} · XC ${pct(c.p_xc)}${c.n_members ? ` (${c.n_members} ensemble runs)` : ""}${c.sunset ? ` · sunset ${esc(c.sunset)}` : ""} · ${esc(s.note || "")}</span>`;
+    <span class="muted" style="font-size:.76rem">Chance flyable ${pct(c.p_fly)} · XC ${pct(c.p_xc)}${c.sunset ? ` · sunset ${esc(c.sunset)}` : ""}</span>`;
 }
 
 /* bottom sheet (phones) */
