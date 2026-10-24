@@ -91,16 +91,16 @@ def level_vars(levels, heights=True):
     return out
 
 
-def surface_filled(data):
-    """True when most sites have 2 m temperature for the next day."""
+def surface_filled(data, skip_h=0):
+    """True when most sites have 2 m temperature for the next day (after skip_h hours of past data)."""
     ok = 0
     for d in data:
         t = (d.get("hourly") or {}).get("temperature_2m") or []
-        ok += sum(x is not None for x in t[:48]) >= 24
+        ok += sum(x is not None for x in t[skip_h:skip_h + 48]) >= 24
     return ok >= max(1, len(data) // 2)
 
 
-def om_url(base, sites, model, hourly):
+def om_url(base, sites, model, hourly, past_days=0):
     q = {
         "latitude": ",".join(str(s["lat"]) for s in sites),
         "longitude": ",".join(str(s["lon"]) for s in sites),
@@ -110,6 +110,8 @@ def om_url(base, sites, model, hourly):
         "forecast_days": DAYS,
         "wind_speed_unit": "kn",
     }
+    if past_days:
+        q["past_days"] = past_days                          # the day type needs the days before
     if all(s.get("lz_ft") is not None for s in sites):
         q["elevation"] = ",".join(f"{s['lz_ft'] / FT:.0f}" for s in sites)   # thermals start from the valley ground
     return base + "?" + urllib.parse.urlencode(q)
@@ -124,6 +126,14 @@ def model_run_time(kind, mid):
         return datetime.fromtimestamp(t, timezone.utc).isoformat(timespec="minutes") if t else None
     except Exception:
         return None
+
+
+def _tz():
+    try:
+        from zoneinfo import ZoneInfo
+        return ZoneInfo(TZ)
+    except Exception:
+        return timezone(timedelta(hours=-7))
 
 
 def now_iso():
@@ -144,9 +154,9 @@ def fetch_model(kind, name, ids, sites, log):
                     # a model run that is still loading can come back with empty surface fields:
                     # wait and ask again rather than losing the model for the day
                     for attempt in range(4):
-                        data = http_json(om_url(base, sites, mid, hv))
+                        data = http_json(om_url(base, sites, mid, hv, past_days=3))
                         data = data if isinstance(data, list) else [data]
-                        if surface_filled(data):
+                        if surface_filled(data, skip_h=72):
                             break
                         log.append(f"{name}: {mid} surface fields empty, retrying")
                         time.sleep(45)
@@ -711,6 +721,21 @@ def score_hour(site, hr, i, levels, elev_m):
             "pr": pr, "cape": cape, "codes": codes}
 
 
+def ceil_level(site, ft):
+    """Ceiling (MSL ft) on the 1-5 scale: launch 1.5, OK local 3, XC starts 4, great XC 5."""
+    L = site["launch_ft"]
+    ok = site.get("ok_ft") or L + 1500
+    xc = site.get("xc_top_ft") or ok + 1000
+    gr = xc + (site.get("xc_span_ft") or 1000)
+    pts = [(L, 1.5), (ok, 3.0), (xc, 4.0), (gr, 5.0)]
+    if ft <= L:
+        return 1.0
+    for (a, qa), (b, qb) in zip(pts, pts[1:]):
+        if ft <= b:
+            return qa + (qb - qa) * (ft - a) / max(1, b - a)
+    return 5.0
+
+
 def best_block(hours, n, key):
     """(mean, start_index) of the best n-hour block by key, preferring early afternoon on ties."""
     best, start = -1.0, 0
@@ -722,7 +747,7 @@ def best_block(hours, n, key):
 
 
 def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
-    """Rate one day for one model run on the 0-10 scale."""
+    """Rate one day for one model run on the 1-5 scale (see 'style' in sites.json)."""
     idxs = [(h, i) for h, i in idxs if h + 0.5 <= sunset_h]          # nothing after sunset
     hours = [(h, score_hour(site, hr, i, levels, elev_m)) for h, i in idxs]
     hours = [(h, s) for h, s in hours if s is not None]
@@ -735,7 +760,6 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         xc_day, xk = best_block(hours, 4, "xc_s")
         if sum(1 for _, s in hours[xk:xk + 4] if s["xc_s"] > 0) < 3:
             xc_day = 0.0
-    xc_hours = sum(1 for _, s in hours if s["xc_s"] > 0)
     # glass-off: the last two hours before sunset (in late October about 4 to 6 pm)
     gwin = [(h, s) for h, s in hours if h >= math.floor(sunset_h) - 2]
     glass_hours = [h for h, s in gwin if s["glass"]]
@@ -745,24 +769,64 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     cold = sum(1 for s in blk if s["cold"]) >= 2
     postfrontal = (early_rain >= 0.3 or cold) and window_rain < 0.3 and local >= 0.45
 
-    rating = 5.0 * local
-    if xc_day > 0:
-        rating = max(rating, 5.8, 5.0 + 4.0 * xc_day * clamp(xc_hours / 5))
-    if glass_ok and local < 0.7 and rating < 3.6:
-        rating = 3.6
+    def med(key, block=blk):
+        v = [x[key] for x in block if x[key] is not None]
+        return median(v) if v else None
     ridge = site["kind"] == "ridge"
-    if xc_day > 0:
-        label = "Thermal day" if ridge else "XC"
-    elif glass_ok and not ridge and local < 0.45:
+    style = site.get("style") or ("ridge" if ridge else site["kind"] if site["kind"] == "convergence" else "thermal")
+    w0, w1 = site.get("window") or [11, 15]
+    win = [(h, sc) for h, sc in hours if w0 <= h <= w1]
+    rating, best_h, peak = 1.0, None, None
+    xc_now = False
+    if style == "ridge":
+        rating = 1.0 + 2.0 * clamp(local / 0.7)
+        if xc_day > 0:
+            top_ft = (med("usable", blk) or 0) * FT
+            rating = 4.0 + clamp((top_ft - 1200) / 1300)
+            xc_now = True
+    else:
+        def hour_r(sc, allow_xc):
+            lv = ceil_level(site, sc["usable"] * FT)
+            if not (allow_xc and sc["xc_s"] > 0):
+                lv = min(lv, 3.5)
+            return 1.0 + (lv - 1.0) * clamp(sc["q"] / 0.6)
+        if style == "convergence":
+            conv = [(h, sc) for h, sc in win if sc["xc_s"] > 0]
+            if conv:
+                best_h, sc = max(conv, key=lambda x: hour_r(x[1], True))
+                rating, peak, xc_now = max(3.0, hour_r(sc, True)), sc["usable"], True
+            else:
+                rating = min(2.0, 1.0 + local)
+                if win:
+                    best_h, sc = max(win, key=lambda x: x[1]["q"])
+                    peak = sc["usable"]
+        elif win:
+            n = min(1 if style == "window" else 2, len(win))
+            scored = [(h, hour_r(sc, True), sc) for h, sc in win]
+            best = max(range(len(scored) - n + 1), key=lambda k: sum(x[1] for x in scored[k:k + n]))
+            rating = sum(x[1] for x in scored[best:best + n]) / n
+            best_h, _r, sc = max(scored[best:best + n], key=lambda x: x[1])
+            peak = sc["usable"]
+            xc_now = sc["xc_s"] > 0 and rating >= 3.75
+        if style != "convergence":
+            glass_r = 3.0 if glass_ok else (2.0 if glass_hours else 1.0)
+            if glass_r > rating:
+                rating = glass_r
+    glass_led = style != "ridge" and style != "convergence" and glass_ok and rating <= 3.05 and (
+        not win or max(1.0 + (min(ceil_level(site, sc["usable"] * FT), 3.5) - 1.0) * clamp(sc["q"] / 0.6) for _, sc in win) < 2.8)
+    if style == "ridge":
+        label = "Thermal day" if xc_now else ("Ridge soaring" if local >= 0.5 else ("Marginal" if rating >= 1.6 else "No go"))
+    elif xc_now and rating >= 3.75:
+        label = "XC"
+    elif glass_led:
         label = "Glass-off"
-    elif ridge and local >= 0.5:
-        label = "Ridge soaring"
-    elif rating >= 3.5:
+    elif rating >= 2.5:
         label = "Thermal"
-    elif rating >= 2:
+    elif rating >= 1.6:
         label = "Marginal"
     else:
         label = "No go"
+    xc_day = 1.0 if label in ("XC", "Thermal day") else 0.0
     counts = {}
     for s in (blk if local >= 0.25 else [s for _, s in hours]):
         for c in s["codes"]:
@@ -773,7 +837,8 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     def med(key, block=blk):
         v = [s[key] for s in block if s[key] is not None]
         return median(v) if v else None
-    xblk = [s for _, s in hours[xk:xk + 4]] if xc_day > 0 else blk
+    xblk = ([x for h, x in hours if best_h is not None and abs(h - best_h) <= 1] if best_h is not None else []) or (
+        [x for _, x in hours[xk:xk + 4]] if xc_day > 0 else blk)
     du = [_uv(s["a_spd"], s["a_dir"]) for s in xblk if s["a_spd"] is not None and s["a_dir"] is not None]
     a_spd = a_dir = None
     if du:
@@ -792,12 +857,13 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     wind_1pm = wind_at([13, 12, 14])
     return {
         "top13": h13["usable"] if h13 else None,
+        "peak": peak, "best_h": best_h, "style": style,
         "tw13": h13["tw"] if h13 else None,
         "wind_1pm": wind_1pm,
         "wind_now": wind_now, "wind_later": wind_later,
         "rating": rating, "local": local, "xc_day": xc_day, "label": label, "codes": codes,
         "postfrontal": postfrontal, "glass": glass_ok, "glass_hours": glass_hours, "sunset": sunset_h,
-        "start": hours[k][0], "top": med("usable", xblk), "base": med("base"), "wstar": med("wstar", xblk),
+        "start": hours[k][0], "top": peak if peak is not None else med("usable", xblk), "base": med("base"), "wstar": med("wstar", xblk),
         "climb": med("climb", xblk), "lw": med("lw"), "ld": med("ld"),
         "launch_q": sum(1 for s in blk if s["good_launch"]) / len(blk),
         "launch": max(set(x["launch"] for x in blk if x["launch"]) or {None}, key=lambda v: sum(1 for x in blk if x["launch"] == v)),
@@ -864,6 +930,124 @@ def note_for(site, a, xc):
 def fmt_h(h):
     return f"{h - 12 if h > 12 else h}{'pm' if h >= 12 else 'am'}"
 
+
+
+# ---------------------------------------------------------------- day type (synoptic regime)
+REGIMES = ["Front", "Switch day", "Santa Ana", "Post-frontal", "Pre-frontal"]
+REGIME_SITES = ("lb", "blossom", "elsinore")
+
+
+def _vec_mean(pairs):
+    uv = [_uv(sp, d) for sp, d in pairs if sp is not None and d is not None]
+    if not uv:
+        return None, None
+    u, v = sum(x for x, _ in uv) / len(uv), sum(y for _, y in uv) / len(uv)
+    return math.hypot(u, v), (math.degrees(math.atan2(u, v)) + 360) % 360
+
+
+def regime_features(resps):
+    """Daily regional features from one model: {date: {...}}; resps are hourly dicts for REGIME_SITES."""
+    out = {}
+    for n, hr in enumerate(resps):
+        for i, ts in enumerate(hr.get("time", [])):
+            dt = datetime.fromisoformat(ts)
+            f = out.setdefault(dt.date().isoformat(), {"rain": [0.0] * len(resps), "w850": [], "w700": [], "n": 0})
+            pr = _at(hr, "precipitation", i)
+            if pr is not None:
+                f["rain"][n] += pr
+            if n == 0:
+                f["n"] += 1
+                if 6 <= dt.hour <= 11:
+                    f["w850"].append((_at(hr, "wind_speed_850hPa", i), _at(hr, "wind_direction_850hPa", i)))
+                if 9 <= dt.hour <= 15:
+                    f["w700"].append((_at(hr, "wind_speed_700hPa", i), _at(hr, "wind_direction_700hPa", i)))
+                if dt.hour == 13:
+                    f["t850"] = _at(hr, "temperature_850hPa", i)
+                    t2, td = _at(hr, "temperature_2m", i), _at(hr, "dew_point_2m", i)
+                    f["rh"] = 100 * math.exp(17.62 * td / (243.12 + td)) / math.exp(17.62 * t2 / (243.12 + t2)) if t2 is not None and td is not None else None
+                if dt.hour == 15:
+                    f["sfc15"] = (_at(hr, "wind_speed_10m", i), _at(hr, "wind_direction_10m", i))
+    res = {}
+    for dstr, f in out.items():
+        if f["n"] < 18 or f.get("t850") is None:
+            continue
+        s850, d850 = _vec_mean(f["w850"])
+        s700, d700 = _vec_mean(f["w700"])
+        res[dstr] = {"rain": sum(f["rain"]) / len(f["rain"]), "t850": f["t850"], "rh": f.get("rh"),
+                     "s850": s850, "d850": d850, "s700": s700, "d700": d700, "sfc15": f.get("sfc15")}
+    return res
+
+
+def classify_days(F):
+    """{date: regime or None} from one model's daily features (dates must be consecutive)."""
+    ds = sorted(F)
+    g = lambda d, k, dflt=None: F[d].get(k, dflt) if d in F else dflt
+    def shift(d, n):
+        return (date.fromisoformat(d) + timedelta(days=n)).isoformat()
+    def santa_ana(d):
+        dd, sp, rh = g(d, "d850"), g(d, "s850"), g(d, "rh")
+        if dd is None or sp is None:
+            return False
+        offshore = wrap_in(dd, 0, 120)
+        return offshore and (sp >= 15 or (sp >= 8 and rh is not None and rh <= 35))
+    def front(d):
+        rain = g(d, "rain", 0) or 0
+        t_b, t_a = g(shift(d, -1), "t850"), g(shift(d, 1), "t850")
+        cooling = t_b is not None and t_a is not None and t_a <= t_b - 2
+        return rain >= 3 or (rain >= 1 and cooling)
+    def onshore15(d):
+        w = g(d, "sfc15")
+        return bool(w and w[0] is not None and w[1] is not None and w[0] >= 4 and wrap_in(w[1], 190, 330))
+    out = {}
+    for d in ds:
+        sa, sa_prev, sa_next = santa_ana(d), santa_ana(shift(d, -1)), santa_ana(shift(d, 1))
+        t = None
+        if front(d):
+            t = "Front"
+        elif (sa and not sa_next and onshore15(d) and shift(d, 1) in F) or (
+                sa_prev and not sa and not onshore15(shift(d, -1))):
+            t = "Switch day"
+        elif sa:
+            t = "Santa Ana"
+        else:
+            t0, tm2, tm3 = g(d, "t850"), g(shift(d, -2), "t850"), g(shift(d, -3), "t850")
+            d700 = g(d, "d700")
+            cold_surge = t0 is not None and tm2 is not None and t0 <= tm2 - 4 and d700 is not None and wrap_in(d700, 240, 360)
+            if front(shift(d, -1)) and shift(d, -1) in F or cold_surge or (
+                    front(shift(d, -2)) and shift(d, -2) in F and tm3 is not None and t0 is not None and t0 <= tm3 - 2):
+                t = "Post-frontal"
+            elif shift(d, 1) in F and front(shift(d, 1)):
+                t = "Pre-frontal"
+            elif shift(d, 2) in F and front(shift(d, 2)) and g(d, "d700") is not None and wrap_in(g(d, "d700"), 160, 260) and (g(d, "s700") or 0) >= 15:
+                t = "Pre-frontal"
+        out[d] = t
+    return out
+
+
+def day_regimes(det, sites):
+    """Weighted vote of the regular models: {date: {"type", "agree", "models"}}."""
+    idx = {s["id"]: k for k, s in enumerate(sites)}
+    if not all(r in idx for r in REGIME_SITES):
+        return {}
+    votes = {}
+    for name, (mid, data, *_i) in det.items():
+        if not data:
+            continue
+        try:
+            F = regime_features([data[idx[r]].get("hourly", {}) for r in REGIME_SITES])
+        except Exception:
+            continue
+        for dstr, t in classify_days(F).items():
+            votes.setdefault(dstr, []).append((name, t))
+    out = {}
+    for dstr, vs in votes.items():
+        tot = sum(MODEL_WEIGHT.get(n, 1) for n, _ in vs)
+        w = {}
+        for n, t in vs:
+            w[t] = w.get(t, 0) + MODEL_WEIGHT.get(n, 1)
+        t, wt = max(w.items(), key=lambda x: (x[1], x[0] is not None))
+        out[dstr] = {"type": t, "agree": round(wt / tot, 2), "models": {n: t2 for n, t2 in vs}}
+    return out
 
 # ---------------------------------------------------------------- per-model plumbing
 def day_index(hr):
@@ -954,9 +1138,11 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             for dstr, a in run_site(s, d, ENS_LEVELS, "ens"):
                 days.setdefault(dstr, {}).setdefault(s["id"], {"det": {}, "ens": []})["ens"].append(a)
 
+    regimes = day_regimes(det, sites)
+    today = datetime.now(timezone.utc).astimezone(_tz()).date().isoformat()
     out_days = []
-    for dstr in sorted(days)[:DAYS]:
-        drow = {"date": dstr, "sites": {}}
+    for dstr in [d for d in sorted(days) if d >= today][:DAYS]:
+        drow = {"date": dstr, "sites": {}, "regime": regimes.get(dstr)}
         for s in sites:
             cell = days[dstr].get(s["id"])
             if not cell or (not cell["det"] and not cell["ens"]):
@@ -972,13 +1158,14 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 rating = median(ens_r)
             if ens_r:
                 shift = rating - median(ens_r)
-                p_fly = sum(r + shift >= 3.5 for r in ens_r) / len(ens_r)
-                p_xc = sum(r + shift >= 6.0 for r in ens_r) / len(ens_r)
+                p_fly = sum(r + shift >= 2.5 for r in ens_r) / len(ens_r)
+                p_xc = sum(r + shift >= 3.75 for r in ens_r) / len(ens_r)
             else:
-                p_fly = sum(r >= 3.5 for r in det_r.values()) / len(det_r)
+                p_fly = sum(r >= 2.5 for r in det_r.values()) / len(det_r)
                 p_xc = sum(a["xc_day"] > 0 for a in D.values()) / len(D)
-            det_xc = sum(a["xc_day"] > 0 for a in D.values()) / max(1, len(D))
-            xc = bool(s.get("xc_top_ft")) and rating >= 6.0 and p_xc >= 0.4 and det_xc >= 0.4
+            det_xc = (sum(MODEL_WEIGHT.get(k, 1) for k, a in D.items() if a["xc_day"] > 0)
+                      / max(1, sum(MODEL_WEIGHT.get(k, 1) for k in D)))
+            xc = bool(s.get("xc_top_ft")) and rating >= 3.75 and det_xc >= 0.4
             order = [m for m in ("HRRR", "RRFS", "NAM", "ECMWF", "GFS", "ICON") if m in D]
             close = [m for m in order if abs(det_r[m] - rating) <= 1.0]
             lead_name = close[0] if close else (min(order, key=lambda m: abs(det_r[m] - rating)) if order else None)
@@ -986,21 +1173,19 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             ridge = s["kind"] == "ridge"
             label = lead["label"] if lead else "–"
             if label in ("XC", "Thermal day") and not xc:
-                label = ("Ridge soaring" if ridge else "Thermal") if rating >= 3.5 else "Marginal"
+                label = ("Ridge soaring" if ridge else "Thermal") if rating >= 2.5 else "Marginal"
             if xc:
                 label = "Thermal day" if ridge else "XC"
-            if rating < 2:
+            if rating < 1.6:
                 label = "No go"
-            elif label in ("No go", "Thermal") and rating < 3.5:
+            elif label in ("No go", "Thermal") and rating < 2.5:
                 label = "Marginal"
-            elif label == "Marginal" and rating >= 3.5:
-                label = "Ridge soaring" if ridge else "Thermal"
-            elif label == "No go":
-                label = "Marginal"
+            elif label in ("Marginal", "No go") and rating >= 2.5:
+                label = "Ridge soaring" if ridge else ("Glass-off" if lead and lead["glass"] else "Thermal")
             tags = []
-            if lead and lead["postfrontal"]:
-                tags.append("post-frontal")
-            if lead and lead["glass"] and label in ("Thermal", "Marginal", "XC") and not ridge:
+            if xc and lead and lead.get("style") == "window" and lead.get("best_h") is not None:
+                tags.append(f"window ~{fmt_h(lead['best_h'])}")
+            if lead and lead["glass"] and label in ("Thermal", "Marginal", "XC") and not ridge and lead.get("style") != "convergence":
                 tags.append("glass-off")
             # scattered showers rarely hit one grid point, so use the share of runs with rain here
             runs_all = cell["ens"] or list(D.values())
@@ -1051,9 +1236,9 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 {"k": "Rain & storms", "v": f"{round(shower_p * 100)}% of runs" if shower_p >= 0.05 else "dry",
                  "sub": "storm risk" if (cape or 0) >= 1000 else "",
                  "q": round(clamp(1 - 1.4 * shower_p) * (1 - 0.4 * clamp(((cape or 0) - 800) / 1500)), 2)},
-                {"k": "Model agreement", "v": "split" if spread >= 3 else ("mixed" if spread >= 1.5 else "agree"),
+                {"k": "Model agreement", "v": "split" if spread >= 1.5 else ("mixed" if spread >= 0.75 else "agree"),
                  "sub": " · ".join(f"{k} {v:.1f}" for k, v in det_r.items()),
-                 "q": round(clamp(1 - spread / 5), 2)},
+                 "q": round(clamp(1 - spread / 2.5), 2)},
             ]
             if ridge:
                 factors[0]["q"] = round(clamp((agl_ft or 0) / 1200), 2)
@@ -1064,15 +1249,22 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 agl = (top_m * FT - launch_ft) if top_m is not None else None
                 return {"k": label, "v": f"{round(top_m * FT, -2):,.0f} ft" if top_m else "–", "sub": "",
                         "q": round(clamp((agl or 0) / scale) if ridge else ceil_q(top_m * FT if top_m else None), 2)}
-            hi_res = [m for m in ("RRFS", "HRRR") if m in D and D[m].get("top13") is not None]
-            factors[0:1] = [height_row(m, D[m]["top13"]) for m in hi_res]
+            hkey = "top13" if ridge else "peak"
+            hi_res = [m for m in ("RRFS", "HRRR") if m in D and D[m].get(hkey) is not None]
+            factors[0:1] = [height_row(m, D[m][hkey]) for m in hi_res]
             if hi_res:
-                top, src = D[hi_res[0]]["top13"], hi_res[0]
+                top, src = D[hi_res[0]][hkey], hi_res[0]
             else:
+                glob = [m for m in ("ECMWF", "GFS", "ICON") if m in D and D[m].get(hkey) is not None]
+                if glob:
+                    top = wmedian((D[m][hkey], MODEL_WEIGHT.get(m, 1)) for m in glob)
+                    row = height_row("Global models", top)
+                    row["v"] = "~" + row["v"]
+                    factors[0:1] = [row]
                 src = "models"
             lead_view = dict(lead, label=label, top=top if top is not None else lead.get("top"), shower_p=shower_p) if lead else None
             drow["sites"][s["id"]] = {
-                "rating": round(rating, 1), "label": label, "tags": tags, "xc": xc,
+                "rating": round(rating, 2), "label": label, "tags": tags, "xc": xc,
                 "note": note_for(s, lead_view, xc),
                 "p_fly": round(p_fly, 2), "p_xc": round(p_xc, 2),
                 "agree": factors[-1]["v"], "models": {k: round(v, 1) for k, v in det_r.items()},
@@ -1083,7 +1275,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 "factors": factors,
                 "alt_source": src,
                 "ground_ft": lead.get("ground_ft") if lead else None,
-                "launch_ft": s["launch_ft"],
+                "launch_ft": s["launch_ft"], "style": lead.get("style") if lead else None,
                 "diag": {k: {"r": round(v["rating"], 1), "top": round(v["top"] * FT, -2) if v["top"] else None,
                              "w": round(v["wstar"], 1) if v["wstar"] is not None else None,
                              "why": v["codes"][:3]} for k, v in D.items()},
@@ -1134,7 +1326,7 @@ def headline(sites, d):
         k = next((m for m in xc if m in main), xc[0])
         others = [by[x]["short"] for x in xc if x != k]
         return f"XC at {by[k]['short']}: {cells[k]['note']}" + (f" · also {', '.join(others)}" if others else "") + tail
-    good = [k for k in main if cells[k]["rating"] >= 3.5]
+    good = [k for k in main if cells[k]["rating"] >= 2.5]
     if good:
         showers = any(t.startswith("showers") for k in main for t in cells[k]["tags"])
         return (" · ".join(f"{by[k]['short']} {cells[k]['label'].lower()}" for k in good)

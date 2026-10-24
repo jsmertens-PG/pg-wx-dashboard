@@ -31,19 +31,18 @@ All of these are free and need no keys. Soaring Predictor, XC Skies and the Holf
 
 ## How a day is rated
 
-The rating runs from 0 to 10. A nice local thermal or glass-off day is about 3.5–5 (green). XC days start at 6: about 6 is a short or low XC, 7–8 a solid one, 9 a big day.
+Ratings run **1–5**: 1 no go, 2 marginal, 3 a good local day or a nice glass-off, 4 a real XC window, 5 outstanding. What counts depends on the site's `style` in `sites.json`:
 
-For each model run, each hour from 9 am to 6 pm is checked at each launch:
+- **window** (Little Black, Blossom, Otay): the best single hour inside the site's `window` (11 am–1 pm) decides. That is the short slot to get up and out before wind and stability kill it; the rest of the afternoon doesn't count against the day. Glass-off is rated on its own (3 for a good one) and the better of the two counts.
+- **convergence** (Elsinore, Laguna/Horse): XC only. Without convergence (real on-launch flow, nothing bad aloft, lift above `xc_top_ft`) the rating caps at 2.
+- **ridge** (Torrey): 2–3 for ridge soaring, 4–5 on a thermal day (cold air aloft, lift to 1,200 ft and more).
+- **thermal** (Marshall, Santa Barbara, Soboba): the best two hours inside the site's window (Soboba 1–4 pm).
 
-- **Rain or storms:** 0.5 mm/h or more, or CAPE with showers, is a no-go. Light showers or high CAPE reduce the rating.
-- **Launch wind:** it must be inside the site's direction window. Wind from behind launch above 5 mph is a no-go, as is wind well over the site's limit.
-- **Wind aloft:** both strength and direction through the lift band. Each site has an `aloft_bad` range (for example north and east for Laguna/Horse). Wind aloft from that range above about 6 kt mostly kills the hour and rules out XC.
-- **Lift:** thermal strength (W*) comes from the sunshine and the depth of the mixed layer (the lower of a dry surface parcel and the model's boundary-layer height). A paraglider only uses the part of that layer where thermals beat its sink rate, the idea behind Soaring Predictor's Hcrit: about half on weak days, most of it on strong ones, never above cloudbase. Height over launch and thermal strength drive the rating. Torrey is rated on ridge wind instead.
-- **XC:** lift above the site's `xc_top_ft` with no rain and no bad wind aloft. The XC rating grows with the height above that threshold and with how many hours it lasts.
-- **Glass-off:** at least two of the last hours before sunset with smooth onshore wind on launch (3–13 mph), no rain and nothing strong aloft. Labelled Glass-off only when there's no real midday thermal window.
-- **Showers:** the share of ensemble runs with rain at the site during flying hours. 20% or more adds a "showers around" tag; the same number drives the rain bar.
+Heights map onto the scale through each site's ceilings: `ok_ft` is 3, `xc_top_ft` is 4, `xc_top_ft + xc_span_ft` is 5. An hour also needs a usable launch wind (gusts over `gust_mph` hurt), no rain, and acceptable wind aloft; without real XC conditions an hour can't score above 3.5.
 
-The day's rating is a weighted median of the regular models: HRRR and RRFS ×3, NAM ×2, GFS/ECMWF/ICON ×1 (`MODEL_WEIGHT` in the script). Models without sunshine data (NAM on Open-Meteo) get a clear-sky estimate from sun height and their own cloud cover. The ensembles (coarser, without boundary-layer height) are recentred on that median and give the chance of a flyable or XC day. **XC** appears when the rating is at least 6 and at least 40% of the runs agree. The XC note suggests a direction from the drift and the site's `routes`, and warns when the drift heads into a `blocked` direction (airspace, the border).
+**Day type.** Each day also gets a region-wide type from the models (three days of history plus the forecast at Little Black, Blossom and Elsinore): **Front** (regional rain with cooling), **Post-frontal** (the days after: colder air at 850 hPa, W–NW flow), **Pre-frontal** (S–SW flow aloft ahead of a front), **Santa Ana** (NE–E flow at 850 hPa with dry air) and **Switch day** (the day Santa Ana ends). The models vote with the same weights as the rating; "maybe" means they disagree.
+
+The day's rating is a weighted median of the regular models: HRRR and RRFS ×3, NAM ×2, GFS/ECMWF/ICON ×1 (`MODEL_WEIGHT`). The ensembles are recentred on that median and give the chance of a flyable (2.5+) or XC (3.75+) day. Height bars show RRFS and HRRR; past their range a rough global-model height is shown.
 
 ## Tuning
 

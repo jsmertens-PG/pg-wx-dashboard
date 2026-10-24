@@ -1,5 +1,5 @@
 {
-  "_note": "Starting values to check against the SDHGPA guide and your own tracks. Directions are where the wind blows FROM (degrees). Launch wind in mph, wind aloft in knots. 'aloft_bad' is the range of wind-aloft directions that kills the site (offshore, over the back). 'routes' are XC directions (degrees you fly TOWARD) with a short description; 'blocked' are directions where drift takes you into airspace, sea or the border. Positions, launch and LZ heights come from the soaringpredictor.info site pages. Models are asked for the forecast at the LZ height (lz_ft), so thermals start from the valley ground. A site with 'launches' is scored per launch and shows the better one. 'ok_ft' / 'xc_top_ft' / 'xc_top_ft'+'xc_span_ft' are the ceilings (MSL) for an OK local day, the start of XC, and a great XC day; they scale the height bars. 'gust_mph' is where gusts start to hurt (fully bad 5 mph above).",
+  "_note": "Starting values to check against the SDHGPA guide and your own tracks. Directions are where the wind blows FROM (degrees). Launch wind in mph, wind aloft in knots. 'aloft_bad' is the range of wind-aloft directions that kills the site (offshore, over the back). 'routes' are XC directions (degrees you fly TOWARD) with a short description; 'blocked' are directions where drift takes you into airspace, sea or the border. Positions, launch and LZ heights come from the soaringpredictor.info site pages. Models are asked for the forecast at the LZ height (lz_ft), so thermals start from the valley ground. A site with 'launches' is scored per launch and shows the better one. 'ok_ft' / 'xc_top_ft' / 'xc_top_ft'+'xc_span_ft' are the ceilings (MSL) for an OK local day, the start of XC, and a great XC day; they scale the height bars. 'gust_mph' is where gusts start to hurt (fully bad 5 mph above). 'style' sets how a day is rated (1-5): 'window' = the best single hour inside 'window' (local hours) decides, plus glass-off; 'thermal' = best two hours inside 'window'; 'convergence' = XC only, local flying caps at 2; 'ridge' = ridge soaring up to 3, thermal day 4-5.",
   "sites": [
     {
       "id": "lb",
@@ -57,7 +57,12 @@
       ],
       "lz_ft": 750,
       "ok_ft": 2500,
-      "gust_mph": 15
+      "gust_mph": 15,
+      "style": "window",
+      "window": [
+        11,
+        13
+      ]
     },
     {
       "id": "blossom",
@@ -111,7 +116,12 @@
       ],
       "lz_ft": 700,
       "ok_ft": 3000,
-      "gust_mph": 15
+      "gust_mph": 15,
+      "style": "window",
+      "window": [
+        11,
+        13
+      ]
     },
     {
       "id": "elsinore",
@@ -163,7 +173,12 @@
       ],
       "lz_ft": 1350,
       "ok_ft": 5000,
-      "gust_mph": 15
+      "gust_mph": 15,
+      "style": "convergence",
+      "window": [
+        11,
+        16
+      ]
     },
     {
       "id": "torrey",
@@ -228,7 +243,12 @@
           "cross-NW"
         ]
       ],
-      "gust_mph": 24
+      "gust_mph": 24,
+      "style": "ridge",
+      "window": [
+        10,
+        17
+      ]
     },
     {
       "id": "lagunahorse",
@@ -311,7 +331,12 @@
         }
       ],
       "ok_ft": 7000,
-      "gust_mph": 15
+      "gust_mph": 15,
+      "style": "convergence",
+      "window": [
+        11,
+        15
+      ]
     },
     {
       "id": "marshall",
@@ -365,7 +390,12 @@
       ],
       "lz_ft": 1700,
       "ok_ft": 5500,
-      "gust_mph": 15
+      "gust_mph": 15,
+      "style": "thermal",
+      "window": [
+        11,
+        15
+      ]
     },
     {
       "id": "otay",
@@ -415,7 +445,12 @@
       ],
       "lz_ft": 600,
       "ok_ft": 3000,
-      "gust_mph": 15
+      "gust_mph": 15,
+      "style": "window",
+      "window": [
+        11,
+        13
+      ]
     },
     {
       "id": "soboba",
@@ -463,7 +498,12 @@
       ],
       "lz_ft": 1520,
       "ok_ft": 4000,
-      "gust_mph": 15
+      "gust_mph": 15,
+      "style": "thermal",
+      "window": [
+        13,
+        16
+      ]
     },
     {
       "id": "santabarbara",
@@ -517,7 +557,12 @@
       ],
       "lz_ft": 1000,
       "ok_ft": 4500,
-      "gust_mph": 15
+      "gust_mph": 15,
+      "style": "thermal",
+      "window": [
+        11,
+        15
+      ]
     }
   ]
 }

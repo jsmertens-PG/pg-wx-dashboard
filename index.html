@@ -17,7 +17,7 @@
 <style>
 /* Layout: weather story on top, then one full-width card per day.
    Inside a card the three home sites get big panels, Torrey a row, the rest a compact strip.
-   Same paper/ink look as the PG logbook; colour is reserved for day quality on a 0-10 scale. */
+   Same paper/ink look as the PG logbook; colour is reserved for day quality (1-5) and the day type. */
 :root {
   --bg: #ffffff; --surface: #ffffff; --sunk: #f3f4f3; --ink: #0b0b0b; --muted: #676d69; --line: #e2e4e2;
   --q0: #c8412f; --q1: #df8a17; --q2: #8dbf3f; --q3: #3a9d57; --q4: #1a7a45; --q5: #0d5a44;
@@ -113,22 +113,21 @@ details.fold > :not(summary) { margin-top: 10px; }
 .srow.small { grid-template-columns: 110px minmax(50px, 90px) 24px minmax(0, 1fr); }
 .srow.small .tx { flex-wrap: nowrap; overflow: hidden; white-space: nowrap; }
 .srow.small .tx .note { overflow: hidden; text-overflow: ellipsis; }
-.srow.small .tag { display: none; }
+.srow.small .tag { font-size: .66rem; padding: 0 4px; }
 @media (max-width: 640px) {
   .srow, .srow.small { grid-template-columns: minmax(0, 1fr) 90px 26px; padding-inline: 14px; }
   .srow .tx { grid-column: 1 / -1; }
-  .srow .tag { display: none; }
   .srow.small .tx { white-space: normal; flex-wrap: wrap; }
 }
 .label { display: inline-flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 .lab { font-size: .86rem; font-weight: 600; }
 .note { font-size: .86rem; margin: 0; }
 
-/* 0-10 bar with flyable (3.5) and XC (6) marks */
+/* 1-5 bar with flyable (2.5) and XC (3.75) marks */
 .bar { height: 8px; background: var(--sunk); position: relative; display: block; }
 .bar i { position: absolute; inset: 0 auto 0 0; display: block; }
 .bar::before, .bar::after { content: ""; position: absolute; top: -2px; bottom: -2px; width: 1px; background: var(--muted); opacity: .5; }
-.bar::before { left: 35%; } .bar::after { left: 60%; }
+.bar::before { left: 50%; } .bar::after { left: 75%; }
 .bar.thin { height: 5px; }
 
 .row { display: grid; grid-template-columns: 110px minmax(80px, 200px) 46px minmax(0, 1fr); gap: 12px; align-items: center; padding: 8px 16px; border: 0; border-top: 1px solid var(--line); background: transparent; width: 100%; text-align: left; min-height: 0; cursor: pointer; }
@@ -140,7 +139,7 @@ details.fold > :not(summary) { margin-top: 10px; }
 .mini .t span:first-child { color: var(--muted); }
 .mini .note { font-size: .74rem; color: var(--muted); }
 
-.det { border-top: 1px solid var(--ink); padding: 12px 16px 14px; display: grid; gap: 10px; font-size: .84rem; background: var(--surface); }
+.det { grid-column: 1 / -1; border-bottom: 1px solid var(--line); border-top: 1px solid var(--ink); padding: 12px 16px 14px; display: grid; gap: 10px; font-size: .84rem; background: var(--surface); }
 .factors { display: grid; gap: 8px; max-width: 720px; }
 .factor { display: grid; grid-template-columns: 130px minmax(0, 1fr) 110px; gap: 4px 14px; align-items: center; }
 .factor .fk { font-size: .8rem; }
@@ -199,6 +198,16 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   
   .factor { grid-template-columns: 92px minmax(0, 1fr) 96px; }
 }
+/* day type: the strongest signal on a card */
+.rx { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-body); font-weight: 700; font-size: .78rem; letter-spacing: .06em;
+  text-transform: uppercase; color: #fff; background: var(--rxc); padding: 3px 9px; border-radius: 999px; white-space: nowrap; vertical-align: middle; }
+.rx .rq { font-weight: 500; text-transform: none; letter-spacing: 0; opacity: .85; }
+.rx.sm { font-size: .6rem; padding: 0 5px; letter-spacing: .04em; }
+.rx-front { --rxc: #34508f; } .rx-pre { --rxc: #6b7899; } .rx-post { --rxc: #11827f; }
+.rx-sa { --rxc: #d2691e; } .rx-switch { --rxc: #b8860b; }
+.day .when .rx { margin-left: 10px; }
+.daynav a span.rx { color: #fff; font-family: var(--font-body); font-size: .56rem; }
+.daynav a span.rx .rq { display: none; }
 .empty { padding: 30px; border: 1px dashed var(--ink); text-align: center; }
 </style>
 </head>
@@ -229,17 +238,15 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
     <summary><h2>How the rating works</h2></summary>
     <div class="how">
   <div class="legend">
-    <span class="chip"><i style="background:var(--q0)"></i>no go</span>
-    <span class="chip"><i style="background:var(--q1)"></i>marginal</span>
-    <span class="chip"><i style="background:var(--q2)"></i>3.5+ local</span>
-    <span class="chip"><i style="background:var(--q3)"></i>5+ good</span>
-    <span class="chip"><i style="background:var(--q4)"></i>6.5+ XC</span>
-    <span class="chip"><i style="background:var(--q5)"></i>8+ big XC</span>
+    <span class="chip"><i style="background:var(--q0)"></i>1 no go</span>
+    <span class="chip"><i style="background:var(--q1)"></i>2 marginal</span>
+    <span class="chip"><i style="background:var(--q3)"></i>3 good local / glass-off</span>
+    <span class="chip"><i style="background:var(--q4)"></i>4 XC</span>
+    <span class="chip"><i style="background:var(--q5)"></i>5 outstanding</span>
   </div>
-
-      <p><b>0–10 scale.</b> A nice local day is about 3.5–5 (green). XC days start at 6: about 6 is a short XC, 7–8 a solid one, 9 a big day. The rating is a weighted median of the regular models: HRRR (and RRFS once available) count three times, NAM twice, GFS, ECMWF and ICON once, so the high-resolution models decide the next two days and the global models the rest. The ensembles give the spread behind the flyable and XC chances. Thermal height is the usable top of lift at 1 pm from RRFS (about 4 days) and HRRR (about 2 days); past that range there is no height bar.</p>
-      <p><b>Lift height and wind decide most days.</b> Thermal strength (W*) comes from the sunshine and the depth of the mixed layer. A paraglider can only use the part of that layer where thermals beat its sink rate (the idea behind RASP's Hcrit), so the usable top is about half the layer on weak days and most of it on strong ones, and never above cloudbase. Wind has to fit the launch; wind aloft is shown at the top of lift at 1 pm and counts by strength and direction. Only real rain or storms are a no-go.</p>
-      <p><b>Sites:</b> Elsinore and Laguna/Horse are rated as convergence sites, so any strong wind aloft hurts. Torrey is rated on ridge wind (SW or NW is cross, only east is over the back), but a cold-air day with thermals above the cliffs is flagged as a Thermal day. Glass-off is the last two hours before sunset.</p>
+      <p><b>1–5 scale, by site type.</b> <b>LB, Blossom, Otay</b> are rated on their best hour in the 11 am–1 pm window, when you get up and out before wind and stability kill it; glass-off is rated separately and the better of the two counts. A nice glass-off or a good local day is 3, a real XC window 4, outstanding 5. <b>Elsinore and Laguna/Horse</b> are XC-only convergence sites: without a convergence setup they cap at 2. <b>Torrey</b> is 2–3 for ridge soaring and 4–5 on a thermal day. Marshall, Santa Barbara (11–3) and Soboba (1–4 pm) use their own windows. Heights come from each site's scale in <span class="mono">sites.json</span> (for LB: 2,500 ft OK, 3,000 ft XC, 4,500 ft great).</p>
+      <p><b>Day type</b> (the coloured pill) comes from the models over the region and runs all 7 days: <b>Front</b> (regional rain, cooling), <b>Post-frontal</b> (the days after, cold air aloft), <b>Pre-frontal</b> (S–SW flow ahead of a front), <b>Santa Ana</b> (NE–E flow at 850 hPa, dry air) and <b>Switch day</b> (the day Santa Ana ends). "maybe" means the models disagree.</p>
+      <p><b>Models.</b> The rating is a weighted median: HRRR and RRFS ×3, NAM ×2, GFS, ECMWF, ICON ×1. Height bars show RRFS and HRRR (about 4 and 2 days); after that a rough global-model height. The ensembles give the chance of a flyable or XC day. Lift is the usable top of the mixed layer (the idea behind RASP's Hcrit), never above cloudbase; launch wind, gusts (over 15 mph hurts), wind aloft at the top of lift and rain all count.</p>
       <p>Limits for each site are in <span class="mono">sites.json</span>, to tune against real days.</p>
     </div>
   </details>
@@ -273,11 +280,18 @@ const ago = (iso) => {
   if (!isFinite(m)) return "";
   return m < 60 ? `${m} min ago` : m < 2880 ? `${Math.round(m / 60)} h ago` : `${Math.round(m / 1440)} days ago`;
 };
-const q = (r) => (r >= 8 ? 5 : r >= 6.5 ? 4 : r >= 5 ? 3 : r >= 3.5 ? 2 : r >= 2 ? 1 : 0);
+const q = (r) => (r >= 4.5 ? 5 : r >= 3.75 ? 4 : r >= 3 ? 3 : r >= 2.5 ? 2 : r >= 1.6 ? 1 : 0);
 const qv = (r) => `var(--q${q(r)})`;
 const ft = (v) => (v == null ? "–" : (Math.round(v / 100) * 100).toLocaleString());
 const pct = (p) => (p == null ? "–" : `${Math.round(p * 100)}%`);
-const r1 = (r) => (r == null ? "–" : String(Math.max(1, Math.min(10, Math.round(r)))));
+const r1 = (r) => (r == null ? "–" : String(Math.max(1, Math.min(5, Math.round(r)))));
+const RX = { "Front": ["front", "Front"], "Pre-frontal": ["pre", "Pre"], "Post-frontal": ["post", "Post"],
+  "Santa Ana": ["sa", "SA"], "Switch day": ["switch", "Switch"] };
+const regimeHtml = (rg, small) => {
+  if (!rg || !rg.type || !RX[rg.type]) return "";
+  const unsure = rg.agree < 0.75;
+  return `<span class="rx rx-${RX[rg.type][0]}${small ? " sm" : ""}" title="${esc(Object.entries(rg.models || {}).map(([m, t]) => `${m}: ${t || "–"}`).join(" · "))}">${esc(small ? RX[rg.type][1] : rg.type)}${unsure && !small ? ' <span class="rq">maybe</span>' : ""}</span>`;
+};
 
 const setTheme = (t) => {
   try { localStorage.setItem("radar-theme", t); } catch (e) {}
@@ -337,8 +351,8 @@ function render(data) {
     const tint = Math.max(...main.map((s) => d.sites[s.id]?.rating ?? 0));
     return `<article class="day" id="day-${i}" style="--qc:${qv(tint)}">
       <div class="hd">
-        <span class="when">${esc(L.long)}<small>${esc(L.date)}</small></span>
-        <span class="big" title="Best home site">${r1(bm?.rating)}<small>/10</small></span>
+        <span class="when">${esc(L.long)}<small>${esc(L.date)}</small>${regimeHtml(d.regime)}</span>
+        <span class="big" title="Best home site">${r1(bm?.rating)}<small>/5</small></span>
       </div>
       <div class="list">
         ${main.map((s) => siteRow(d, s, i, "")).join("")}
@@ -353,7 +367,7 @@ function render(data) {
     const L = dayLabel(d.date), bm = d.sites[d.best_main] || d.sites[d.best];
     const tint = Math.max(...main.map((s) => d.sites[s.id]?.rating ?? 0));
     const xc = main.some((s) => d.sites[s.id]?.xc);
-    return `<a href="#day-${i}" style="--qc:${qv(tint)}"><b>${esc(L.short)}</b><span>${r1(bm?.rating)}${xc ? " XC" : ""}</span></a>`;
+    return `<a href="#day-${i}" style="--qc:${qv(tint)}"><b>${esc(L.short)}</b><span>${r1(bm?.rating)}${xc ? " XC" : ""}</span>${regimeHtml(d.regime, true)}</a>`;
   }).join("");
 
   $("#days").onclick = (e) => {
@@ -365,6 +379,7 @@ function render(data) {
     if (wasOpen) { det.hidden = true; return; }
     b.setAttribute("aria-expanded", "true");
     det.innerHTML = detail(data.days[i], BY[b.dataset.site]);
+    b.after(det);                                   // open right under the site
     det.hidden = false;
   };
 
@@ -379,15 +394,17 @@ function render(data) {
 
 const chipHtml = (c, prefix) => `<span class="chip"><i style="background:${qv(c.rating)}"></i>${prefix ? `<span class="muted">${esc(prefix)}</span> ` : ""}${r1(c.rating)}${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span>`;
 const labelHtml = (c) => `<span class="label"><span class="lab" style="color:${qv(c.rating)}">${esc(c.label)}</span>${c.xc ? '<span class="xcmark">XC</span>' : ""}${(c.tags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join("")}</span>`;
-const bar = (r, thin) => `<span class="bar${thin ? " thin" : ""}"><i style="width:${Math.max(2, Math.min(100, r * 10))}%;background:${qv(r)}"></i></span>`;
+const bar = (r, thin) => `<span class="bar${thin ? " thin" : ""}"><i style="width:${Math.max(4, Math.min(100, r * 20))}%;background:${qv(r)}"></i></span>`;
 
+/* in the rows, altitudes wait for a tap: keep XC directions and reasons, drop "thermals to 3,000 ft" */
+const rowNote = (c) => (!c.note || /\d,?\d{3} ft|thermals/i.test(c.note) ? (c.launch_name && c.note && c.note.startsWith(c.launch_name) ? c.launch_name : "") : c.note);
 function siteRow(d, s, i, kind) {
   const c = d.sites[s.id];
   const name = s.id === "lb" ? "Little Black" : s.short;
   if (!c) return `<div class="srow ${kind}"><span class="nm">${esc(name)}</span><span class="muted">no data</span></div>`;
   return `<button type="button" class="srow ${kind}" data-site="${s.id}" data-day="${i}" aria-expanded="false">
     <span class="nm">${esc(name)}</span>${bar(c.rating, kind === "small")}<span class="rt">${r1(c.rating)}</span>
-    <span class="tx"><span class="lab" style="color:${qv(c.rating)}">${esc(c.label)}</span>${c.xc ? '<span class="xcmark">XC</span>' : ""}<span class="note">${esc(c.note)}</span>${(c.tags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join("")}</span>
+    <span class="tx"><span class="lab" style="color:${qv(c.rating)}">${esc(c.label)}</span>${c.xc ? '<span class="xcmark">XC</span>' : ""}${(c.tags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join("")}${rowNote(c) ? `<span class="note">${esc(rowNote(c))}</span>` : ""}</span>
   </button>`;
 }
 
@@ -401,7 +418,7 @@ function detail(d, s) {
       ${f.sub ? `<span class="fs">${esc(f.sub)}</span>` : ""}
     </div>`).join("");
   return `<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline">
-      <h3 style="font-size:1.1rem;font-family:var(--font-body);font-weight:600">${esc(s.name)} <span class="muted" style="font-size:.9rem;font-weight:500">${r1(c.rating)}/10</span></h3>${labelHtml(c)}</div>
+      <h3 style="font-size:1.1rem;font-family:var(--font-body);font-weight:600">${esc(s.name)} <span class="muted" style="font-size:.9rem;font-weight:500">${r1(c.rating)}/5</span></h3>${labelHtml(c)}</div>
     ${c.note && !/thermals/i.test(c.note) ? `<p class="note">${esc(c.note)}</p>` : ""}
     <div class="factors">${rows}</div>
     <span class="muted" style="font-size:.76rem">Chance flyable ${pct(c.p_fly)} · XC ${pct(c.p_xc)}${c.sunset ? ` · sunset ${esc(c.sunset)}` : ""}${c.ground_ft != null ? ` · model ground ${c.ground_ft.toLocaleString()} ft${c.launch_name ? ` (${esc(c.launch_name)})` : ""}, launch ${(c.launch_ft || 0).toLocaleString()} ft` : ""}</span>`;

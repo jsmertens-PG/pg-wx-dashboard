@@ -25,11 +25,11 @@ class SampleRun(unittest.TestCase):
     def test_scores_are_probabilities(self):
         for d in self.data["days"]:
             for c in d["sites"].values():
-                self.assertTrue(0 <= c["rating"] <= 10)
+                self.assertTrue(1 <= c["rating"] <= 5)
                 for k in ("p_fly", "p_xc"):
                     self.assertTrue(0 <= c[k] <= 1)
                 if c["xc"]:
-                    self.assertGreaterEqual(c["rating"], 6.0)      # XC only on a 6+ day
+                    self.assertGreaterEqual(c["rating"], 3.75)     # XC only on a 4-ish day
                 self.assertIn(c["label"], {"XC", "Thermal day", "Thermal", "Glass-off", "Ridge soaring", "Marginal", "No go"})
 
     def test_sources_have_timestamps(self):
@@ -43,6 +43,46 @@ class SampleRun(unittest.TestCase):
             c = d["sites"]["torrey"]
             if c["xc"]:
                 self.assertEqual(c["label"], "Thermal day")
+
+
+    def test_day_types_known(self):
+        for d in self.data["days"]:
+            r = d.get("regime")
+            if r and r["type"]:
+                self.assertIn(r["type"], bf.REGIMES)
+
+
+class DayTypes(unittest.TestCase):
+    @staticmethod
+    def feats(rows):
+        out, d0 = {}, bf.date(2026, 10, 20)
+        for k, r in enumerate(rows):
+            base = {"rain": 0.0, "t850": 12.0, "rh": 50, "s850": 8, "d850": 270, "s700": 10, "d700": 270, "sfc15": (8, 270)}
+            base.update(r)
+            out[(d0 + bf.timedelta(days=k)).isoformat()] = base
+        return out
+
+    def test_front_sequence(self):
+        F = self.feats([{}, {"d700": 210, "s700": 20}, {"rain": 6, "t850": 10}, {"t850": 5, "d700": 300}, {"t850": 6}])
+        t = list(bf.classify_days(F).values())
+        self.assertEqual(t[1], "Pre-frontal")
+        self.assertEqual(t[2], "Front")
+        self.assertEqual(t[3], "Post-frontal")
+
+    def test_santa_ana_then_switch(self):
+        sa = {"d850": 60, "s850": 20, "rh": 12, "sfc15": (10, 60)}
+        F = self.feats([{}, sa, sa, {"d850": 280, "s850": 6, "rh": 40}, {}])
+        t = list(bf.classify_days(F).values())
+        self.assertEqual(t[1:4], ["Santa Ana", "Santa Ana", "Switch day"])
+
+
+class WindowRating(unittest.TestCase):
+    def test_lb_rated_on_best_midday_hour(self):
+        lb = json.loads((ROOT / "sites.json").read_text())["sites"][0]
+        self.assertEqual(lb["style"], "window")
+        # one strong hour at noon to 3,200 ft: a 3-4 day, whatever the rest of the afternoon does
+        self.assertGreaterEqual(bf.ceil_level(lb, 3200), 4.0)
+        self.assertLess(bf.ceil_level(lb, 2200), 3.0)
 
 
 class Routes(unittest.TestCase):
