@@ -45,6 +45,10 @@ button:hover { border-color: var(--ink); }
 header.top { display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: end; justify-content: space-between; border-bottom: 1px solid var(--ink); padding-bottom: 14px; }
 .fresh { display: grid; gap: 1px; text-align: right; font-size: .82rem; }
 .fresh b { font-family: var(--font-data); font-weight: 500; }
+.fresh .acts { display: flex; gap: 6px; justify-content: flex-end; margin-top: 4px; flex-wrap: wrap; }
+@media (max-width: 640px) { .fresh .acts { justify-content: flex-start; } }
+.fresh .acts button, .fresh .acts a { font-size: .76rem; min-height: 30px; padding: 4px 10px; border: 1px solid var(--line); background: var(--surface); text-decoration: none; display: inline-flex; align-items: center; }
+.fresh .acts a:hover { border-color: var(--ink); }
 @media (max-width: 640px) { .fresh { text-align: left; } }
 .banner { border: 1px solid var(--line); border-left: 3px solid var(--q0); padding: 9px 14px; font-size: .88rem; display: grid; gap: 4px; }
 
@@ -147,7 +151,13 @@ footer button[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset
       <span class="eyebrow">SoCal launches · 7-day outlook</span>
       <h1>Flying <em>Radar</em></h1>
     </div>
-    <div class="fresh" id="fresh"></div>
+    <div class="fresh">
+      <div id="fresh" style="display:grid;gap:1px"></div>
+      <div class="acts">
+        <button type="button" id="reload">Reload data</button>
+        <a id="runNow" href="#" target="_blank" rel="noopener" hidden title="Opens GitHub, where you press Run workflow">Update now on GitHub</a>
+      </div>
+    </div>
   </header>
 
   <div id="warn"></div>
@@ -289,7 +299,7 @@ function render(data) {
     </article>`;
   }).join("") || '<div class="empty">No forecast days in the data.</div>';
 
-  $("#days").addEventListener("click", (e) => {
+  $("#days").onclick = (e) => {
     const b = e.target.closest("[data-site]"); if (!b) return;
     const card = b.closest(".day"), i = b.dataset.day, det = $(`#det-${i}`);
     const wasOpen = b.getAttribute("aria-expanded") === "true";
@@ -298,7 +308,7 @@ function render(data) {
     b.setAttribute("aria-expanded", "true");
     det.innerHTML = detail(data.days[i], BY[b.dataset.site]);
     det.hidden = false;
-  });
+  };
 
   /* sources */
   $("#tSrc").innerHTML = `<thead><tr><th>Source</th><th>Type</th><th>Provider · id</th><th>Run / issued</th><th>Fetched</th><th>Status</th></tr></thead><tbody>${
@@ -368,12 +378,27 @@ function detail(d, s) {
     <span class="muted" style="font-size:.76rem">${esc(s.note || "")}</span>`;
 }
 
+/* "Update now" opens the workflow page of this repo (works on <user>.github.io/<repo>/) */
+if (location.hostname.endsWith(".github.io")) {
+  const user = location.hostname.split(".")[0], repo = location.pathname.split("/").filter(Boolean)[0];
+  if (user && repo) { const a = $("#runNow"); a.href = `https://github.com/${user}/${repo}/actions/workflows/forecast.yml`; a.hidden = false; }
+}
+let lastGen = null;
+function load() {
+  const btn = $("#reload");
+  btn.disabled = true; btn.textContent = "Reloading…";
+  return fetch(`data/forecast.json?t=${Date.now()}`, { cache: "no-store" })
+    .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then((d) => { const same = lastGen === d.generated; lastGen = d.generated; render(d);
+      btn.textContent = same ? "No newer data yet" : "Reload data"; })
+    .catch((e) => { btn.textContent = "Reload data";
+      $("#days").innerHTML = `<div class="empty">Couldn't load data/forecast.json (${esc(e.message)}). Has the GitHub Action run yet?</div>`; })
+    .finally(() => { btn.disabled = false; setTimeout(() => { btn.textContent = "Reload data"; }, 4000); });
+}
 const seed = $("#seed").textContent.trim();
-if (seed) render(JSON.parse(seed));
-else fetch("data/forecast.json", { cache: "no-store" })
-  .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
-  .then(render)
-  .catch((e) => { $("#days").innerHTML = `<div class="empty">Couldn't load data/forecast.json (${esc(e.message)}). Has the GitHub Action run yet?</div>`; });
+if (seed) { render(JSON.parse(seed)); $("#reload").hidden = true; }
+else load();
+$("#reload").addEventListener("click", load);
 })();
 </script>
 </body>
