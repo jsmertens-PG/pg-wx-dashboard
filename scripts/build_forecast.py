@@ -609,6 +609,9 @@ def score_hour(site, hr, i, levels, elev_m):
     else:
         lw, ld = _at(hr, "wind_speed_10m", i), _at(hr, "wind_direction_10m", i)
     lw_mph = lw * 1.15078 if lw is not None else None
+    w10, g10 = _at(hr, "wind_speed_10m", i), _at(hr, "wind_gusts_10m", i)
+    gust_f = max(1.0, g10 / w10) if (w10 and g10 and w10 > 1) else 1.0
+    lg_mph = lw_mph * gust_f if lw_mph is not None else None
     a_max, a_spd, a_dir = layer_wind(pts, launch_m + 150, max(launch_m + 600, usable))
 
     codes, q = [], 1.0
@@ -679,7 +682,7 @@ def score_hour(site, hr, i, levels, elev_m):
              and not bad_dir and (a_max is None or a_max <= site["aloft_max_kt"]))
     return {"q": q, "xc_s": xc_s, "glass": glass, "cold": cold_aloft, "good_launch": bool(good_launch), "launch": launch,
             "usable": usable, "base": base, "agl": agl, "wstar": wstar, "climb": max(0.0, wstar - SINK + 0.3),
-            "lw": lw_mph, "ld": ld, "a_max": a_max, "a_spd": a_spd, "a_dir": a_dir,
+            "lw": lw_mph, "ld": ld, "lg": lg_mph, "a_max": a_max, "a_spd": a_spd, "a_dir": a_dir,
             "pr": pr, "cape": cape, "codes": codes}
 
 
@@ -751,7 +754,17 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     if du:
         u, v = sum(x for x, _ in du) / len(du), sum(y for _, y in du) / len(du)
         a_spd, a_dir = math.hypot(u, v), (math.degrees(math.atan2(u, v)) + 360) % 360
+    def wind_at(h_list):
+        for h, s in hours:
+            if h in h_list and s["lw"] is not None and s["ld"] is not None:
+                return (s["ld"], s["lw"], s["lg"])
+        return None
+    mid = hours[k][0] + 1
+    wind_now = wind_at([mid, mid - 1, mid + 1])
+    later_h = [h for h in (16, 15, 17) if h >= mid + 2 and h + 0.5 <= sunset_h]
+    wind_later = wind_at(later_h) if later_h else None
     return {
+        "wind_now": wind_now, "wind_later": wind_later,
         "rating": rating, "local": local, "xc_day": xc_day, "label": label, "codes": codes,
         "postfrontal": postfrontal, "glass": glass_ok, "glass_hours": glass_hours, "sunset": sunset_h,
         "start": hours[k][0], "top": med("usable", xblk), "base": med("base"), "wstar": med("wstar", xblk),
@@ -781,6 +794,14 @@ def route_note(site, a):
     if angdiff(best["to"], to) <= 60:
         return f"downwind {best['text']}"
     return f"crosswind {best['text']}"
+
+
+def wind_txt(w):
+    """'SW 10g22' (mph); gusts only when they are 5 mph or more above the mean."""
+    if not w:
+        return "–"
+    d, spd, g = w
+    return f"{compass(d)} {round(spd)}" + (f"g{round(g)}" if g is not None and g - spd >= 5 else "")
 
 
 def ft100(m):
@@ -970,12 +991,10 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 {"k": "Thermal height", "v": f"{round(top * FT, -2):,.0f} ft" if top else "–",
                  "sub": f"{round(agl_ft, -2):,.0f} ft over launch" if agl_ft is not None else "",
                  "q": round(clamp((agl_ft or 0) / target), 2)},
-                {"k": "Thermal strength", "v": f"{wstar:.1f} m/s" if wstar is not None else "–",
-                 "sub": f"climb about {max(0, wstar - SINK + 0.3):.1f} m/s" if wstar is not None else "",
-                 "q": round(clamp((wstar or 0) / 2.5), 2)},
-                {"k": "Launch wind", "v": (lead.get("launch") or "–") if lead else "–",
-                 "sub": ((f"{compass(lead['ld'])} " if lead.get("launch") == "over the back" and lead["ld"] is not None else "")
-                         + (f"{round(lead['lw'])} mph" if lead["lw"] is not None else "")) if lead else "",
+                {"k": "Launch wind", "v": wind_txt(lead.get("wind_now")) if lead else "–",
+                 "sub": " · ".join(x for x in (
+                     f"later {wind_txt(lead['wind_later'])}" if lead and lead.get("wind_later") else "",
+                     lead.get("launch") if lead and lead.get("launch") in ("over the back", "blown out", "strong") else "") if x),
                  "q": round(lead["launch_q"] if lead else 0, 2)},
                 {"k": "Wind aloft", "v": (f"{compass(lead['a_dir'])} {round(lead['a_spd'])} kt" if lead and lead["a_spd"] is not None else "–"),
                  "sub": (f"gusting layers up to {round(a_max)} kt" if a_max is not None and lead and lead["a_spd"] is not None and a_max - lead["a_spd"] >= 4 else "")
