@@ -185,17 +185,23 @@
       "launch_ft": 4600,
       "kind": "convergence",
       "dir": [
-        190,
-        290
+        [
+          180,
+          300
+        ],
+        [
+          30,
+          150
+        ]
       ],
       "wind_mph": [
-        4,
+        3,
         15
       ],
       "aloft_max_kt": 15,
       "aloft_bad": [
-        320,
-        160
+        330,
+        120
       ],
       "xc_top_ft": 8000,
       "xc_span_ft": 2500,
@@ -211,12 +217,12 @@
       ],
       "blocked": [
         {
-          "from": 90,
-          "to": 200,
-          "why": "the border and the desert"
+          "from": 120,
+          "to": 210,
+          "why": "the border"
         }
       ],
-      "note": "Mountain convergence: needs onshore SW at launch and no north or east wind aloft."
+      "note": "Mountain convergence. Horse faces west, Laguna faces east over the desert, so either wind works; north or east flow aloft kills the convergence."
     },
     {
       "id": "marshall",
