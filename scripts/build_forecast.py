@@ -533,10 +533,12 @@ def score_hour(site, hr, i, levels, elev_m):
     if a_max is not None and a_max > site["aloft_max_kt"]:
         q *= clamp(1 - (a_max - site["aloft_max_kt"]) / 10)
         codes.append("aloft")
+    # convergence sites are killed by even light synoptic flow from the wrong side
+    bad_min = 3 if site["kind"] == "convergence" else 6
     bad_dir = (a_spd is not None and a_dir is not None and site.get("aloft_bad")
-               and wrap_in(a_dir, *site["aloft_bad"]) and a_spd >= 6)
+               and wrap_in(a_dir, *site["aloft_bad"]) and a_spd >= bad_min)
     if bad_dir:
-        q *= clamp(1 - (a_spd - 4) / 8) * 0.5
+        q *= clamp(1 - (a_spd - bad_min + 2) / 8) * 0.5
         codes.append("aloftdir")
     if site["kind"] == "convergence" and a_spd is not None and a_spd > 10:
         q *= clamp(1 - (a_spd - 10) / 10)
@@ -556,7 +558,9 @@ def score_hour(site, hr, i, levels, elev_m):
     # XC strength this hour (0 = no XC)
     coast_ok = site["kind"] != "ridge" or ((t850 is not None and t850 <= 9.0) or (t700 is not None and t700 <= 0.0))
     xc_s = 0.0
-    if site.get("xc_top_ft") and coast_ok and q >= 0.5 and pr < 0.3 and not bad_dir and wstar >= 1.2:
+    # a convergence line needs real flow meeting at the site, not near-calm air
+    conv_ok = site["kind"] != "convergence" or (lw_mph is not None and lw_mph >= site["wind_mph"][0] and on)
+    if site.get("xc_top_ft") and coast_ok and conv_ok and q >= 0.5 and pr < 0.3 and not bad_dir and wstar >= 1.2:
         over = usable * FT - site["xc_top_ft"]
         if over >= 0:
             wind_f = 1.0 if a_max is None or a_max <= site["aloft_max_kt"] - 3 else 0.8
