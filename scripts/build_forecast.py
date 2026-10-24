@@ -792,7 +792,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         def hour_r(sc, allow_xc):
             lv = ceil_level(site, sc["peak_top"] * FT)
             if not (allow_xc and sc["xc_s"] > 0):
-                lv = min(lv, 3.5)
+                lv = min(lv, 3.4)          # without XC conditions an hour shows 3 at most
             return 1.0 + (lv - 1.0) * clamp(sc["q"] / 0.6)
         if style == "convergence":
             conv = [(h, sc) for h, sc in win if sc["xc_s"] > 0]
