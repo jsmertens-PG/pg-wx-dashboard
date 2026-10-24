@@ -5,12 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>SoCal Flying Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
+<script>try { var t = localStorage.getItem("radar-theme") || "light"; if (t !== "auto") document.documentElement.setAttribute("data-theme", t); } catch (e) { document.documentElement.setAttribute("data-theme", "light"); }</script>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-title" content="Flying Radar">
-<meta name="theme-color" content="#050807">
+<meta name="theme-color" content="#ffffff">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;1,6..96,500&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
@@ -48,22 +49,26 @@ button { font: inherit; color: var(--ink); background: var(--surface); border: 1
 button:hover { border-color: var(--ink); }
 :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
-header.top { display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: end; justify-content: space-between; border-bottom: 1px solid var(--ink); padding-bottom: 14px; }
-.fresh { display: grid; gap: 1px; text-align: right; font-size: .82rem; }
-.fresh b { font-family: var(--font-data); font-weight: 500; }
-.fresh .acts { display: flex; gap: 6px; justify-content: flex-end; margin-top: 4px; flex-wrap: wrap; }
-@media (max-width: 640px) { .fresh .acts { justify-content: flex-start; } }
-.fresh .acts button, .fresh .acts a { font-size: .76rem; min-height: 30px; padding: 4px 10px; border: 1px solid var(--line); background: var(--surface); text-decoration: none; display: inline-flex; align-items: center; }
-.fresh .acts a:hover { border-color: var(--ink); }
-@media (max-width: 640px) { .fresh { text-align: left; } }
+header.top { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: baseline; justify-content: space-between; padding-bottom: 2px; }
+header.top h1 { font-family: var(--font-body); font-weight: 700; font-size: 1.6rem; letter-spacing: -0.01em; }
+header.top h1 .sub { font-weight: 400; font-size: .9rem; color: var(--muted); margin-left: 8px; letter-spacing: 0; }
+.fresh { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; font-size: .84rem; color: var(--muted); }
+.fresh button, .fresh a#runNow { font-size: .8rem; min-height: 30px; padding: 3px 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; }
+.fresh a#runNow:hover { border-color: var(--ink); }
 .banner { border: 1px solid var(--line); border-left: 3px solid var(--q0); padding: 9px 14px; font-size: .88rem; display: grid; gap: 4px; }
 
-/* weather story */
-.story { display: grid; gap: 10px; }
-.story .row1 { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
-.story ul { margin: 0; padding-left: 1.1em; display: grid; gap: 2px; font-size: .92rem; }
-.story .grps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 10px 32px; }
-.story .grp { display: grid; gap: 4px; min-width: 0; }
+/* weather card: same frame as the days, neutral colour */
+.story .wlist { display: grid; }
+.story .wrow { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 4px 14px; padding: 8px 18px; font-size: .92rem; }
+.story .wrow + .wrow { border-top: 1px solid var(--line); }
+.story .wk { color: var(--muted); font-size: .86rem; }
+#story > .hd { grid-template-columns: auto minmax(0, 1fr); }
+#story > .hd .when { white-space: normal; }
+#story > .hd .when small { white-space: nowrap; }
+#story > .hd .flags { justify-self: end; display: flex; flex-wrap: wrap; gap: 4px; justify-content: flex-end; }
+@media (max-width: 640px) { #story > .hd { grid-template-columns: 1fr; } #story > .hd .flags { justify-self: start; justify-content: flex-start; } }
+.daynav a { border-radius: 4px; }
+@media (max-width: 640px) { .story .wrow { grid-template-columns: 1fr; padding-inline: 14px; } .story .wk:empty { display: none; } }
 .flags { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .tag { font-size: .72rem; border: 1px solid var(--line); border-radius: 3px; padding: 0 6px; color: var(--muted); white-space: nowrap; }
 .tag.ink { border-color: var(--ink); color: var(--ink); }
@@ -185,7 +190,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 /* phone: tighter cards */
 @media (max-width: 760px) {
   .wrap { gap: 14px; padding-block: 14px 36px; }
-  h1 { font-size: 2rem; }
   .day > .hd { padding: 10px 14px 8px; }
   .day .when { font-size: 1.25rem; }
   .big { font-size: 1.25rem; }
@@ -200,31 +204,17 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 <body>
 <div class="wrap">
   <header class="top">
-    <div style="display:grid;gap:4px">
-      <span class="eyebrow">SoCal launches · 7-day outlook</span>
-      <h1>Flying <em>Radar</em></h1>
-    </div>
+    <h1>Flying Radar <span class="sub">SoCal · 7 days</span></h1>
     <div class="fresh">
-      <div id="fresh" style="display:grid;gap:1px"></div>
-      <div class="acts">
-        <button type="button" id="reload">Reload data</button>
-        <a id="runNow" href="#" target="_blank" rel="noopener" hidden title="Opens GitHub, where you press Run workflow">Update now on GitHub</a>
-      </div>
+      <span id="fresh"></span>
+      <button type="button" id="reload">Reload</button>
+      <a id="runNow" href="#" target="_blank" rel="noopener" hidden title="Opens GitHub, where you press Run workflow">Update</a>
     </div>
   </header>
 
   <div id="warn"></div>
-  <section class="story" id="story" aria-label="Weather story"></section>
+  <section class="story day" id="story" aria-label="Weather" style="--qc: var(--muted)"></section>
 
-  <div class="legend">
-    <span class="chip"><i style="background:var(--q0)"></i>no go</span>
-    <span class="chip"><i style="background:var(--q1)"></i>marginal</span>
-    <span class="chip"><i style="background:var(--q2)"></i>3.5+ local</span>
-    <span class="chip"><i style="background:var(--q3)"></i>5+ good</span>
-    <span class="chip"><i style="background:var(--q4)"></i>6.5+ XC</span>
-    <span class="chip"><i style="background:var(--q5)"></i>8+ big XC</span>
-    <span>· tap a site for details</span>
-  </div>
 
   <nav class="daynav" id="daynav" aria-label="Jump to day"></nav>
   <div class="days" id="days"><div class="empty">Loading forecast…</div></div>
@@ -237,6 +227,15 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   <details class="fold">
     <summary><h2>How the rating works</h2></summary>
     <div class="how">
+  <div class="legend">
+    <span class="chip"><i style="background:var(--q0)"></i>no go</span>
+    <span class="chip"><i style="background:var(--q1)"></i>marginal</span>
+    <span class="chip"><i style="background:var(--q2)"></i>3.5+ local</span>
+    <span class="chip"><i style="background:var(--q3)"></i>5+ good</span>
+    <span class="chip"><i style="background:var(--q4)"></i>6.5+ XC</span>
+    <span class="chip"><i style="background:var(--q5)"></i>8+ big XC</span>
+  </div>
+
       <p><b>0–10 scale.</b> A nice local day is about 3.5–5 (green). XC days start at 6: about 6 is a short XC, 7–8 a solid one, 9 a big day. The rating is the median of the regular models (HRRR, NAM, GFS, ECMWF, ICON); the ensembles give the spread behind the flyable and XC chances.</p>
       <p><b>Lift height and wind decide most days.</b> Thermal strength (W*) comes from the sunshine and the depth of the mixed layer. A paraglider can only use the part of that layer where thermals beat its sink rate (the idea behind Soaring Predictor's Hcrit), so the usable top is about half the layer on weak days and most of it on strong ones, and never above cloudbase. Launch wind has to fit the site; wind aloft counts by strength and direction. Only real rain or storms are a no-go.</p>
       <p><b>Sites:</b> Elsinore and Laguna/Horse are rated as convergence sites, so any strong wind aloft hurts. Torrey is rated on ridge wind, but a cold-air day with thermals above the cliffs is flagged as a Thermal day. Glass-off is the last two hours before sunset.</p>
@@ -284,7 +283,7 @@ const setTheme = (t) => {
   if (t === "auto") document.documentElement.removeAttribute("data-theme"); else document.documentElement.setAttribute("data-theme", t);
   document.querySelectorAll("#theme button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.t === t)));
 };
-let saved = "auto"; try { saved = localStorage.getItem("radar-theme") || "auto"; } catch (e) {}
+let saved = "light"; try { saved = localStorage.getItem("radar-theme") || "light"; } catch (e) {}   // light by default; switch at the bottom of the page
 setTheme(saved);
 $("#theme").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) setTheme(b.dataset.t); });
 
@@ -309,8 +308,7 @@ function render(data) {
   /* freshness */
   const src = data.sources || [];
   const okN = src.filter((s) => s.status !== "failed").length;
-  $("#fresh").innerHTML = `<span class="eyebrow">Processed</span><b>${fmtWhen(data.generated)}</b>
-    <span class="muted">${ago(data.generated)} · ${okN} of ${src.length} sources · <a href="#sources">details</a></span>`;
+  $("#fresh").innerHTML = `Updated ${fmtWhen(data.generated)} · <a href="#sources">${okN}/${src.length} sources</a>`;
   $("#procAt").textContent = `processed ${fmtWhen(data.generated)}`;
   const ageH = (Date.now() - new Date(data.generated)) / 3600000, warn = [];
   if (data.sample) warn.push("This page shows <b>sample data</b> to demonstrate the layout. Real forecasts appear after the GitHub Action runs.");
@@ -324,11 +322,12 @@ function render(data) {
   const sm = n && n.summary && ((n.summary.pattern || []).length || (n.summary.flying || []).length) ? n.summary : null;
   const bl = (n && (n.bullets && n.bullets.length ? n.bullets : [n.synopsis].filter(Boolean))) || [];
   const group = (title, items) => items && items.length ? `<div class="grp"><span class="eyebrow">${title}</span><ul>${items.map((b) => `<li>${esc(b)}</li>`).join("")}</ul></div>` : "";
+  const lines = (title, items) => (items || []).map((b, k) => `<div class="wrow"><span class="wk">${k === 0 ? title : ""}</span><span>${esc(b)}</span></div>`).join("");
   $("#story").innerHTML = n ? `
-    <div class="row1"><span class="eyebrow">Weather · NWS San Diego · ${fmtWhen(n.issued)}</span>
-      ${(n.flags || []).map((f) => `<span class="tag ink">${esc(f)}</span>`).join("")}
-      <a href="${esc(n.url)}" target="_blank" rel="noopener" class="muted" style="font-size:.78rem">full discussion</a></div>
-    ${sm ? `<div class="grps">${group("Pattern", sm.pattern)}${group("For flying", sm.flying)}</div>` : `<ul>${bl.map((b) => `<li>${esc(b)}</li>`).join("")}</ul>`}` : '<span class="muted">NWS discussion not available on the last run.</span>';
+    <div class="hd"><span class="when">Weather <small><a href="${esc(n.url)}" target="_blank" rel="noopener">NWS San Diego</a> · ${fmtWhen(n.issued)}</small></span>
+      <span class="flags">${(n.flags || []).map((f) => `<span class="tag">${esc(f)}</span>`).join("")}</span></div>
+    <div class="wlist">${sm ? lines("Pattern", sm.pattern) + lines("For flying", sm.flying) : lines("Outlook", bl)}</div>`
+    : '<div class="hd"><span class="when">Weather <small>NWS discussion not available on the last run</small></span></div>';
 
   /* day cards */
   $("#days").innerHTML = data.days.map((d, i) => {
@@ -442,10 +441,10 @@ function load() {
   return fetch(`data/forecast.json?t=${Date.now()}`, { cache: "no-store" })
     .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then((d) => { const same = lastGen === d.generated; lastGen = d.generated; render(d);
-      btn.textContent = same ? "No newer data yet" : "Reload data"; })
-    .catch((e) => { btn.textContent = "Reload data";
+      btn.textContent = same ? "No newer data" : "Reload"; })
+    .catch((e) => { btn.textContent = "Reload";
       $("#days").innerHTML = `<div class="empty">Couldn't load data/forecast.json (${esc(e.message)}). Has the GitHub Action run yet?</div>`; })
-    .finally(() => { btn.disabled = false; setTimeout(() => { btn.textContent = "Reload data"; }, 4000); });
+    .finally(() => { btn.disabled = false; setTimeout(() => { btn.textContent = "Reload"; }, 4000); });
 }
 const seed = $("#seed").textContent.trim();
 if (seed) { render(JSON.parse(seed)); $("#reload").hidden = true; }
