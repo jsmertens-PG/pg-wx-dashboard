@@ -25,7 +25,6 @@ The repo ships with sample data, so the page works from the first upload. A bann
 | NAM (3 km, 60 h) | Open-Meteo | Today and tomorrow, cross-check |
 | GFS, ECMWF IFS, ICON | Open-Meteo | Days 1–7 |
 | GFS, ECMWF and ICON ensembles (~120 runs) | Open-Meteo ensemble API | The "flyable %" and XC chance |
-| Soaring Predictor summary tables (South Cal, Santa Barbara) | soaringpredictor.info | Reference ceiling for the next 3 days (▼ on the thermal-height bar) |
 | NWS San Diego forecast discussion | api.weather.gov | Flags (showers, thunderstorms, offshore, wind advisory) and synopsis |
 
 All of these are free and need no keys. Soaring Predictor, XC Skies and the Holfuy stations need logins or paid keys, so the page links to them under "Check by hand".
