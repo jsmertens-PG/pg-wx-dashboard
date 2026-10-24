@@ -78,9 +78,9 @@ details.fold > :not(summary) { margin-top: 10px; }
 .xcmark { font-family: var(--font-body); font-weight: 600; font-size: .66rem; letter-spacing: .06em; background: var(--ink); color: var(--bg); padding: 1px 5px; border-radius: 3px; }
 
 /* day cards */
-.days { display: grid; gap: 14px; }
-.day { border: 1px solid var(--line); border-left: 4px solid var(--qc); background: color-mix(in srgb, var(--qc) 3%, var(--surface)); display: grid; scroll-margin-top: 12px; }
-.day > .hd { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 18px; align-items: baseline; padding: 12px 16px 10px; border-bottom: 1px solid var(--line); }
+.days { display: grid; gap: 18px; }
+.day { border: 2px solid color-mix(in srgb, var(--ink) 75%, transparent); border-left: 6px solid var(--qc); border-radius: 4px; overflow: hidden; background: var(--surface); display: grid; scroll-margin-top: 12px; }
+.day > .hd { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 18px; align-items: baseline; padding: 12px 18px 10px; background: color-mix(in srgb, var(--qc) 14%, var(--surface)); border-bottom: 1px solid color-mix(in srgb, var(--qc) 35%, var(--line)); }
 .day .when { font-family: var(--font-body); font-weight: 600; font-size: 1.15rem; white-space: nowrap; }
 .day .when small { font-weight: 400; font-size: .85rem; color: var(--muted); margin-left: 8px; }
 .day .headline { margin: 0; font-size: .9rem; }
