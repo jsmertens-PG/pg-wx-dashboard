@@ -1,11 +1,17 @@
 name: probe (temporary)
 on: workflow_dispatch
+permissions:
+  contents: write
 jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          curl -sSL -A "Mozilla/5.0" https://www.soaringpredictor.info/windgram/windmain.htm -o w.htm
-          echo "=== size"; wc -c w.htm
-          echo "=== links"; grep -o -i -E '(href|src|value)="[^"]*"' w.htm | sort -u
-          echo "=== scripts"; grep -i -E -A3 '<script|<select|<iframe|North:|South:' w.htm | head -200
+          mkdir out && cd out
+          curl -sSL -A "Mozilla/5.0" https://www.soaringpredictor.info/windgram/windmain.htm -o windmain.htm
+          for u in $(grep -o -i -E '(href|src)="[^"]*"' windmain.htm | sed -E 's/^[^"]*"//;s/"$//' | grep -i -E '\.(htm|html|js|txt|csv|json)$' | grep -v -i -E '^(https?:)?//(ww2010|keisan|www\.crh|www\.statcounter)' | sort -u | head -40); do
+            f=$(echo "$u" | tr '/:?&' '____'); curl -sSL -A "Mozilla/5.0" "https://www.soaringpredictor.info/windgram/$u" -o "sub_$f" || true
+          done
+          ls -la
+          git init -q && git checkout -q -b probe && git add . && git -c user.name=probe -c user.email=probe@x commit -qm probe
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" probe
