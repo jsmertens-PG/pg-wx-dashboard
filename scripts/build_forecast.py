@@ -626,9 +626,13 @@ def score_hour(site, hr, i, levels, elev_m):
     # (the idea behind RASP's Hcrit): weak days use about half of it, strong days most of it
     k = clamp(0.4 + 0.2 * (wstar - 1.0), 0.3, 0.8)
     usable = z0 + zi * k
+    # the best thermal of the hour gets higher than the average usable top
+    # (calibrated on one flight: LB 2026-10-24, 3,200 ft at noon vs ~2,300 ft usable in HRRR)
+    peak_top = z0 + zi * clamp(k + 0.25, 0.55, 0.95)
     base = z0 + 125 * max(0.0, t2 - td) if td is not None else None
     if base is not None:
         usable = min(usable, base)
+        peak_top = min(peak_top, base)
     agl = usable - launch_m
 
     # launch wind: 10 m wind for low sites, profile wind for high launches
@@ -709,14 +713,14 @@ def score_hour(site, hr, i, levels, elev_m):
     # a convergence line needs real flow meeting at the site, not near-calm air
     conv_ok = site["kind"] != "convergence" or (lw_mph is not None and lw_mph >= site["wind_mph"][0] and on)
     if site.get("xc_top_ft") and coast_ok and conv_ok and q >= 0.5 and pr < 0.3 and not bad_dir and wstar >= 1.2:
-        over = usable * FT - site["xc_top_ft"]
+        over = (usable if site["kind"] == "ridge" else peak_top) * FT - site["xc_top_ft"]
         if over >= 0:
             wind_f = 1.0 if a_max is None or a_max <= site["aloft_max_kt"] - 3 else 0.8
             xc_s = (0.35 + 0.65 * clamp(over / site.get("xc_span_ft", 1500))) * wind_f * clamp(wstar / 2.0, 0.6, 1.0)
     glass = (on is True and lw_mph is not None and 3 <= lw_mph <= 13 and pr < 0.05 and cape < 500
              and not bad_dir and (a_max is None or a_max <= site["aloft_max_kt"]))
     return {"q": q, "xc_s": xc_s, "glass": glass, "cold": cold_aloft, "good_launch": bool(good_launch), "launch": launch,
-            "usable": usable, "base": base, "agl": agl, "wstar": wstar, "climb": max(0.0, wstar - SINK + 0.3),
+            "usable": usable, "peak_top": peak_top, "base": base, "agl": agl, "wstar": wstar, "climb": max(0.0, wstar - SINK + 0.3),
             "lw": lw_mph, "ld": ld, "lg": lg_mph, "a_max": a_max, "tw": (tw_dir, tw_spd) if tw_spd is not None else None, "a_spd": a_spd, "a_dir": a_dir,
             "pr": pr, "cape": cape, "codes": codes}
 
@@ -786,7 +790,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
             xc_now = True
     else:
         def hour_r(sc, allow_xc):
-            lv = ceil_level(site, sc["usable"] * FT)
+            lv = ceil_level(site, sc["peak_top"] * FT)
             if not (allow_xc and sc["xc_s"] > 0):
                 lv = min(lv, 3.5)
             return 1.0 + (lv - 1.0) * clamp(sc["q"] / 0.6)
@@ -794,26 +798,28 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
             conv = [(h, sc) for h, sc in win if sc["xc_s"] > 0]
             if conv:
                 best_h, sc = max(conv, key=lambda x: hour_r(x[1], True))
-                rating, peak, xc_now = max(3.0, hour_r(sc, True)), sc["usable"], True
+                rating, peak, xc_now = max(3.0, hour_r(sc, True)), sc["peak_top"], True
             else:
                 rating = min(2.0, 1.0 + local)
                 if win:
                     best_h, sc = max(win, key=lambda x: x[1]["q"])
-                    peak = sc["usable"]
+                    peak = sc["peak_top"]
         elif win:
             n = min(1 if style == "window" else 2, len(win))
             scored = [(h, hour_r(sc, True), sc) for h, sc in win]
             best = max(range(len(scored) - n + 1), key=lambda k: sum(x[1] for x in scored[k:k + n]))
             rating = sum(x[1] for x in scored[best:best + n]) / n
             best_h, _r, sc = max(scored[best:best + n], key=lambda x: x[1])
-            peak = sc["usable"]
+            peak = sc["peak_top"]
             xc_now = sc["xc_s"] > 0 and rating >= 3.75
         if style != "convergence":
-            glass_r = 3.0 if glass_ok else (2.0 if glass_hours else 1.0)
+            gw = [x["lw"] for h, x in gwin if h in glass_hours and x["lw"] is not None]
+            good_glass = glass_ok and len(gw) >= 2 and all(6 <= w <= 12 for w in gw)
+            glass_r = 3.0 if good_glass else (2.4 if glass_ok else (1.8 if glass_hours else 1.0))
             if glass_r > rating:
                 rating = glass_r
-    glass_led = style != "ridge" and style != "convergence" and glass_ok and rating <= 3.05 and (
-        not win or max(1.0 + (min(ceil_level(site, sc["usable"] * FT), 3.5) - 1.0) * clamp(sc["q"] / 0.6) for _, sc in win) < 2.8)
+    glass_led = style != "ridge" and style != "convergence" and glass_ok and rating <= 3.05 and rating >= 2.0 and (
+        not win or max(1.0 + (min(ceil_level(site, sc["peak_top"] * FT), 3.5) - 1.0) * clamp(sc["q"] / 0.6) for _, sc in win) < 2.8)
     if style == "ridge":
         label = "Thermal day" if xc_now else ("Ridge soaring" if local >= 0.5 else ("Marginal" if rating >= 1.6 else "No go"))
     elif xc_now and rating >= 3.75:
