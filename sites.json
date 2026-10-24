@@ -23,8 +23,8 @@
         10,
         130
       ],
-      "xc_top_ft": 3800,
-      "xc_span_ft": 2500,
+      "xc_top_ft": 3200,
+      "xc_span_ft": 1500,
       "routes": [
         {
           "to": 30,
@@ -32,7 +32,7 @@
         },
         {
           "to": 75,
-          "text": "east to Woodson / Ramona (watch Ramona airspace)"
+          "text": "east to Woodson / Ramona"
         },
         {
           "to": 5,
@@ -46,7 +46,7 @@
           "why": "Miramar airspace and the coast"
         }
       ],
-      "note": "Best post-frontal site in the county. West-facing: offshore mornings put launch in the lee. Glass-off common late in the day."
+      "note": "Best post-frontal site in the county. West-facing, so offshore mornings are over the back."
     },
     {
       "id": "blossom",
@@ -70,8 +70,8 @@
         10,
         130
       ],
-      "xc_top_ft": 5000,
-      "xc_span_ft": 3000,
+      "xc_top_ft": 4200,
+      "xc_span_ft": 1800,
       "routes": [
         {
           "to": 45,
@@ -89,7 +89,7 @@
           "why": "El Cajon / Gillespie / Miramar airspace"
         }
       ],
-      "note": "Inland thermal site; strong midday air in summer."
+      "note": "Inland thermal site; often lines up with Elsinore."
     },
     {
       "id": "elsinore",
@@ -113,8 +113,8 @@
         230,
         320
       ],
-      "xc_top_ft": 6000,
-      "xc_span_ft": 3000,
+      "xc_top_ft": 5000,
+      "xc_span_ft": 2500,
       "routes": [
         {
           "to": 140,
@@ -130,7 +130,7 @@
         }
       ],
       "blocked": [],
-      "note": "East-facing over the lake. A strong west wind over the ridge means rotor; the sea-breeze convergence line is the XC engine. Evening glass-off over the lake."
+      "note": "East-facing over the lake; its own animal. The sea-breeze convergence line is the XC engine."
     },
     {
       "id": "torrey",
@@ -154,7 +154,7 @@
         0,
         160
       ],
-      "xc_top_ft": 1300,
+      "xc_top_ft": 1200,
       "routes": [
         {
           "to": 160,
@@ -172,8 +172,8 @@
           "why": "the ocean"
         }
       ],
-      "note": "Mostly a wind site: steady W to WNW sea breeze. On rare thermal days you get well above the cliffs (1,200 ft+); the radar flags those as a Thermal day.",
-      "xc_span_ft": 1500
+      "note": "Ridge soaring in a steady W to WNW sea breeze. Rare thermal days (1,200 ft+) are flagged as a Thermal day.",
+      "xc_span_ft": 1000
     },
     {
       "id": "lagunahorse",
@@ -197,8 +197,8 @@
         320,
         160
       ],
-      "xc_top_ft": 9500,
-      "xc_span_ft": 3000,
+      "xc_top_ft": 8000,
+      "xc_span_ft": 2500,
       "routes": [
         {
           "to": 330,
@@ -216,7 +216,7 @@
           "why": "the border and the desert"
         }
       ],
-      "note": "Needs a real sea-breeze convergence: onshore SW at launch and no north or east wind aloft. Watch desert-slope wind advisories."
+      "note": "Mountain convergence: needs onshore SW at launch and no north or east wind aloft."
     },
     {
       "id": "marshall",
@@ -240,8 +240,8 @@
         320,
         110
       ],
-      "xc_top_ft": 8000,
-      "xc_span_ft": 3000,
+      "xc_top_ft": 7000,
+      "xc_span_ft": 2500,
       "routes": [
         {
           "to": 100,
@@ -283,8 +283,8 @@
         10,
         130
       ],
-      "xc_top_ft": 5000,
-      "xc_span_ft": 3000,
+      "xc_top_ft": 4500,
+      "xc_span_ft": 1800,
       "routes": [
         {
           "to": 40,
@@ -298,7 +298,7 @@
           "why": "the border"
         }
       ],
-      "note": "Near the border; XC only north and east."
+      "note": "Near the border; XC goes north and east."
     },
     {
       "id": "soboba",
@@ -322,8 +322,8 @@
         320,
         120
       ],
-      "xc_top_ft": 7000,
-      "xc_span_ft": 3000,
+      "xc_top_ft": 6000,
+      "xc_span_ft": 2500,
       "routes": [
         {
           "to": 120,
@@ -335,7 +335,7 @@
         }
       ],
       "blocked": [],
-      "note": "Commercial flight park on the San Jacinto front."
+      "note": "Flight park on the San Jacinto front."
     }
   ]
 }

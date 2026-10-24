@@ -59,15 +59,17 @@ header.top { display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: end; j
 .banner { border: 1px solid var(--line); border-left: 3px solid var(--q0); padding: 9px 14px; font-size: .88rem; display: grid; gap: 4px; }
 
 /* weather story */
-.story { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px 28px; }
-@media (max-width: 800px) { .story { grid-template-columns: 1fr; } }
-.story .syn { margin: 0; font-size: 1.02rem; max-width: 70ch; }
-.story ul { margin: 0; padding-left: 1.1em; display: grid; gap: 4px; font-size: .9rem; }
+.story { display: grid; gap: 8px; max-width: 90ch; }
+.story .row1 { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+.story ul { margin: 0; padding-left: 1.1em; display: grid; gap: 2px; font-size: .92rem; }
 .flags { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .tag { font-size: .64rem; text-transform: uppercase; letter-spacing: .12em; border: 1px solid var(--line); padding: 2px 7px; color: var(--muted); white-space: nowrap; }
 .tag.ink { border-color: var(--ink); color: var(--ink); }
-.story details summary { cursor: pointer; color: var(--muted); font-size: .8rem; }
-.story details p { margin: 6px 0 0; font-size: .84rem; }
+details.fold > summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: baseline; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+details.fold > summary::-webkit-details-marker { display: none; }
+details.fold > summary h2::after { content: " +"; color: var(--muted); font-family: var(--font-data); font-size: .9rem; }
+details.fold[open] > summary h2::after { content: " −"; }
+details.fold > :not(summary) { margin-top: 10px; }
 
 .chip { display: inline-flex; align-items: center; gap: 4px; font-family: var(--font-data); font-size: .78rem; }
 .chip i { width: 10px; height: 10px; display: inline-block; }
@@ -95,8 +97,6 @@ header.top { display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: end; j
 .label { display: inline-flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 .lab { font-size: .7rem; text-transform: uppercase; letter-spacing: .12em; font-weight: 600; }
 .note { font-size: .86rem; margin: 0; }
-.kv { display: flex; flex-wrap: wrap; gap: 2px 14px; font-family: var(--font-data); font-size: .74rem; color: var(--muted); }
-.kv b { color: var(--ink); font-weight: 400; }
 
 /* 0-10 bar with flyable (3.5) and XC (6) marks */
 .bar { height: 10px; background: var(--sunk); position: relative; display: block; }
@@ -116,17 +116,14 @@ header.top { display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: end; j
 .mini .note { font-size: .74rem; color: var(--muted); }
 
 .det { border-top: 1px solid var(--ink); padding: 12px 16px 14px; display: grid; gap: 10px; font-size: .84rem; background: var(--surface); }
-.det .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 6px 14px; }
-.det .grid span { display: grid; }
-.det .grid small { color: var(--muted); font-size: .66rem; text-transform: uppercase; letter-spacing: .1em; }
-.det .grid b { font-family: var(--font-data); font-weight: 400; }
-.hours { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 2px; max-width: 640px; }
-.hours div { display: grid; gap: 2px; text-align: center; font-family: var(--font-data); font-size: .62rem; color: var(--muted); }
-.hours i { display: block; height: 16px; position: relative; }
-.hours i.x::after { content: "XC"; position: absolute; inset: 0; color: var(--bg); font-size: .55rem; font-weight: 600; line-height: 16px; }
-.models { display: flex; flex-wrap: wrap; gap: 4px 14px; font-family: var(--font-data); font-size: .74rem; color: var(--muted); }
-.models b { font-weight: 400; }
-.day .ft { padding: 6px 16px 8px; font-size: .72rem; color: var(--muted); border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.factors { display: grid; gap: 8px; max-width: 720px; }
+.factor { display: grid; grid-template-columns: 130px minmax(0, 1fr) 110px; gap: 4px 14px; align-items: center; }
+.factor .fk { font-size: .8rem; }
+.factor .fv { font-family: var(--font-data); font-size: .82rem; text-align: right; white-space: nowrap; }
+.factor .fs { grid-column: 2 / -1; font-size: .72rem; color: var(--muted); margin-top: -2px; }
+.factor .fbar { height: 8px; background: var(--sunk); position: relative; }
+.factor .fbar i { position: absolute; inset: 0 auto 0 0; display: block; }
+@media (max-width: 560px) { .factor { grid-template-columns: 100px minmax(0, 1fr) 84px; gap: 2px 10px; } }
 
 .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .76rem; color: var(--muted); align-items: center; }
 .legend .chip i { width: 18px; height: 8px; }
@@ -170,32 +167,31 @@ footer button[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset
   <section class="story" id="story" aria-label="Weather story"></section>
 
   <div class="legend">
-    <span class="chip"><i style="background:var(--q0)"></i>0–2 no go</span>
-    <span class="chip"><i style="background:var(--q1)"></i>2–3.5 marginal</span>
-    <span class="chip"><i style="background:var(--q2)"></i>3.5–5 nice local</span>
-    <span class="chip"><i style="background:var(--q3)"></i>5–6.5 good</span>
-    <span class="chip"><i style="background:var(--q4)"></i>6.5–8 XC</span>
+    <span class="chip"><i style="background:var(--q0)"></i>no go</span>
+    <span class="chip"><i style="background:var(--q1)"></i>marginal</span>
+    <span class="chip"><i style="background:var(--q2)"></i>3.5+ local</span>
+    <span class="chip"><i style="background:var(--q3)"></i>5+ good</span>
+    <span class="chip"><i style="background:var(--q4)"></i>6.5+ XC</span>
     <span class="chip"><i style="background:var(--q5)"></i>8+ big XC</span>
-    <span>Bar ticks mark 3.5 (flyable) and 6 (XC). Tap a site for details.</span>
+    <span>· tap a site for details</span>
   </div>
 
   <div class="days" id="days"><div class="empty">Loading forecast…</div></div>
 
-  <section class="panel" id="sources">
-    <header><h2>Sources &amp; freshness</h2><span class="muted mono" id="procAt"></span></header>
+  <details class="fold" id="sources">
+    <summary><h2>Sources &amp; freshness</h2><span class="muted mono" id="procAt"></span></summary>
     <div class="tablewrap"><table class="src" id="tSrc"></table></div>
-  </section>
+  </details>
 
-  <section class="panel">
-    <header><h2>How the rating works</h2></header>
+  <details class="fold">
+    <summary><h2>How the rating works</h2></summary>
     <div class="how">
-      <p><b>0–10 scale.</b> A nice local thermal or glass-off day rates about 3.5–5 (green). XC days start at 6: about 6 is a short or low XC, 7–8 a solid one, 9 a big day. The rating blends the median of five models (HRRR, NAM, GFS, ECMWF, ICON) with the average of about 120 ensemble runs.</p>
-      <p><b>Each hour, 9 am to 6 pm,</b> is checked for rain and storms, wind direction and strength on launch, wind aloft (both strength and direction, because north or east wind aloft kills most of these sites), and how high a dry thermal from the surface gets before it meets the temperature profile or cloudbase.</p>
-      <p><b>Altitude and wind matter most.</b> Only real rain or storms are a no-go; scattered light showers cost a little. Elsinore and Laguna/Horse are rated as convergence sites, so strong wind aloft from any direction counts against them. Torrey is rated on ridge wind, but a day with thermals well above the cliffs is flagged as a Thermal day.</p>
-      <p><b>Labels:</b> XC, Thermal day (Torrey), Thermal (local), Glass-off (smooth onshore flow from 4 pm on), Ridge soaring (Torrey), Marginal, No go. Tags add post-frontal (rain earlier or cold air aloft) and later glass-off. XC notes suggest a direction from the drift and each site's routes, and warn when the drift heads into airspace or the border.</p>
-      <p>Limits for each site are in <span class="mono">sites.json</span>. They are starting values to tune against real days.</p>
+      <p><b>0–10 scale.</b> A nice local day is about 3.5–5 (green). XC days start at 6: about 6 is a short XC, 7–8 a solid one, 9 a big day. The rating is the median of the regular models (HRRR, NAM, GFS, ECMWF, ICON); the ensembles give the spread behind the flyable and XC chances.</p>
+      <p><b>Lift height and wind decide most days.</b> Thermal strength (W*) comes from the sunshine and the depth of the mixed layer. A paraglider can only use the part of that layer where thermals beat its sink rate (the idea behind Soaring Predictor's Hcrit), so the usable top is about half the layer on weak days and most of it on strong ones, and never above cloudbase. Launch wind has to fit the site; wind aloft counts by strength and direction. Only real rain or storms are a no-go.</p>
+      <p><b>Sites:</b> Elsinore and Laguna/Horse are rated as convergence sites, so any strong wind aloft hurts. Torrey is rated on ridge wind, but a cold-air day with thermals above the cliffs is flagged as a Thermal day. Glass-off is the last two hours before sunset.</p>
+      <p>Limits for each site are in <span class="mono">sites.json</span>, to tune against real days.</p>
     </div>
-  </section>
+  </details>
 
   <footer>
     <span id="foot"></span>
@@ -272,18 +268,12 @@ function render(data) {
 
   /* weather story from the NWS discussion */
   const n = data.nws;
+  const bl = (n && (n.bullets && n.bullets.length ? n.bullets : [n.synopsis].filter(Boolean))) || [];
   $("#story").innerHTML = n ? `
-    <div style="display:grid;gap:8px;min-width:0">
-      <span class="eyebrow">Weather story · NWS San Diego · ${fmtWhen(n.issued)}</span>
-      <p class="syn">${esc(n.synopsis || "No synopsis in the latest discussion.")}</p>
-      <div class="flags">${(n.flags || []).map((f) => `<span class="tag ink">${esc(f)}</span>`).join("") || '<span class="tag">nothing flagged</span>'}</div>
-    </div>
-    <div style="display:grid;gap:8px;align-content:start;min-width:0">
-      <span class="eyebrow">Systems</span>
-      ${(n.systems || []).length ? `<ul>${n.systems.map((s) => `<li>${esc(s)}</li>`).join("")}</ul>` : '<span class="muted">No system details found.</span>'}
-      <details><summary>Aviation and advisories</summary>${n.aviation ? `<p>${esc(n.aviation)}</p>` : ""}${n.advisories ? `<p class="mono">${esc(n.advisories)}</p>` : ""}
-        <p><a href="${esc(n.url)}" target="_blank" rel="noopener">Full discussion</a></p></details>
-    </div>` : '<span class="muted">NWS discussion not available on the last run.</span>';
+    <div class="row1"><span class="eyebrow">Weather · NWS San Diego · ${fmtWhen(n.issued)}</span>
+      ${(n.flags || []).map((f) => `<span class="tag ink">${esc(f)}</span>`).join("")}
+      <a href="${esc(n.url)}" target="_blank" rel="noopener" class="muted" style="font-size:.78rem">full discussion</a></div>
+    <ul>${bl.map((b) => `<li>${esc(b)}</li>`).join("")}</ul>` : '<span class="muted">NWS discussion not available on the last run.</span>';
 
   /* day cards */
   $("#days").innerHTML = data.days.map((d, i) => {
@@ -300,8 +290,6 @@ function render(data) {
       ${coast.map((s) => rowPanel(d, s, i)).join("")}
       <div class="others">${other.map((s) => miniPanel(d, s, i)).join("")}</div>
       <div class="det" id="det-${i}" hidden></div>
-      <div class="ft"><span>${bm ? `${esc(BY[d.best_main]?.short || "")}: ${bm.agree === "split" ? "models split, treat as uncertain" : bm.agree === "mixed" ? "models partly agree" : "models agree"}` : ""}</span>
-        <span>heights ft MSL · wind mph on launch, kt aloft</span></div>
     </article>`;
   }).join("") || '<div class="empty">No forecast days in the data.</div>';
 
@@ -337,7 +325,6 @@ function mainPanel(d, s, i) {
     ${bar(c.rating)}
     ${labelHtml(c)}
     <span class="note">${esc(c.note)}</span>
-    <span class="kv"><span>top <b>${ft(c.top_ft)}</b></span><span>base <b>${ft(c.base_ft)}</b></span><span>launch <b>${esc(c.wind ?? "–")}</b></span><span>aloft <b>${esc(c.aloft ?? "–")}</b></span></span>
   </button>`;
 }
 function rowPanel(d, s, i) {
@@ -360,28 +347,18 @@ function miniPanel(d, s, i) {
 
 function detail(d, s) {
   const c = d.sites[s.id];
-  const hours = (c.hourly || []).map((h) => {
-    const bg = h.xc ? "var(--q4)" : (h.glass && h.h >= 16) ? "var(--q2)" : `color-mix(in srgb, ${qv(h.q * 5)} ${Math.round(40 + 60 * h.q)}%, var(--sunk))`;
-    return `<div><i class="${h.xc ? "x" : ""}" style="background:${bg}" title="${h.h}:00 · lift ${h.top_ft ? h.top_ft.toLocaleString() + " ft" : "–"} · ${h.lw ?? "–"} mph${h.pr ? " · rain " + h.pr + " mm" : ""}"></i>${h.h > 12 ? h.h - 12 : h.h}</div>`;
-  }).join("");
-  const models = Object.entries(c.models || {}).map(([k, v]) => `<span>${esc(k)} <b style="color:${qv(v)}">${r1(v)}</b></span>`).join("");
+  const fq = (x) => (x >= 0.7 ? "var(--q3)" : x >= 0.4 ? "var(--q1)" : "var(--q0)");
+  const rows = (c.factors || []).map((f) => `<div class="factor">
+      <span class="fk">${esc(f.k)}</span>
+      <span class="fbar"><i style="width:${Math.max(3, Math.round(f.q * 100))}%;background:${fq(f.q)}"></i></span>
+      <span class="fv">${esc(f.v)}</span>
+      ${f.sub ? `<span class="fs">${esc(f.sub)}</span>` : ""}
+    </div>`).join("");
   return `<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline">
       <h3 style="font-size:1.2rem">${esc(s.name)} <span class="muted mono" style="font-size:.85rem">${r1(c.rating)}/10</span></h3>${labelHtml(c)}</div>
-    <p class="note">${esc(c.note)}${c.window ? ` · best window ${esc(c.window)}` : ""}</p>
-    <div class="grid">
-      <span><small>Top of lift</small><b>${ft(c.top_ft)} ft</b></span>
-      <span><small>Cloudbase</small><b>${ft(c.base_ft)} ft</b></span>
-      <span><small>Launch wind</small><b>${esc(c.wind ?? "–")} mph</b></span>
-      <span><small>Drift aloft</small><b>${esc(c.aloft ?? "–")} kt</b></span>
-      <span><small>Max aloft</small><b>${c.aloft_max_kt ?? "–"} kt</b></span>
-      <span><small>Rain 9–6</small><b>${c.rain_mm ?? "–"} mm</b></span>
-      <span><small>CAPE max</small><b>${c.cape ?? "–"}</b></span>
-      <span><small>Flyable runs</small><b>${pct(c.p_fly)}</b></span>
-      <span><small>XC runs</small><b>${pct(c.p_xc)}</b></span>
-    </div>
-    ${hours ? `<div style="display:grid;gap:4px"><span class="eyebrow">Hour by hour · ${esc(c.lead || "")}</span><div class="hours">${hours}</div></div>` : ""}
-    ${models ? `<div class="models"><span>Models:</span>${models}<span>· ${c.n_members || 0} ensemble runs</span></div>` : ""}
-    <span class="muted" style="font-size:.76rem">${esc(s.note || "")}</span>`;
+    <p class="note">${esc(c.note)}</p>
+    <div class="factors">${rows}</div>
+    <span class="muted" style="font-size:.76rem">Chance flyable ${pct(c.p_fly)} · XC ${pct(c.p_xc)}${c.n_members ? ` (${c.n_members} ensemble runs)` : ""}${c.sunset ? ` · sunset ${esc(c.sunset)}` : ""} · ${esc(s.note || "")}</span>`;
 }
 
 /* "Update now" opens the workflow page of this repo (works on <user>.github.io/<repo>/) */
