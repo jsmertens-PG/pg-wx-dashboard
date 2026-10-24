@@ -145,6 +145,42 @@ td.mono { font-family: var(--font-data); }
 footer { border-top: 1px solid var(--ink); padding-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; font-size: .78rem; color: var(--muted); }
 footer .presets { display: flex; gap: 6px; }
 footer button[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+/* sticky day buttons (phone and desktop) */
+.daynav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--bg); display: flex; gap: 6px; overflow-x: auto; padding: 8px 0; border-bottom: 1px solid var(--line); scrollbar-width: none; }
+.daynav::-webkit-scrollbar { display: none; }
+.daynav a { flex: 0 0 auto; text-decoration: none; display: grid; justify-items: center; gap: 1px; min-width: 54px; padding: 5px 8px; border: 1px solid var(--line); border-bottom: 4px solid var(--qc); background: var(--surface); }
+.daynav a b { font-weight: 500; font-size: .8rem; }
+.daynav a span { font-family: var(--font-data); font-size: .72rem; color: var(--muted); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); }
+.day { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 74px); }
+
+/* bottom sheet for site details on phones */
+.scrim { position: fixed; inset: 0; z-index: 40; background: color-mix(in srgb, var(--ink) 35%, transparent); }
+.sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 41; max-height: 82vh; overflow-y: auto; background: var(--surface); border-top: 2px solid var(--ink);
+  padding: 8px max(16px, env(safe-area-inset-right, 0px)) calc(18px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  display: grid; gap: 10px; font-size: .86rem; box-shadow: 0 -8px 24px color-mix(in srgb, var(--ink) 18%, transparent); }
+.sheet .grab { justify-self: center; width: 44px; height: 4px; background: var(--line); border-radius: 2px; }
+.sheet .close { position: absolute; top: 6px; right: max(10px, env(safe-area-inset-right, 0px)); min-height: 36px; min-width: 36px; padding: 0; font-size: 1.1rem; }
+.sheet .when { font-size: .74rem; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; }
+@media (prefers-reduced-motion: no-preference) { .sheet { animation: up .18s ease-out; } @keyframes up { from { transform: translateY(30%); opacity: .4; } } }
+
+/* phone: tighter cards */
+@media (max-width: 760px) {
+  .wrap { gap: 14px; padding-block: 14px 36px; }
+  h1 { font-size: 2rem; }
+  .day > .hd { padding: 10px 14px 8px; }
+  .day .when { font-size: 1.25rem; }
+  .big { font-size: 1.25rem; }
+  .main { padding: 8px 14px; gap: 4px; }
+  .main .nm { font-size: 1.1rem; }
+  .main .big { font-size: 1.1rem !important; }
+  .row { padding: 7px 14px; }
+  .mini { padding: 7px 14px; }
+  .note { font-size: .82rem; }
+  .legend { display: none; }
+  .main .label { column-gap: 8px; }
+  .factor { grid-template-columns: 96px minmax(0, 1fr) 80px; }
+}
 .empty { padding: 30px; border: 1px dashed var(--ink); text-align: center; }
 </style>
 </head>
@@ -177,6 +213,7 @@ footer button[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset
     <span>· tap a site for details</span>
   </div>
 
+  <nav class="daynav" id="daynav" aria-label="Jump to day"></nav>
   <div class="days" id="days"><div class="empty">Loading forecast…</div></div>
 
   <details class="fold" id="sources">
@@ -204,6 +241,8 @@ footer button[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset
   </footer>
 </div>
 
+<div class="scrim" id="scrim" hidden></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Site details" hidden></div>
 <script id="seed" type="application/json"></script>
 <script>
 (() => {
@@ -296,9 +335,17 @@ function render(data) {
     </article>`;
   }).join("") || '<div class="empty">No forecast days in the data.</div>';
 
+  $("#daynav").innerHTML = data.days.map((d, i) => {
+    const L = dayLabel(d.date), bm = d.sites[d.best_main] || d.sites[d.best];
+    const tint = Math.max(...main.map((s) => d.sites[s.id]?.rating ?? 0));
+    const xc = main.some((s) => d.sites[s.id]?.xc);
+    return `<a href="#day-${i}" style="--qc:${qv(tint)}"><b>${esc(L.short)}</b><span>${r1(bm?.rating)}${xc ? " XC" : ""}</span></a>`;
+  }).join("");
+
   $("#days").onclick = (e) => {
     const b = e.target.closest("[data-site]"); if (!b) return;
     const card = b.closest(".day"), i = b.dataset.day, det = $(`#det-${i}`);
+    if (window.matchMedia("(max-width: 760px)").matches) { openSheet(data.days[i], BY[b.dataset.site]); return; }
     const wasOpen = b.getAttribute("aria-expanded") === "true";
     card.querySelectorAll("[data-site]").forEach((x) => x.setAttribute("aria-expanded", "false"));
     if (wasOpen) { det.hidden = true; return; }
@@ -326,8 +373,7 @@ function mainPanel(d, s, i) {
   return `<button type="button" class="main" data-site="${s.id}" data-day="${i}" aria-expanded="false">
     <span class="top"><span class="nm">${esc(s.id === "lb" ? "Little Black" : s.short)}</span><span class="big" style="font-size:1.25rem">${r1(c.rating)}</span></span>
     ${bar(c.rating)}
-    ${labelHtml(c)}
-    <span class="note">${esc(c.note)}</span>
+    <span class="label">${labelHtml(c)}<span class="note">${esc(c.note)}</span></span>
   </button>`;
 }
 function rowPanel(d, s, i) {
@@ -363,6 +409,29 @@ function detail(d, s) {
     <div class="factors">${rows}</div>
     <span class="muted" style="font-size:.76rem">Chance flyable ${pct(c.p_fly)} · XC ${pct(c.p_xc)}${c.n_members ? ` (${c.n_members} ensemble runs)` : ""}${c.sunset ? ` · sunset ${esc(c.sunset)}` : ""} · ${esc(s.note || "")}</span>`;
 }
+
+/* bottom sheet (phones) */
+let sheetFrom = null;
+function openSheet(d, s) {
+  const L = dayLabel(d.date);
+  sheetFrom = document.activeElement;
+  $("#sheet").innerHTML = `<span class="grab" aria-hidden="true"></span>
+    <button type="button" class="close" id="sheetClose" aria-label="Close">✕</button>
+    <span class="when">${esc(L.long)} · ${esc(L.date)}</span>${detail(d, s)}`;
+  $("#scrim").hidden = false; $("#sheet").hidden = false; $("#sheet").scrollTop = 0;
+  $("#sheetClose").focus({ preventScroll: true });
+}
+function closeSheet() {
+  $("#scrim").hidden = true; $("#sheet").hidden = true;
+  if (sheetFrom) sheetFrom.focus({ preventScroll: true });
+}
+$("#scrim").addEventListener("click", closeSheet);
+$("#sheet").addEventListener("click", (e) => { if (e.target.closest("#sheetClose")) closeSheet(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("#sheet").hidden) closeSheet(); });
+/* swipe the sheet down to close */
+let y0 = null;
+$("#sheet").addEventListener("touchstart", (e) => { y0 = $("#sheet").scrollTop <= 0 ? e.touches[0].clientY : null; }, { passive: true });
+$("#sheet").addEventListener("touchend", (e) => { if (y0 != null && e.changedTouches[0].clientY - y0 > 70) closeSheet(); y0 = null; }, { passive: true });
 
 /* "Update now" opens the workflow page of this repo (works on <user>.github.io/<repo>/) */
 if (location.hostname.endsWith(".github.io")) {
