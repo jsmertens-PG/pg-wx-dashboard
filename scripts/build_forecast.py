@@ -52,17 +52,17 @@ ENS_LEVELS = [1000, 925, 850, 700, 500]
 STD_HEIGHT_M = {1000: 110, 975: 320, 950: 540, 925: 760, 900: 990, 850: 1460,
                 800: 1950, 700: 3010, 600: 4210, 500: 5570}
 
-SURFACE_VARS = ["temperature_2m", "dew_point_2m", "precipitation", "cape",
+SURFACE_VARS = ["temperature_2m", "dew_point_2m", "precipitation", "cape", "shortwave_radiation",
                 "cloud_cover", "wind_speed_10m", "wind_direction_10m", "wind_gusts_10m"]
 
 
 # ---------------------------------------------------------------- fetching
-def http_json(url: str, tries: int = 3) -> object:
+def http_json(url: str, tries: int = 4, timeout: int = 180) -> object:
     last = None
     for i in range(tries):
         try:
             req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/json"})
-            with urllib.request.urlopen(req, timeout=60) as r:
+            with urllib.request.urlopen(req, timeout=timeout) as r:
                 return json.loads(r.read().decode())
         except urllib.error.HTTPError as e:
             if e.code == 400:      # bad model id or variable: don't retry
@@ -174,6 +174,30 @@ def _sentences(par):
     return [s.strip() for s in re.split(r"(?<=[.!?])\s+(?=[A-Z])", par) if s.strip()]
 
 
+SQUEEZE = [
+    (r"\b(is|are) (expected|forecast|likely) to\b", r"\2 to"), (r"^(It|There) will be ", ""), (r"^There (is|are) ", ""),
+    (r"\bmodels are showing\b", ""), (r"\b(By|For) (tonight|today|this evening),? ", r"\2: "),
+    (r"\b(gradually|generally|largely|mostly|quickly|weakly|somewhat)\b ?", ""), (r"\bcentered (near|over)\b", "near"),
+    (r"\baround sunrise today\b", ""), (r"\bupper level low\b", "upper low"), (r"\blow pressure system\b", "low"),
+    (r"\bthe pressure gradient\b", "gradient"), (r"\bin wind prone locations\b", "in the usual spots"),
+    (r"\bmarine layer low clouds and fog\b", "marine layer"), (r"\bthrough (the )?", "through "),
+    (r"\s{2,}", " "), (r"\s+([,.;])", r"\1"),
+]
+
+
+def squeeze(sentence, limit=110):
+    """Shorten an NWS sentence to a keyword-style bullet."""
+    t = sentence.strip()
+    for pat, rep in SQUEEZE:
+        t = re.sub(pat, rep, t, flags=re.I)
+    t = t.strip(" .,;:")
+    t = t[0].upper() + t[1:] if t else t
+    if len(t) > limit:
+        cut = t[:limit].rsplit(" ", 1)[0]
+        t = cut.rstrip(",;:") + "…"
+    return t
+
+
 def parse_afd(text, issued):
     synopsis = _section(text, "SYNOPSIS")
     aviation = _section(text, "AVIATION")
@@ -185,12 +209,20 @@ def parse_afd(text, issued):
             seen.add(s.lower())
         if len(systems) >= 4:
             break
+    bullets = []
+    for sent in _sentences(synopsis) + systems:
+        if re.search(r"\btides?\b|surf|beach|coastal flood|rip current", sent, re.I):
+            continue
+        b = squeeze(sent)
+        if b and b.lower() not in {x.lower() for x in bullets}:
+            bullets.append(b)
+    bullets = bullets[:5]
     flags = [label for label, pat in FLAG_PATTERNS if re.search(pat, synopsis + " " + aviation, re.I)]
     adv = re.search(r"WATCHES/WARNINGS/ADVISORIES\.\.\.(.*?)\n\$\$", text, re.S)
     advisories = re.sub(r"\s+", " ", adv.group(1)).strip() if adv else ""
     if re.search(r"wind advisory|high wind", advisories, re.I) and "Wind advisory" not in flags:
         flags.append("Wind advisory")
-    return {"issued": issued, "synopsis": synopsis, "systems": systems, "aviation": aviation[:900],
+    return {"issued": issued, "synopsis": synopsis, "systems": systems, "bullets": bullets, "aviation": aviation[:900],
             "advisories": advisories, "flags": flags,
             "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"}
 
@@ -290,11 +322,33 @@ def layer_wind(pts, z_lo, z_hi):
 
 # ---------------------------------------------------------------- scoring
 REASON_TEXT = {
-    "rain": "showers or storms", "showers": "showers nearby", "cape": "overdevelopment risk",
-    "otb": "wind from behind launch", "windy": "too windy on launch", "strong": "strong on launch",
+    "rain": "rain or storms", "showers": "showers around", "cape": "overdevelopment risk",
+    "otb": "over the back", "windy": "blown out", "strong": "strong on launch",
     "light": "too light to soar", "aloft": "strong wind aloft", "aloftdir": "wrong wind aloft",
-    "lid": "low lid",
+    "lid": "low lid", "weak": "weak thermals",
 }
+SINK = 1.1   # paraglider sink rate, m/s
+
+
+def sunset_hour(day, lat, lon, utc_offset_h):
+    """Local sunset as a decimal hour (NOAA approximation, about a minute accurate)."""
+    n = day.timetuple().tm_yday
+    g = 2 * math.pi / 365 * (n - 1)
+    eot = 229.18 * (0.000075 + 0.001868 * math.cos(g) - 0.032077 * math.sin(g)
+                    - 0.014615 * math.cos(2 * g) - 0.040849 * math.sin(2 * g))
+    decl = (0.006918 - 0.399912 * math.cos(g) + 0.070257 * math.sin(g) - 0.006758 * math.cos(2 * g)
+            + 0.000907 * math.sin(2 * g) - 0.002697 * math.cos(3 * g) + 0.00148 * math.sin(3 * g))
+    la = math.radians(lat)
+    cos_h = (math.cos(math.radians(90.833)) / (math.cos(la) * math.cos(decl))) - math.tan(la) * math.tan(decl)
+    ha = math.degrees(math.acos(clamp(cos_h, -1, 1)))
+    return (720 - 4 * (lon - ha) - eot) / 60 + utc_offset_h
+
+
+def fmt_clock(hdec):
+    h, m = int(hdec), int(round((hdec % 1) * 60))
+    if m == 60:
+        h, m = h + 1, 0
+    return f"{h - 12 if h > 12 else h}:{m:02d}{'pm' if h >= 12 else 'am'}"
 
 
 def score_hour(site, hr, i, levels, elev_m):
@@ -303,18 +357,30 @@ def score_hour(site, hr, i, levels, elev_m):
     if t2 is None:
         return None
     td = _at(hr, "dew_point_2m", i)
-    pr = _at(hr, "precipitation", i) or 0.0
-    cape = _at(hr, "cape", i) or 0.0
+    pr = max(0.0, _at(hr, "precipitation", i) or 0.0)
+    cape = max(0.0, _at(hr, "cape", i) or 0.0)
+    sw = max(0.0, _at(hr, "shortwave_radiation", i) or 0.0)
     pts = profile(hr, i, levels, elev_m)
     launch_m = site["launch_ft"] / FT
-    top = thermal_top_m(pts, t2)
+    z0 = pts[0][0] if pts else elev_m
+
+    # depth of the mixed layer: the lower of a dry surface parcel and the model's own PBL height
+    top_parcel = thermal_top_m(pts, t2, excess=0.5)
+    zi = max(0.0, (top_parcel or z0) - z0)
     blh = _at(hr, "boundary_layer_height", i)
-    if blh is not None and top is not None:      # blend parcel top with the model's own mixing height
-        top = 0.5 * top + 0.5 * (elev_m + blh)
-    base = elev_m + 125 * max(0.0, t2 - td) if td is not None else None
-    cands = [v for v in (top, base) if v is not None]
-    usable = min(cands) if cands else None
-    agl = (usable - launch_m) if usable is not None else None
+    if blh is not None and blh > 0:
+        zi = min(zi, blh)
+    # thermal strength W* (Deardorff) from surface heating; ~30% of sunshine becomes sensible heat
+    kin = 0.30 * sw / 1200.0
+    wstar = (9.81 / (t2 + 273.15) * kin * zi) ** (1 / 3) if zi > 0 and kin > 0 else 0.0
+    # a paraglider can only use the part of the mixed layer where thermals beat its sink rate
+    # (the idea behind RASP's Hcrit): weak days use about half of it, strong days most of it
+    k = clamp(0.4 + 0.2 * (wstar - 1.0), 0.3, 0.8)
+    usable = z0 + zi * k
+    base = z0 + 125 * max(0.0, t2 - td) if td is not None else None
+    if base is not None:
+        usable = min(usable, base)
+    agl = usable - launch_m
 
     # launch wind: 10 m wind for low sites, profile wind for high launches
     if launch_m - elev_m > 250:
@@ -322,12 +388,10 @@ def score_hour(site, hr, i, levels, elev_m):
     else:
         lw, ld = _at(hr, "wind_speed_10m", i), _at(hr, "wind_direction_10m", i)
     lw_mph = lw * 1.15078 if lw is not None else None
-    # wind through the lift band (launch to top of lift, at least 600 m above launch)
-    z_hi = max(launch_m + 600, usable or 0)
-    a_max, a_spd, a_dir = layer_wind(pts, launch_m + 150, z_hi)
+    a_max, a_spd, a_dir = layer_wind(pts, launch_m + 150, max(launch_m + 600, usable))
 
     codes, q = [], 1.0
-    # rain / convection
+    # rain: only real rain or storms are a no-go
     if pr >= 1.0 or (cape >= 1000 and pr >= 0.3):
         q = 0.0; codes.append("rain")
     elif pr >= 0.3:
@@ -338,9 +402,10 @@ def score_hour(site, hr, i, levels, elev_m):
         q *= 0.75; codes.append("cape")
     # launch wind
     lo, hi = site["wind_mph"]
-    on = None
+    on = good_launch = None
     if lw_mph is not None and ld is not None:
         on = wrap_in(ld, *site["dir"])
+        good_launch = on and lo <= lw_mph <= hi or (lw_mph < lo and site["kind"] != "ridge")
         if not on and lw_mph > 5:
             q = 0.0; codes.append("otb")
         elif lw_mph > hi + 5:
@@ -349,41 +414,44 @@ def score_hour(site, hr, i, levels, elev_m):
             q *= 0.5; codes.append("strong")
         elif lw_mph < lo and site["kind"] == "ridge":
             q *= 0.3; codes.append("light")
-    # wind aloft: strength, and direction (north/east components kill most SoCal sites)
+    # wind aloft: strength and direction
     if a_max is not None and a_max > site["aloft_max_kt"]:
         q *= clamp(1 - (a_max - site["aloft_max_kt"]) / 10)
         codes.append("aloft")
-    if a_spd is not None and a_dir is not None and site.get("aloft_bad") and wrap_in(a_dir, *site["aloft_bad"]):
-        if a_spd >= 6:
-            q *= clamp(1 - (a_spd - 4) / 8) * 0.5
-            codes.append("aloftdir")
+    bad_dir = (a_spd is not None and a_dir is not None and site.get("aloft_bad")
+               and wrap_in(a_dir, *site["aloft_bad"]) and a_spd >= 6)
+    if bad_dir:
+        q *= clamp(1 - (a_spd - 4) / 8) * 0.5
+        codes.append("aloftdir")
     if site["kind"] == "convergence" and a_spd is not None and a_spd > 10:
-        q *= clamp(1 - (a_spd - 10) / 10)          # synoptic wind blows the convergence line away
+        q *= clamp(1 - (a_spd - 10) / 10)
         codes.append("aloft")
     t700 = _at(hr, "temperature_700hPa", i)
-    cold_aloft = t700 is not None and t700 <= 1.0
-    # lift
-    if site["kind"] != "ridge":
-        lift = clamp(((agl or 0) - 250) / (1100 - 250)) if agl is not None else 0.3
-        q *= 0.15 + 0.85 * lift
-        if agl is not None and agl < 450:
-            codes.append("lid")
-    # XC strength this hour (0 = no XC)
-    xc_s = 0.0
     t850 = _at(hr, "temperature_850hPa", i)
-    # at the coast the marine layer caps thermals unless cold air aloft makes the air unstable
+    cold_aloft = t700 is not None and t700 <= 1.0
+    # lift: height above launch and thermal strength
+    if site["kind"] != "ridge":
+        lift = clamp((agl - 100) / (600 - 100))
+        strength = clamp((wstar - 0.8) / (1.6 - 0.8))
+        q *= 0.15 + 0.85 * lift * (0.4 + 0.6 * strength)
+        if agl < 200:
+            codes.append("lid")
+        elif wstar < 1.0:
+            codes.append("weak")
+    # XC strength this hour (0 = no XC)
     coast_ok = site["kind"] != "ridge" or ((t850 is not None and t850 <= 9.0) or (t700 is not None and t700 <= 0.0))
-    if site.get("xc_top_ft") and coast_ok and usable is not None and q >= 0.5 and pr < 0.3 and "aloftdir" not in codes:
+    xc_s = 0.0
+    if site.get("xc_top_ft") and coast_ok and q >= 0.5 and pr < 0.3 and not bad_dir and wstar >= 1.2:
         over = usable * FT - site["xc_top_ft"]
         if over >= 0:
             wind_f = 1.0 if a_max is None or a_max <= site["aloft_max_kt"] - 3 else 0.8
-            xc_s = (0.35 + 0.65 * clamp(over / site.get("xc_span_ft", 2500))) * wind_f
-    # glass-off: smooth onshore flow on launch, no rain, nothing strong aloft
+            xc_s = (0.35 + 0.65 * clamp(over / site.get("xc_span_ft", 1500))) * wind_f * clamp(wstar / 2.0, 0.6, 1.0)
     glass = (on is True and lw_mph is not None and 3 <= lw_mph <= 13 and pr < 0.05 and cape < 500
-             and "aloftdir" not in codes and (a_max is None or a_max <= site["aloft_max_kt"]))
-    return {"q": q, "xc_s": xc_s, "glass": glass, "cold": cold_aloft, "top": top, "base": base, "usable": usable, "agl": agl,
+             and not bad_dir and (a_max is None or a_max <= site["aloft_max_kt"]))
+    return {"q": q, "xc_s": xc_s, "glass": glass, "cold": cold_aloft, "good_launch": bool(good_launch),
+            "usable": usable, "base": base, "agl": agl, "wstar": wstar, "climb": max(0.0, wstar - SINK + 0.3),
             "lw": lw_mph, "ld": ld, "a_max": a_max, "a_spd": a_spd, "a_dir": a_dir,
-            "pr": pr, "cape": cape, "cloud": _at(hr, "cloud_cover", i), "codes": codes}
+            "pr": pr, "cape": cape, "codes": codes}
 
 
 def best_block(hours, n, key):
@@ -396,42 +464,41 @@ def best_block(hours, n, key):
     return max(0.0, best), start
 
 
-def assess_day(site, hr, idxs, levels, elev_m):
+def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     """Rate one day for one model run on the 0-10 scale."""
+    idxs = [(h, i) for h, i in idxs if h + 0.5 <= sunset_h]          # nothing after sunset
     hours = [(h, score_hour(site, hr, i, levels, elev_m)) for h, i in idxs]
     hours = [(h, s) for h, s in hours if s is not None]
     if len(hours) < WINDOW:
         return None
     local, k = best_block(hours, WINDOW, "q")
     blk = [s for _, s in hours[k:k + WINDOW]]
-    # XC: best 4-hour block with at least 3 XC hours
     xc_day, xk = 0.0, 0
     if len(hours) >= 4:
         xc_day, xk = best_block(hours, 4, "xc_s")
         if sum(1 for _, s in hours[xk:xk + 4] if s["xc_s"] > 0) < 3:
             xc_day = 0.0
-    late = [(h, s) for h, s in hours if h >= 16]
-    glass_hours = [h for h, s in late if s["glass"]]
-    glass_ok = len(late) >= 2 and len(glass_hours) >= 2
+    xc_hours = sum(1 for _, s in hours if s["xc_s"] > 0)
+    # glass-off: the last two hours before sunset (in late October about 4 to 6 pm)
+    gwin = [(h, s) for h, s in hours if h >= math.floor(sunset_h) - 2]
+    glass_hours = [h for h, s in gwin if s["glass"]]
+    glass_ok = len(glass_hours) >= 2
     early_rain = sum(s["pr"] for h, s in hours if h <= 11)
     window_rain = sum(s["pr"] for s in blk)
     cold = sum(1 for s in blk if s["cold"]) >= 2
     postfrontal = (early_rain >= 0.3 or cold) and window_rain < 0.3 and local >= 0.45
 
-    xc_hours = sum(1 for _, s in hours if s["xc_s"] > 0)
-    rating = 5.0 * local                              # a good local day tops out at 5
-    if xc_day > 0:                                    # XC days: ~6 short/low, 7-8 solid, 9 big
-        rating = max(rating, 5.0 + 4.0 * xc_day * clamp(xc_hours / 5))
-        rating = max(rating, 5.8)
-    if glass_ok and rating < 3.8:
-        rating = 3.8                                  # a reliable evening glass-off is a nice day
-    lift_agl = median([s["agl"] for s in blk if s["agl"] is not None] or [0])
-
+    rating = 5.0 * local
     if xc_day > 0:
-        label = "Thermal day" if site["kind"] == "ridge" else "XC"
-    elif glass_ok and site["kind"] != "ridge" and (rating <= 3.9 or lift_agl < 500 or hours[k][0] >= 15):
+        rating = max(rating, 5.8, 5.0 + 4.0 * xc_day * clamp(xc_hours / 5))
+    if glass_ok and local < 0.7 and rating < 3.6:
+        rating = 3.6
+    ridge = site["kind"] == "ridge"
+    if xc_day > 0:
+        label = "Thermal day" if ridge else "XC"
+    elif glass_ok and not ridge and local < 0.45:
         label = "Glass-off"
-    elif site["kind"] == "ridge" and local >= 0.5:
+    elif ridge and local >= 0.5:
         label = "Ridge soaring"
     elif rating >= 3.5:
         label = "Thermal"
@@ -439,36 +506,31 @@ def assess_day(site, hr, idxs, levels, elev_m):
         label = "Marginal"
     else:
         label = "No go"
-    codes = {}
+    counts = {}
     for s in (blk if local >= 0.25 else [s for _, s in hours]):
         for c in s["codes"]:
-            codes[c] = codes.get(c, 0) + 1
-    prio = ["rain", "otb", "windy", "aloftdir", "aloft", "lid", "strong", "light", "showers", "cape"]
-    codes = sorted(codes, key=lambda c: (-(codes[c] >= 2), prio.index(c) if c in prio else 99))
+            counts[c] = counts.get(c, 0) + 1
+    prio = ["rain", "otb", "windy", "aloftdir", "aloft", "lid", "weak", "strong", "light", "showers", "cape"]
+    codes = sorted(counts, key=lambda c: (-(counts[c] >= 2), prio.index(c) if c in prio else 99))
 
     def med(key, block=blk):
         v = [s[key] for s in block if s[key] is not None]
         return median(v) if v else None
-    xblk = [s for _, s in hours[xk:xk + 4]]
-    # mean drift through the lift band during the window that matters
-    drift_blk = xblk if xc_day > 0 else blk
-    du = [_uv(s["a_spd"], s["a_dir"]) for s in drift_blk if s["a_spd"] is not None and s["a_dir"] is not None]
+    xblk = [s for _, s in hours[xk:xk + 4]] if xc_day > 0 else blk
+    du = [_uv(s["a_spd"], s["a_dir"]) for s in xblk if s["a_spd"] is not None and s["a_dir"] is not None]
     a_spd = a_dir = None
     if du:
         u, v = sum(x for x, _ in du) / len(du), sum(y for _, y in du) / len(du)
         a_spd, a_dir = math.hypot(u, v), (math.degrees(math.atan2(u, v)) + 360) % 360
     return {
         "rating": rating, "local": local, "xc_day": xc_day, "label": label, "codes": codes,
-        "postfrontal": postfrontal, "glass": glass_ok, "glass_hours": glass_hours,
-        "start": hours[k][0], "xc_start": hours[xk][0] if xc_day > 0 else None,
-        "top": med("usable", xblk if xc_day > 0 else blk), "base": med("base"), "lw": med("lw"), "ld": med("ld"),
+        "postfrontal": postfrontal, "glass": glass_ok, "glass_hours": glass_hours, "sunset": sunset_h,
+        "start": hours[k][0], "top": med("usable", xblk), "base": med("base"), "wstar": med("wstar", xblk),
+        "climb": med("climb", xblk), "lw": med("lw"), "ld": med("ld"),
+        "launch_q": sum(1 for s in blk if s["good_launch"]) / len(blk),
         "a_max": med("a_max"), "a_spd": a_spd, "a_dir": a_dir,
-        "pr": sum(s["pr"] for _, s in hours), "cape": max(s["cape"] for _, s in hours), "cloud": med("cloud"),
-        "hourly": [{"h": h, "q": round(s["q"], 2), "xc": s["xc_s"] > 0, "glass": s["glass"],
-                    "top_ft": round(s["usable"] * FT) if s["usable"] else None,
-                    "lw": round(s["lw"]) if s["lw"] is not None else None,
-                    "ld": round(s["ld"]) if s["ld"] is not None else None,
-                    "pr": round(s["pr"], 1)} for h, s in hours],
+        "aloftdir": sum(1 for s in blk if "aloftdir" in s["codes"]) >= 2,
+        "pr": sum(s["pr"] for _, s in hours), "pr_win": window_rain, "cape": max(s["cape"] for _, s in hours),
     }
 
 
@@ -479,45 +541,44 @@ def route_note(site, a):
     if spd is None or frm is None or not routes:
         return "XC"
     if spd < 5:
-        return f"light drift: triangle or out-and-return, {routes[0]['text'].split(' to ')[0].split(' toward ')[0]} first"
+        return "light drift: triangle or out-and-return"
     to = (frm + 180) % 360
     for b in blocked:
         if wrap_in(to, b["from"], b["to"]):
             alt = min(routes, key=lambda r: angdiff(r["to"], to))
-            return f"drift {compass_word(to)} into {b['why']}: go crosswind {alt['text']}"
+            return f"drift is toward {b['why']}: go crosswind {alt['text']}"
     best = min(routes, key=lambda r: angdiff(r["to"], to))
     if angdiff(best["to"], to) <= 60:
         return f"downwind {best['text']}"
-    return f"drift {compass_word(to)}: crosswind {best['text']}"
+    return f"crosswind {best['text']}"
+
+
+def ft100(m):
+    return f"{round(m * FT / 100) * 100:,} ft"
 
 
 def note_for(site, a, xc):
     if a is None:
         return "no data"
     if xc and site["kind"] == "ridge":
-        top = f"{round(a['top'] * FT / 100) * 100:,} ft" if a.get("top") else "well above the cliffs"
-        wind = f", {compass(a['ld'])} {round(a['lw'])} mph" if a.get("lw") is not None and a.get("ld") is not None else ""
-        return f"cold air aloft, thermals to about {top}{wind}"
+        return f"thermals above the cliffs to about {ft100(a['top'])}" if a.get("top") else "thermals above the cliffs"
     if xc:
         return route_note(site, a)
     if a["label"] == "Glass-off":
         g = a["glass_hours"]
-        return f"evening glass-off {g[0] - 12}–{g[-1] - 11} pm" if g else "evening glass-off"
-    why = [REASON_TEXT[c] for c in a["codes"] if c in REASON_TEXT]
+        return f"glass-off {fmt_h(g[0])} to sunset ({fmt_clock(a['sunset'])})" if g else "evening glass-off"
+    if a["label"] in ("Thermal", "Ridge soaring", "XC"):
+        if site["kind"] == "ridge":
+            bits = [f"{compass(a['ld'])} {round(a['lw'])} mph" if a["lw"] is not None and a["ld"] is not None else "ridge lift"]
+        else:
+            bits = [f"thermals to {ft100(a['top'])}" if a.get("top") else "thermals"]
+        bits.append(f"{fmt_h(a['start'])}–{fmt_h(a['start'] + WINDOW)}")
+        return " · ".join(bits)
+    why = [REASON_TEXT.get(c, c) for c in a["codes"]]
     if a["codes"] and a["codes"][0] == "aloftdir" and a["a_dir"] is not None:
         why[0] = f"{compass(a['a_dir'])} wind aloft"
-    if a["codes"] and a["codes"][0] == "lid" and a["top"] is not None:
-        why[0] = f"low lid, {round(a['top'] * FT / 100) * 100:,} ft"
-    if a["label"] in ("Thermal", "Ridge soaring"):
-        bits = []
-        if site["kind"] != "ridge" and a["top"] is not None:
-            bits.append(f"local, lift to {round(a['top'] * FT / 100) * 100:,} ft")
-        if site["kind"] == "ridge" and a["lw"] is not None and a["ld"] is not None:
-            bits.append(f"{compass(a['ld'])} {round(a['lw'])} mph")
-        bits.append(f"best {fmt_h(a['start'])}–{fmt_h(a['start'] + WINDOW)}")
-        if a["glass"] and site["kind"] != "ridge":
-            bits.append("glass-off later")
-        return ", ".join(bits)
+    if a["codes"] and a["codes"][0] == "lid" and a.get("top"):
+        why[0] = f"low lid, {ft100(a['top'])}"
     return why[0] if why else "not flyable"
 
 
@@ -548,27 +609,33 @@ def member_series(hr):
     return [m for m in members.values() if "temperature_2m" in m]
 
 
+def _med(vals):
+    vals = [v for v in vals if v is not None]
+    return median(vals) if vals else None
+
+
 def build(sites, det, ens, nws, log, sample=False, sources=None):
     days = {}
-    for name, (mid, data, *_i) in det.items():
-        if not data:
-            continue
-        for s, d in zip(sites, data):
-            hr, elev = d.get("hourly", {}), d.get("elevation", 0) or 0
-            for dstr, idxs in day_index(hr).items():
-                a = assess_day(s, hr, idxs, DET_LEVELS, elev)
+
+    def run_site(s, d, levels, sink):
+        hr, elev = d.get("hourly", {}), d.get("elevation", 0) or 0
+        off_h = (d.get("utc_offset_seconds") or -7 * 3600) / 3600
+        series = member_series(hr) if sink == "ens" else [hr]
+        for mem in series:
+            for dstr, idxs in day_index(mem).items():
+                ss = sunset_hour(date.fromisoformat(dstr), s["lat"], s["lon"], off_h)
+                a = assess_day(s, mem, idxs, levels, elev, ss)
                 if a:
-                    days.setdefault(dstr, {}).setdefault(s["id"], {"det": {}, "ens": []})["det"][name] = a
+                    yield dstr, a
+
+    for name, (mid, data, *_i) in det.items():
+        for s, d in zip(sites, data or []):
+            for dstr, a in run_site(s, d, DET_LEVELS, "det"):
+                days.setdefault(dstr, {}).setdefault(s["id"], {"det": {}, "ens": []})["det"][name] = a
     for name, (mid, data, *_i) in ens.items():
-        if not data:
-            continue
-        for s, d in zip(sites, data):
-            hr, elev = d.get("hourly", {}), d.get("elevation", 0) or 0
-            for mem in member_series(hr):
-                for dstr, idxs in day_index(mem).items():
-                    a = assess_day(s, mem, idxs, ENS_LEVELS, elev)
-                    if a:
-                        days.setdefault(dstr, {}).setdefault(s["id"], {"det": {}, "ens": []})["ens"].append(a)
+        for s, d in zip(sites, data or []):
+            for dstr, a in run_site(s, d, ENS_LEVELS, "ens"):
+                days.setdefault(dstr, {}).setdefault(s["id"], {"det": {}, "ens": []})["ens"].append(a)
 
     out_days = []
     for dstr in sorted(days)[:DAYS]:
@@ -577,55 +644,98 @@ def build(sites, det, ens, nws, log, sample=False, sources=None):
             cell = days[dstr].get(s["id"])
             if not cell or (not cell["det"] and not cell["ens"]):
                 continue
-            det_r = {k: v["rating"] for k, v in cell["det"].items()}
-            runs = list(cell["det"].values()) + cell["ens"]
-            parts = []
+            D = cell["det"]
+            det_r = {k: v["rating"] for k, v in D.items()}
+            # rating from the regular models; the ensembles (coarser, no PBL height) only give the
+            # spread of outcomes, recentred on the regular models so their bias doesn't leak in
+            ens_r = [a["rating"] for a in cell["ens"]]
             if det_r:
-                parts.append(median(det_r.values()))
-            if cell["ens"]:
-                parts.append(sum(a["rating"] for a in cell["ens"]) / len(cell["ens"]))
-            rating = sum(parts) / len(parts)
-            pool = cell["ens"] or list(cell["det"].values())
-            p_fly = sum(a["rating"] >= 3.5 for a in pool) / len(pool)
-            p_xc = sum(a["xc_day"] > 0 for a in pool) / len(pool)
-            det_xc = sum(a["xc_day"] > 0 for a in cell["det"].values()) / max(1, len(cell["det"]))
+                rating = median(det_r.values())
+            else:
+                rating = median(ens_r)
+            if ens_r:
+                shift = rating - median(ens_r)
+                p_fly = sum(r + shift >= 3.5 for r in ens_r) / len(ens_r)
+                p_xc = sum(r + shift >= 6.0 for r in ens_r) / len(ens_r)
+            else:
+                p_fly = sum(r >= 3.5 for r in det_r.values()) / len(det_r)
+                p_xc = sum(a["xc_day"] > 0 for a in D.values()) / len(D)
+            det_xc = sum(a["xc_day"] > 0 for a in D.values()) / max(1, len(D))
             xc = bool(s.get("xc_top_ft")) and rating >= 6.0 and p_xc >= 0.4 and det_xc >= 0.4
-            # detail model: highest resolution one that agrees with the blend, else the closest
-            order = [m for m in ("HRRR", "NAM", "ECMWF", "GFS", "ICON") if m in cell["det"]]
+            order = [m for m in ("HRRR", "NAM", "ECMWF", "GFS", "ICON") if m in D]
             close = [m for m in order if abs(det_r[m] - rating) <= 1.0]
             lead_name = close[0] if close else (min(order, key=lambda m: abs(det_r[m] - rating)) if order else None)
-            lead = cell["det"].get(lead_name) if lead_name else None
+            lead = D.get(lead_name) if lead_name else (cell["ens"][0] if cell["ens"] else None)
+            ridge = s["kind"] == "ridge"
             label = lead["label"] if lead else "–"
-            xc_label = "Thermal day" if s["kind"] == "ridge" else "XC"
             if label in ("XC", "Thermal day") and not xc:
-                label = ("Ridge soaring" if s["kind"] == "ridge" else "Thermal") if rating >= 3.5 else "Marginal"
+                label = ("Ridge soaring" if ridge else "Thermal") if rating >= 3.5 else "Marginal"
             if xc:
-                label = xc_label
-            if rating < 2 and label not in ("No go",):
+                label = "Thermal day" if ridge else "XC"
+            if rating < 2:
                 label = "No go"
+            elif label in ("No go", "Thermal") and rating < 3.5:
+                label = "Marginal"
+            elif label == "Marginal" and rating >= 3.5:
+                label = "Ridge soaring" if ridge else "Thermal"
+            elif label == "No go":
+                label = "Marginal"
             tags = []
             if lead and lead["postfrontal"]:
                 tags.append("post-frontal")
-            if lead and lead["glass"] and label in ("Thermal", "Marginal") and s["kind"] != "ridge":
+            if lead and lead["glass"] and label in ("Thermal", "Marginal", "XC") and not ridge:
                 tags.append("glass-off")
+            if lead and lead["pr"] >= 0.3 and label != "No go":
+                tags.append("showers around")
             spread = (max(det_r.values()) - min(det_r.values())) if len(det_r) > 1 else 0
-            lead_for_note = dict(lead, label=label) if lead else None
+
+            # key values: median across the regular models (directions from the lead model)
+            vals = list(D.values()) or cell["ens"]
+            top, base = _med(v["top"] for v in vals), _med(v["base"] for v in vals)
+            wstar, lw = _med(v["wstar"] for v in vals), _med(v["lw"] for v in vals)
+            a_max, rain = _med(v["a_max"] for v in vals), _med(v["pr_win"] for v in vals)
+            cape = _med(v["cape"] for v in vals)
+            launch_q = _med(v["launch_q"] for v in vals)
+            aloftdir = sum(v["aloftdir"] for v in vals) / len(vals) >= 0.5
+            launch_ft = s["launch_ft"]
+            target = (s.get("xc_top_ft") or launch_ft + 1500) + (s.get("xc_span_ft") or 1000) - launch_ft
+            agl_ft = (top * FT - launch_ft) if top is not None else None
+            factors = [
+                {"k": "Thermal height", "v": f"{round(top * FT, -2):,.0f} ft" if top else "–",
+                 "sub": f"{round(agl_ft, -2):,.0f} ft over launch" if agl_ft is not None else "",
+                 "q": round(clamp((agl_ft or 0) / target), 2)},
+                {"k": "Thermal strength", "v": f"{wstar:.1f} m/s" if wstar is not None else "–",
+                 "sub": "W*, climb about " + (f"{max(0, wstar - SINK + 0.3):.1f} m/s" if wstar is not None else "–"),
+                 "q": round(clamp((wstar or 0) / 2.5), 2)},
+                {"k": "Launch wind", "v": f"{compass(lead['ld'])} {round(lw)} mph" if lead and lead["ld"] is not None and lw is not None else "–",
+                 "sub": f"site likes {compass(s['dir'][0])}–{compass(s['dir'][1])}, {s['wind_mph'][0]}–{s['wind_mph'][1]} mph",
+                 "q": round(launch_q if launch_q is not None else 0, 2)},
+                {"k": "Wind aloft", "v": (f"{compass(lead['a_dir'])} {round(lead['a_spd'])} kt" if lead and lead["a_spd"] is not None else "–"),
+                 "sub": (f"up to {round(a_max)} kt" if a_max is not None else "") + (" · wrong direction" if aloftdir else ""),
+                 "q": round(0.15 if aloftdir else 1 - clamp(((a_max or 0) - 0.6 * s["aloft_max_kt"]) / (0.8 * s["aloft_max_kt"])), 2)},
+                {"k": "Rain & storms", "v": f"{rain:.1f} mm" if rain is not None else "–",
+                 "sub": f"CAPE up to {round(cape)}" if cape is not None else "",
+                 "q": round(clamp(1 - (rain or 0) / 1.5) * (1 - 0.4 * clamp(((cape or 0) - 800) / 1500)), 2)},
+                {"k": "Model agreement", "v": "split" if spread >= 3 else ("mixed" if spread >= 1.5 else "agree"),
+                 "sub": " · ".join(f"{k} {v:.1f}" for k, v in det_r.items()),
+                 "q": round(clamp(1 - spread / 5), 2)},
+            ]
+            if ridge:
+                factors[0]["q"] = round(clamp((agl_ft or 0) / 1200), 2)
+            lead_view = dict(lead, label=label, top=top if top is not None else lead.get("top")) if lead else None
             drow["sites"][s["id"]] = {
                 "rating": round(rating, 1), "label": label, "tags": tags, "xc": xc,
-                "note": note_for(s, lead_for_note, xc),
+                "note": note_for(s, lead_view, xc),
                 "p_fly": round(p_fly, 2), "p_xc": round(p_xc, 2),
-                "agree": "split" if spread >= 3 else ("mixed" if spread >= 1.5 else "agree"),
-                "models": {k: round(v, 1) for k, v in det_r.items()},
+                "agree": factors[-1]["v"], "models": {k: round(v, 1) for k, v in det_r.items()},
                 "n_members": len(cell["ens"]), "lead": lead_name,
-                "window": f"{fmt_h(lead['start'])}–{fmt_h(lead['start'] + WINDOW)}" if lead else None,
-                "top_ft": round(lead["top"] * FT, -2) if lead and lead["top"] else None,
-                "base_ft": round(lead["base"] * FT, -2) if lead and lead["base"] else None,
-                "wind": f"{compass(lead['ld'])} {round(lead['lw'])}" if lead and lead["lw"] is not None and lead["ld"] is not None else None,
-                "aloft": f"{compass(lead['a_dir'])} {round(lead['a_spd'])}" if lead and lead["a_spd"] is not None else None,
-                "aloft_max_kt": round(lead["a_max"]) if lead and lead["a_max"] is not None else None,
-                "rain_mm": round(lead["pr"], 1) if lead else None,
-                "cape": round(lead["cape"]) if lead else None,
-                "hourly": lead["hourly"] if lead else [],
+                "top_ft": round(top * FT, -2) if top else None, "base_ft": round(base * FT, -2) if base else None,
+                "wstar": round(wstar, 1) if wstar is not None else None,
+                "sunset": fmt_clock(lead["sunset"]) if lead else None,
+                "factors": factors,
+                "diag": {k: {"r": round(v["rating"], 1), "top": round(v["top"] * FT, -2) if v["top"] else None,
+                             "w": round(v["wstar"], 1) if v["wstar"] is not None else None,
+                             "why": v["codes"][:3]} for k, v in D.items()},
             }
         if drow["sites"]:
             main = [k for k in drow["sites"] if next(x for x in sites if x["id"] == k).get("tier") == "main"] or list(drow["sites"])
@@ -645,30 +755,24 @@ def build(sites, det, ens, nws, log, sample=False, sources=None):
 
 
 def headline(sites, d):
-    """One sentence for the day, led by the main sites (LB, Blossom, Elsinore)."""
+    """Short line for the day, led by the home sites."""
     by = {s["id"]: s for s in sites}
     cells = d["sites"]
     main = [s["id"] for s in sites if s.get("tier") == "main" and s["id"] in cells]
     xc = sorted([k for k in cells if cells[k]["xc"] and by[k]["kind"] != "ridge"], key=lambda k: -cells[k]["rating"])
     ridge_xc = [k for k in cells if cells[k]["xc"] and by[k]["kind"] == "ridge"]
-    special = "".join(f" {by[k]['short']} thermal day: {cells[k]['note']}." for k in ridge_xc)
+    tail = "".join(f" · {by[k]['short']} thermal day" for k in ridge_xc)
     if xc:
         k = next((m for m in xc if m in main), xc[0])
         others = [by[x]["short"] for x in xc if x != k]
-        return (f"XC day. {by[k]['short']} {cells[k]['rating']:.1f}: {cells[k]['note']}"
-                + (f". Also XC: {', '.join(others)}" if others else "") + "." + special)
+        return f"XC at {by[k]['short']}: {cells[k]['note']}" + (f" · also {', '.join(others)}" if others else "") + tail
     good = [k for k in main if cells[k]["rating"] >= 3.5]
-    tail = special
-    if "torrey" in cells and cells["torrey"]["rating"] >= 3.5 and not ridge_xc:
-        tail = f" Torrey: {cells['torrey']['note']}."
     if good:
-        parts = [f"{by[k]['short']} {cells[k]['note']}" if cells[k]["label"] == "Glass-off"
-                 else f"{by[k]['short']} {cells[k]['label'].lower()} ({cells[k]['note']})" for k in good]
-        return "Local day. " + "; ".join(parts) + "." + tail
+        return " · ".join(f"{by[k]['short']} {cells[k]['label'].lower()}" for k in good) + tail
     if main:
         k = max(main, key=lambda m: cells[m]["rating"])
-        return f"Poor at the main sites ({cells[k]['note']})." + tail
-    return "No data."
+        return f"Poor at home sites: {cells[k]['note']}" + tail
+    return "No data"
 
 
 # ---------------------------------------------------------------- sample data
@@ -710,6 +814,7 @@ def sample_response(sites, levels, members=0, horizon_h=DAYS * 24, seed=1):
             hourly["wind_speed_10m" + sfx] = series(lambda h: round({"windy": 14, "offshore": 8}.get(reg(h), 6) * (0.5 + diurnal(h)) + rnd.gauss(0, 1), 1))
             hourly["wind_direction_10m" + sfx] = series(lambda h: sfc_dir(h) + rnd.gauss(0, 10))
             hourly["wind_gusts_10m" + sfx] = series(lambda h: 15)
+            hourly["shortwave_radiation" + sfx] = series(lambda h: round(650 * diurnal(h) * (1 - {"showery": 0.5, "postfrontal": 0.2}.get(reg(h), 0.05))))
             if not members:
                 hourly["boundary_layer_height"] = series(lambda h: round(({"showery": 700, "postfrontal": 1400, "offshore": 350, "ridge": 450, "good": 1300, "windy": 900, "glassoff": 300}[reg(h)]) * diurnal(h) + 100))
             for L in levels:
@@ -728,7 +833,7 @@ def sample_response(sites, levels, members=0, horizon_h=DAYS * 24, seed=1):
                 hourly[f"wind_speed_{L}hPa{sfx}"] = series(lambda h, z=z: round({"windy": 25, "offshore": 15}.get(reg(h), 9) * (0.6 + z / 5000) + rnd.gauss(0, 2), 1))
                 hourly[f"wind_direction_{L}hPa{sfx}"] = series(lambda h: {"offshore": 40, "postfrontal": 300, "showery": 230}.get(reg(h), 280))
                 hourly[f"geopotential_height_{L}hPa{sfx}"] = series(lambda h, z=z: z)
-        out.append({"latitude": s["lat"], "longitude": s["lon"], "elevation": round(elev), "hourly": hourly})
+        out.append({"latitude": s["lat"], "longitude": s["lon"], "elevation": round(elev), "utc_offset_seconds": -7 * 3600, "hourly": hourly})
     return out
 
 
@@ -748,6 +853,7 @@ def sample_sources(det, ens):
 def sample_nws():
     return {"issued": datetime.now(timezone.utc).isoformat(timespec="minutes"),
             "synopsis": "SAMPLE TEXT. Showers and a slight chance of thunderstorms through Friday morning, ending from the northwest. Dry and warmer for the weekend with weak offshore flow Saturday morning.",
+            "bullets": ["SAMPLE: showers end from the northwest Friday", "Upper low moves into Nevada", "Weak offshore Saturday and Sunday, N–NE winds in the mornings", "Dry and warmer through Monday"],
             "systems": ["SAMPLE. The upper low near Point Conception moves northeast into Nevada this evening.",
                         "SAMPLE. A shortwave on its west side develops into a closed low over southern California late Friday.",
                         "SAMPLE. Offshore flow Saturday with north to northeast winds in the mornings; weakening Sunday."],
