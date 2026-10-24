@@ -30,5 +30,11 @@ jobs:
           git config user.name "forecast-bot"
           git config user.email "forecast-bot@users.noreply.github.com"
           git add data/forecast.json
-          git diff --cached --quiet || git commit -m "Forecast update $(date -u +%Y-%m-%dT%H:%MZ)"
-          git push
+          git diff --cached --quiet && exit 0
+          git commit -m "Forecast update $(date -u +%Y-%m-%dT%H:%MZ)"
+          # if files were committed while the job ran, take them in first, then save
+          for i in 1 2 3; do
+            git pull --rebase -X theirs origin main && git push && exit 0
+            sleep 5
+          done
+          exit 1
