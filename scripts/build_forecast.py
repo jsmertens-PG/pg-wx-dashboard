@@ -763,7 +763,11 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     wind_now = wind_at([mid, mid - 1, mid + 1])
     later_h = [h for h in (16, 15, 17) if h >= mid + 2 and h + 0.5 <= sunset_h]
     wind_later = wind_at(later_h) if later_h else None
+    h13 = next((s for h, s in hours if h == 13), None) or next((s for h, s in hours if h in (12, 14)), None)
+    wind_1pm = wind_at([13, 12, 14])
     return {
+        "top13": h13["usable"] if h13 else None,
+        "wind_1pm": wind_1pm,
         "wind_now": wind_now, "wind_later": wind_later,
         "rating": rating, "local": local, "xc_day": xc_day, "label": label, "codes": codes,
         "postfrontal": postfrontal, "glass": glass_ok, "glass_hours": glass_hours, "sunset": sunset_h,
@@ -991,7 +995,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 {"k": "Thermal height", "v": f"{round(top * FT, -2):,.0f} ft" if top else "–",
                  "sub": f"{round(agl_ft, -2):,.0f} ft over launch" if agl_ft is not None else "",
                  "q": round(clamp((agl_ft or 0) / target), 2)},
-                {"k": "Launch wind", "v": wind_txt(lead.get("wind_now")) if lead else "–",
+                {"k": "Launch wind 1 pm", "v": wind_txt(lead.get("wind_1pm") or lead.get("wind_now")) if lead else "–",
                  "sub": " · ".join(x for x in (
                      f"later {wind_txt(lead['wind_later'])}" if lead and lead.get("wind_later") else "",
                      lead.get("launch") if lead and lead.get("launch") in ("over the back", "blown out", "strong") else "") if x),
@@ -1009,21 +1013,37 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             ]
             if ridge:
                 factors[0]["q"] = round(clamp((agl_ft or 0) / 1200), 2)
-            # altitude: Soaring Predictor when it has this site and day, otherwise the models
+            # altitude, two ways: Soaring Predictor's ceiling, and one model's height at 1 pm
             sp_here = sp.get((s.get("parent", s["id"]), dstr), [])
             if s.get("launch_name"):
                 sp_here = [x for x in sp_here if x["name"].lower().startswith(s["launch_name"].lower())]
             scale = 1200 if ridge else target
+            def height_row(label, top_m, src):
+                agl = (top_m * FT - launch_ft) if top_m is not None else None
+                return {"k": label, "v": f"{round(top_m * FT, -2):,.0f} ft" if top_m else "–",
+                        "sub": (f"{round(agl, -2):,.0f} ft over launch · " if agl is not None else "") + src,
+                        "q": round(clamp((agl or 0) / scale), 2)}
+            rows, t13 = [], None
             if sp_here:
                 best = max(sp_here, key=lambda x: x["ceiling_ft"])
-                top = best["ceiling_ft"] / FT
-                agl_ft = best["ceiling_ft"] - launch_ft
-                src = "Soaring Predictor"
+                rows.append(height_row("Soaring Predictor", best["ceiling_ft"] / FT, "daily peak"))
+            hm = next((m for m in ("RRFS", "HRRR") if m in D and D[m].get("top13") is not None), None)
+            if hm:
+                rows.append(height_row(hm, D[hm]["top13"], "at 1 pm"))
             else:
-                src = "models: " + ", ".join(m for m in ("HRRR", "RRFS", "NAM", "ECMWF", "GFS", "ICON") if m in D) if D else "ensembles"
-            factors[0].update({"v": f"{round(top * FT, -2):,.0f} ft" if top else "–",
-                               "sub": (f"{round(agl_ft, -2):,.0f} ft over launch · " if agl_ft is not None else "") + src,
-                               "q": round(clamp((agl_ft or 0) / scale), 2)})
+                models = [m for m in ("NAM", "ECMWF", "GFS", "ICON") if m in D and D[m].get("top13") is not None]
+                if models:
+                    t13 = wmedian((D[m]["top13"], MODEL_WEIGHT.get(m, 1)) for m in models)
+                    rows.append(height_row("Models", t13, "at 1 pm · " + ", ".join(models)))
+            factors[0:1] = rows or [height_row("Thermal height", top, "models")]
+            # the note uses Soaring Predictor when it has a value, otherwise the model row
+            if sp_here:
+                top = max(x["ceiling_ft"] for x in sp_here) / FT
+            elif hm:
+                top = D[hm]["top13"]
+            elif t13 is not None:
+                top = t13
+            src = "Soaring Predictor" if sp_here else (hm or "models")
             lead_view = dict(lead, label=label, top=top if top is not None else lead.get("top"), shower_p=shower_p) if lead else None
             drow["sites"][s["id"]] = {
                 "rating": round(rating, 1), "label": label, "tags": tags, "xc": xc,
