@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-24T04:58+00:00",
+ "generated": "2026-10-24T05:08+00:00",
  "sample": false,
  "models": {
   "HRRR": "ncep_hrrr_conus",
@@ -32,7 +32,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-10-24T03:00+00:00",
-   "fetched": "2026-10-24T04:50+00:00",
+   "fetched": "2026-10-24T05:02+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -42,7 +42,7 @@
    "id": "ncep_nam_conus",
    "status": "ok",
    "run": "2026-10-24T00:00+00:00",
-   "fetched": "2026-10-24T04:50+00:00",
+   "fetched": "2026-10-24T05:02+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -52,7 +52,7 @@
    "id": "gfs_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-24T04:50+00:00",
+   "fetched": "2026-10-24T05:02+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -62,7 +62,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": "2026-10-23T18:00+00:00",
-   "fetched": "2026-10-24T04:52+00:00",
+   "fetched": "2026-10-24T05:02+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -72,7 +72,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-24T04:52+00:00",
+   "fetched": "2026-10-24T05:02+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -82,7 +82,7 @@
    "id": "gfs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-24T04:53+00:00",
+   "fetched": "2026-10-24T05:04+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -92,7 +92,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-24T04:55+00:00",
+   "fetched": "2026-10-24T05:06+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -102,7 +102,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-24T04:58+00:00",
+   "fetched": "2026-10-24T05:08+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -112,7 +112,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-10-24T03:40:00+00:00",
-   "fetched": "2026-10-24T04:58+00:00",
+   "fetched": "2026-10-24T05:08+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   }
  ],
@@ -131,6 +131,19 @@
    "Tonight: a closed upper low moving south and east towards the border of California and Arizona",
    "This will turn gradient offshore, increasing north to northeasterly winds in the usual spots"
   ],
+  "summary": {
+   "pattern": [
+    "Tonight: a closed upper low moving south and east towards the border of California and Arizona",
+    "This will turn gradient offshore, increasing north to northeasterly winds in the usual spots",
+    "Weak offshore flow expected Saturday and Sunday"
+   ],
+   "flying": [
+    "Lingering scattered showers will bring light rain to areas west of the mountains today",
+    "Dry and warmer for the weekend through Monday",
+    "Radar imagery at 12 PM was showing scattered showers moving from north to south mainly across coastal areas"
+   ],
+   "by": "rules"
+  },
   "aviation": "240015Z...SHRA are moving though the high desert and IE this evening, slowly pushing south across the region (west of mtns), then sweeping through San Diego county through ~06z. VCSH for coastal southern SD County through 10z. Bases generally 4-9 kft through the evening; SHRA to bring briefly MVFR (locally IFR) vis/cigs. As SHRA departs, BKN/OVC clouds scatter out in the lowlands from north to south this evening through tonight. Mostly VFR and clear by sunrise Sat with N/NE winds (gusting up to 30 kts) developing overnight through the morning around (and south of) the Cajon Pass and along coast facing slopes.",
   "advisories": "CA...Coastal Flood Warning from 5 AM Sunday to 1 PM PDT Thursday for Orange County Coastal Areas-San Diego County Coastal Areas. PZ...None. &&",
   "flags": [
