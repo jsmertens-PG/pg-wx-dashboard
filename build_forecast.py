@@ -48,7 +48,10 @@ ENS_MODELS = {
     "ICON ens":  ["icon_global", "icon_seamless"],
 }
 DET_LEVELS = [1000, 975, 950, 925, 900, 850, 800, 700, 600, 500]
-ENS_LEVELS = [1000, 925, 850, 700, 500]
+ENS_LEVELS = [925, 850, 700]
+# the ensembles only feed the flyable/XC chances, so they get a slim set of fields
+ENS_VARS = ["temperature_2m", "dew_point_2m", "precipitation", "cape", "shortwave_radiation",
+            "wind_speed_10m", "wind_direction_10m"]
 STD_HEIGHT_M = {1000: 110, 975: 320, 950: 540, 925: 760, 900: 990, 850: 1460,
                 800: 1950, 700: 3010, 600: 4210, 500: 5570}
 
@@ -57,7 +60,7 @@ SURFACE_VARS = ["temperature_2m", "dew_point_2m", "precipitation", "cape", "shor
 
 
 # ---------------------------------------------------------------- fetching
-def http_json(url: str, tries: int = 4, timeout: int = 180) -> object:
+def http_json(url: str, tries: int = 3, timeout: int = 90) -> object:
     last = None
     for i in range(tries):
         try:
@@ -74,11 +77,12 @@ def http_json(url: str, tries: int = 4, timeout: int = 180) -> object:
     raise last  # type: ignore[misc]
 
 
-def level_vars(levels):
+def level_vars(levels, heights=True):
     out = []
     for L in levels:
-        out += [f"temperature_{L}hPa", f"wind_speed_{L}hPa", f"wind_direction_{L}hPa",
-                f"geopotential_height_{L}hPa"]
+        out += [f"temperature_{L}hPa", f"wind_speed_{L}hPa", f"wind_direction_{L}hPa"]
+        if heights:
+            out.append(f"geopotential_height_{L}hPa")
     return out
 
 
@@ -115,12 +119,21 @@ def fetch_model(kind, name, ids, sites, log):
     if kind == "det":
         base, hourly = "https://api.open-meteo.com/v1/forecast", SURFACE_VARS + ["boundary_layer_height"] + level_vars(DET_LEVELS)
     else:
-        base, hourly = "https://ensemble-api.open-meteo.com/v1/ensemble", SURFACE_VARS + level_vars(ENS_LEVELS)
+        base, hourly = "https://ensemble-api.open-meteo.com/v1/ensemble", ENS_VARS + level_vars(ENS_LEVELS, heights=False)
+    t0 = time.time()
     for mid in ids:
         for hv in (hourly, [v for v in hourly if v != "boundary_layer_height"]):
             try:
-                data = http_json(om_url(base, sites, mid, hv))
-                data = data if isinstance(data, list) else [data]
+                if kind == "det":
+                    data = http_json(om_url(base, sites, mid, hv))
+                    data = data if isinstance(data, list) else [data]
+                else:   # one site per request keeps each ensemble response small and fast
+                    data = []
+                    for site in sites:
+                        if time.time() - t0 > 240:
+                            raise TimeoutError("ensemble took longer than 4 minutes")
+                        d = http_json(om_url(base, [site], mid, hv), tries=2, timeout=60)
+                        data.append(d[0] if isinstance(d, list) else d)
                 log.append(f"{name}: ok ({mid})")
                 info = {"name": name, "kind": "model" if kind == "det" else "ensemble",
                         "provider": "Open-Meteo", "id": mid, "status": "ok",
