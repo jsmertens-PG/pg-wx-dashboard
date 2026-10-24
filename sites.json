@@ -336,6 +336,49 @@
       ],
       "blocked": [],
       "note": "Flight park on the San Jacinto front."
+    },
+    {
+      "id": "santabarbara",
+      "name": "Santa Barbara (Skyport)",
+      "short": "Santa Barbara",
+      "tier": "other",
+      "lat": 34.476,
+      "lon": -119.703,
+      "launch_ft": 2500,
+      "kind": "thermal",
+      "dir": [
+        150,
+        250
+      ],
+      "wind_mph": [
+        3,
+        15
+      ],
+      "aloft_max_kt": 15,
+      "aloft_bad": [
+        300,
+        90
+      ],
+      "xc_top_ft": 5000,
+      "xc_span_ft": 2000,
+      "routes": [
+        {
+          "to": 100,
+          "text": "east along the range to Montecito / Carpinteria"
+        },
+        {
+          "to": 280,
+          "text": "west along the range toward Gaviota"
+        }
+      ],
+      "blocked": [
+        {
+          "from": 120,
+          "to": 240,
+          "why": "the channel"
+        }
+      ],
+      "note": "South-facing front range above Santa Barbara. Sundowners and other north winds are over the back."
     }
   ]
 }
