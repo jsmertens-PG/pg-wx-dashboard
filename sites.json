@@ -1,0 +1,341 @@
+{
+  "_note": "Starting values to check against the SDHGPA guide and your own tracks. Directions are where the wind blows FROM (degrees). Launch wind in mph, wind aloft in knots. 'aloft_bad' is the range of wind-aloft directions that kills the site (offshore, over the back). 'routes' are XC directions (degrees you fly TOWARD) with a short description; 'blocked' are directions where drift takes you into airspace, sea or the border.",
+  "sites": [
+    {
+      "id": "lb",
+      "name": "Little Black",
+      "short": "LB",
+      "tier": "main",
+      "lat": 32.976,
+      "lon": -117.118,
+      "launch_ft": 900,
+      "kind": "thermal",
+      "dir": [
+        200,
+        320
+      ],
+      "wind_mph": [
+        3,
+        15
+      ],
+      "aloft_max_kt": 15,
+      "aloft_bad": [
+        10,
+        130
+      ],
+      "xc_top_ft": 3800,
+      "xc_span_ft": 2500,
+      "routes": [
+        {
+          "to": 30,
+          "text": "north-east to San Pasqual / Lake Hodges"
+        },
+        {
+          "to": 75,
+          "text": "east to Woodson / Ramona (watch Ramona airspace)"
+        },
+        {
+          "to": 5,
+          "text": "north toward Palomar / Dudley's"
+        }
+      ],
+      "blocked": [
+        {
+          "from": 140,
+          "to": 280,
+          "why": "Miramar airspace and the coast"
+        }
+      ],
+      "note": "Best post-frontal site in the county. West-facing: offshore mornings put launch in the lee. Glass-off common late in the day."
+    },
+    {
+      "id": "blossom",
+      "name": "Blossom Valley",
+      "short": "Blossom",
+      "tier": "main",
+      "lat": 32.862,
+      "lon": -116.872,
+      "launch_ft": 1800,
+      "kind": "thermal",
+      "dir": [
+        200,
+        300
+      ],
+      "wind_mph": [
+        3,
+        15
+      ],
+      "aloft_max_kt": 15,
+      "aloft_bad": [
+        10,
+        130
+      ],
+      "xc_top_ft": 5000,
+      "xc_span_ft": 3000,
+      "routes": [
+        {
+          "to": 45,
+          "text": "north-east to Ramona / Santa Ysabel"
+        },
+        {
+          "to": 90,
+          "text": "east toward the Laguna range"
+        }
+      ],
+      "blocked": [
+        {
+          "from": 150,
+          "to": 290,
+          "why": "El Cajon / Gillespie / Miramar airspace"
+        }
+      ],
+      "note": "Inland thermal site; strong midday air in summer."
+    },
+    {
+      "id": "elsinore",
+      "name": "Elsinore (E / Edwards)",
+      "short": "Elsinore",
+      "tier": "main",
+      "lat": 33.632,
+      "lon": -117.387,
+      "launch_ft": 2700,
+      "kind": "convergence",
+      "dir": [
+        30,
+        160
+      ],
+      "wind_mph": [
+        2,
+        14
+      ],
+      "aloft_max_kt": 12,
+      "aloft_bad": [
+        230,
+        320
+      ],
+      "xc_top_ft": 6000,
+      "xc_span_ft": 3000,
+      "routes": [
+        {
+          "to": 140,
+          "text": "south-east along the convergence to Temecula"
+        },
+        {
+          "to": 320,
+          "text": "north-west along the ridge toward Corona"
+        },
+        {
+          "to": 60,
+          "text": "east across the valley to Perris / Hemet"
+        }
+      ],
+      "blocked": [],
+      "note": "East-facing over the lake. A strong west wind over the ridge means rotor; the sea-breeze convergence line is the XC engine. Evening glass-off over the lake."
+    },
+    {
+      "id": "torrey",
+      "name": "Torrey Pines",
+      "short": "Torrey",
+      "tier": "coast",
+      "lat": 32.889,
+      "lon": -117.251,
+      "launch_ft": 350,
+      "kind": "ridge",
+      "dir": [
+        245,
+        300
+      ],
+      "wind_mph": [
+        8,
+        20
+      ],
+      "aloft_max_kt": 25,
+      "aloft_bad": [
+        0,
+        160
+      ],
+      "xc_top_ft": 1300,
+      "routes": [
+        {
+          "to": 160,
+          "text": "south along the cliffs to La Jolla / Soledad"
+        },
+        {
+          "to": 340,
+          "text": "north up the coast to Del Mar"
+        }
+      ],
+      "blocked": [
+        {
+          "from": 200,
+          "to": 320,
+          "why": "the ocean"
+        }
+      ],
+      "note": "Mostly a wind site: steady W to WNW sea breeze. On rare thermal days you get well above the cliffs (1,200 ft+); the radar flags those as a Thermal day.",
+      "xc_span_ft": 1500
+    },
+    {
+      "id": "lagunahorse",
+      "name": "Laguna / Horse",
+      "short": "Laguna/Horse",
+      "tier": "other",
+      "lat": 32.8,
+      "lon": -116.46,
+      "launch_ft": 4600,
+      "kind": "convergence",
+      "dir": [
+        190,
+        290
+      ],
+      "wind_mph": [
+        4,
+        15
+      ],
+      "aloft_max_kt": 15,
+      "aloft_bad": [
+        320,
+        160
+      ],
+      "xc_top_ft": 9500,
+      "xc_span_ft": 3000,
+      "routes": [
+        {
+          "to": 330,
+          "text": "north-west along the convergence to Julian / Warner"
+        },
+        {
+          "to": 45,
+          "text": "north-east along the desert rim"
+        }
+      ],
+      "blocked": [
+        {
+          "from": 90,
+          "to": 200,
+          "why": "the border and the desert"
+        }
+      ],
+      "note": "Needs a real sea-breeze convergence: onshore SW at launch and no north or east wind aloft. Watch desert-slope wind advisories."
+    },
+    {
+      "id": "marshall",
+      "name": "Marshall / Crestline",
+      "short": "Marshall",
+      "tier": "other",
+      "lat": 34.211,
+      "lon": -117.299,
+      "launch_ft": 4000,
+      "kind": "thermal",
+      "dir": [
+        150,
+        260
+      ],
+      "wind_mph": [
+        3,
+        15
+      ],
+      "aloft_max_kt": 15,
+      "aloft_bad": [
+        320,
+        110
+      ],
+      "xc_top_ft": 8000,
+      "xc_span_ft": 3000,
+      "routes": [
+        {
+          "to": 100,
+          "text": "east along the front range toward Big Bear"
+        },
+        {
+          "to": 290,
+          "text": "west along the San Gabriels"
+        }
+      ],
+      "blocked": [
+        {
+          "from": 170,
+          "to": 250,
+          "why": "Ontario / San Bernardino airspace"
+        }
+      ],
+      "note": "South-facing above San Bernardino."
+    },
+    {
+      "id": "otay",
+      "name": "Otay",
+      "short": "Otay",
+      "tier": "other",
+      "lat": 32.595,
+      "lon": -116.86,
+      "launch_ft": 1800,
+      "kind": "thermal",
+      "dir": [
+        200,
+        300
+      ],
+      "wind_mph": [
+        3,
+        15
+      ],
+      "aloft_max_kt": 15,
+      "aloft_bad": [
+        10,
+        130
+      ],
+      "xc_top_ft": 5000,
+      "xc_span_ft": 3000,
+      "routes": [
+        {
+          "to": 40,
+          "text": "north-east toward Jamul / Lyons"
+        }
+      ],
+      "blocked": [
+        {
+          "from": 120,
+          "to": 260,
+          "why": "the border"
+        }
+      ],
+      "note": "Near the border; XC only north and east."
+    },
+    {
+      "id": "soboba",
+      "name": "Soboba",
+      "short": "Soboba",
+      "tier": "other",
+      "lat": 33.795,
+      "lon": -116.925,
+      "launch_ft": 2600,
+      "kind": "thermal",
+      "dir": [
+        180,
+        290
+      ],
+      "wind_mph": [
+        3,
+        15
+      ],
+      "aloft_max_kt": 15,
+      "aloft_bad": [
+        320,
+        120
+      ],
+      "xc_top_ft": 7000,
+      "xc_span_ft": 3000,
+      "routes": [
+        {
+          "to": 120,
+          "text": "south-east along the San Jacinto front"
+        },
+        {
+          "to": 300,
+          "text": "north-west toward Beaumont"
+        }
+      ],
+      "blocked": [],
+      "note": "Commercial flight park on the San Jacinto front."
+    }
+  ]
+}

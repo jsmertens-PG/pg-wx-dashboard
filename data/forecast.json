@@ -1,0 +1,6938 @@
+{
+ "generated": "2026-10-24T02:48+00:00",
+ "sample": true,
+ "models": {
+  "HRRR": "sample",
+  "NAM": "sample",
+  "GFS": "sample",
+  "ECMWF": "sample",
+  "ICON": "sample"
+ },
+ "ensembles": {
+  "GFS ens": "sample",
+  "ECMWF ens": "sample"
+ },
+ "log": [
+  "sample data"
+ ],
+ "sources": [
+  {
+   "name": "HRRR",
+   "kind": "model",
+   "provider": "Open-Meteo (sample)",
+   "id": "hrrr",
+   "status": "sample",
+   "run": "2026-10-23T23:00+00:00",
+   "fetched": "2026-10-24T02:48+00:00",
+   "url": "https://open-meteo.com/en/docs"
+  },
+  {
+   "name": "NAM",
+   "kind": "model",
+   "provider": "Open-Meteo (sample)",
+   "id": "nam",
+   "status": "sample",
+   "run": "2026-10-23T23:00+00:00",
+   "fetched": "2026-10-24T02:48+00:00",
+   "url": "https://open-meteo.com/en/docs"
+  },
+  {
+   "name": "GFS",
+   "kind": "model",
+   "provider": "Open-Meteo (sample)",
+   "id": "gfs",
+   "status": "sample",
+   "run": "2026-10-23T23:00+00:00",
+   "fetched": "2026-10-24T02:48+00:00",
+   "url": "https://open-meteo.com/en/docs"
+  },
+  {
+   "name": "ECMWF",
+   "kind": "model",
+   "provider": "Open-Meteo (sample)",
+   "id": "ecmwf",
+   "status": "sample",
+   "run": "2026-10-23T23:00+00:00",
+   "fetched": "2026-10-24T02:48+00:00",
+   "url": "https://open-meteo.com/en/docs"
+  },
+  {
+   "name": "ICON",
+   "kind": "model",
+   "provider": "Open-Meteo (sample)",
+   "id": "icon",
+   "status": "sample",
+   "run": "2026-10-23T23:00+00:00",
+   "fetched": "2026-10-24T02:48+00:00",
+   "url": "https://open-meteo.com/en/docs"
+  },
+  {
+   "name": "GFS ens",
+   "kind": "ensemble",
+   "provider": "Open-Meteo (sample)",
+   "id": "gfs ens",
+   "status": "sample",
+   "run": "2026-10-23T23:00+00:00",
+   "fetched": "2026-10-24T02:48+00:00",
+   "url": "https://open-meteo.com/en/docs/ensemble-api"
+  },
+  {
+   "name": "ECMWF ens",
+   "kind": "ensemble",
+   "provider": "Open-Meteo (sample)",
+   "id": "ecmwf ens",
+   "status": "sample",
+   "run": "2026-10-23T23:00+00:00",
+   "fetched": "2026-10-24T02:48+00:00",
+   "url": "https://open-meteo.com/en/docs/ensemble-api"
+  },
+  {
+   "name": "NWS San Diego forecast discussion",
+   "kind": "text",
+   "provider": "NWS (sample)",
+   "id": "AFD SGX",
+   "status": "sample",
+   "run": "2026-10-23T23:00+00:00",
+   "fetched": "2026-10-24T02:48+00:00",
+   "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
+  }
+ ],
+ "nws": {
+  "issued": "2026-10-24T02:48+00:00",
+  "synopsis": "SAMPLE TEXT. Showers and a slight chance of thunderstorms through Friday morning, ending from the northwest. Dry and warmer for the weekend with weak offshore flow Saturday morning.",
+  "systems": [
+   "SAMPLE. The upper low near Point Conception moves northeast into Nevada this evening.",
+   "SAMPLE. A shortwave on its west side develops into a closed low over southern California late Friday.",
+   "SAMPLE. Offshore flow Saturday with north to northeast winds in the mornings; weakening Sunday."
+  ],
+  "aviation": "SAMPLE. SCT SHRA and isolated TSRA decreasing after 15Z. Bases 3500-4500 ft MSL.",
+  "advisories": "CA...None.",
+  "flags": [
+   "Showers",
+   "Thunderstorms",
+   "Offshore / Santa Ana"
+  ],
+  "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
+ },
+ "sites": [
+  {
+   "id": "lb",
+   "name": "Little Black",
+   "short": "LB",
+   "tier": "main",
+   "launch_ft": 900,
+   "kind": "thermal",
+   "xc_top_ft": 3800,
+   "note": "Best post-frontal site in the county. West-facing: offshore mornings put launch in the lee. Glass-off common late in the day."
+  },
+  {
+   "id": "blossom",
+   "name": "Blossom Valley",
+   "short": "Blossom",
+   "tier": "main",
+   "launch_ft": 1800,
+   "kind": "thermal",
+   "xc_top_ft": 5000,
+   "note": "Inland thermal site; strong midday air in summer."
+  },
+  {
+   "id": "elsinore",
+   "name": "Elsinore (E / Edwards)",
+   "short": "Elsinore",
+   "tier": "main",
+   "launch_ft": 2700,
+   "kind": "convergence",
+   "xc_top_ft": 6000,
+   "note": "East-facing over the lake. A strong west wind over the ridge means rotor; the sea-breeze convergence line is the XC engine. Evening glass-off over the lake."
+  },
+  {
+   "id": "torrey",
+   "name": "Torrey Pines",
+   "short": "Torrey",
+   "tier": "coast",
+   "launch_ft": 350,
+   "kind": "ridge",
+   "xc_top_ft": 1300,
+   "note": "Mostly a wind site: steady W to WNW sea breeze. On rare thermal days you get well above the cliffs (1,200 ft+); the radar flags those as a Thermal day."
+  },
+  {
+   "id": "lagunahorse",
+   "name": "Laguna / Horse",
+   "short": "Laguna/Horse",
+   "tier": "other",
+   "launch_ft": 4600,
+   "kind": "convergence",
+   "xc_top_ft": 9500,
+   "note": "Needs a real sea-breeze convergence: onshore SW at launch and no north or east wind aloft. Watch desert-slope wind advisories."
+  },
+  {
+   "id": "marshall",
+   "name": "Marshall / Crestline",
+   "short": "Marshall",
+   "tier": "other",
+   "launch_ft": 4000,
+   "kind": "thermal",
+   "xc_top_ft": 8000,
+   "note": "South-facing above San Bernardino."
+  },
+  {
+   "id": "otay",
+   "name": "Otay",
+   "short": "Otay",
+   "tier": "other",
+   "launch_ft": 1800,
+   "kind": "thermal",
+   "xc_top_ft": 5000,
+   "note": "Near the border; XC only north and east."
+  },
+  {
+   "id": "soboba",
+   "name": "Soboba",
+   "short": "Soboba",
+   "tier": "other",
+   "launch_ft": 2600,
+   "kind": "thermal",
+   "xc_top_ft": 7000,
+   "note": "Commercial flight park on the San Jacinto front."
+  }
+ ],
+ "days": [
+  {
+   "date": "2026-10-23",
+   "sites": {
+    "lb": {
+     "rating": 4.9,
+     "label": "Thermal",
+     "tags": [],
+     "xc": false,
+     "note": "local, lift to 4,300 ft, best 12pm\u20133pm",
+     "p_fly": 0.91,
+     "p_xc": 0.77,
+     "agree": "split",
+     "models": {
+      "HRRR": 6.5,
+      "NAM": 5.9,
+      "GFS": 3.1,
+      "ECMWF": 4.1,
+      "ICON": 3.4
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "12pm\u20133pm",
+     "top_ft": 4300.0,
+     "base_ft": 4300.0,
+     "wind": "W 10",
+     "aloft": "SW 8",
+     "aloft_max_kt": 9,
+     "rain_mm": 3.4,
+     "cape": 717,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2995,
+       "lw": 5,
+       "ld": 280,
+       "pr": 1.1
+      },
+      {
+       "h": 10,
+       "q": 0.71,
+       "xc": false,
+       "glass": true,
+       "top_ft": 3570,
+       "lw": 10,
+       "ld": 288,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.51,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4021,
+       "lw": 9,
+       "ld": 270,
+       "pr": 0.9
+      },
+      {
+       "h": 12,
+       "q": 0.56,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4308,
+       "lw": 11,
+       "ld": 280,
+       "pr": 0.3
+      },
+      {
+       "h": 13,
+       "q": 0.98,
+       "xc": true,
+       "glass": false,
+       "top_ft": 4431,
+       "lw": 7,
+       "ld": 262,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.94,
+       "xc": true,
+       "glass": false,
+       "top_ft": 4308,
+       "lw": 10,
+       "ld": 252,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.51,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4021,
+       "lw": 10,
+       "ld": 265,
+       "pr": 0.4
+      },
+      {
+       "h": 16,
+       "q": 0.71,
+       "xc": false,
+       "glass": true,
+       "top_ft": 3570,
+       "lw": 9,
+       "ld": 279,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.32,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2995,
+       "lw": 5,
+       "ld": 268,
+       "pr": 0.4
+      },
+      {
+       "h": 18,
+       "q": 0.2,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2298,
+       "lw": 4,
+       "ld": 271,
+       "pr": 0.3
+      }
+     ]
+    },
+    "blossom": {
+     "rating": 3.7,
+     "label": "Marginal",
+     "tags": [],
+     "xc": false,
+     "note": "showers nearby",
+     "p_fly": 0.5,
+     "p_xc": 0.0,
+     "agree": "mixed",
+     "models": {
+      "HRRR": 3.1,
+      "NAM": 5.8,
+      "GFS": 5.8,
+      "ECMWF": 4.0,
+      "ICON": 3.2
+     },
+     "n_members": 22,
+     "lead": "HRRR",
+     "window": "12pm\u20133pm",
+     "top_ft": 5100.0,
+     "base_ft": 5100.0,
+     "wind": "W 10",
+     "aloft": "SW 7",
+     "aloft_max_kt": 9,
+     "rain_mm": 5.2,
+     "cape": 753,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.3,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3763,
+       "lw": 6,
+       "ld": 273,
+       "pr": 0.8
+      },
+      {
+       "h": 10,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4378,
+       "lw": 10,
+       "ld": 294,
+       "pr": 1.3
+      },
+      {
+       "h": 11,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4829,
+       "lw": 11,
+       "ld": 258,
+       "pr": 1.4
+      },
+      {
+       "h": 12,
+       "q": 0.55,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5116,
+       "lw": 11,
+       "ld": 279,
+       "pr": 0.3
+      },
+      {
+       "h": 13,
+       "q": 0.8,
+       "xc": true,
+       "glass": false,
+       "top_ft": 5198,
+       "lw": 8,
+       "ld": 249,
+       "pr": 0.2
+      },
+      {
+       "h": 14,
+       "q": 0.55,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5116,
+       "lw": 10,
+       "ld": 286,
+       "pr": 0.3
+      },
+      {
+       "h": 15,
+       "q": 0.49,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4829,
+       "lw": 11,
+       "ld": 262,
+       "pr": 0.3
+      },
+      {
+       "h": 16,
+       "q": 0.41,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4378,
+       "lw": 8,
+       "ld": 278,
+       "pr": 0.4
+      },
+      {
+       "h": 17,
+       "q": 0.5,
+       "xc": false,
+       "glass": true,
+       "top_ft": 3763,
+       "lw": 8,
+       "ld": 279,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.25,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3107,
+       "lw": 5,
+       "ld": 242,
+       "pr": 0.2
+      }
+     ]
+    },
+    "elsinore": {
+     "rating": 1.0,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "SW wind aloft",
+     "p_fly": 0.0,
+     "p_xc": 0.0,
+     "agree": "mixed",
+     "models": {
+      "HRRR": 1.5,
+      "NAM": 1.1,
+      "GFS": 1.0,
+      "ECMWF": 0.0,
+      "ICON": 0.0
+     },
+     "n_members": 22,
+     "lead": "HRRR",
+     "window": "1pm\u20134pm",
+     "top_ft": 5300.0,
+     "base_ft": 5300.0,
+     "wind": "E 10",
+     "aloft": "SW 8",
+     "aloft_max_kt": 9,
+     "rain_mm": 3.8,
+     "cape": 634,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.18,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4026,
+       "lw": 4,
+       "ld": 86,
+       "pr": 0.6
+      },
+      {
+       "h": 10,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4600,
+       "lw": 9,
+       "ld": 88,
+       "pr": 1.5
+      },
+      {
+       "h": 11,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5051,
+       "lw": 9,
+       "ld": 88,
+       "pr": 1.3
+      },
+      {
+       "h": 12,
+       "q": 0.17,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5338,
+       "lw": 10,
+       "ld": 89,
+       "pr": 0.1
+      },
+      {
+       "h": 13,
+       "q": 0.14,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5461,
+       "lw": 9,
+       "ld": 97,
+       "pr": 0.2
+      },
+      {
+       "h": 14,
+       "q": 0.15,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5338,
+       "lw": 10,
+       "ld": 85,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.62,
+       "xc": false,
+       "glass": true,
+       "top_ft": 5051,
+       "lw": 10,
+       "ld": 81,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.1,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4600,
+       "lw": 9,
+       "ld": 99,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.1,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4026,
+       "lw": 9,
+       "ld": 81,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.03,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3328,
+       "lw": 3,
+       "ld": 260,
+       "pr": 0.1
+      }
+     ]
+    },
+    "torrey": {
+     "rating": 6.3,
+     "label": "Thermal day",
+     "tags": [],
+     "xc": true,
+     "note": "cold air aloft, thermals to about 3,800 ft, W 10 mph",
+     "p_fly": 1.0,
+     "p_xc": 0.5,
+     "agree": "split",
+     "models": {
+      "HRRR": 3.4,
+      "NAM": 4.3,
+      "GFS": 7.4,
+      "ECMWF": 7.4,
+      "ICON": 6.8
+     },
+     "n_members": 22,
+     "lead": "ICON",
+     "window": "12pm\u20133pm",
+     "top_ft": 3800.0,
+     "base_ft": 3800.0,
+     "wind": "W 10",
+     "aloft": "SW 7",
+     "aloft_max_kt": 9,
+     "rain_mm": 3.9,
+     "cape": 654,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.18,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2513,
+       "lw": 8,
+       "ld": 274,
+       "pr": 0.3
+      },
+      {
+       "h": 10,
+       "q": 0.6,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3087,
+       "lw": 10,
+       "ld": 272,
+       "pr": 0.9
+      },
+      {
+       "h": 11,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3538,
+       "lw": 9,
+       "ld": 270,
+       "pr": 1.3
+      },
+      {
+       "h": 12,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 3825,
+       "lw": 10,
+       "ld": 266,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.6,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3948,
+       "lw": 11,
+       "ld": 275,
+       "pr": 0.4
+      },
+      {
+       "h": 14,
+       "q": 0.85,
+       "xc": true,
+       "glass": false,
+       "top_ft": 3825,
+       "lw": 10,
+       "ld": 263,
+       "pr": 0.1
+      },
+      {
+       "h": 15,
+       "q": 0.85,
+       "xc": true,
+       "glass": false,
+       "top_ft": 3538,
+       "lw": 11,
+       "ld": 273,
+       "pr": 0.2
+      },
+      {
+       "h": 16,
+       "q": 0.6,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3087,
+       "lw": 11,
+       "ld": 264,
+       "pr": 0.5
+      },
+      {
+       "h": 17,
+       "q": 0.26,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2513,
+       "lw": 7,
+       "ld": 267,
+       "pr": 0.2
+      },
+      {
+       "h": 18,
+       "q": 0.3,
+       "xc": false,
+       "glass": true,
+       "top_ft": 1816,
+       "lw": 8,
+       "ld": 281,
+       "pr": 0.0
+      }
+     ]
+    },
+    "lagunahorse": {
+     "rating": 2.1,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "strong wind aloft",
+     "p_fly": 0.14,
+     "p_xc": 0.0,
+     "agree": "split",
+     "models": {
+      "HRRR": 3.8,
+      "NAM": 0.6,
+      "GFS": 1.8,
+      "ECMWF": 3.8,
+      "ICON": 0.8
+     },
+     "n_members": 22,
+     "lead": "GFS",
+     "window": "11am\u20132pm",
+     "top_ft": 6300.0,
+     "base_ft": 6300.0,
+     "wind": "W 10",
+     "aloft": "SW 9",
+     "aloft_max_kt": 10,
+     "rain_mm": 3.5,
+     "cape": 613,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.08,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4972,
+       "lw": 6,
+       "ld": 278,
+       "pr": 0.9
+      },
+      {
+       "h": 10,
+       "q": 0.12,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5587,
+       "lw": 10,
+       "ld": 274,
+       "pr": 0.7
+      },
+      {
+       "h": 11,
+       "q": 0.29,
+       "xc": false,
+       "glass": false,
+       "top_ft": 6038,
+       "lw": 8,
+       "ld": 257,
+       "pr": 0.1
+      },
+      {
+       "h": 12,
+       "q": 0.36,
+       "xc": false,
+       "glass": false,
+       "top_ft": 6325,
+       "lw": 11,
+       "ld": 288,
+       "pr": 0.1
+      },
+      {
+       "h": 13,
+       "q": 0.43,
+       "xc": false,
+       "glass": false,
+       "top_ft": 6407,
+       "lw": 10,
+       "ld": 271,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.26,
+       "xc": false,
+       "glass": false,
+       "top_ft": 6325,
+       "lw": 11,
+       "ld": 275,
+       "pr": 0.5
+      },
+      {
+       "h": 15,
+       "q": 0.2,
+       "xc": false,
+       "glass": false,
+       "top_ft": 6038,
+       "lw": 12,
+       "ld": 264,
+       "pr": 0.5
+      },
+      {
+       "h": 16,
+       "q": 0.17,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5587,
+       "lw": 8,
+       "ld": 279,
+       "pr": 0.2
+      },
+      {
+       "h": 17,
+       "q": 0.14,
+       "xc": false,
+       "glass": true,
+       "top_ft": 4972,
+       "lw": 10,
+       "ld": 277,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.09,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4275,
+       "lw": 6,
+       "ld": 266,
+       "pr": 0.5
+      }
+     ]
+    },
+    "marshall": {
+     "rating": 1.3,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "low lid, 5,500 ft",
+     "p_fly": 0.18,
+     "p_xc": 0.0,
+     "agree": "split",
+     "models": {
+      "HRRR": 1.4,
+      "NAM": 1.4,
+      "GFS": 1.4,
+      "ECMWF": 0.1,
+      "ICON": 3.8
+     },
+     "n_members": 22,
+     "lead": "HRRR",
+     "window": "1pm\u20134pm",
+     "top_ft": 5500.0,
+     "base_ft": 5500.0,
+     "wind": "SW 9",
+     "aloft": "SW 8",
+     "aloft_max_kt": 10,
+     "rain_mm": 3.8,
+     "cape": 666,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.09,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4162,
+       "lw": 8,
+       "ld": 230,
+       "pr": 0.7
+      },
+      {
+       "h": 10,
+       "q": 0.09,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4777,
+       "lw": 9,
+       "ld": 230,
+       "pr": 0.5
+      },
+      {
+       "h": 11,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5228,
+       "lw": 9,
+       "ld": 230,
+       "pr": 1.5
+      },
+      {
+       "h": 12,
+       "q": 0.22,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5515,
+       "lw": 8,
+       "ld": 230,
+       "pr": 0.4
+      },
+      {
+       "h": 13,
+       "q": 0.23,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5597,
+       "lw": 11,
+       "ld": 230,
+       "pr": 0.4
+      },
+      {
+       "h": 14,
+       "q": 0.36,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5515,
+       "lw": 9,
+       "ld": 230,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.27,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5228,
+       "lw": 7,
+       "ld": 230,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.13,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4777,
+       "lw": 6,
+       "ld": 230,
+       "pr": 0.1
+      },
+      {
+       "h": 17,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 4162,
+       "lw": 11,
+       "ld": 230,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.13,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3465,
+       "lw": 12,
+       "ld": 230,
+       "pr": 0.2
+      }
+     ]
+    },
+    "otay": {
+     "rating": 3.8,
+     "label": "Marginal",
+     "tags": [],
+     "xc": false,
+     "note": "showers nearby",
+     "p_fly": 0.73,
+     "p_xc": 0.23,
+     "agree": "mixed",
+     "models": {
+      "HRRR": 3.2,
+      "NAM": 5.8,
+      "GFS": 3.5,
+      "ECMWF": 3.0,
+      "ICON": 4.2
+     },
+     "n_members": 22,
+     "lead": "HRRR",
+     "window": "12pm\u20133pm",
+     "top_ft": 4900.0,
+     "base_ft": 4900.0,
+     "wind": "W 9",
+     "aloft": "SW 8",
+     "aloft_max_kt": 8,
+     "rain_mm": 3.7,
+     "cape": 665,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.25,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3519,
+       "lw": 8,
+       "ld": 272,
+       "pr": 0.9
+      },
+      {
+       "h": 10,
+       "q": 0.37,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4134,
+       "lw": 6,
+       "ld": 275,
+       "pr": 0.3
+      },
+      {
+       "h": 11,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4585,
+       "lw": 8,
+       "ld": 260,
+       "pr": 1.1
+      },
+      {
+       "h": 12,
+       "q": 0.71,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4872,
+       "lw": 9,
+       "ld": 279,
+       "pr": 0.1
+      },
+      {
+       "h": 13,
+       "q": 0.52,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4954,
+       "lw": 10,
+       "ld": 274,
+       "pr": 0.4
+      },
+      {
+       "h": 14,
+       "q": 0.71,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4872,
+       "lw": 9,
+       "ld": 270,
+       "pr": 0.1
+      },
+      {
+       "h": 15,
+       "q": 0.64,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4585,
+       "lw": 10,
+       "ld": 282,
+       "pr": 0.2
+      },
+      {
+       "h": 16,
+       "q": 0.52,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4134,
+       "lw": 11,
+       "ld": 267,
+       "pr": 0.1
+      },
+      {
+       "h": 17,
+       "q": 0.25,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3519,
+       "lw": 7,
+       "ld": 276,
+       "pr": 0.3
+      },
+      {
+       "h": 18,
+       "q": 0.19,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2863,
+       "lw": 7,
+       "ld": 252,
+       "pr": 0.2
+      }
+     ]
+    },
+    "soboba": {
+     "rating": 3.5,
+     "label": "Glass-off",
+     "tags": [
+      "post-frontal"
+     ],
+     "xc": false,
+     "note": "evening glass-off 5\u20137 pm",
+     "p_fly": 0.36,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "HRRR": 3.8,
+      "NAM": 3.4,
+      "GFS": 4.3,
+      "ECMWF": 3.8,
+      "ICON": 3.2
+     },
+     "n_members": 22,
+     "lead": "HRRR",
+     "window": "12pm\u20133pm",
+     "top_ft": 5300.0,
+     "base_ft": 5300.0,
+     "wind": "SW 8",
+     "aloft": "SW 7",
+     "aloft_max_kt": 8,
+     "rain_mm": 2.9,
+     "cape": 672,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.19,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3967,
+       "lw": 10,
+       "ld": 230,
+       "pr": 0.7
+      },
+      {
+       "h": 10,
+       "q": 0.29,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4541,
+       "lw": 6,
+       "ld": 230,
+       "pr": 0.8
+      },
+      {
+       "h": 11,
+       "q": 0.38,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5033,
+       "lw": 7,
+       "ld": 230,
+       "pr": 0.5
+      },
+      {
+       "h": 12,
+       "q": 0.73,
+       "xc": false,
+       "glass": true,
+       "top_ft": 5320,
+       "lw": 8,
+       "ld": 230,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.64,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5402,
+       "lw": 6,
+       "ld": 230,
+       "pr": 0.2
+      },
+      {
+       "h": 14,
+       "q": 0.73,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5320,
+       "lw": 10,
+       "ld": 230,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.38,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5033,
+       "lw": 5,
+       "ld": 230,
+       "pr": 0.4
+      },
+      {
+       "h": 16,
+       "q": 0.29,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4541,
+       "lw": 4,
+       "ld": 230,
+       "pr": 0.3
+      },
+      {
+       "h": 17,
+       "q": 0.32,
+       "xc": false,
+       "glass": true,
+       "top_ft": 3967,
+       "lw": 10,
+       "ld": 230,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 3269,
+       "lw": 8,
+       "ld": 230,
+       "pr": 0.0
+      }
+     ]
+    }
+   },
+   "best": "torrey",
+   "best_main": "lb",
+   "headline": "Local day. LB thermal (local, lift to 4,300 ft, best 12pm\u20133pm); Blossom marginal (showers nearby). Torrey thermal day: cold air aloft, thermals to about 3,800 ft, W 10 mph."
+  },
+  {
+   "date": "2026-10-24",
+   "sites": {
+    "lb": {
+     "rating": 8.9,
+     "label": "XC",
+     "tags": [
+      "post-frontal"
+     ],
+     "xc": true,
+     "note": "downwind east to Woodson / Ramona (watch Ramona airspace)",
+     "p_fly": 1.0,
+     "p_xc": 1.0,
+     "agree": "agree",
+     "models": {
+      "HRRR": 8.8,
+      "NAM": 9.0,
+      "GFS": 9.0,
+      "ECMWF": 8.9,
+      "ICON": 8.9
+     },
+     "n_members": 22,
+     "lead": "HRRR",
+     "window": "12pm\u20133pm",
+     "top_ft": 6200.0,
+     "base_ft": 6200.0,
+     "wind": "W 9",
+     "aloft": "WNW 7",
+     "aloft_max_kt": 11,
+     "rain_mm": 0.0,
+     "cape": 347,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 4846,
+       "lw": 7,
+       "ld": 263,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 5461,
+       "lw": 9,
+       "ld": 269,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 5912,
+       "lw": 7,
+       "ld": 264,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 6199,
+       "lw": 9,
+       "ld": 262,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 6281,
+       "lw": 11,
+       "ld": 262,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 6199,
+       "lw": 8,
+       "ld": 266,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 5912,
+       "lw": 10,
+       "ld": 268,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 5461,
+       "lw": 7,
+       "ld": 267,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 4846,
+       "lw": 8,
+       "ld": 262,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.87,
+       "xc": true,
+       "glass": true,
+       "top_ft": 4071,
+       "lw": 4,
+       "ld": 295,
+       "pr": 0.0
+      }
+     ]
+    },
+    "blossom": {
+     "rating": 8.3,
+     "label": "XC",
+     "tags": [
+      "post-frontal"
+     ],
+     "xc": true,
+     "note": "downwind east toward the Laguna range",
+     "p_fly": 1.0,
+     "p_xc": 1.0,
+     "agree": "agree",
+     "models": {
+      "HRRR": 7.9,
+      "NAM": 8.8,
+      "GFS": 8.3,
+      "ECMWF": 8.6,
+      "ICON": 8.5
+     },
+     "n_members": 22,
+     "lead": "HRRR",
+     "window": "12pm\u20133pm",
+     "top_ft": 6800.0,
+     "base_ft": 6800.0,
+     "wind": "W 10",
+     "aloft": "WNW 8",
+     "aloft_max_kt": 10,
+     "rain_mm": 0.0,
+     "cape": 325,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 5404,
+       "lw": 6,
+       "ld": 258,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 6019,
+       "lw": 9,
+       "ld": 275,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 6470,
+       "lw": 10,
+       "ld": 266,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 6757,
+       "lw": 10,
+       "ld": 256,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 6839,
+       "lw": 10,
+       "ld": 279,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 6757,
+       "lw": 9,
+       "ld": 274,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 6470,
+       "lw": 11,
+       "ld": 271,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 6019,
+       "lw": 10,
+       "ld": 262,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 5404,
+       "lw": 7,
+       "ld": 268,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.79,
+       "xc": false,
+       "glass": true,
+       "top_ft": 4706,
+       "lw": 5,
+       "ld": 276,
+       "pr": 0.0
+      }
+     ]
+    },
+    "elsinore": {
+     "rating": 0.5,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "WNW wind aloft",
+     "p_fly": 0.05,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "HRRR": 1.1,
+      "NAM": 0.9,
+      "GFS": 0.0,
+      "ECMWF": 0.0,
+      "ICON": 0.1
+     },
+     "n_members": 22,
+     "lead": "HRRR",
+     "window": "3pm\u20136pm",
+     "top_ft": 7200.0,
+     "base_ft": 7200.0,
+     "wind": "E 7",
+     "aloft": "WNW 9",
+     "aloft_max_kt": 9,
+     "rain_mm": 0.0,
+     "cape": 429,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.15,
+       "xc": false,
+       "glass": false,
+       "top_ft": 6609,
+       "lw": 9,
+       "ld": 71,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.14,
+       "xc": false,
+       "glass": false,
+       "top_ft": 7224,
+       "lw": 8,
+       "ld": 89,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.19,
+       "xc": false,
+       "glass": false,
+       "top_ft": 7676,
+       "lw": 10,
+       "ld": 110,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 0.21,
+       "xc": false,
+       "glass": false,
+       "top_ft": 7963,
+       "lw": 9,
+       "ld": 89,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.21,
+       "xc": false,
+       "glass": false,
+       "top_ft": 8045,
+       "lw": 8,
+       "ld": 88,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.1,
+       "xc": false,
+       "glass": false,
+       "top_ft": 7963,
+       "lw": 12,
+       "ld": 88,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.25,
+       "xc": false,
+       "glass": false,
+       "top_ft": 7676,
+       "lw": 7,
+       "ld": 103,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.21,
+       "xc": false,
+       "glass": false,
+       "top_ft": 7224,
+       "lw": 9,
+       "ld": 95,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.2,
+       "xc": false,
+       "glass": false,
+       "top_ft": 6609,
+       "lw": 4,
+       "ld": 93,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.2,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5912,
+       "lw": 4,
+       "ld": 263,
+       "pr": 0.0
+      }
+     ]
+    },
+    "torrey": {
+     "rating": 8.9,
+     "label": "Thermal day",
+     "tags": [
+      "post-frontal"
+     ],
+     "xc": true,
+     "note": "cold air aloft, thermals to about 6,500 ft, W 10 mph",
+     "p_fly": 1.0,
+     "p_xc": 1.0,
+     "agree": "agree",
+     "models": {
+      "HRRR": 9.0,
+      "NAM": 9.0,
+      "GFS": 9.0,
+      "ECMWF": 9.0,
+      "ICON": 9.0
+     },
+     "n_members": 22,
+     "lead": "HRRR",
+     "window": "12pm\u20133pm",
+     "top_ft": 6500.0,
+     "base_ft": 6500.0,
+     "wind": "W 10",
+     "aloft": "WNW 7",
+     "aloft_max_kt": 9,
+     "rain_mm": 0.0,
+     "cape": 333,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 4482,
+       "lw": 8,
+       "ld": 277,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.3,
+       "xc": false,
+       "glass": true,
+       "top_ft": 5748,
+       "lw": 8,
+       "ld": 274,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 6199,
+       "lw": 8,
+       "ld": 255,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 6486,
+       "lw": 11,
+       "ld": 268,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 6568,
+       "lw": 8,
+       "ld": 275,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 6486,
+       "lw": 10,
+       "ld": 266,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 6199,
+       "lw": 10,
+       "ld": 275,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.3,
+       "xc": false,
+       "glass": true,
+       "top_ft": 5748,
+       "lw": 7,
+       "ld": 271,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.3,
+       "xc": false,
+       "glass": true,
+       "top_ft": 4482,
+       "lw": 8,
+       "ld": 282,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.3,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2982,
+       "lw": 5,
+       "ld": 247,
+       "pr": 0.0
+      }
+     ]
+    },
+    "lagunahorse": {
+     "rating": 2.5,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "wind from behind launch",
+     "p_fly": 1.0,
+     "p_xc": 0.05,
+     "agree": "split",
+     "models": {
+      "HRRR": 0.0,
+      "NAM": 0.0,
+      "GFS": 4.9,
+      "ECMWF": 0.0,
+      "ICON": 1.4
+     },
+     "n_members": 22,
+     "lead": "ICON",
+     "window": "12pm\u20133pm",
+     "top_ft": 7800.0,
+     "base_ft": 7800.0,
+     "wind": "WNW 10",
+     "aloft": "WNW 8",
+     "aloft_max_kt": 9,
+     "rain_mm": 0.0,
+     "cape": 295,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 6411,
+       "lw": 11,
+       "ld": 300,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 7026,
+       "lw": 7,
+       "ld": 300,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 7477,
+       "lw": 11,
+       "ld": 300,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 7764,
+       "lw": 10,
+       "ld": 300,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 7846,
+       "lw": 10,
+       "ld": 300,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.86,
+       "xc": false,
+       "glass": false,
+       "top_ft": 7764,
+       "lw": 4,
+       "ld": 300,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 7477,
+       "lw": 11,
+       "ld": 300,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 7026,
+       "lw": 10,
+       "ld": 300,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 6411,
+       "lw": 13,
+       "ld": 300,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5755,
+       "lw": 10,
+       "ld": 300,
+       "pr": 0.0
+      }
+     ]
+    },
+    "marshall": {
+     "rating": 0.4,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "wind from behind launch",
+     "p_fly": 0.05,
+     "p_xc": 0.0,
+     "agree": "split",
+     "models": {
+      "HRRR": 0.0,
+      "NAM": 0.0,
+      "GFS": 0.0,
+      "ECMWF": 3.8,
+      "ICON": 0.0
+     },
+     "n_members": 22,
+     "lead": "HRRR",
+     "window": "12pm\u20133pm",
+     "top_ft": 8000.0,
+     "base_ft": 8000.0,
+     "wind": "WNW 10",
+     "aloft": "WNW 8",
+     "aloft_max_kt": 9,
+     "rain_mm": 0.0,
+     "cape": 449,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 6704,
+       "lw": 9,
+       "ld": 300,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 7279,
+       "lw": 10,
+       "ld": 300,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 7730,
+       "lw": 9,
+       "ld": 300,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 8017,
+       "lw": 7,
+       "ld": 300,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 8140,
+       "lw": 10,
+       "ld": 300,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 8017,
+       "lw": 11,
+       "ld": 300,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 7730,
+       "lw": 9,
+       "ld": 300,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 7279,
+       "lw": 8,
+       "ld": 300,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 6704,
+       "lw": 8,
+       "ld": 300,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 6007,
+       "lw": 10,
+       "ld": 300,
+       "pr": 0.0
+      }
+     ]
+    },
+    "otay": {
+     "rating": 8.5,
+     "label": "XC",
+     "tags": [
+      "post-frontal"
+     ],
+     "xc": true,
+     "note": "drift south-east into the border: go crosswind north-east toward Jamul / Lyons",
+     "p_fly": 1.0,
+     "p_xc": 1.0,
+     "agree": "agree",
+     "models": {
+      "HRRR": 8.4,
+      "NAM": 8.5,
+      "GFS": 7.9,
+      "ECMWF": 8.5,
+      "ICON": 8.6
+     },
+     "n_members": 22,
+     "lead": "HRRR",
+     "window": "12pm\u20133pm",
+     "top_ft": 7300.0,
+     "base_ft": 7300.0,
+     "wind": "W 12",
+     "aloft": "WNW 8",
+     "aloft_max_kt": 10,
+     "rain_mm": 0.0,
+     "cape": 507,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 5979,
+       "lw": 8,
+       "ld": 251,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 6594,
+       "lw": 7,
+       "ld": 271,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 7046,
+       "lw": 8,
+       "ld": 260,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 7333,
+       "lw": 12,
+       "ld": 275,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 7415,
+       "lw": 12,
+       "ld": 284,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 1.0,
+       "xc": true,
+       "glass": false,
+       "top_ft": 7333,
+       "lw": 10,
+       "ld": 257,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 7046,
+       "lw": 10,
+       "ld": 272,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 6594,
+       "lw": 7,
+       "ld": 282,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 5979,
+       "lw": 6,
+       "ld": 265,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.96,
+       "xc": true,
+       "glass": true,
+       "top_ft": 5282,
+       "lw": 7,
+       "ld": 274,
+       "pr": 0.0
+      }
+     ]
+    },
+    "soboba": {
+     "rating": 5.8,
+     "label": "Thermal",
+     "tags": [
+      "post-frontal",
+      "glass-off"
+     ],
+     "xc": false,
+     "note": "local, lift to 7,800 ft, best 12pm\u20133pm, glass-off later",
+     "p_fly": 0.5,
+     "p_xc": 0.5,
+     "agree": "split",
+     "models": {
+      "HRRR": 0.0,
+      "NAM": 7.1,
+      "GFS": 7.3,
+      "ECMWF": 7.5,
+      "ICON": 1.7
+     },
+     "n_members": 22,
+     "lead": "NAM",
+     "window": "12pm\u20133pm",
+     "top_ft": 7800.0,
+     "base_ft": 7800.0,
+     "wind": "W 10",
+     "aloft": "WNW 8",
+     "aloft_max_kt": 10,
+     "rain_mm": 0.0,
+     "cape": 382,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 1.0,
+       "xc": false,
+       "glass": true,
+       "top_ft": 6486,
+       "lw": 6,
+       "ld": 265,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 7101,
+       "lw": 9,
+       "ld": 268,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 7552,
+       "lw": 8,
+       "ld": 255,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 7840,
+       "lw": 10,
+       "ld": 274,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 7922,
+       "lw": 9,
+       "ld": 269,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 7840,
+       "lw": 11,
+       "ld": 257,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 7552,
+       "lw": 9,
+       "ld": 276,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 7101,
+       "lw": 8,
+       "ld": 267,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 1.0,
+       "xc": false,
+       "glass": true,
+       "top_ft": 6486,
+       "lw": 8,
+       "ld": 273,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.87,
+       "xc": false,
+       "glass": true,
+       "top_ft": 5789,
+       "lw": 5,
+       "ld": 256,
+       "pr": 0.0
+      }
+     ]
+    }
+   },
+   "best": "lb",
+   "best_main": "lb",
+   "headline": "XC day. LB 8.9: downwind east to Woodson / Ramona (watch Ramona airspace). Also XC: Otay, Blossom. Torrey thermal day: cold air aloft, thermals to about 6,500 ft, W 10 mph."
+  },
+  {
+   "date": "2026-10-25",
+   "sites": {
+    "lb": {
+     "rating": 0.2,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "wind from behind launch",
+     "p_fly": 0.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "NAM": 0.0,
+      "GFS": 0.0,
+      "ECMWF": 0.1,
+      "ICON": 0.1
+     },
+     "n_members": 22,
+     "lead": "NAM",
+     "window": "9am\u201312pm",
+     "top_ft": 2000.0,
+     "base_ft": 11400.0,
+     "wind": "NE 11",
+     "aloft": "NE 12",
+     "aloft_max_kt": 14,
+     "rain_mm": 0.0,
+     "cape": 92,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 1799,
+       "lw": 9,
+       "ld": 49,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 1951,
+       "lw": 11,
+       "ld": 48,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2076,
+       "lw": 13,
+       "ld": 40,
+       "pr": 0.0
+      }
+     ]
+    },
+    "blossom": {
+     "rating": 0.0,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "wind from behind launch",
+     "p_fly": 0.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "NAM": 0.0,
+      "GFS": 0.0,
+      "ECMWF": 0.0,
+      "ICON": 0.0
+     },
+     "n_members": 22,
+     "lead": "NAM",
+     "window": "9am\u201312pm",
+     "top_ft": 2400.0,
+     "base_ft": 11600.0,
+     "wind": "NE 10",
+     "aloft": "NE 12",
+     "aloft_max_kt": 12,
+     "rain_mm": 0.0,
+     "cape": 123,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2225,
+       "lw": 9,
+       "ld": 55,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2379,
+       "lw": 12,
+       "ld": 55,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2504,
+       "lw": 10,
+       "ld": 49,
+       "pr": 0.0
+      }
+     ]
+    },
+    "elsinore": {
+     "rating": 0.5,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "strong wind aloft",
+     "p_fly": 0.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "NAM": 0.3,
+      "GFS": 0.5,
+      "ECMWF": 0.6,
+      "ICON": 0.5
+     },
+     "n_members": 22,
+     "lead": "NAM",
+     "window": "9am\u201312pm",
+     "top_ft": 2600.0,
+     "base_ft": 11800.0,
+     "wind": "NE 12",
+     "aloft": "NE 13",
+     "aloft_max_kt": 14,
+     "rain_mm": 0.0,
+     "cape": 124,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.07,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2453,
+       "lw": 14,
+       "ld": 40,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.05,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2616,
+       "lw": 12,
+       "ld": 40,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.08,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2760,
+       "lw": 12,
+       "ld": 40,
+       "pr": 0.0
+      }
+     ]
+    },
+    "torrey": {
+     "rating": 2.8,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "wind from behind launch",
+     "p_fly": 1.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "NAM": 0.0,
+      "GFS": 0.6,
+      "ECMWF": 1.0,
+      "ICON": 0.7
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "3pm\u20136pm",
+     "top_ft": 1600.0,
+     "base_ft": 10300.0,
+     "wind": "W 11",
+     "aloft": "NE 9",
+     "aloft_max_kt": 11,
+     "rain_mm": 0.0,
+     "cape": 111,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 1297,
+       "lw": 8,
+       "ld": 34,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 1552,
+       "lw": 10,
+       "ld": 35,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 1698,
+       "lw": 16,
+       "ld": 36,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 1775,
+       "lw": 13,
+       "ld": 60,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.14,
+       "xc": false,
+       "glass": false,
+       "top_ft": 1802,
+       "lw": 13,
+       "ld": 282,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.15,
+       "xc": false,
+       "glass": false,
+       "top_ft": 1775,
+       "lw": 13,
+       "ld": 256,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.26,
+       "xc": false,
+       "glass": false,
+       "top_ft": 1698,
+       "lw": 12,
+       "ld": 267,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.14,
+       "xc": false,
+       "glass": false,
+       "top_ft": 1552,
+       "lw": 11,
+       "ld": 277,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.24,
+       "xc": false,
+       "glass": false,
+       "top_ft": 1297,
+       "lw": 8,
+       "ld": 287,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.05,
+       "xc": false,
+       "glass": false,
+       "top_ft": 974,
+       "lw": 6,
+       "ld": 271,
+       "pr": 0.0
+      }
+     ]
+    },
+    "lagunahorse": {
+     "rating": 0.0,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "wind from behind launch",
+     "p_fly": 0.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "NAM": 0.0,
+      "GFS": 0.0,
+      "ECMWF": 0.0,
+      "ICON": 0.0
+     },
+     "n_members": 22,
+     "lead": "NAM",
+     "window": "9am\u201312pm",
+     "top_ft": 3300.0,
+     "base_ft": 11800.0,
+     "wind": "NE 17",
+     "aloft": "NE 15",
+     "aloft_max_kt": 17,
+     "rain_mm": 0.0,
+     "cape": 79,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3140,
+       "lw": 16,
+       "ld": 40,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3346,
+       "lw": 19,
+       "ld": 40,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3568,
+       "lw": 17,
+       "ld": 40,
+       "pr": 0.0
+      }
+     ]
+    },
+    "marshall": {
+     "rating": 0.0,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "wind from behind launch",
+     "p_fly": 0.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "NAM": 0.0,
+      "GFS": 0.0,
+      "ECMWF": 0.0,
+      "ICON": 0.0
+     },
+     "n_members": 22,
+     "lead": "NAM",
+     "window": "9am\u201312pm",
+     "top_ft": 3700.0,
+     "base_ft": 11700.0,
+     "wind": "NE 16",
+     "aloft": "NE 15",
+     "aloft_max_kt": 15,
+     "rain_mm": 0.0,
+     "cape": 48,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3417,
+       "lw": 16,
+       "ld": 40,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3687,
+       "lw": 14,
+       "ld": 40,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3899,
+       "lw": 16,
+       "ld": 40,
+       "pr": 0.0
+      }
+     ]
+    },
+    "otay": {
+     "rating": 0.0,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "wind from behind launch",
+     "p_fly": 0.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "NAM": 0.0,
+      "GFS": 0.0,
+      "ECMWF": 0.0,
+      "ICON": 0.1
+     },
+     "n_members": 22,
+     "lead": "NAM",
+     "window": "9am\u201312pm",
+     "top_ft": 2500.0,
+     "base_ft": 12200.0,
+     "wind": "NE 10",
+     "aloft": "NE 13",
+     "aloft_max_kt": 14,
+     "rain_mm": 0.0,
+     "cape": 193,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2330,
+       "lw": 10,
+       "ld": 53,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2491,
+       "lw": 10,
+       "ld": 47,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2616,
+       "lw": 13,
+       "ld": 48,
+       "pr": 0.0
+      }
+     ]
+    },
+    "soboba": {
+     "rating": 0.0,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "wind from behind launch",
+     "p_fly": 0.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "NAM": 0.0,
+      "GFS": 0.0,
+      "ECMWF": 0.0,
+      "ICON": 0.0
+     },
+     "n_members": 22,
+     "lead": "NAM",
+     "window": "9am\u201312pm",
+     "top_ft": 2600.0,
+     "base_ft": 12300.0,
+     "wind": "NE 12",
+     "aloft": "NE 13",
+     "aloft_max_kt": 15,
+     "rain_mm": 0.0,
+     "cape": 0,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2478,
+       "lw": 8,
+       "ld": 66,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2643,
+       "lw": 12,
+       "ld": 43,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2791,
+       "lw": 13,
+       "ld": 50,
+       "pr": 0.0
+      }
+     ]
+    }
+   },
+   "best": "torrey",
+   "best_main": "elsinore",
+   "headline": "Poor at the main sites (strong wind aloft)."
+  },
+  {
+   "date": "2026-10-26",
+   "sites": {
+    "lb": {
+     "rating": 3.8,
+     "label": "Glass-off",
+     "tags": [],
+     "xc": false,
+     "note": "evening glass-off 4\u20136 pm",
+     "p_fly": 1.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 3.8,
+      "ECMWF": 3.8,
+      "ICON": 3.8
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "12pm\u20133pm",
+     "top_ft": 2400.0,
+     "base_ft": 9100.0,
+     "wind": "W 10",
+     "aloft": "W 7",
+     "aloft_max_kt": 9,
+     "rain_mm": 0.0,
+     "cape": 176,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.19,
+       "xc": false,
+       "glass": true,
+       "top_ft": 1866,
+       "lw": 6,
+       "ld": 289,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.29,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2165,
+       "lw": 7,
+       "ld": 270,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.34,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2344,
+       "lw": 9,
+       "ld": 260,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 0.37,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2439,
+       "lw": 10,
+       "ld": 260,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.38,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2478,
+       "lw": 13,
+       "ld": 286,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.37,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2439,
+       "lw": 10,
+       "ld": 272,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.34,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2344,
+       "lw": 10,
+       "ld": 281,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.29,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2165,
+       "lw": 7,
+       "ld": 272,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.19,
+       "xc": false,
+       "glass": true,
+       "top_ft": 1866,
+       "lw": 8,
+       "ld": 276,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.15,
+       "xc": false,
+       "glass": false,
+       "top_ft": 1486,
+       "lw": 3,
+       "ld": 277,
+       "pr": 0.0
+      }
+     ]
+    },
+    "blossom": {
+     "rating": 3.8,
+     "label": "Glass-off",
+     "tags": [],
+     "xc": false,
+     "note": "evening glass-off 4\u20137 pm",
+     "p_fly": 1.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 3.8,
+      "ECMWF": 3.8,
+      "ICON": 3.8
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "12pm\u20133pm",
+     "top_ft": 2900.0,
+     "base_ft": 9700.0,
+     "wind": "W 10",
+     "aloft": "W 6",
+     "aloft_max_kt": 7,
+     "rain_mm": 0.0,
+     "cape": 200,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2492,
+       "lw": 8,
+       "ld": 284,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.17,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2694,
+       "lw": 7,
+       "ld": 270,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.22,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2847,
+       "lw": 9,
+       "ld": 293,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 0.25,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2942,
+       "lw": 10,
+       "ld": 265,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.26,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2967,
+       "lw": 12,
+       "ld": 269,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.25,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2942,
+       "lw": 9,
+       "ld": 268,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.22,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2847,
+       "lw": 8,
+       "ld": 276,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.17,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2694,
+       "lw": 8,
+       "ld": 257,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2492,
+       "lw": 7,
+       "ld": 261,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2264,
+       "lw": 5,
+       "ld": 261,
+       "pr": 0.0
+      }
+     ]
+    },
+    "elsinore": {
+     "rating": 0.2,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "wind from behind launch",
+     "p_fly": 0.05,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 0.0,
+      "ECMWF": 0.1,
+      "ICON": 0.0
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "12pm\u20133pm",
+     "top_ft": 3100.0,
+     "base_ft": 9800.0,
+     "wind": "W 6",
+     "aloft": "W 8",
+     "aloft_max_kt": 9,
+     "rain_mm": 0.0,
+     "cape": 179,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2639,
+       "lw": 8,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.05,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2841,
+       "lw": 3,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2991,
+       "lw": 10,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3087,
+       "lw": 6,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3114,
+       "lw": 10,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.05,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3087,
+       "lw": 5,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2991,
+       "lw": 8,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2841,
+       "lw": 8,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2639,
+       "lw": 10,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2411,
+       "lw": 5,
+       "ld": 280,
+       "pr": 0.0
+      }
+     ]
+    },
+    "torrey": {
+     "rating": 5.0,
+     "label": "Ridge soaring",
+     "tags": [],
+     "xc": false,
+     "note": "W 10 mph, best 12pm\u20133pm",
+     "p_fly": 1.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 5.0,
+      "ECMWF": 5.0,
+      "ICON": 5.0
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "12pm\u20133pm",
+     "top_ft": 2200.0,
+     "base_ft": 9100.0,
+     "wind": "W 10",
+     "aloft": "W 6",
+     "aloft_max_kt": 7,
+     "rain_mm": 0.0,
+     "cape": 163,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.3,
+       "xc": false,
+       "glass": true,
+       "top_ft": 1483,
+       "lw": 7,
+       "ld": 288,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 1.0,
+       "xc": false,
+       "glass": true,
+       "top_ft": 1800,
+       "lw": 9,
+       "ld": 256,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 1.0,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2041,
+       "lw": 9,
+       "ld": 272,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 1.0,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2201,
+       "lw": 13,
+       "ld": 284,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 1.0,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2277,
+       "lw": 8,
+       "ld": 271,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 1.0,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2201,
+       "lw": 10,
+       "ld": 269,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 1.0,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2041,
+       "lw": 10,
+       "ld": 272,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.3,
+       "xc": false,
+       "glass": true,
+       "top_ft": 1800,
+       "lw": 6,
+       "ld": 272,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.3,
+       "xc": false,
+       "glass": true,
+       "top_ft": 1483,
+       "lw": 7,
+       "ld": 277,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.3,
+       "xc": false,
+       "glass": false,
+       "top_ft": 1103,
+       "lw": 3,
+       "ld": 274,
+       "pr": 0.0
+      }
+     ]
+    },
+    "lagunahorse": {
+     "rating": 3.8,
+     "label": "Glass-off",
+     "tags": [],
+     "xc": false,
+     "note": "evening glass-off 4\u20137 pm",
+     "p_fly": 1.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 3.8,
+      "ECMWF": 3.8,
+      "ICON": 3.8
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "12pm\u20133pm",
+     "top_ft": 4800.0,
+     "base_ft": 10500.0,
+     "wind": "W 8",
+     "aloft": "W 9",
+     "aloft_max_kt": 10,
+     "rain_mm": 0.0,
+     "cape": 171,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 4124,
+       "lw": 9,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 4425,
+       "lw": 9,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 4679,
+       "lw": 10,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 4839,
+       "lw": 8,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 4917,
+       "lw": 12,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 4839,
+       "lw": 8,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.11,
+       "xc": false,
+       "glass": true,
+       "top_ft": 4679,
+       "lw": 10,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 4425,
+       "lw": 5,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 4124,
+       "lw": 8,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 3737,
+       "lw": 9,
+       "ld": 280,
+       "pr": 0.0
+      }
+     ]
+    },
+    "marshall": {
+     "rating": 0.2,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "wind from behind launch",
+     "p_fly": 0.05,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 0.0,
+      "ECMWF": 0.5,
+      "ICON": 0.0
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "12pm\u20133pm",
+     "top_ft": 5300.0,
+     "base_ft": 11000.0,
+     "wind": "W 11",
+     "aloft": "W 9",
+     "aloft_max_kt": 10,
+     "rain_mm": 0.0,
+     "cape": 162,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4509,
+       "lw": 7,
+       "ld": 277,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4918,
+       "lw": 9,
+       "ld": 265,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5155,
+       "lw": 11,
+       "ld": 281,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5315,
+       "lw": 11,
+       "ld": 264,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5368,
+       "lw": 10,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.3,
+       "xc": false,
+       "glass": true,
+       "top_ft": 5315,
+       "lw": 12,
+       "ld": 257,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5155,
+       "lw": 12,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4918,
+       "lw": 8,
+       "ld": 264,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4509,
+       "lw": 8,
+       "ld": 286,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4123,
+       "lw": 6,
+       "ld": 263,
+       "pr": 0.0
+      }
+     ]
+    },
+    "otay": {
+     "rating": 3.8,
+     "label": "Glass-off",
+     "tags": [],
+     "xc": false,
+     "note": "evening glass-off 4\u20137 pm",
+     "p_fly": 1.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 3.8,
+      "ECMWF": 3.8,
+      "ICON": 3.8
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "12pm\u20133pm",
+     "top_ft": 2900.0,
+     "base_ft": 9500.0,
+     "wind": "W 11",
+     "aloft": "W 8",
+     "aloft_max_kt": 9,
+     "rain_mm": 0.0,
+     "cape": 193,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2495,
+       "lw": 8,
+       "ld": 269,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.17,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2696,
+       "lw": 11,
+       "ld": 266,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.22,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2846,
+       "lw": 7,
+       "ld": 272,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 0.25,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2941,
+       "lw": 11,
+       "ld": 266,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.26,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2969,
+       "lw": 12,
+       "ld": 276,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.25,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2941,
+       "lw": 11,
+       "ld": 272,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.22,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2846,
+       "lw": 9,
+       "ld": 281,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.17,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2696,
+       "lw": 9,
+       "ld": 258,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2495,
+       "lw": 7,
+       "ld": 255,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2266,
+       "lw": 4,
+       "ld": 271,
+       "pr": 0.0
+      }
+     ]
+    },
+    "soboba": {
+     "rating": 3.8,
+     "label": "Glass-off",
+     "tags": [],
+     "xc": false,
+     "note": "evening glass-off 4\u20137 pm",
+     "p_fly": 1.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 3.8,
+      "ECMWF": 3.8,
+      "ICON": 3.8
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "12pm\u20133pm",
+     "top_ft": 3700.0,
+     "base_ft": 10600.0,
+     "wind": "W 12",
+     "aloft": "W 7",
+     "aloft_max_kt": 8,
+     "rain_mm": 0.0,
+     "cape": 151,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 3204,
+       "lw": 6,
+       "ld": 258,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 3393,
+       "lw": 8,
+       "ld": 274,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.2,
+       "xc": false,
+       "glass": true,
+       "top_ft": 3591,
+       "lw": 11,
+       "ld": 276,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 0.25,
+       "xc": false,
+       "glass": true,
+       "top_ft": 3750,
+       "lw": 12,
+       "ld": 258,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.26,
+       "xc": false,
+       "glass": true,
+       "top_ft": 3797,
+       "lw": 12,
+       "ld": 281,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.25,
+       "xc": false,
+       "glass": true,
+       "top_ft": 3750,
+       "lw": 10,
+       "ld": 262,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.2,
+       "xc": false,
+       "glass": true,
+       "top_ft": 3591,
+       "lw": 10,
+       "ld": 273,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 3393,
+       "lw": 9,
+       "ld": 272,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 3204,
+       "lw": 6,
+       "ld": 250,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2970,
+       "lw": 6,
+       "ld": 281,
+       "pr": 0.0
+      }
+     ]
+    }
+   },
+   "best": "torrey",
+   "best_main": "lb",
+   "headline": "Local day. LB evening glass-off 4\u20136 pm; Blossom evening glass-off 4\u20137 pm. Torrey: W 10 mph, best 12pm\u20133pm."
+  },
+  {
+   "date": "2026-10-27",
+   "sites": {
+    "lb": {
+     "rating": 8.9,
+     "label": "XC",
+     "tags": [
+      "post-frontal"
+     ],
+     "xc": true,
+     "note": "downwind east to Woodson / Ramona (watch Ramona airspace)",
+     "p_fly": 1.0,
+     "p_xc": 1.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 8.9,
+      "ECMWF": 8.9,
+      "ICON": 9.0
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "12pm\u20133pm",
+     "top_ft": 6400.0,
+     "base_ft": 8200.0,
+     "wind": "W 9",
+     "aloft": "W 7",
+     "aloft_max_kt": 11,
+     "rain_mm": 0.0,
+     "cape": 147,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.91,
+       "xc": true,
+       "glass": true,
+       "top_ft": 4221,
+       "lw": 8,
+       "ld": 267,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 5227,
+       "lw": 8,
+       "ld": 260,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 5960,
+       "lw": 7,
+       "ld": 271,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 6411,
+       "lw": 9,
+       "ld": 272,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 6518,
+       "lw": 10,
+       "ld": 288,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 6411,
+       "lw": 9,
+       "ld": 255,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 5960,
+       "lw": 10,
+       "ld": 267,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 5227,
+       "lw": 9,
+       "ld": 287,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.91,
+       "xc": true,
+       "glass": true,
+       "top_ft": 4221,
+       "lw": 4,
+       "ld": 258,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.58,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3130,
+       "lw": 3,
+       "ld": 278,
+       "pr": 0.0
+      }
+     ]
+    },
+    "blossom": {
+     "rating": 9.0,
+     "label": "XC",
+     "tags": [],
+     "xc": true,
+     "note": "downwind east toward the Laguna range",
+     "p_fly": 1.0,
+     "p_xc": 1.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 9.0,
+      "ECMWF": 8.8,
+      "ICON": 9.0
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "12pm\u20133pm",
+     "top_ft": 8500.0,
+     "base_ft": 9400.0,
+     "wind": "W 9",
+     "aloft": "W 9",
+     "aloft_max_kt": 10,
+     "rain_mm": 0.0,
+     "cape": 104,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 6290,
+       "lw": 8,
+       "ld": 279,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 7231,
+       "lw": 9,
+       "ld": 263,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 7988,
+       "lw": 10,
+       "ld": 271,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 8451,
+       "lw": 10,
+       "ld": 276,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 8576,
+       "lw": 8,
+       "ld": 258,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 8451,
+       "lw": 9,
+       "ld": 268,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 7988,
+       "lw": 13,
+       "ld": 271,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 7231,
+       "lw": 7,
+       "ld": 285,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 6290,
+       "lw": 6,
+       "ld": 278,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.92,
+       "xc": true,
+       "glass": true,
+       "top_ft": 5162,
+       "lw": 7,
+       "ld": 263,
+       "pr": 0.0
+      }
+     ]
+    },
+    "elsinore": {
+     "rating": 0.8,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "wind from behind launch",
+     "p_fly": 0.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 0.8,
+      "ECMWF": 0.3,
+      "ICON": 0.8
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "3pm\u20136pm",
+     "top_ft": 7900.0,
+     "base_ft": 8900.0,
+     "wind": "W 7",
+     "aloft": "W 9",
+     "aloft_max_kt": 10,
+     "rain_mm": 0.0,
+     "cape": 214,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 6907,
+       "lw": 11,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 7909,
+       "lw": 11,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 8606,
+       "lw": 10,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 9070,
+       "lw": 7,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 9174,
+       "lw": 11,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 9070,
+       "lw": 11,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 8606,
+       "lw": 7,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 7909,
+       "lw": 9,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.22,
+       "xc": false,
+       "glass": false,
+       "top_ft": 6907,
+       "lw": 5,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5756,
+       "lw": 6,
+       "ld": 280,
+       "pr": 0.0
+      }
+     ]
+    },
+    "torrey": {
+     "rating": 5.0,
+     "label": "Ridge soaring",
+     "tags": [],
+     "xc": false,
+     "note": "WSW 10 mph, best 12pm\u20133pm",
+     "p_fly": 1.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 5.0,
+      "ECMWF": 5.0,
+      "ICON": 5.0
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "12pm\u20133pm",
+     "top_ft": 5500.0,
+     "base_ft": 8200.0,
+     "wind": "WSW 10",
+     "aloft": "W 8",
+     "aloft_max_kt": 10,
+     "rain_mm": 0.0,
+     "cape": 154,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.3,
+       "xc": false,
+       "glass": true,
+       "top_ft": 3419,
+       "lw": 6,
+       "ld": 272,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 1.0,
+       "xc": false,
+       "glass": true,
+       "top_ft": 4326,
+       "lw": 9,
+       "ld": 271,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 1.0,
+       "xc": false,
+       "glass": true,
+       "top_ft": 5067,
+       "lw": 9,
+       "ld": 245,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 1.0,
+       "xc": false,
+       "glass": true,
+       "top_ft": 5521,
+       "lw": 9,
+       "ld": 258,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 1.0,
+       "xc": false,
+       "glass": true,
+       "top_ft": 5752,
+       "lw": 10,
+       "ld": 264,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 1.0,
+       "xc": false,
+       "glass": true,
+       "top_ft": 5521,
+       "lw": 11,
+       "ld": 257,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.3,
+       "xc": false,
+       "glass": true,
+       "top_ft": 5067,
+       "lw": 7,
+       "ld": 256,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 1.0,
+       "xc": false,
+       "glass": true,
+       "top_ft": 4326,
+       "lw": 9,
+       "ld": 271,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.3,
+       "xc": false,
+       "glass": true,
+       "top_ft": 3419,
+       "lw": 7,
+       "ld": 274,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.3,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2276,
+       "lw": 7,
+       "ld": 264,
+       "pr": 0.0
+      }
+     ]
+    },
+    "lagunahorse": {
+     "rating": 7.2,
+     "label": "XC",
+     "tags": [
+      "post-frontal"
+     ],
+     "xc": true,
+     "note": "drift east into the border and the desert: go crosswind north-east along the desert rim",
+     "p_fly": 1.0,
+     "p_xc": 1.0,
+     "agree": "mixed",
+     "models": {
+      "GFS": 7.4,
+      "ECMWF": 6.9,
+      "ICON": 5.8
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "12pm\u20133pm",
+     "top_ft": 10100.0,
+     "base_ft": 10100.0,
+     "wind": "W 10",
+     "aloft": "W 9",
+     "aloft_max_kt": 10,
+     "rain_mm": 0.0,
+     "cape": 154,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.9,
+       "xc": false,
+       "glass": true,
+       "top_ft": 8796,
+       "lw": 10,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.88,
+       "xc": false,
+       "glass": true,
+       "top_ft": 9411,
+       "lw": 12,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.98,
+       "xc": true,
+       "glass": true,
+       "top_ft": 9862,
+       "lw": 10,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 10149,
+       "lw": 10,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 10231,
+       "lw": 10,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 10149,
+       "lw": 9,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 9862,
+       "lw": 12,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 1.0,
+       "xc": false,
+       "glass": true,
+       "top_ft": 9411,
+       "lw": 8,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 1.0,
+       "xc": false,
+       "glass": true,
+       "top_ft": 8796,
+       "lw": 8,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.97,
+       "xc": false,
+       "glass": false,
+       "top_ft": 8099,
+       "lw": 14,
+       "ld": 280,
+       "pr": 0.0
+      }
+     ]
+    },
+    "marshall": {
+     "rating": 1.2,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "wind from behind launch",
+     "p_fly": 0.05,
+     "p_xc": 0.0,
+     "agree": "mixed",
+     "models": {
+      "GFS": 0.0,
+      "ECMWF": 1.5,
+      "ICON": 1.6
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "12pm\u20133pm",
+     "top_ft": 10700.0,
+     "base_ft": 10700.0,
+     "wind": "W 10",
+     "aloft": "W 11",
+     "aloft_max_kt": 12,
+     "rain_mm": 0.0,
+     "cape": 129,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 9311,
+       "lw": 6,
+       "ld": 262,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 9926,
+       "lw": 9,
+       "ld": 270,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 10377,
+       "lw": 10,
+       "ld": 281,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 0.89,
+       "xc": true,
+       "glass": false,
+       "top_ft": 10664,
+       "lw": 9,
+       "ld": 251,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 10746,
+       "lw": 10,
+       "ld": 274,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 10664,
+       "lw": 10,
+       "ld": 273,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 10377,
+       "lw": 10,
+       "ld": 261,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 9926,
+       "lw": 8,
+       "ld": 270,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 9311,
+       "lw": 7,
+       "ld": 279,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 8614,
+       "lw": 6,
+       "ld": 261,
+       "pr": 0.0
+      }
+     ]
+    },
+    "otay": {
+     "rating": 9.0,
+     "label": "XC",
+     "tags": [],
+     "xc": true,
+     "note": "downwind north-east toward Jamul / Lyons",
+     "p_fly": 1.0,
+     "p_xc": 1.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 8.4,
+      "ECMWF": 9.0,
+      "ICON": 9.0
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "12pm\u20133pm",
+     "top_ft": 8400.0,
+     "base_ft": 9400.0,
+     "wind": "W 12",
+     "aloft": "W 8",
+     "aloft_max_kt": 9,
+     "rain_mm": 0.0,
+     "cape": 108,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 6322,
+       "lw": 9,
+       "ld": 253,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 7241,
+       "lw": 10,
+       "ld": 265,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 7980,
+       "lw": 8,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 8434,
+       "lw": 9,
+       "ld": 265,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 8617,
+       "lw": 12,
+       "ld": 250,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 8434,
+       "lw": 12,
+       "ld": 265,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 7980,
+       "lw": 9,
+       "ld": 276,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 7241,
+       "lw": 9,
+       "ld": 265,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 6322,
+       "lw": 7,
+       "ld": 270,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.94,
+       "xc": true,
+       "glass": true,
+       "top_ft": 5202,
+       "lw": 5,
+       "ld": 286,
+       "pr": 0.0
+      }
+     ]
+    },
+    "soboba": {
+     "rating": 8.7,
+     "label": "XC",
+     "tags": [],
+     "xc": true,
+     "note": "downwind south-east along the San Jacinto front",
+     "p_fly": 1.0,
+     "p_xc": 1.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 8.7,
+      "ECMWF": 8.8,
+      "ICON": 8.6
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "12pm\u20133pm",
+     "top_ft": 10500.0,
+     "base_ft": 10500.0,
+     "wind": "W 9",
+     "aloft": "W 9",
+     "aloft_max_kt": 11,
+     "rain_mm": 0.0,
+     "cape": 212,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 9158,
+       "lw": 7,
+       "ld": 301,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 9774,
+       "lw": 9,
+       "ld": 283,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 10225,
+       "lw": 10,
+       "ld": 282,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 10512,
+       "lw": 7,
+       "ld": 261,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 10594,
+       "lw": 11,
+       "ld": 290,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 10512,
+       "lw": 9,
+       "ld": 253,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 10225,
+       "lw": 7,
+       "ld": 277,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 9774,
+       "lw": 7,
+       "ld": 267,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 9158,
+       "lw": 8,
+       "ld": 277,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 8081,
+       "lw": 5,
+       "ld": 266,
+       "pr": 0.0
+      }
+     ]
+    }
+   },
+   "best": "blossom",
+   "best_main": "blossom",
+   "headline": "XC day. Blossom 9.0: downwind east toward the Laguna range. Also XC: Otay, LB, Soboba, Laguna/Horse."
+  },
+  {
+   "date": "2026-10-28",
+   "sites": {
+    "lb": {
+     "rating": 0.8,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "too windy on launch",
+     "p_fly": 0.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 0.5,
+      "ECMWF": 0.8,
+      "ICON": 0.7
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "4pm\u20137pm",
+     "top_ft": 3200.0,
+     "base_ft": 6400.0,
+     "wind": "W 16",
+     "aloft": "W 18",
+     "aloft_max_kt": 20,
+     "rain_mm": 0.0,
+     "cape": 215,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.11,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3216,
+       "lw": 16,
+       "ld": 276,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.24,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3816,
+       "lw": 20,
+       "ld": 274,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4339,
+       "lw": 25,
+       "ld": 284,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4658,
+       "lw": 23,
+       "ld": 264,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4824,
+       "lw": 26,
+       "ld": 279,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4658,
+       "lw": 23,
+       "ld": 263,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4339,
+       "lw": 22,
+       "ld": 277,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.21,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3816,
+       "lw": 20,
+       "ld": 276,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.16,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3216,
+       "lw": 16,
+       "ld": 241,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.14,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2389,
+       "lw": 13,
+       "ld": 278,
+       "pr": 0.0
+      }
+     ]
+    },
+    "blossom": {
+     "rating": 0.5,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "too windy on launch",
+     "p_fly": 0.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 0.5,
+      "ECMWF": 0.7,
+      "ICON": 0.5
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "4pm\u20137pm",
+     "top_ft": 4700.0,
+     "base_ft": 6500.0,
+     "wind": "W 16",
+     "aloft": "W 20",
+     "aloft_max_kt": 21,
+     "rain_mm": 0.0,
+     "cape": 225,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.09,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4715,
+       "lw": 16,
+       "ld": 261,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.12,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5427,
+       "lw": 19,
+       "ld": 271,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5953,
+       "lw": 22,
+       "ld": 257,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 6275,
+       "lw": 23,
+       "ld": 284,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 6356,
+       "lw": 24,
+       "ld": 275,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 6275,
+       "lw": 22,
+       "ld": 271,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5953,
+       "lw": 20,
+       "ld": 256,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5427,
+       "lw": 22,
+       "ld": 244,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.18,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4715,
+       "lw": 16,
+       "ld": 261,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.25,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3957,
+       "lw": 11,
+       "ld": 262,
+       "pr": 0.0
+      }
+     ]
+    },
+    "elsinore": {
+     "rating": 0.0,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "wind from behind launch",
+     "p_fly": 0.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 0.0,
+      "ECMWF": 0.0,
+      "ICON": 0.0
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "12pm\u20133pm",
+     "top_ft": 6700.0,
+     "base_ft": 8600.0,
+     "wind": "W 23",
+     "aloft": "W 21",
+     "aloft_max_kt": 26,
+     "rain_mm": 0.0,
+     "cape": 142,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5177,
+       "lw": 19,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5890,
+       "lw": 23,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 6392,
+       "lw": 23,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 6720,
+       "lw": 20,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 6788,
+       "lw": 24,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 6720,
+       "lw": 23,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 6392,
+       "lw": 20,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5890,
+       "lw": 23,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5177,
+       "lw": 20,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4472,
+       "lw": 23,
+       "ld": 280,
+       "pr": 0.0
+      }
+     ]
+    },
+    "torrey": {
+     "rating": 6.7,
+     "label": "Thermal day",
+     "tags": [
+      "post-frontal"
+     ],
+     "xc": true,
+     "note": "cold air aloft, thermals to about 2,800 ft, W 16 mph",
+     "p_fly": 1.0,
+     "p_xc": 0.41,
+     "agree": "split",
+     "models": {
+      "GFS": 7.2,
+      "ECMWF": 4.1,
+      "ICON": 7.5
+     },
+     "n_members": 22,
+     "lead": "GFS",
+     "window": "4pm\u20137pm",
+     "top_ft": 2800.0,
+     "base_ft": 5600.0,
+     "wind": "W 16",
+     "aloft": "W 18",
+     "aloft_max_kt": 22,
+     "rain_mm": 0.0,
+     "cape": 179,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 1.0,
+       "xc": true,
+       "glass": false,
+       "top_ft": 2507,
+       "lw": 17,
+       "ld": 268,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 1.0,
+       "xc": true,
+       "glass": false,
+       "top_ft": 3125,
+       "lw": 19,
+       "ld": 282,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.5,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3655,
+       "lw": 23,
+       "ld": 269,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 0.5,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3980,
+       "lw": 23,
+       "ld": 284,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4094,
+       "lw": 25,
+       "ld": 263,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.5,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3980,
+       "lw": 25,
+       "ld": 269,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.5,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3655,
+       "lw": 23,
+       "ld": 277,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 1.0,
+       "xc": true,
+       "glass": false,
+       "top_ft": 3125,
+       "lw": 19,
+       "ld": 259,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 1.0,
+       "xc": true,
+       "glass": false,
+       "top_ft": 2507,
+       "lw": 16,
+       "ld": 268,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 1.0,
+       "xc": true,
+       "glass": true,
+       "top_ft": 1719,
+       "lw": 12,
+       "ld": 277,
+       "pr": 0.0
+      }
+     ]
+    },
+    "lagunahorse": {
+     "rating": 0.0,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "too windy on launch",
+     "p_fly": 0.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 0.0,
+      "ECMWF": 0.0,
+      "ICON": 0.0
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "12pm\u20133pm",
+     "top_ft": 9200.0,
+     "base_ft": 9200.0,
+     "wind": "W 26",
+     "aloft": "W 25",
+     "aloft_max_kt": 28,
+     "rain_mm": 0.0,
+     "cape": 136,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 7894,
+       "lw": 25,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 8468,
+       "lw": 27,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 8919,
+       "lw": 22,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 9206,
+       "lw": 24,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 9329,
+       "lw": 26,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 9206,
+       "lw": 27,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 8919,
+       "lw": 24,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 8468,
+       "lw": 26,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 7894,
+       "lw": 20,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 7197,
+       "lw": 23,
+       "ld": 280,
+       "pr": 0.0
+      }
+     ]
+    },
+    "marshall": {
+     "rating": 0.0,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "wind from behind launch",
+     "p_fly": 0.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 0.0,
+      "ECMWF": 0.0,
+      "ICON": 0.0
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "12pm\u20133pm",
+     "top_ft": 9200.0,
+     "base_ft": 9200.0,
+     "wind": "WNW 24",
+     "aloft": "W 25",
+     "aloft_max_kt": 28,
+     "rain_mm": 0.0,
+     "cape": 210,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 7876,
+       "lw": 14,
+       "ld": 269,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 8450,
+       "lw": 19,
+       "ld": 263,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 8942,
+       "lw": 22,
+       "ld": 258,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 9229,
+       "lw": 24,
+       "ld": 282,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 9311,
+       "lw": 25,
+       "ld": 256,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 9229,
+       "lw": 23,
+       "ld": 293,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 8942,
+       "lw": 21,
+       "ld": 277,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 8450,
+       "lw": 18,
+       "ld": 257,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 7876,
+       "lw": 15,
+       "ld": 282,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 7178,
+       "lw": 11,
+       "ld": 266,
+       "pr": 0.0
+      }
+     ]
+    },
+    "otay": {
+     "rating": 0.4,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "too windy on launch",
+     "p_fly": 0.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 0.6,
+      "ECMWF": 0.5,
+      "ICON": 0.8
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "4pm\u20137pm",
+     "top_ft": 4700.0,
+     "base_ft": 7100.0,
+     "wind": "W 17",
+     "aloft": "W 22",
+     "aloft_max_kt": 23,
+     "rain_mm": 0.0,
+     "cape": 135,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4722,
+       "lw": 13,
+       "ld": 256,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.18,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5434,
+       "lw": 20,
+       "ld": 259,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5960,
+       "lw": 20,
+       "ld": 264,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 6282,
+       "lw": 25,
+       "ld": 261,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 6363,
+       "lw": 25,
+       "ld": 258,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 6282,
+       "lw": 24,
+       "ld": 263,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5960,
+       "lw": 23,
+       "ld": 264,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.08,
+       "xc": false,
+       "glass": false,
+       "top_ft": 5434,
+       "lw": 18,
+       "ld": 268,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.19,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4722,
+       "lw": 17,
+       "ld": 276,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.04,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3965,
+       "lw": 12,
+       "ld": 278,
+       "pr": 0.0
+      }
+     ]
+    },
+    "soboba": {
+     "rating": 0.1,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "too windy on launch",
+     "p_fly": 0.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 0.0,
+      "ECMWF": 0.4,
+      "ICON": 0.2
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "4pm\u20137pm",
+     "top_ft": 6900.0,
+     "base_ft": 7700.0,
+     "wind": "W 17",
+     "aloft": "W 23",
+     "aloft_max_kt": 25,
+     "rain_mm": 0.0,
+     "cape": 176,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.04,
+       "xc": false,
+       "glass": false,
+       "top_ft": 6940,
+       "lw": 16,
+       "ld": 287,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 7655,
+       "lw": 20,
+       "ld": 267,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 8182,
+       "lw": 23,
+       "ld": 261,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 8506,
+       "lw": 26,
+       "ld": 279,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 8557,
+       "lw": 27,
+       "ld": 261,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 8506,
+       "lw": 24,
+       "ld": 278,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 8182,
+       "lw": 22,
+       "ld": 260,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 7655,
+       "lw": 18,
+       "ld": 257,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.02,
+       "xc": false,
+       "glass": false,
+       "top_ft": 6940,
+       "lw": 17,
+       "ld": 273,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.25,
+       "xc": false,
+       "glass": false,
+       "top_ft": 6176,
+       "lw": 11,
+       "ld": 262,
+       "pr": 0.0
+      }
+     ]
+    }
+   },
+   "best": "torrey",
+   "best_main": "lb",
+   "headline": "Poor at the main sites (too windy on launch). Torrey thermal day: cold air aloft, thermals to about 2,800 ft, W 16 mph."
+  },
+  {
+   "date": "2026-10-29",
+   "sites": {
+    "lb": {
+     "rating": 3.8,
+     "label": "Glass-off",
+     "tags": [],
+     "xc": false,
+     "note": "evening glass-off 4\u20137 pm",
+     "p_fly": 1.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 3.8,
+      "ECMWF": 3.8,
+      "ICON": 3.8
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "12pm\u20133pm",
+     "top_ft": 1900.0,
+     "base_ft": 8000.0,
+     "wind": "W 10",
+     "aloft": "W 6",
+     "aloft_max_kt": 8,
+     "rain_mm": 0.0,
+     "cape": 196,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 1571,
+       "lw": 7,
+       "ld": 271,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 1719,
+       "lw": 9,
+       "ld": 264,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.18,
+       "xc": false,
+       "glass": true,
+       "top_ft": 1825,
+       "lw": 10,
+       "ld": 271,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 0.2,
+       "xc": false,
+       "glass": true,
+       "top_ft": 1894,
+       "lw": 10,
+       "ld": 273,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.21,
+       "xc": false,
+       "glass": true,
+       "top_ft": 1915,
+       "lw": 11,
+       "ld": 266,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.2,
+       "xc": false,
+       "glass": true,
+       "top_ft": 1894,
+       "lw": 10,
+       "ld": 278,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.18,
+       "xc": false,
+       "glass": true,
+       "top_ft": 1825,
+       "lw": 10,
+       "ld": 284,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 1719,
+       "lw": 8,
+       "ld": 269,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 1571,
+       "lw": 8,
+       "ld": 250,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 1289,
+       "lw": 4,
+       "ld": 293,
+       "pr": 0.0
+      }
+     ]
+    },
+    "blossom": {
+     "rating": 3.8,
+     "label": "Glass-off",
+     "tags": [],
+     "xc": false,
+     "note": "evening glass-off 4\u20137 pm",
+     "p_fly": 1.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 3.8,
+      "ECMWF": 3.8,
+      "ICON": 3.8
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "12pm\u20133pm",
+     "top_ft": 2400.0,
+     "base_ft": 8600.0,
+     "wind": "W 11",
+     "aloft": "W 8",
+     "aloft_max_kt": 9,
+     "rain_mm": 0.0,
+     "cape": 86,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2059,
+       "lw": 7,
+       "ld": 256,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2200,
+       "lw": 8,
+       "ld": 271,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2308,
+       "lw": 9,
+       "ld": 244,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2377,
+       "lw": 11,
+       "ld": 270,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2404,
+       "lw": 11,
+       "ld": 276,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2377,
+       "lw": 10,
+       "ld": 274,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2308,
+       "lw": 9,
+       "ld": 274,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2200,
+       "lw": 7,
+       "ld": 275,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2059,
+       "lw": 5,
+       "ld": 266,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 1895,
+       "lw": 4,
+       "ld": 265,
+       "pr": 0.0
+      }
+     ]
+    },
+    "elsinore": {
+     "rating": 0.1,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "wind from behind launch",
+     "p_fly": 0.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 0.0,
+      "ECMWF": 0.0,
+      "ICON": 0.0
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "12pm\u20133pm",
+     "top_ft": 2500.0,
+     "base_ft": 8600.0,
+     "wind": "W 8",
+     "aloft": "W 6",
+     "aloft_max_kt": 7,
+     "rain_mm": 0.0,
+     "cape": 104,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2206,
+       "lw": 7,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2345,
+       "lw": 10,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2452,
+       "lw": 7,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2520,
+       "lw": 9,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2550,
+       "lw": 5,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2520,
+       "lw": 8,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2452,
+       "lw": 7,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2345,
+       "lw": 10,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2206,
+       "lw": 8,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 2039,
+       "lw": 6,
+       "ld": 280,
+       "pr": 0.0
+      }
+     ]
+    },
+    "torrey": {
+     "rating": 5.0,
+     "label": "Ridge soaring",
+     "tags": [],
+     "xc": false,
+     "note": "W 10 mph, best 12pm\u20133pm",
+     "p_fly": 1.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 5.0,
+      "ECMWF": 5.0,
+      "ICON": 5.0
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "12pm\u20133pm",
+     "top_ft": 1700.0,
+     "base_ft": 8100.0,
+     "wind": "W 10",
+     "aloft": "W 6",
+     "aloft_max_kt": 7,
+     "rain_mm": 0.0,
+     "cape": 89,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.3,
+       "xc": false,
+       "glass": true,
+       "top_ft": 1256,
+       "lw": 7,
+       "ld": 286,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 1.0,
+       "xc": false,
+       "glass": true,
+       "top_ft": 1495,
+       "lw": 9,
+       "ld": 264,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 1.0,
+       "xc": false,
+       "glass": true,
+       "top_ft": 1634,
+       "lw": 12,
+       "ld": 273,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 1.0,
+       "xc": false,
+       "glass": true,
+       "top_ft": 1703,
+       "lw": 8,
+       "ld": 271,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 1.0,
+       "xc": false,
+       "glass": true,
+       "top_ft": 1720,
+       "lw": 10,
+       "ld": 275,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 1.0,
+       "xc": false,
+       "glass": true,
+       "top_ft": 1703,
+       "lw": 11,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 1.0,
+       "xc": false,
+       "glass": true,
+       "top_ft": 1634,
+       "lw": 10,
+       "ld": 282,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.3,
+       "xc": false,
+       "glass": true,
+       "top_ft": 1495,
+       "lw": 8,
+       "ld": 265,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 1.0,
+       "xc": false,
+       "glass": true,
+       "top_ft": 1256,
+       "lw": 8,
+       "ld": 279,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.3,
+       "xc": false,
+       "glass": true,
+       "top_ft": 953,
+       "lw": 7,
+       "ld": 260,
+       "pr": 0.0
+      }
+     ]
+    },
+    "lagunahorse": {
+     "rating": 3.8,
+     "label": "Glass-off",
+     "tags": [],
+     "xc": false,
+     "note": "evening glass-off 4\u20137 pm",
+     "p_fly": 1.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 3.8,
+      "ECMWF": 3.8,
+      "ICON": 3.8
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "11am\u20132pm",
+     "top_ft": 4300.0,
+     "base_ft": 9400.0,
+     "wind": "W 9",
+     "aloft": "W 9",
+     "aloft_max_kt": 10,
+     "rain_mm": 0.0,
+     "cape": 193,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 3696,
+       "lw": 12,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 3962,
+       "lw": 9,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 4161,
+       "lw": 7,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 4282,
+       "lw": 12,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 4314,
+       "lw": 9,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.13,
+       "xc": false,
+       "glass": true,
+       "top_ft": 4282,
+       "lw": 13,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 4161,
+       "lw": 9,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 3962,
+       "lw": 7,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 3696,
+       "lw": 9,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 3430,
+       "lw": 7,
+       "ld": 280,
+       "pr": 0.0
+      }
+     ]
+    },
+    "marshall": {
+     "rating": 0.1,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "wind from behind launch",
+     "p_fly": 0.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 0.0,
+      "ECMWF": 0.2,
+      "ICON": 0.0
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "1pm\u20134pm",
+     "top_ft": 4700.0,
+     "base_ft": 9400.0,
+     "wind": "W 9",
+     "aloft": "W 8",
+     "aloft_max_kt": 9,
+     "rain_mm": 0.0,
+     "cape": 131,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4082,
+       "lw": 7,
+       "ld": 283,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4280,
+       "lw": 7,
+       "ld": 268,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4486,
+       "lw": 10,
+       "ld": 276,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4666,
+       "lw": 10,
+       "ld": 270,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4682,
+       "lw": 10,
+       "ld": 289,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4666,
+       "lw": 9,
+       "ld": 265,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 4486,
+       "lw": 8,
+       "ld": 241,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4280,
+       "lw": 8,
+       "ld": 266,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.0,
+       "xc": false,
+       "glass": false,
+       "top_ft": 4082,
+       "lw": 7,
+       "ld": 275,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.15,
+       "xc": false,
+       "glass": false,
+       "top_ft": 3915,
+       "lw": 4,
+       "ld": 263,
+       "pr": 0.0
+      }
+     ]
+    },
+    "otay": {
+     "rating": 3.8,
+     "label": "Glass-off",
+     "tags": [],
+     "xc": false,
+     "note": "evening glass-off 4\u20137 pm",
+     "p_fly": 1.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 3.8,
+      "ECMWF": 3.8,
+      "ICON": 3.8
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "12pm\u20133pm",
+     "top_ft": 2400.0,
+     "base_ft": 8800.0,
+     "wind": "W 10",
+     "aloft": "W 7",
+     "aloft_max_kt": 8,
+     "rain_mm": 0.0,
+     "cape": 130,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2061,
+       "lw": 7,
+       "ld": 265,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2206,
+       "lw": 9,
+       "ld": 272,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2315,
+       "lw": 8,
+       "ld": 272,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2384,
+       "lw": 11,
+       "ld": 262,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2407,
+       "lw": 10,
+       "ld": 262,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2384,
+       "lw": 10,
+       "ld": 272,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2315,
+       "lw": 8,
+       "ld": 265,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2206,
+       "lw": 10,
+       "ld": 280,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2061,
+       "lw": 6,
+       "ld": 255,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 1895,
+       "lw": 7,
+       "ld": 265,
+       "pr": 0.0
+      }
+     ]
+    },
+    "soboba": {
+     "rating": 3.8,
+     "label": "Glass-off",
+     "tags": [],
+     "xc": false,
+     "note": "evening glass-off 4\u20137 pm",
+     "p_fly": 1.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "GFS": 3.8,
+      "ECMWF": 3.8,
+      "ICON": 3.8
+     },
+     "n_members": 22,
+     "lead": "ECMWF",
+     "window": "12pm\u20133pm",
+     "top_ft": 3300.0,
+     "base_ft": 9700.0,
+     "wind": "W 11",
+     "aloft": "W 7",
+     "aloft_max_kt": 9,
+     "rain_mm": 0.0,
+     "cape": 122,
+     "hourly": [
+      {
+       "h": 9,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2743,
+       "lw": 8,
+       "ld": 274,
+       "pr": 0.0
+      },
+      {
+       "h": 10,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2947,
+       "lw": 9,
+       "ld": 262,
+       "pr": 0.0
+      },
+      {
+       "h": 11,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 3152,
+       "lw": 13,
+       "ld": 255,
+       "pr": 0.0
+      },
+      {
+       "h": 12,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 3274,
+       "lw": 11,
+       "ld": 255,
+       "pr": 0.0
+      },
+      {
+       "h": 13,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 3314,
+       "lw": 11,
+       "ld": 286,
+       "pr": 0.0
+      },
+      {
+       "h": 14,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 3274,
+       "lw": 10,
+       "ld": 270,
+       "pr": 0.0
+      },
+      {
+       "h": 15,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 3152,
+       "lw": 9,
+       "ld": 268,
+       "pr": 0.0
+      },
+      {
+       "h": 16,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2947,
+       "lw": 8,
+       "ld": 259,
+       "pr": 0.0
+      },
+      {
+       "h": 17,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2743,
+       "lw": 5,
+       "ld": 267,
+       "pr": 0.0
+      },
+      {
+       "h": 18,
+       "q": 0.15,
+       "xc": false,
+       "glass": true,
+       "top_ft": 2585,
+       "lw": 4,
+       "ld": 255,
+       "pr": 0.0
+      }
+     ]
+    }
+   },
+   "best": "torrey",
+   "best_main": "lb",
+   "headline": "Local day. LB evening glass-off 4\u20137 pm; Blossom evening glass-off 4\u20137 pm. Torrey: W 10 mph, best 12pm\u20133pm."
+  }
+ ]
+}

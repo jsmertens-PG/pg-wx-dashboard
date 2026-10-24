@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SoCal Flying Radar</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;1,6..96,500&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: weather story on top, then one full-width card per day.
+   Inside a card the three home sites get big panels, Torrey a row, the rest a compact strip.
+   Same paper/ink look as the PG logbook; colour is reserved for day quality on a 0-10 scale. */
+:root {
+  --bg: #ffffff; --surface: #ffffff; --sunk: #f3f4f3; --ink: #0b0b0b; --muted: #676d69; --line: #e2e4e2;
+  --q0: #c8412f; --q1: #df8a17; --q2: #8dbf3f; --q3: #3a9d57; --q4: #1a7a45; --q5: #0d5a44;
+  --font-display: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+  --font-body: "Work Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-data: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #000; --surface: #080908; --sunk: #121412; --ink: #f1f2f1; --muted: #8e958f; --line: #252826;
+    --q0: #ec5f4c; --q1: #f2a33a; --q2: #a7d65c; --q3: #4fc072; --q4: #2fa864; --q5: #2bd19a; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #000; --surface: #080908; --sunk: #121412; --ink: #f1f2f1; --muted: #8e958f; --line: #252826;
+  --q0: #ec5f4c; --q1: #f2a33a; --q2: #a7d65c; --q3: #4fc072; --q4: #2fa864; --q5: #2bd19a; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--font-body); }
+.wrap { max-width: 1180px; margin: 0 auto; padding-block: 24px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 20px; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 500; margin: 0; line-height: 1.1; text-wrap: balance; }
+h1 { font-size: clamp(2.1rem, 6vw, 3.4rem); letter-spacing: -0.02em; }
+h1 em { font-style: italic; }
+h2 { font-size: 1.25rem; }
+.eyebrow { font-size: .68rem; text-transform: uppercase; letter-spacing: .16em; color: var(--muted); font-weight: 500; }
+.muted { color: var(--muted); }
+.mono { font-family: var(--font-data); font-variant-numeric: tabular-nums; }
+a { color: inherit; }
+button { font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); padding: 6px 12px; min-height: 34px; cursor: pointer; }
+button:hover { border-color: var(--ink); }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+header.top { display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: end; justify-content: space-between; border-bottom: 1px solid var(--ink); padding-bottom: 14px; }
+.fresh { display: grid; gap: 1px; text-align: right; font-size: .82rem; }
+.fresh b { font-family: var(--font-data); font-weight: 500; }
+@media (max-width: 640px) { .fresh { text-align: left; } }
+.banner { border: 1px solid var(--line); border-left: 3px solid var(--q0); padding: 9px 14px; font-size: .88rem; display: grid; gap: 4px; }
+
+/* weather story */
+.story { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px 28px; }
+@media (max-width: 800px) { .story { grid-template-columns: 1fr; } }
+.story .syn { margin: 0; font-size: 1.02rem; max-width: 70ch; }
+.story ul { margin: 0; padding-left: 1.1em; display: grid; gap: 4px; font-size: .9rem; }
+.flags { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.tag { font-size: .64rem; text-transform: uppercase; letter-spacing: .12em; border: 1px solid var(--line); padding: 2px 7px; color: var(--muted); white-space: nowrap; }
+.tag.ink { border-color: var(--ink); color: var(--ink); }
+.story details summary { cursor: pointer; color: var(--muted); font-size: .8rem; }
+.story details p { margin: 6px 0 0; font-size: .84rem; }
+
+.chip { display: inline-flex; align-items: center; gap: 4px; font-family: var(--font-data); font-size: .78rem; }
+.chip i { width: 10px; height: 10px; display: inline-block; }
+.xcmark { font-family: var(--font-body); font-weight: 600; font-size: .6rem; letter-spacing: .08em; background: var(--ink); color: var(--bg); padding: 0 4px; }
+
+/* day cards */
+.days { display: grid; gap: 14px; }
+.day { border: 1px solid var(--line); border-left: 6px solid var(--qc); background: color-mix(in srgb, var(--qc) 6%, var(--surface)); display: grid; scroll-margin-top: 12px; }
+.day > .hd { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 4px 18px; align-items: baseline; padding: 12px 16px 10px; border-bottom: 1px solid var(--line); }
+@media (max-width: 640px) { .day > .hd { grid-template-columns: minmax(0, 1fr) auto; } .day > .hd .headline { grid-column: 1 / -1; grid-row: 2; } }
+.day .when { font-family: var(--font-display); font-size: 1.45rem; white-space: nowrap; }
+.day .when small { font-family: var(--font-body); font-size: .8rem; color: var(--muted); margin-left: 6px; }
+.day .headline { margin: 0; font-size: .9rem; }
+.big { font-family: var(--font-data); font-size: 1.5rem; line-height: 1; white-space: nowrap; }
+.big small { font-size: .7rem; color: var(--muted); }
+
+.mains { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 760px) { .mains { grid-template-columns: 1fr; } }
+.main { padding: 12px 16px; display: grid; gap: 6px; align-content: start; text-align: left; border: 0; background: transparent; min-height: 0; width: 100%; cursor: pointer; }
+.main + .main { border-left: 1px solid var(--line); }
+@media (max-width: 760px) { .main + .main { border-left: 0; border-top: 1px solid var(--line); } }
+.main:hover, .main[aria-expanded="true"], .row:hover, .row[aria-expanded="true"], .mini:hover, .mini[aria-expanded="true"] { background: color-mix(in srgb, var(--ink) 4%, transparent); }
+.main .top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.main .nm { font-family: var(--font-display); font-size: 1.3rem; }
+.label { display: inline-flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.lab { font-size: .7rem; text-transform: uppercase; letter-spacing: .12em; font-weight: 600; }
+.note { font-size: .86rem; margin: 0; }
+.kv { display: flex; flex-wrap: wrap; gap: 2px 14px; font-family: var(--font-data); font-size: .74rem; color: var(--muted); }
+.kv b { color: var(--ink); font-weight: 400; }
+
+/* 0-10 bar with flyable (3.5) and XC (6) marks */
+.bar { height: 10px; background: var(--sunk); position: relative; display: block; }
+.bar i { position: absolute; inset: 0 auto 0 0; display: block; }
+.bar::before, .bar::after { content: ""; position: absolute; top: -2px; bottom: -2px; width: 1px; background: var(--muted); opacity: .5; }
+.bar::before { left: 35%; } .bar::after { left: 60%; }
+.bar.thin { height: 6px; }
+
+.row { display: grid; grid-template-columns: 110px minmax(80px, 200px) 46px minmax(0, 1fr); gap: 12px; align-items: center; padding: 8px 16px; border: 0; border-top: 1px solid var(--line); background: transparent; width: 100%; text-align: left; min-height: 0; cursor: pointer; }
+.row .nm { font-family: var(--font-display); font-size: 1.05rem; }
+@media (max-width: 560px) { .row { grid-template-columns: 80px minmax(0, 1fr) 40px; } .row .note { grid-column: 1 / -1; } }
+.others { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+@media (max-width: 760px) { .others { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.mini { padding: 8px 16px; display: grid; gap: 3px; border: 0; background: transparent; text-align: left; min-height: 0; width: 100%; cursor: pointer; align-content: start; }
+.mini .t { display: flex; justify-content: space-between; gap: 6px; font-size: .8rem; }
+.mini .t span:first-child { color: var(--muted); }
+.mini .note { font-size: .74rem; color: var(--muted); }
+
+.det { border-top: 1px solid var(--ink); padding: 12px 16px 14px; display: grid; gap: 10px; font-size: .84rem; background: var(--surface); }
+.det .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 6px 14px; }
+.det .grid span { display: grid; }
+.det .grid small { color: var(--muted); font-size: .66rem; text-transform: uppercase; letter-spacing: .1em; }
+.det .grid b { font-family: var(--font-data); font-weight: 400; }
+.hours { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 2px; max-width: 640px; }
+.hours div { display: grid; gap: 2px; text-align: center; font-family: var(--font-data); font-size: .62rem; color: var(--muted); }
+.hours i { display: block; height: 16px; position: relative; }
+.hours i.x::after { content: "XC"; position: absolute; inset: 0; color: var(--bg); font-size: .55rem; font-weight: 600; line-height: 16px; }
+.models { display: flex; flex-wrap: wrap; gap: 4px 14px; font-family: var(--font-data); font-size: .74rem; color: var(--muted); }
+.models b { font-weight: 400; }
+.day .ft { padding: 6px 16px 8px; font-size: .72rem; color: var(--muted); border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .76rem; color: var(--muted); align-items: center; }
+.legend .chip i { width: 18px; height: 8px; }
+section.panel { display: grid; gap: 10px; }
+section.panel > header { border-bottom: 1px solid var(--ink); padding-bottom: 6px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: baseline; }
+.tablewrap { overflow-x: auto; }
+table.src { border-collapse: collapse; width: 100%; font-size: .82rem; }
+table.src th, table.src td { text-align: left; padding: 7px 12px 7px 0; border-bottom: 1px solid var(--line); white-space: nowrap; }
+table.src th { font-size: .62rem; text-transform: uppercase; letter-spacing: .14em; color: var(--muted); font-weight: 500; }
+td.mono { font-family: var(--font-data); }
+.ok { color: var(--q3); } .bad { color: var(--q0); }
+.links { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: 8px; }
+.links a { border: 1px solid var(--line); padding: 9px 12px; text-decoration: none; display: grid; gap: 2px; }
+.links a:hover { border-color: var(--ink); }
+.links small { color: var(--muted); font-size: .74rem; }
+.how { font-size: .86rem; max-width: 90ch; display: grid; gap: 6px; }
+.how p { margin: 0; }
+footer { border-top: 1px solid var(--ink); padding-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; font-size: .78rem; color: var(--muted); }
+footer .presets { display: flex; gap: 6px; }
+footer button[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.empty { padding: 30px; border: 1px dashed var(--ink); text-align: center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div style="display:grid;gap:4px">
+      <span class="eyebrow">SoCal launches · 7-day outlook</span>
+      <h1>Flying <em>Radar</em></h1>
+    </div>
+    <div class="fresh" id="fresh"></div>
+  </header>
+
+  <div id="warn"></div>
+  <section class="story" id="story" aria-label="Weather story"></section>
+
+  <div class="legend">
+    <span class="chip"><i style="background:var(--q0)"></i>0–2 no go</span>
+    <span class="chip"><i style="background:var(--q1)"></i>2–3.5 marginal</span>
+    <span class="chip"><i style="background:var(--q2)"></i>3.5–5 nice local</span>
+    <span class="chip"><i style="background:var(--q3)"></i>5–6.5 good</span>
+    <span class="chip"><i style="background:var(--q4)"></i>6.5–8 XC</span>
+    <span class="chip"><i style="background:var(--q5)"></i>8+ big XC</span>
+    <span>Bar ticks mark 3.5 (flyable) and 6 (XC). Tap a site for details.</span>
+  </div>
+
+  <div class="days" id="days"><div class="empty">Loading forecast…</div></div>
+
+  <section class="panel" id="sources">
+    <header><h2>Sources &amp; freshness</h2><span class="muted mono" id="procAt"></span></header>
+    <div class="tablewrap"><table class="src" id="tSrc"></table></div>
+  </section>
+
+  <section class="panel">
+    <header><h2>How the rating works</h2></header>
+    <div class="how">
+      <p><b>0–10 scale.</b> A nice local thermal or glass-off day rates about 3.5–5 (green). XC days start at 6: about 6 is a short or low XC, 7–8 a solid one, 9 a big day. The rating blends the median of five models (HRRR, NAM, GFS, ECMWF, ICON) with the average of about 120 ensemble runs.</p>
+      <p><b>Each hour, 9 am to 6 pm,</b> is checked for rain and storms, wind direction and strength on launch, wind aloft (both strength and direction, because north or east wind aloft kills most of these sites), and how high a dry thermal from the surface gets before it meets the temperature profile or cloudbase.</p>
+      <p><b>Altitude and wind matter most.</b> Only real rain or storms are a no-go; scattered light showers cost a little. Elsinore and Laguna/Horse are rated as convergence sites, so strong wind aloft from any direction counts against them. Torrey is rated on ridge wind, but a day with thermals well above the cliffs is flagged as a Thermal day.</p>
+      <p><b>Labels:</b> XC, Thermal day (Torrey), Thermal (local), Glass-off (smooth onshore flow from 4 pm on), Ridge soaring (Torrey), Marginal, No go. Tags add post-frontal (rain earlier or cold air aloft) and later glass-off. XC notes suggest a direction from the drift and each site's routes, and warn when the drift heads into airspace or the border.</p>
+      <p>Limits for each site are in <span class="mono">sites.json</span>. They are starting values to tune against real days.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span id="foot"></span>
+    <span class="presets" id="theme">
+      <button type="button" data-t="auto">Auto</button>
+      <button type="button" data-t="light">Light</button>
+      <button type="button" data-t="dark">Dark</button>
+    </span>
+  </footer>
+</div>
+
+<script id="seed" type="application/json"></script>
+<script>
+(() => {
+"use strict";
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const TZ = "America/Los_Angeles";
+const fmtWhen = (iso) => {
+  if (!iso) return "–";
+  const d = new Date(iso);
+  return isNaN(d) ? esc(iso) : d.toLocaleString("en-US", { timeZone: TZ, weekday: "short", hour: "numeric", minute: "2-digit" });
+};
+const ago = (iso) => {
+  const m = Math.round((Date.now() - new Date(iso)) / 60000);
+  if (!isFinite(m)) return "";
+  return m < 60 ? `${m} min ago` : m < 2880 ? `${Math.round(m / 60)} h ago` : `${Math.round(m / 1440)} days ago`;
+};
+const q = (r) => (r >= 8 ? 5 : r >= 6.5 ? 4 : r >= 5 ? 3 : r >= 3.5 ? 2 : r >= 2 ? 1 : 0);
+const qv = (r) => `var(--q${q(r)})`;
+const ft = (v) => (v == null ? "–" : (Math.round(v / 100) * 100).toLocaleString());
+const pct = (p) => (p == null ? "–" : `${Math.round(p * 100)}%`);
+const r1 = (r) => (r == null ? "–" : r.toFixed(1));
+
+const setTheme = (t) => {
+  try { localStorage.setItem("radar-theme", t); } catch (e) {}
+  if (t === "auto") document.documentElement.removeAttribute("data-theme"); else document.documentElement.setAttribute("data-theme", t);
+  document.querySelectorAll("#theme button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.t === t)));
+};
+let saved = "auto"; try { saved = localStorage.getItem("radar-theme") || "auto"; } catch (e) {}
+setTheme(saved);
+$("#theme").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) setTheme(b.dataset.t); });
+
+function dayLabel(dstr) {
+  const d = new Date(dstr + "T12:00:00");
+  const now = new Date(new Date().toLocaleString("en-US", { timeZone: TZ }));
+  const diff = Math.round((new Date(dstr + "T00:00:00") - new Date(now.toDateString())) / 86400000);
+  const long = diff === 0 ? "Today" : diff === 1 ? "Tomorrow" : d.toLocaleDateString("en-US", { weekday: "long" });
+  return { long, short: diff === 0 ? "Today" : diff === 1 ? "Tmrw" : d.toLocaleDateString("en-US", { weekday: "short" }),
+           date: d.toLocaleDateString("en-US", { month: "short", day: "numeric" }) };
+}
+
+let BY;
+
+function render(data) {
+  const SITES = data.sites;
+  BY = Object.fromEntries(SITES.map((s) => [s.id, s]));
+  const main = SITES.filter((s) => s.tier === "main");
+  const coast = SITES.filter((s) => s.tier === "coast");
+  const other = SITES.filter((s) => s.tier !== "main" && s.tier !== "coast");
+
+  /* freshness */
+  const src = data.sources || [];
+  const okN = src.filter((s) => s.status !== "failed").length;
+  $("#fresh").innerHTML = `<span class="eyebrow">Processed</span><b>${fmtWhen(data.generated)}</b>
+    <span class="muted">${ago(data.generated)} · ${okN} of ${src.length} sources · <a href="#sources">details</a></span>`;
+  $("#procAt").textContent = `processed ${fmtWhen(data.generated)}`;
+  const ageH = (Date.now() - new Date(data.generated)) / 3600000, warn = [];
+  if (data.sample) warn.push("This page shows <b>sample data</b> to demonstrate the layout. Real forecasts appear after the GitHub Action runs.");
+  if (ageH > 8) warn.push(`The forecast is <b>${Math.round(ageH)} hours old</b>. The scheduled update may have failed: check the Actions tab on GitHub.`);
+  const failed = src.filter((s) => s.status === "failed");
+  if (failed.length) warn.push(`Missing on the last run: ${failed.map((s) => esc(s.name)).join(", ")}.`);
+  $("#warn").innerHTML = warn.length ? `<div class="banner">${warn.map((w) => `<span>${w}</span>`).join("")}</div>` : "";
+
+  /* weather story from the NWS discussion */
+  const n = data.nws;
+  $("#story").innerHTML = n ? `
+    <div style="display:grid;gap:8px;min-width:0">
+      <span class="eyebrow">Weather story · NWS San Diego · ${fmtWhen(n.issued)}</span>
+      <p class="syn">${esc(n.synopsis || "No synopsis in the latest discussion.")}</p>
+      <div class="flags">${(n.flags || []).map((f) => `<span class="tag ink">${esc(f)}</span>`).join("") || '<span class="tag">nothing flagged</span>'}</div>
+    </div>
+    <div style="display:grid;gap:8px;align-content:start;min-width:0">
+      <span class="eyebrow">Systems</span>
+      ${(n.systems || []).length ? `<ul>${n.systems.map((s) => `<li>${esc(s)}</li>`).join("")}</ul>` : '<span class="muted">No system details found.</span>'}
+      <details><summary>Aviation and advisories</summary>${n.aviation ? `<p>${esc(n.aviation)}</p>` : ""}${n.advisories ? `<p class="mono">${esc(n.advisories)}</p>` : ""}
+        <p><a href="${esc(n.url)}" target="_blank" rel="noopener">Full discussion</a></p></details>
+    </div>` : '<span class="muted">NWS discussion not available on the last run.</span>';
+
+  /* day cards */
+  $("#days").innerHTML = data.days.map((d, i) => {
+    const L = dayLabel(d.date);
+    const bm = d.sites[d.best_main] || d.sites[d.best];
+    const tint = Math.max(...main.map((s) => d.sites[s.id]?.rating ?? 0));
+    return `<article class="day" id="day-${i}" style="--qc:${qv(tint)}">
+      <div class="hd">
+        <span class="when">${esc(L.long)}<small>${esc(L.date)}</small></span>
+        <p class="headline">${esc(d.headline || "")}</p>
+        <span class="big" title="Best home site">${r1(bm?.rating)}<small>/10</small></span>
+      </div>
+      <div class="mains">${main.map((s) => mainPanel(d, s, i)).join("")}</div>
+      ${coast.map((s) => rowPanel(d, s, i)).join("")}
+      <div class="others">${other.map((s) => miniPanel(d, s, i)).join("")}</div>
+      <div class="det" id="det-${i}" hidden></div>
+      <div class="ft"><span>${bm ? `${esc(BY[d.best_main]?.short || "")}: ${bm.agree === "split" ? "models split, treat as uncertain" : bm.agree === "mixed" ? "models partly agree" : "models agree"}` : ""}</span>
+        <span>heights ft MSL · wind mph on launch, kt aloft</span></div>
+    </article>`;
+  }).join("") || '<div class="empty">No forecast days in the data.</div>';
+
+  $("#days").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-site]"); if (!b) return;
+    const card = b.closest(".day"), i = b.dataset.day, det = $(`#det-${i}`);
+    const wasOpen = b.getAttribute("aria-expanded") === "true";
+    card.querySelectorAll("[data-site]").forEach((x) => x.setAttribute("aria-expanded", "false"));
+    if (wasOpen) { det.hidden = true; return; }
+    b.setAttribute("aria-expanded", "true");
+    det.innerHTML = detail(data.days[i], BY[b.dataset.site]);
+    det.hidden = false;
+  });
+
+  /* sources */
+  $("#tSrc").innerHTML = `<thead><tr><th>Source</th><th>Type</th><th>Provider · id</th><th>Run / issued</th><th>Fetched</th><th>Status</th></tr></thead><tbody>${
+    src.map((s) => `<tr><td><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)}</a></td><td>${esc(s.kind)}</td>
+      <td class="mono">${esc(s.provider)} · ${esc(s.id)}</td>
+      <td class="mono">${s.run ? `${fmtWhen(s.run)} <span class="muted">(${ago(s.run)})</span>` : '<span class="muted">not reported</span>'}</td>
+      <td class="mono">${fmtWhen(s.fetched)}</td><td class="${s.status === "failed" ? "bad" : "ok"}">${esc(s.status)}</td></tr>`).join("")}</tbody>`;
+  $("#foot").textContent = `Built ${new Date(data.generated).toISOString().slice(0, 16).replace("T", " ")} UTC · a guide, not a launch decision`;
+}
+
+const chipHtml = (c, prefix) => `<span class="chip"><i style="background:${qv(c.rating)}"></i>${prefix ? `<span class="muted">${esc(prefix)}</span> ` : ""}${r1(c.rating)}${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span>`;
+const labelHtml = (c) => `<span class="label"><span class="lab" style="color:${qv(c.rating)}">${esc(c.label)}</span>${c.xc ? '<span class="xcmark">XC</span>' : ""}${(c.tags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join("")}</span>`;
+const bar = (r, thin) => `<span class="bar${thin ? " thin" : ""}"><i style="width:${Math.max(2, Math.min(100, r * 10))}%;background:${qv(r)}"></i></span>`;
+
+function mainPanel(d, s, i) {
+  const c = d.sites[s.id];
+  if (!c) return `<div class="main"><span class="nm">${esc(s.name)}</span><span class="muted">no data</span></div>`;
+  return `<button type="button" class="main" data-site="${s.id}" data-day="${i}" aria-expanded="false">
+    <span class="top"><span class="nm">${esc(s.id === "lb" ? "Little Black" : s.short)}</span><span class="big" style="font-size:1.25rem">${r1(c.rating)}</span></span>
+    ${bar(c.rating)}
+    ${labelHtml(c)}
+    <span class="note">${esc(c.note)}</span>
+    <span class="kv"><span>top <b>${ft(c.top_ft)}</b></span><span>base <b>${ft(c.base_ft)}</b></span><span>launch <b>${esc(c.wind ?? "–")}</b></span><span>aloft <b>${esc(c.aloft ?? "–")}</b></span></span>
+  </button>`;
+}
+function rowPanel(d, s, i) {
+  const c = d.sites[s.id];
+  if (!c) return "";
+  return `<button type="button" class="row" data-site="${s.id}" data-day="${i}" aria-expanded="false">
+    <span class="nm">${esc(s.short)}</span>${bar(c.rating)}<span class="mono">${r1(c.rating)}</span>
+    <span class="note"><span class="lab" style="color:${qv(c.rating)}">${esc(c.label)}</span> · ${esc(c.note)}</span>
+  </button>`;
+}
+function miniPanel(d, s, i) {
+  const c = d.sites[s.id];
+  if (!c) return `<div class="mini"><span class="muted">${esc(s.short)}: no data</span></div>`;
+  return `<button type="button" class="mini" data-site="${s.id}" data-day="${i}" aria-expanded="false">
+    <span class="t"><span>${esc(s.short)}</span><span class="mono">${r1(c.rating)}${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span></span>
+    ${bar(c.rating, true)}
+    <span class="note">${esc(c.label)} · ${esc(c.note)}</span>
+  </button>`;
+}
+
+function detail(d, s) {
+  const c = d.sites[s.id];
+  const hours = (c.hourly || []).map((h) => {
+    const bg = h.xc ? "var(--q4)" : (h.glass && h.h >= 16) ? "var(--q2)" : `color-mix(in srgb, ${qv(h.q * 5)} ${Math.round(40 + 60 * h.q)}%, var(--sunk))`;
+    return `<div><i class="${h.xc ? "x" : ""}" style="background:${bg}" title="${h.h}:00 · lift ${h.top_ft ? h.top_ft.toLocaleString() + " ft" : "–"} · ${h.lw ?? "–"} mph${h.pr ? " · rain " + h.pr + " mm" : ""}"></i>${h.h > 12 ? h.h - 12 : h.h}</div>`;
+  }).join("");
+  const models = Object.entries(c.models || {}).map(([k, v]) => `<span>${esc(k)} <b style="color:${qv(v)}">${r1(v)}</b></span>`).join("");
+  return `<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline">
+      <h3 style="font-size:1.2rem">${esc(s.name)} <span class="muted mono" style="font-size:.85rem">${r1(c.rating)}/10</span></h3>${labelHtml(c)}</div>
+    <p class="note">${esc(c.note)}${c.window ? ` · best window ${esc(c.window)}` : ""}</p>
+    <div class="grid">
+      <span><small>Top of lift</small><b>${ft(c.top_ft)} ft</b></span>
+      <span><small>Cloudbase</small><b>${ft(c.base_ft)} ft</b></span>
+      <span><small>Launch wind</small><b>${esc(c.wind ?? "–")} mph</b></span>
+      <span><small>Drift aloft</small><b>${esc(c.aloft ?? "–")} kt</b></span>
+      <span><small>Max aloft</small><b>${c.aloft_max_kt ?? "–"} kt</b></span>
+      <span><small>Rain 9–6</small><b>${c.rain_mm ?? "–"} mm</b></span>
+      <span><small>CAPE max</small><b>${c.cape ?? "–"}</b></span>
+      <span><small>Flyable runs</small><b>${pct(c.p_fly)}</b></span>
+      <span><small>XC runs</small><b>${pct(c.p_xc)}</b></span>
+    </div>
+    ${hours ? `<div style="display:grid;gap:4px"><span class="eyebrow">Hour by hour · ${esc(c.lead || "")}</span><div class="hours">${hours}</div></div>` : ""}
+    ${models ? `<div class="models"><span>Models:</span>${models}<span>· ${c.n_members || 0} ensemble runs</span></div>` : ""}
+    <span class="muted" style="font-size:.76rem">${esc(s.note || "")}</span>`;
+}
+
+const seed = $("#seed").textContent.trim();
+if (seed) render(JSON.parse(seed));
+else fetch("data/forecast.json", { cache: "no-store" })
+  .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
+  .then(render)
+  .catch((e) => { $("#days").innerHTML = `<div class="empty">Couldn't load data/forecast.json (${esc(e.message)}). Has the GitHub Action run yet?</div>`; });
+})();
+</script>
+</body>
+</html>
