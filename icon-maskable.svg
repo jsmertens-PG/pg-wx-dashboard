@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- full-bleed version for Android: the launcher crops a circle out of the middle (safe zone r = 205) -->
+  <defs>
+    <radialGradient id="scope" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#143a26"/>
+      <stop offset="1" stop-color="#07140d"/>
+    </radialGradient>
+    <linearGradient id="sweep" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#5fdc8a" stop-opacity="0"/>
+      <stop offset="1" stop-color="#5fdc8a" stop-opacity=".6"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#scope)"/>
+  <circle cx="256" cy="256" r="196" fill="none" stroke="#5fdc8a" stroke-width="8" stroke-opacity=".8"/>
+  <g fill="none" stroke="#5fdc8a" stroke-width="4">
+    <circle cx="256" cy="256" r="132" stroke-opacity=".45"/>
+    <circle cx="256" cy="256" r="68" stroke-opacity=".38"/>
+    <path d="M256 60 V452 M60 256 H452" stroke-opacity=".22" stroke-width="3"/>
+  </g>
+  <path d="M256 256 L256 60 A196 196 0 0 1 425 158 Z" fill="url(#sweep)"/>
+  <path d="M256 256 L425 158" stroke="#9cf5b8" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="256" cy="256" r="8" fill="#9cf5b8"/>
+  <circle cx="200" cy="318" r="8" fill="#5fdc8a" fill-opacity=".8"/>
+  <g fill="#ffffff">
+    <circle cx="310" cy="184" r="28"/>
+    <circle cx="340" cy="169" r="35"/>
+    <circle cx="372" cy="187" r="25"/>
+    <rect x="292" y="182" width="98" height="30" rx="15"/>
+  </g>
+</svg>
