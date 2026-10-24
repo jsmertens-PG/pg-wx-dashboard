@@ -48,7 +48,7 @@ The day's rating is a weighted median of the regular models: HRRR and RRFS ×3, 
 
 ## Tuning
 
-`sites.json` holds every launch's coordinates, elevation, wind window, limits and XC height. **The values are starting estimates. Check the coordinates and elevations against the SDHGPA guide and your tracks.** The quickest improvement after that is comparing the radar with days you actually flew, then adjusting the limits.
+`sites.json` holds every launch's coordinates, elevation, wind window, limits and three ceilings (MSL) that scale the height bars: `ok_ft` (a decent local day, half bar), `xc_top_ft` (XC starts, three-quarter bar) and `xc_top_ft + xc_span_ft` (a great XC day, full bar). For example Little Black 2,500 / 3,000 / 4,500 ft, Elsinore 5,000 / 7,000 / 10,000 ft, Laguna/Horse 7,000 / 10,000 / 12,000 ft. `gust_mph` (15 inland, 24 at Torrey) is where gusts start to cost; 5 mph above it is close to a no-go. **The values are starting estimates. Check the coordinates and elevations against the SDHGPA guide and your tracks.** The quickest improvement after that is comparing the radar with days you actually flew, then adjusting the limits.
 
 Run locally:
 

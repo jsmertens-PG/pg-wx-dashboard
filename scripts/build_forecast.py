@@ -521,7 +521,7 @@ REASON_TEXT = {
     "rain": "rain or storms", "showers": "showers around", "cape": "overdevelopment risk",
     "otb": "over the back", "windy": "blown out", "strong": "strong on launch",
     "light": "too light to soar", "aloft": "strong wind aloft", "aloftdir": "wrong wind aloft",
-    "lid": "low lid", "weak": "weak thermals", "cross": "cross wind",
+    "lid": "low lid", "weak": "weak thermals", "cross": "cross wind", "gusty": "gusty",
 }
 SINK = 1.1   # paraglider sink rate, m/s
 
@@ -642,6 +642,8 @@ def score_hour(site, hr, i, levels, elev_m):
             q = 0.0; codes.append("windy"); launch = "blown out"
         elif lw_mph > hi:
             q *= 0.5; codes.append("strong"); launch = "strong"
+        elif lg_mph is not None and lg_mph > site.get("gust_mph", 15):
+            q *= clamp(1 - 0.8 * (lg_mph - site.get("gust_mph", 15)) / 5, 0.2); codes.append("gusty"); launch = "gusty"
         elif lw_mph < lo and site["kind"] == "ridge":
             q *= 0.3; codes.append("light"); launch = "too light"
         elif lw_mph < lo:
@@ -665,7 +667,8 @@ def score_hour(site, hr, i, levels, elev_m):
     cold_aloft = t700 is not None and t700 <= 1.0
     # lift: height above launch and thermal strength
     if site["kind"] != "ridge":
-        lift = clamp((agl - 100) / (600 - 100))
+        ok_agl = max(300.0, (site.get("ok_ft", site["launch_ft"] + 2000) - site["launch_ft"]) / FT)
+        lift = clamp((agl - 100) / (ok_agl - 100))
         strength = clamp((wstar - 0.8) / (1.6 - 0.8))
         q *= 0.15 + 0.85 * lift * (0.4 + 0.6 * strength)
         if agl < 200:
@@ -746,7 +749,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     for s in (blk if local >= 0.25 else [s for _, s in hours]):
         for c in s["codes"]:
             counts[c] = counts.get(c, 0) + 1
-    prio = ["rain", "otb", "windy", "aloftdir", "aloft", "cross", "lid", "weak", "strong", "light", "showers", "cape"]
+    prio = ["rain", "otb", "windy", "aloftdir", "aloft", "gusty", "cross", "lid", "weak", "strong", "light", "showers", "cape"]
     codes = sorted(counts, key=lambda c: (-(counts[c] >= 2), prio.index(c) if c in prio else 99))
 
     def med(key, block=blk):
@@ -997,15 +1000,29 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             aloftdir = sum(v["aloftdir"] for v in vals) / len(vals) >= 0.5
             launch_ft = s["launch_ft"]
             target = (s.get("xc_top_ft") or launch_ft + 1500) + (s.get("xc_span_ft") or 1000) - launch_ft
+            def ceil_q(ft):
+                """Bar fill for a ceiling (MSL): OK local day ~half, XC start ~3/4, great XC full."""
+                if ft is None:
+                    return 0.0
+                ok = s.get("ok_ft") or launch_ft + 1500
+                xc = s.get("xc_top_ft") or ok + 1000
+                gr = xc + (s.get("xc_span_ft") or 1000)
+                pts = [(launch_ft, 0.0), (ok, 0.5), (xc, 0.75), (gr, 1.0)]
+                if ft <= launch_ft:
+                    return 0.0
+                for (a, qa), (b, qb) in zip(pts, pts[1:]):
+                    if ft <= b:
+                        return qa + (qb - qa) * (ft - a) / max(1, b - a)
+                return 1.0
             agl_ft = (top * FT - launch_ft) if top is not None else None
             factors = [
                 {"k": "Thermal height", "v": f"{round(top * FT, -2):,.0f} ft" if top else "–",
                  "sub": f"{round(agl_ft, -2):,.0f} ft over launch" if agl_ft is not None else "",
-                 "q": round(clamp((agl_ft or 0) / target), 2)},
+                 "q": round(ceil_q(top * FT if top else None), 2)},
                 {"k": "Wind 1 pm", "v": wind_txt(lead.get("wind_1pm") or lead.get("wind_now")) if lead else "–",
                  "sub": " · ".join(x for x in (
                      f"later {wind_txt(lead['wind_later'])}" if lead and lead.get("wind_later") else "",
-                     lead.get("launch") if lead and (lead.get("launch") in ("over the back", "blown out", "strong") or str(lead.get("launch")).startswith("cross")) else "") if x),
+                     lead.get("launch") if lead and (lead.get("launch") in ("over the back", "blown out", "strong", "gusty") or str(lead.get("launch")).startswith("cross")) else "") if x),
                  "q": round(lead["launch_q"] if lead else 0, 2)},
                 {"k": "Wind aloft", "v": (f"{compass(lead['tw13'][0])} {round(lead['tw13'][1])} kt" if lead and lead.get("tw13")
                        else f"{compass(lead['a_dir'])} {round(lead['a_spd'])} kt" if lead and lead.get("a_spd") is not None else "–"),
@@ -1032,7 +1049,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 agl = (top_m * FT - launch_ft) if top_m is not None else None
                 return {"k": label, "v": f"{round(top_m * FT, -2):,.0f} ft" if top_m else "–",
                         "sub": (f"{round(agl, -2):,.0f} ft over launch · " if agl is not None else "") + src,
-                        "q": round(clamp((agl or 0) / scale), 2)}
+                        "q": round(clamp((agl or 0) / scale) if ridge else ceil_q(top_m * FT if top_m else None), 2)}
             rows, t13 = [], None
             if sp_here:
                 best = max(sp_here, key=lambda x: x["ceiling_ft"])

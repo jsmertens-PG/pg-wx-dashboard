@@ -1,5 +1,5 @@
 {
-  "_note": "Starting values to check against the SDHGPA guide and your own tracks. Directions are where the wind blows FROM (degrees). Launch wind in mph, wind aloft in knots. 'aloft_bad' is the range of wind-aloft directions that kills the site (offshore, over the back). 'routes' are XC directions (degrees you fly TOWARD) with a short description; 'blocked' are directions where drift takes you into airspace, sea or the border. Positions, launch and LZ heights come from the soaringpredictor.info site pages. Models are asked for the forecast at the LZ height (lz_ft), so thermals start from the valley ground. A site with 'launches' is scored per launch and shows the better one.",
+  "_note": "Starting values to check against the SDHGPA guide and your own tracks. Directions are where the wind blows FROM (degrees). Launch wind in mph, wind aloft in knots. 'aloft_bad' is the range of wind-aloft directions that kills the site (offshore, over the back). 'routes' are XC directions (degrees you fly TOWARD) with a short description; 'blocked' are directions where drift takes you into airspace, sea or the border. Positions, launch and LZ heights come from the soaringpredictor.info site pages. Models are asked for the forecast at the LZ height (lz_ft), so thermals start from the valley ground. A site with 'launches' is scored per launch and shows the better one. 'ok_ft' / 'xc_top_ft' / 'xc_top_ft'+'xc_span_ft' are the ceilings (MSL) for an OK local day, the start of XC, and a great XC day; they scale the height bars. 'gust_mph' is where gusts start to hurt (fully bad 5 mph above).",
   "sites": [
     {
       "id": "lb",
@@ -23,7 +23,7 @@
         10,
         130
       ],
-      "xc_top_ft": 3200,
+      "xc_top_ft": 3000,
       "xc_span_ft": 1500,
       "routes": [
         {
@@ -55,7 +55,9 @@
           "lz_ft": 750
         }
       ],
-      "lz_ft": 750
+      "lz_ft": 750,
+      "ok_ft": 2500,
+      "gust_mph": 15
     },
     {
       "id": "blossom",
@@ -79,8 +81,8 @@
         10,
         130
       ],
-      "xc_top_ft": 4200,
-      "xc_span_ft": 1800,
+      "xc_top_ft": 5000,
+      "xc_span_ft": 1500,
       "routes": [
         {
           "to": 45,
@@ -107,7 +109,9 @@
           "lz_ft": 700
         }
       ],
-      "lz_ft": 700
+      "lz_ft": 700,
+      "ok_ft": 3000,
+      "gust_mph": 15
     },
     {
       "id": "elsinore",
@@ -131,8 +135,8 @@
         230,
         320
       ],
-      "xc_top_ft": 5000,
-      "xc_span_ft": 2500,
+      "xc_top_ft": 7000,
+      "xc_span_ft": 3000,
       "routes": [
         {
           "to": 140,
@@ -157,7 +161,9 @@
           "lz_ft": 1350
         }
       ],
-      "lz_ft": 1350
+      "lz_ft": 1350,
+      "ok_ft": 5000,
+      "gust_mph": 15
     },
     {
       "id": "torrey",
@@ -221,7 +227,8 @@
           360,
           "cross-NW"
         ]
-      ]
+      ],
+      "gust_mph": 24
     },
     {
       "id": "lagunahorse",
@@ -235,8 +242,8 @@
         15
       ],
       "aloft_max_kt": 15,
-      "xc_top_ft": 8000,
-      "xc_span_ft": 2500,
+      "xc_top_ft": 10000,
+      "xc_span_ft": 2000,
       "routes": [
         {
           "to": 330,
@@ -284,7 +291,7 @@
             330,
             120
           ],
-          "xc_top_ft": 8000
+          "xc_top_ft": 10000
         },
         {
           "name": "Laguna",
@@ -300,9 +307,11 @@
             220,
             320
           ],
-          "xc_top_ft": 9000
+          "xc_top_ft": 10000
         }
-      ]
+      ],
+      "ok_ft": 7000,
+      "gust_mph": 15
     },
     {
       "id": "marshall",
@@ -327,7 +336,7 @@
         110
       ],
       "xc_top_ft": 7000,
-      "xc_span_ft": 2500,
+      "xc_span_ft": 1000,
       "routes": [
         {
           "to": 100,
@@ -354,7 +363,9 @@
           "lz_ft": 1700
         }
       ],
-      "lz_ft": 1700
+      "lz_ft": 1700,
+      "ok_ft": 5500,
+      "gust_mph": 15
     },
     {
       "id": "otay",
@@ -379,7 +390,7 @@
         130
       ],
       "xc_top_ft": 4500,
-      "xc_span_ft": 1800,
+      "xc_span_ft": 1500,
       "routes": [
         {
           "to": 40,
@@ -402,7 +413,9 @@
           "lz_ft": 600
         }
       ],
-      "lz_ft": 600
+      "lz_ft": 600,
+      "ok_ft": 3000,
+      "gust_mph": 15
     },
     {
       "id": "soboba",
@@ -427,7 +440,7 @@
         120
       ],
       "xc_top_ft": 6000,
-      "xc_span_ft": 2500,
+      "xc_span_ft": 2000,
       "routes": [
         {
           "to": 120,
@@ -448,7 +461,9 @@
           "lz_ft": 1520
         }
       ],
-      "lz_ft": 1520
+      "lz_ft": 1520,
+      "ok_ft": 4000,
+      "gust_mph": 15
     },
     {
       "id": "santabarbara",
@@ -473,7 +488,7 @@
         90
       ],
       "xc_top_ft": 6000,
-      "xc_span_ft": 2000,
+      "xc_span_ft": 1500,
       "routes": [
         {
           "to": 100,
@@ -500,7 +515,9 @@
           "lz_ft": 1000
         }
       ],
-      "lz_ft": 1000
+      "lz_ft": 1000,
+      "ok_ft": 4500,
+      "gust_mph": 15
     }
   ]
 }
