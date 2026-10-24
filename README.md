@@ -25,6 +25,7 @@ The repo ships with sample data, so the page works from the first upload. A bann
 | NAM (3 km, 60 h) | Open-Meteo | Today and tomorrow, cross-check |
 | GFS, ECMWF IFS, ICON | Open-Meteo | Days 1–7 |
 | GFS, ECMWF and ICON ensembles (~120 runs) | Open-Meteo ensemble API | The "flyable %" and XC chance |
+| Soaring Predictor summary tables (South Cal, Santa Barbara) | soaringpredictor.info | Reference ceiling for the next 3 days (▼ on the thermal-height bar) |
 | NWS San Diego forecast discussion | api.weather.gov | Flags (showers, thunderstorms, offshore, wind advisory) and synopsis |
 
 All of these are free and need no keys. Soaring Predictor, XC Skies and the Holfuy stations need logins or paid keys, so the page links to them under "Check by hand".
@@ -43,7 +44,7 @@ For each model run, each hour from 9 am to 6 pm is checked at each launch:
 - **Glass-off:** at least two of the last hours before sunset with smooth onshore wind on launch (3–13 mph), no rain and nothing strong aloft. Labelled Glass-off only when there's no real midday thermal window.
 - **Showers:** the share of ensemble runs with rain at the site during flying hours. 20% or more adds a "showers around" tag; the same number drives the rain bar.
 
-The day's rating is the median of the five regular models. The ensembles (coarser, without boundary-layer height) are recentred on that median and give the chance of a flyable or XC day. **XC** appears when the rating is at least 6 and at least 40% of the runs agree. The XC note suggests a direction from the drift and the site's `routes`, and warns when the drift heads into a `blocked` direction (airspace, the border).
+The day's rating is a weighted median of the regular models: HRRR and RRFS ×3, NAM ×2, GFS/ECMWF/ICON ×1 (`MODEL_WEIGHT` in the script). Models without sunshine data (NAM on Open-Meteo) get a clear-sky estimate from sun height and their own cloud cover. The ensembles (coarser, without boundary-layer height) are recentred on that median and give the chance of a flyable or XC day. **XC** appears when the rating is at least 6 and at least 40% of the runs agree. The XC note suggests a direction from the drift and the site's `routes`, and warns when the drift heads into a `blocked` direction (airspace, the border).
 
 ## Tuning
 

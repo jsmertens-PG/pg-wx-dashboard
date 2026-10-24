@@ -1,14 +1,14 @@
 {
-  "_note": "Starting values to check against the SDHGPA guide and your own tracks. Directions are where the wind blows FROM (degrees). Launch wind in mph, wind aloft in knots. 'aloft_bad' is the range of wind-aloft directions that kills the site (offshore, over the back). 'routes' are XC directions (degrees you fly TOWARD) with a short description; 'blocked' are directions where drift takes you into airspace, sea or the border.",
+  "_note": "Starting values to check against the SDHGPA guide and your own tracks. Directions are where the wind blows FROM (degrees). Launch wind in mph, wind aloft in knots. 'aloft_bad' is the range of wind-aloft directions that kills the site (offshore, over the back). 'routes' are XC directions (degrees you fly TOWARD) with a short description; 'blocked' are directions where drift takes you into airspace, sea or the border. Positions, launch and LZ heights come from the soaringpredictor.info site pages. Models are asked for the forecast at the LZ height (lz_ft), so thermals start from the valley ground. A site with 'launches' is scored per launch and shows the better one.",
   "sites": [
     {
       "id": "lb",
       "name": "Little Black",
       "short": "LB",
       "tier": "main",
-      "lat": 32.976,
-      "lon": -117.118,
-      "launch_ft": 900,
+      "lat": 32.98796,
+      "lon": -117.12232,
+      "launch_ft": 1050,
       "kind": "thermal",
       "dir": [
         200,
@@ -46,16 +46,25 @@
           "why": "Miramar airspace and the coast"
         }
       ],
-      "note": "Best post-frontal site in the county. West-facing, so offshore mornings are over the back."
+      "note": "Best post-frontal site in the county. West-facing, so offshore mornings are over the back.",
+      "sp": [
+        {
+          "page": "scal",
+          "name": "Little Black",
+          "launch_ft": 1050,
+          "lz_ft": 750
+        }
+      ],
+      "lz_ft": 750
     },
     {
       "id": "blossom",
       "name": "Blossom Valley",
       "short": "Blossom",
       "tier": "main",
-      "lat": 32.862,
-      "lon": -116.872,
-      "launch_ft": 1800,
+      "lat": 32.87661,
+      "lon": -116.84838,
+      "launch_ft": 1500,
       "kind": "thermal",
       "dir": [
         200,
@@ -89,16 +98,25 @@
           "why": "El Cajon / Gillespie / Miramar airspace"
         }
       ],
-      "note": "Inland thermal site; often lines up with Elsinore."
+      "note": "Inland thermal site; often lines up with Elsinore.",
+      "sp": [
+        {
+          "page": "scal",
+          "name": "Blossom Valley",
+          "launch_ft": 1500,
+          "lz_ft": 700
+        }
+      ],
+      "lz_ft": 700
     },
     {
       "id": "elsinore",
       "name": "Elsinore (E / Edwards)",
       "short": "Elsinore",
       "tier": "main",
-      "lat": 33.632,
-      "lon": -117.387,
-      "launch_ft": 2700,
+      "lat": 33.62981,
+      "lon": -117.37144,
+      "launch_ft": 2650,
       "kind": "convergence",
       "dir": [
         30,
@@ -130,16 +148,25 @@
         }
       ],
       "blocked": [],
-      "note": "East-facing over the lake; its own animal. The sea-breeze convergence line is the XC engine."
+      "note": "East-facing over the lake; its own animal. The sea-breeze convergence line is the XC engine.",
+      "sp": [
+        {
+          "page": "scal",
+          "name": "Lake Elsinore",
+          "launch_ft": 2650,
+          "lz_ft": 1350
+        }
+      ],
+      "lz_ft": 1350
     },
     {
       "id": "torrey",
       "name": "Torrey Pines",
       "short": "Torrey",
       "tier": "coast",
-      "lat": 32.889,
-      "lon": -117.251,
-      "launch_ft": 350,
+      "lat": 32.89032,
+      "lon": -117.25186,
+      "launch_ft": 300,
       "kind": "ridge",
       "dir": [
         245,
@@ -173,36 +200,29 @@
         }
       ],
       "note": "Ridge soaring in a steady W to WNW sea breeze. Rare thermal days (1,200 ft+) are flagged as a Thermal day.",
-      "xc_span_ft": 1000
+      "xc_span_ft": 1000,
+      "sp": [
+        {
+          "page": "scal",
+          "name": "Torrey Pines Gliderport",
+          "launch_ft": 300,
+          "lz_ft": 0
+        }
+      ],
+      "lz_ft": 0
     },
     {
       "id": "lagunahorse",
       "name": "Laguna / Horse",
       "short": "Laguna/Horse",
       "tier": "other",
-      "lat": 32.8,
-      "lon": -116.46,
-      "launch_ft": 4600,
+      "launch_ft": 4540,
       "kind": "convergence",
-      "dir": [
-        [
-          180,
-          300
-        ],
-        [
-          30,
-          150
-        ]
-      ],
       "wind_mph": [
         3,
         15
       ],
       "aloft_max_kt": 15,
-      "aloft_bad": [
-        330,
-        120
-      ],
       "xc_top_ft": 8000,
       "xc_span_ft": 2500,
       "routes": [
@@ -222,16 +242,64 @@
           "why": "the border"
         }
       ],
-      "note": "Mountain convergence. Horse faces west, Laguna faces east over the desert, so either wind works; north or east flow aloft kills the convergence."
+      "note": "Two launches: Horse faces west, Laguna faces east over the desert. Each is scored on its own and the better one is shown.",
+      "sp": [
+        {
+          "page": "scal",
+          "name": "Horse Canyon",
+          "launch_ft": 4540,
+          "lz_ft": 3300
+        },
+        {
+          "page": "scal",
+          "name": "Laguna",
+          "launch_ft": 5630,
+          "lz_ft": 2210
+        }
+      ],
+      "launches": [
+        {
+          "name": "Horse",
+          "lat": 32.7747,
+          "lon": -116.477,
+          "launch_ft": 4540,
+          "lz_ft": 3300,
+          "dir": [
+            180,
+            300
+          ],
+          "aloft_bad": [
+            330,
+            120
+          ],
+          "xc_top_ft": 8000
+        },
+        {
+          "name": "Laguna",
+          "lat": 32.93396,
+          "lon": -116.48186,
+          "launch_ft": 5630,
+          "lz_ft": 2210,
+          "dir": [
+            30,
+            150
+          ],
+          "aloft_bad": [
+            220,
+            320
+          ],
+          "xc_top_ft": 9000
+        }
+      ]
     },
     {
       "id": "marshall",
       "name": "Marshall / Crestline",
       "short": "Marshall",
       "tier": "other",
-      "lat": 34.211,
-      "lon": -117.299,
-      "launch_ft": 4000,
+      "lat": 34.20999,
+      "lon": -117.30286,
+      "launch_ft": 4040,
       "kind": "thermal",
       "dir": [
         150,
@@ -265,16 +333,25 @@
           "why": "Ontario / San Bernardino airspace"
         }
       ],
-      "note": "South-facing above San Bernardino."
+      "note": "South-facing above San Bernardino.",
+      "sp": [
+        {
+          "page": "scal",
+          "name": "Marshall",
+          "launch_ft": 4040,
+          "lz_ft": 1700
+        }
+      ],
+      "lz_ft": 1700
     },
     {
       "id": "otay",
-      "name": "Otay",
+      "name": "Otay Mesa",
       "short": "Otay",
       "tier": "other",
-      "lat": 32.595,
-      "lon": -116.86,
-      "launch_ft": 1800,
+      "lat": 32.57401,
+      "lon": -116.89399,
+      "launch_ft": 1550,
       "kind": "thermal",
       "dir": [
         200,
@@ -304,16 +381,25 @@
           "why": "the border"
         }
       ],
-      "note": "Near the border; XC goes north and east."
+      "note": "Near the border; XC goes north and east.",
+      "sp": [
+        {
+          "page": "scal",
+          "name": "Otay Mesa",
+          "launch_ft": 1550,
+          "lz_ft": 600
+        }
+      ],
+      "lz_ft": 600
     },
     {
       "id": "soboba",
       "name": "Soboba",
       "short": "Soboba",
       "tier": "other",
-      "lat": 33.795,
-      "lon": -116.925,
-      "launch_ft": 2600,
+      "lat": 33.8223,
+      "lon": -116.9588,
+      "launch_ft": 2260,
       "kind": "thermal",
       "dir": [
         180,
@@ -341,16 +427,25 @@
         }
       ],
       "blocked": [],
-      "note": "Flight park on the San Jacinto front."
+      "note": "Flight park on the San Jacinto front.",
+      "sp": [
+        {
+          "page": "scal",
+          "name": "Soboba",
+          "launch_ft": 2260,
+          "lz_ft": 1520
+        }
+      ],
+      "lz_ft": 1520
     },
     {
       "id": "santabarbara",
       "name": "Santa Barbara (Skyport)",
       "short": "Santa Barbara",
       "tier": "other",
-      "lat": 34.476,
-      "lon": -119.703,
-      "launch_ft": 2500,
+      "lat": 34.48119,
+      "lon": -119.68509,
+      "launch_ft": 3100,
       "kind": "thermal",
       "dir": [
         150,
@@ -365,7 +460,7 @@
         300,
         90
       ],
-      "xc_top_ft": 5000,
+      "xc_top_ft": 6000,
       "xc_span_ft": 2000,
       "routes": [
         {
@@ -384,7 +479,16 @@
           "why": "the channel"
         }
       ],
-      "note": "South-facing front range above Santa Barbara. Sundowners and other north winds are over the back."
+      "note": "South-facing front range above Santa Barbara. Sundowners and other north winds are over the back.",
+      "sp": [
+        {
+          "page": "santabarb",
+          "name": "Eliminator Skyport",
+          "launch_ft": 3100,
+          "lz_ft": 1000
+        }
+      ],
+      "lz_ft": 1000
     }
   ]
 }

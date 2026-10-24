@@ -38,6 +38,7 @@ UA = "sd-xc-radar (personal paragliding forecast; github.com)"
 # Open-Meteo model ids change occasionally, so each model lists fallbacks.
 DET_MODELS = {
     "HRRR":  ["ncep_hrrr_conus", "gfs_hrrr"],
+    "RRFS":  ["ncep_rrfs_conus", "rrfs_conus", "ncep_rrfs"],     # NOAA's NAM/HRRR successor; used once Open-Meteo has it
     "NAM":   ["ncep_nam_conus", "nam_conus"],
     "GFS":   ["gfs_global", "ncep_gfs025", "gfs025"],
     "ECMWF": ["ecmwf_ifs025", "ecmwf_ifs"],
@@ -48,6 +49,9 @@ ENS_MODELS = {
     "ECMWF ens": ["ecmwf_ifs025"],
     "ICON ens":  ["icon_global", "icon_seamless"],
 }
+OPTIONAL_MODELS = {"RRFS"}           # not listed as "failed" while Open-Meteo doesn't offer it yet
+# trust for lift and rating (local experience: HRRR usually right, then NAM; GFS/ECMWF/ICON for the longer range)
+MODEL_WEIGHT = {"HRRR": 3, "RRFS": 3, "NAM": 2, "ECMWF": 1, "GFS": 1, "ICON": 1}
 DET_LEVELS = [1000, 975, 950, 925, 900, 850, 800, 700, 600, 500]
 ENS_LEVELS = [925, 850, 700]
 # the ensembles only feed the flyable/XC chances, so they get a slim set of fields
@@ -97,6 +101,8 @@ def om_url(base, sites, model, hourly):
         "forecast_days": DAYS,
         "wind_speed_unit": "kn",
     }
+    if all(s.get("lz_ft") is not None for s in sites):
+        q["elevation"] = ",".join(f"{s['lz_ft'] / FT:.0f}" for s in sites)   # thermals start from the valley ground
     return base + "?" + urllib.parse.urlencode(q)
 
 
@@ -149,6 +155,85 @@ def fetch_model(kind, name, ids, sites, log):
     return None, None, {"name": name, "kind": "model" if kind == "det" else "ensemble",
                         "provider": "Open-Meteo", "id": ids[0], "status": "failed",
                         "run": None, "fetched": now_iso(), "url": "https://open-meteo.com/en/docs"}
+
+
+SP_PAGES = {
+    "scal": "https://www.soaringpredictor.info/scal/SouthCalPredictor.htm",
+    "santabarb": "https://www.soaringpredictor.info/santabarb/SantaBarbPredictor.htm",
+}
+WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+
+
+def http_text(url, timeout=60):
+    req = urllib.request.Request(url, headers={"User-Agent": UA})
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return r.read().decode("utf-8", "replace")
+
+
+def parse_sp(html):
+    """Soaring Predictor summary table -> {"run": iso, "dates": [...], "rows": {site: [(wind, above_ft), ...]}}."""
+    text = re.sub(r"<[^>]+>", " ", html)
+    text = re.sub(r"&nbsp;|&#160;", " ", text)
+    text = re.sub(r"\s+", " ", text)
+    run = None
+    m = re.search(r"(\d{2})(\d{2})(\d{2})/(\d{2})(\d{2})", text)          # e.g. 261024/1200 = 26-10-24 12:00 UTC
+    if m:
+        yy, mm, dd, hh, mi = (int(g) for g in m.groups())
+        try:
+            run = datetime(2000 + yy, mm, dd, hh, mi, tzinfo=timezone.utc)
+        except ValueError:
+            run = None
+    hm = re.search(r"\b((?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\b(?:\s+(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\b){2,6})", text)
+    heads = hm.group(1).split() if hm else []
+    dates = []
+    if heads:
+        start = (run.astimezone().date() if run else datetime.now(timezone.utc).date())
+        d0 = start
+        while WEEKDAYS[d0.weekday()] != heads[0]:
+            d0 -= timedelta(days=1)
+            if (start - d0).days > 6:
+                d0 = start
+                break
+        dates = [(d0 + timedelta(days=k)).isoformat() for k in range(len(heads))]
+    return {"run": run.isoformat(timespec="minutes") if run else None, "dates": dates, "text": text}
+
+
+def sp_row(parsed, name, n):
+    """(wind, above-launch ft) for each day column of one site."""
+    m = re.search(re.escape(name) + r"((?:\s+[NSEW]{1,3}\s+\d{1,2}\s+\d{1,5}){1,%d})" % n, parsed["text"])
+    if not m:
+        return []
+    return [(f"{w} {v}", int(a)) for w, v, a in re.findall(r"([NSEW]{1,3})\s+(\d{1,2})\s+(\d{1,5})", m.group(1))]
+
+
+def fetch_sp(sites, log):
+    """Soaring Predictor ceilings (public summary tables), shown next to the radar's own heights."""
+    out, info = {}, []
+    for key, url in SP_PAGES.items():
+        if not any(sp["page"] == key for s in sites for sp in s.get("sp", [])):
+            continue
+        try:
+            parsed = parse_sp(http_text(url))
+            n = len(parsed["dates"]) or 6
+            found = 0
+            for s in sites:
+                for sp in s.get("sp", []):
+                    if sp["page"] != key:
+                        continue
+                    for k, (wind, above) in enumerate(sp_row(parsed, sp["name"], n)):
+                        if k < len(parsed["dates"]):
+                            out.setdefault((s["id"], parsed["dates"][k]), []).append(
+                                {"name": sp["name"], "ceiling_ft": sp["launch_ft"] + above, "above_ft": above, "wind": wind})
+                            found += 1
+            log.append(f"Soaring Predictor {key}: ok ({found} site-days)")
+            info.append({"name": f"Soaring Predictor ({'South Cal' if key == 'scal' else 'Santa Barbara'})", "kind": "reference",
+                         "provider": "soaringpredictor.info", "id": key, "status": "ok" if found else "failed",
+                         "run": parsed["run"], "fetched": now_iso(), "url": url})
+        except Exception as e:
+            log.append(f"Soaring Predictor {key}: failed ({e})")
+            info.append({"name": f"Soaring Predictor ({key})", "kind": "reference", "provider": "soaringpredictor.info",
+                         "id": key, "status": "failed", "run": None, "fetched": now_iso(), "url": url})
+    return out, info
 
 
 def fetch_nws(log):
@@ -462,6 +547,28 @@ def fmt_clock(hdec):
     return f"{h - 12 if h > 12 else h}:{m:02d}{'pm' if h >= 12 else 'am'}"
 
 
+def clear_sky_sw(hr, i, site):
+    """Sunshine estimate (W/m2) from solar elevation and the model's own cloud cover."""
+    ts = hr.get("time", [None] * (i + 1))[i]
+    if not ts:
+        return None
+    dt = datetime.fromisoformat(ts)
+    off = hr.get("_utc_offset_h", -7)
+    n = dt.timetuple().tm_yday
+    g = 2 * math.pi / 365 * (n - 1 + (dt.hour - 12) / 24)
+    decl = (0.006918 - 0.399912 * math.cos(g) + 0.070257 * math.sin(g) - 0.006758 * math.cos(2 * g)
+            + 0.000907 * math.sin(2 * g) - 0.002697 * math.cos(3 * g) + 0.00148 * math.sin(3 * g))
+    eot = 229.18 * (0.000075 + 0.001868 * math.cos(g) - 0.032077 * math.sin(g) - 0.014615 * math.cos(2 * g) - 0.040849 * math.sin(2 * g))
+    minutes = (dt.hour + 0.5 - off) * 60 + eot + 4 * site["lon"]          # true solar time, mid-hour
+    ha = math.radians(minutes / 4 - 180)
+    la = math.radians(site["lat"])
+    sin_el = math.sin(la) * math.sin(decl) + math.cos(la) * math.cos(decl) * math.cos(ha)
+    if sin_el <= 0:
+        return 0.0
+    cloud = (_at(hr, "cloud_cover", i) or 0) / 100
+    return 1000 * sin_el * (1 - 0.75 * cloud ** 3.4)
+
+
 def score_hour(site, hr, i, levels, elev_m):
     """One hour, one model run. q = how good it is to be flying (0-1)."""
     t2 = _at(hr, "temperature_2m", i)
@@ -470,7 +577,10 @@ def score_hour(site, hr, i, levels, elev_m):
     td = _at(hr, "dew_point_2m", i)
     pr = max(0.0, _at(hr, "precipitation", i) or 0.0)
     cape = max(0.0, _at(hr, "cape", i) or 0.0)
-    sw = max(0.0, _at(hr, "shortwave_radiation", i) or 0.0)
+    sw = _at(hr, "shortwave_radiation", i)
+    if sw is None:                       # e.g. NAM on Open-Meteo: estimate from sun height and cloud
+        sw = clear_sky_sw(hr, i, site)
+    sw = max(0.0, sw or 0.0)
     pts = profile(hr, i, levels, elev_m)
     launch_m = site["launch_ft"] / FT
     z0 = pts[0][0] if pts else elev_m
@@ -715,6 +825,8 @@ def day_index(hr):
 def member_series(hr):
     members = {"control": {}}
     for k, v in hr.items():
+        if k.startswith("_"):
+            continue
         m = re.match(r"(.+)_member(\d+)$", k)
         if m:
             members.setdefault(m.group(2), {})[m.group(1)] = v
@@ -725,23 +837,59 @@ def member_series(hr):
     return [m for m in members.values() if "temperature_2m" in m]
 
 
+def wmedian(pairs):
+    """Weighted median of (value, weight) pairs, ignoring missing values."""
+    pairs = sorted((v, w) for v, w in pairs if v is not None and w > 0)
+    if not pairs:
+        return None
+    half, acc = sum(w for _, w in pairs) / 2, 0
+    for k, (v, w) in enumerate(pairs):
+        acc += w
+        if acc > half:
+            return v
+        if acc == half and k + 1 < len(pairs):
+            return (v + pairs[k + 1][0]) / 2
+    return pairs[-1][0]
+
+
 def _med(vals):
     vals = [v for v in vals if v is not None]
     return median(vals) if vals else None
 
 
-def build(sites, det, ens, nws, log, sample=False, sources=None):
+def expand_sites(sites):
+    """Sites with several 'launches' become one internal site per launch (merged again in build)."""
+    out = []
+    for s in sites:
+        if s.get("launches"):
+            for k, l in enumerate(s["launches"]):
+                c = {kk: vv for kk, vv in s.items() if kk != "launches"}
+                c.update(l)
+                c.update({"id": f"{s['id']}@{k}", "parent": s["id"], "launch_name": l["name"]})
+                out.append(c)
+        else:
+            out.append(dict(s, parent=s["id"]))
+    return out
+
+
+def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parents=None):
+    sp = sp or {}
     days = {}
 
     def run_site(s, d, levels, sink):
         hr, elev = d.get("hourly", {}), d.get("elevation", 0) or 0
+        ground_ft = round(elev * FT)
         off_h = (d.get("utc_offset_seconds") or -7 * 3600) / 3600
+        hr["_utc_offset_h"] = off_h
         series = member_series(hr) if sink == "ens" else [hr]
+        for mem in series:
+            mem["_utc_offset_h"] = off_h
         for mem in series:
             for dstr, idxs in day_index(mem).items():
                 ss = sunset_hour(date.fromisoformat(dstr), s["lat"], s["lon"], off_h)
                 a = assess_day(s, mem, idxs, levels, elev, ss)
                 if a:
+                    a["ground_ft"] = ground_ft
                     yield dstr, a
 
     for name, (mid, data, *_i) in det.items():
@@ -766,7 +914,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None):
             # spread of outcomes, recentred on the regular models so their bias doesn't leak in
             ens_r = [a["rating"] for a in cell["ens"]]
             if det_r:
-                rating = median(det_r.values())
+                rating = wmedian((v, MODEL_WEIGHT.get(k, 1)) for k, v in det_r.items())
             else:
                 rating = median(ens_r)
             if ens_r:
@@ -778,7 +926,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None):
                 p_xc = sum(a["xc_day"] > 0 for a in D.values()) / len(D)
             det_xc = sum(a["xc_day"] > 0 for a in D.values()) / max(1, len(D))
             xc = bool(s.get("xc_top_ft")) and rating >= 6.0 and p_xc >= 0.4 and det_xc >= 0.4
-            order = [m for m in ("HRRR", "NAM", "ECMWF", "GFS", "ICON") if m in D]
+            order = [m for m in ("HRRR", "RRFS", "NAM", "ECMWF", "GFS", "ICON") if m in D]
             close = [m for m in order if abs(det_r[m] - rating) <= 1.0]
             lead_name = close[0] if close else (min(order, key=lambda m: abs(det_r[m] - rating)) if order else None)
             lead = D.get(lead_name) if lead_name else (cell["ens"][0] if cell["ens"] else None)
@@ -810,11 +958,10 @@ def build(sites, det, ens, nws, log, sample=False, sources=None):
 
             # key values: median across the regular models (directions from the lead model)
             vals = list(D.values()) or cell["ens"]
-            top, base = _med(v["top"] for v in vals), _med(v["base"] for v in vals)
-            wstar, lw = _med(v["wstar"] for v in vals), _med(v["lw"] for v in vals)
-            a_max, rain = _med(v["a_max"] for v in vals), _med(v["pr_win"] for v in vals)
-            cape = _med(v["cape"] for v in vals)
-            launch_q = _med(v["launch_q"] for v in vals)
+            wts = [MODEL_WEIGHT.get(k, 1) for k in D] if D else [1] * len(vals)
+            W = lambda key: wmedian((v[key], w) for v, w in zip(vals, wts))
+            top, base, wstar, lw = W("top"), W("base"), W("wstar"), W("lw")
+            a_max, rain, cape, launch_q = W("a_max"), W("pr_win"), W("cape"), W("launch_q")
             aloftdir = sum(v["aloftdir"] for v in vals) / len(vals) >= 0.5
             launch_ft = s["launch_ft"]
             target = (s.get("xc_top_ft") or launch_ft + 1500) + (s.get("xc_span_ft") or 1000) - launch_ft
@@ -843,6 +990,12 @@ def build(sites, det, ens, nws, log, sample=False, sources=None):
             ]
             if ridge:
                 factors[0]["q"] = round(clamp((agl_ft or 0) / 1200), 2)
+            sp_here = sp.get((s.get("parent", s["id"]), dstr), []) if len(out_days) < 3 else []
+            if sp_here:
+                best_sp = max(x["ceiling_ft"] for x in sp_here)
+                scale = 1200 if ridge else target
+                factors[0]["sp_q"] = round(clamp((best_sp - launch_ft) / scale), 2)
+                factors[0]["sp"] = " · ".join(f"{x['name']} {x['ceiling_ft']:,} ft" for x in sp_here)
             lead_view = dict(lead, label=label, top=top if top is not None else lead.get("top"), shower_p=shower_p) if lead else None
             drow["sites"][s["id"]] = {
                 "rating": round(rating, 1), "label": label, "tags": tags, "xc": xc,
@@ -854,23 +1007,43 @@ def build(sites, det, ens, nws, log, sample=False, sources=None):
                 "wstar": round(wstar, 1) if wstar is not None else None,
                 "sunset": fmt_clock(lead["sunset"]) if lead else None,
                 "factors": factors,
+                "sp": sp.get((s.get("parent", s["id"]), dstr), []) if len(out_days) < 3 else [],
+                "ground_ft": lead.get("ground_ft") if lead else None,
+                "launch_ft": s["launch_ft"],
                 "diag": {k: {"r": round(v["rating"], 1), "top": round(v["top"] * FT, -2) if v["top"] else None,
                              "w": round(v["wstar"], 1) if v["wstar"] is not None else None,
                              "why": v["codes"][:3]} for k, v in D.items()},
             }
+        # merge per-launch results back into their site: show the better launch of the day
+        merged = {}
+        for s in sites:
+            c = drow["sites"].get(s["id"])
+            if not c:
+                continue
+            pid = s.get("parent", s["id"])
+            if s.get("launch_name"):
+                c = dict(c, launch_name=s["launch_name"])
+                if c["note"]:
+                    c["note"] = f"{s['launch_name']}: {c['note']}"
+                else:
+                    c["note"] = s["launch_name"]
+            if pid not in merged or c["rating"] > merged[pid]["rating"]:
+                merged[pid] = c
+        drow["sites"] = merged
         if drow["sites"]:
-            main = [k for k in drow["sites"] if next(x for x in sites if x["id"] == k).get("tier") == "main"] or list(drow["sites"])
+            main = [k for k in drow["sites"] if next(x for x in (parents or sites) if x["id"] == k).get("tier") == "main"] or list(drow["sites"])
             drow["best"] = max(drow["sites"], key=lambda k: drow["sites"][k]["rating"])
             drow["best_main"] = max(main, key=lambda k: drow["sites"][k]["rating"])
-            drow["headline"] = headline(sites, drow)
+            drow["headline"] = headline(parents or sites, drow)
             out_days.append(drow)
 
     return {
         "generated": now_iso(), "sample": sample,
         "models": {k: v[0] for k, v in det.items() if v[0]},
+        "weights": MODEL_WEIGHT,
         "ensembles": {k: v[0] for k, v in ens.items() if v[0]},
         "log": log, "sources": sources or [], "nws": nws,
-        "sites": [{k: s.get(k) for k in ("id", "name", "short", "tier", "launch_ft", "kind", "xc_top_ft", "note")} for s in sites],
+        "sites": [{k: s.get(k) for k in ("id", "name", "short", "tier", "launch_ft", "lz_ft", "kind", "xc_top_ft", "note")} for s in (parents or sites)],
         "days": out_days,
     }
 
@@ -908,7 +1081,7 @@ def sample_response(sites, levels, members=0, horizon_h=DAYS * 24, seed=1):
     regimes = ["showery", "postfrontal", "offshore", "ridge", "good", "windy", "glassoff"]
     out = []
     for si, s in enumerate(sites):
-        elev = s["launch_ft"] / FT * rnd.uniform(0.5, 0.9)
+        elev = (s["lz_ft"] if s.get("lz_ft") is not None else s["launch_ft"] * 0.7) / FT
         hourly = {"time": times}
         def series(fn):
             return [None if h >= horizon_h else fn(h) for h in range(len(times))]
@@ -973,6 +1146,17 @@ def sample_sources(det, ens):
     return out
 
 
+def sample_sp(sites):
+    out = {}
+    for k in range(3):
+        d = (date.today() + timedelta(days=k)).isoformat()
+        for s in sites:
+            for sp in s.get("sp", []):
+                out.setdefault((s["id"], d), []).append({"name": sp["name"], "ceiling_ft": sp["launch_ft"] + 1500 + 500 * k,
+                                                         "above_ft": 1500 + 500 * k, "wind": "W 8"})
+    return out
+
+
 def sample_nws():
     return {"issued": datetime.now(timezone.utc).isoformat(timespec="minutes"),
             "synopsis": "SAMPLE TEXT. Showers and a slight chance of thunderstorms through Friday morning, ending from the northwest. Dry and warmer for the weekend with weak offshore flow Saturday morning.",
@@ -993,7 +1177,8 @@ def main(argv=None):
     ap.add_argument("--sample", action="store_true", help="synthetic data, no network")
     ap.add_argument("--out", default=str(ROOT / "data" / "forecast.json"))
     args = ap.parse_args(argv)
-    sites = json.loads((ROOT / "sites.json").read_text())["sites"]
+    parents = json.loads((ROOT / "sites.json").read_text())["sites"]
+    sites = expand_sites(parents)
     log = []
     if args.sample:
         det = {"HRRR": ("sample", sample_response(sites, DET_LEVELS, horizon_h=48, seed=1), None),
@@ -1006,11 +1191,14 @@ def main(argv=None):
         nws = sample_nws()
         log.append("sample data")
         sources = sample_sources(det, ens)
+        sp = sample_sp(parents)
     else:
         det = {n: fetch_model("det", n, ids, sites, log) for n, ids in DET_MODELS.items()}
         ens = {n: fetch_model("ens", n, ids, sites, log) for n, ids in ENS_MODELS.items()}
         nws = fetch_nws(log)
-        sources = [v[2] for v in det.values()] + [v[2] for v in ens.values()]
+        sp, sp_info = fetch_sp(parents, log)
+        sources = [v[2] for k, v in det.items() if not (k in OPTIONAL_MODELS and v[2]["status"] == "failed")]
+        sources += [v[2] for v in ens.values()] + sp_info
         sources.append({"name": "NWS San Diego forecast discussion", "kind": "text", "provider": "NWS",
                         "id": "AFD SGX", "status": "ok" if nws else "failed",
                         "run": nws.get("issued") if nws else None, "fetched": now_iso(),
@@ -1018,7 +1206,7 @@ def main(argv=None):
         if not any(v[1] for v in det.values()):
             print("\n".join(log), file=sys.stderr)
             sys.exit("No model data retrieved; keeping the previous forecast.json")
-    result = build(sites, det, ens, nws, log, sample=args.sample, sources=sources)
+    result = build(sites, det, ens, nws, log, sample=args.sample, sources=sources, sp=sp, parents=parents)
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     Path(args.out).write_text(json.dumps(result, indent=1))
     print("\n".join(log))

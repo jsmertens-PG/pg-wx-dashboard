@@ -147,6 +147,8 @@ details.fold > :not(summary) { margin-top: 10px; }
 .factor .fs { grid-column: 2 / -1; font-size: .72rem; color: var(--muted); margin-top: -2px; }
 .factor .fbar { height: 8px; background: var(--sunk); position: relative; }
 .factor .fbar i { position: absolute; inset: 0 auto 0 0; display: block; }
+.factor .fbar .spmark { position: absolute; top: -5px; width: 0; height: 0; margin-left: -5px; border: 5px solid transparent; border-top: 6px solid var(--ink); }
+.factor .spnote { color: var(--ink); }
 @media (max-width: 560px) { .factor { grid-template-columns: 100px minmax(0, 1fr) 84px; gap: 2px 10px; } }
 
 .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .76rem; color: var(--muted); align-items: center; }
@@ -236,7 +238,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
     <span class="chip"><i style="background:var(--q5)"></i>8+ big XC</span>
   </div>
 
-      <p><b>0–10 scale.</b> A nice local day is about 3.5–5 (green). XC days start at 6: about 6 is a short XC, 7–8 a solid one, 9 a big day. The rating is the median of the regular models (HRRR, NAM, GFS, ECMWF, ICON); the ensembles give the spread behind the flyable and XC chances.</p>
+      <p><b>0–10 scale.</b> A nice local day is about 3.5–5 (green). XC days start at 6: about 6 is a short XC, 7–8 a solid one, 9 a big day. The rating is a weighted median of the regular models: HRRR (and RRFS once available) count three times, NAM twice, GFS, ECMWF and ICON once, so the high-resolution models decide the next two days and the global models the rest. The ensembles give the spread behind the flyable and XC chances. Where Soaring Predictor has a site, its ceiling for the next three days shows as ▼ on the thermal-height bar.</p>
       <p><b>Lift height and wind decide most days.</b> Thermal strength (W*) comes from the sunshine and the depth of the mixed layer. A paraglider can only use the part of that layer where thermals beat its sink rate (the idea behind Soaring Predictor's Hcrit), so the usable top is about half the layer on weak days and most of it on strong ones, and never above cloudbase. Launch wind has to fit the site; wind aloft counts by strength and direction. Only real rain or storms are a no-go.</p>
       <p><b>Sites:</b> Elsinore and Laguna/Horse are rated as convergence sites, so any strong wind aloft hurts. Torrey is rated on ridge wind, but a cold-air day with thermals above the cliffs is flagged as a Thermal day. Glass-off is the last two hours before sunset.</p>
       <p>Limits for each site are in <span class="mono">sites.json</span>, to tune against real days.</p>
@@ -395,15 +397,15 @@ function detail(d, s) {
   const fq = (x) => (x >= 0.7 ? "var(--q3)" : x >= 0.4 ? "var(--q1)" : "var(--q0)");
   const rows = (c.factors || []).map((f) => `<div class="factor">
       <span class="fk">${esc(f.k)}</span>
-      <span class="fbar"><i style="width:${Math.max(3, Math.round(f.q * 100))}%;background:${fq(f.q)}"></i></span>
+      <span class="fbar"><i style="width:${Math.max(3, Math.round(f.q * 100))}%;background:${fq(f.q)}"></i>${f.sp_q != null ? `<b class="spmark" style="left:${Math.round(f.sp_q * 100)}%" title="Soaring Predictor"></b>` : ""}</span>
       <span class="fv">${esc(f.v)}</span>
-      ${f.sub ? `<span class="fs">${esc(f.sub)}</span>` : ""}
+      ${f.sub || f.sp ? `<span class="fs">${esc(f.sub || "")}${f.sp ? `${f.sub ? " · " : ""}<span class="spnote">▼ Soaring Predictor: ${esc(f.sp)}</span>` : ""}</span>` : ""}
     </div>`).join("");
   return `<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline">
       <h3 style="font-size:1.1rem;font-family:var(--font-body);font-weight:600">${esc(s.name)} <span class="muted" style="font-size:.9rem;font-weight:500">${r1(c.rating)}/10</span></h3>${labelHtml(c)}</div>
     <p class="note">${esc(c.note)}</p>
     <div class="factors">${rows}</div>
-    <span class="muted" style="font-size:.76rem">Chance flyable ${pct(c.p_fly)} · XC ${pct(c.p_xc)}${c.sunset ? ` · sunset ${esc(c.sunset)}` : ""}</span>`;
+    <span class="muted" style="font-size:.76rem">Chance flyable ${pct(c.p_fly)} · XC ${pct(c.p_xc)}${c.sunset ? ` · sunset ${esc(c.sunset)}` : ""}${c.ground_ft != null ? ` · model ground ${c.ground_ft.toLocaleString()} ft${c.launch_name ? ` (${esc(c.launch_name)})` : ""}, launch ${(c.launch_ft || 0).toLocaleString()} ft` : ""}</span>`;
 }
 
 /* bottom sheet (phones) */

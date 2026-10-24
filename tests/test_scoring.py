@@ -72,31 +72,38 @@ class Physics(unittest.TestCase):
         self.assertTrue(bf.wrap_in(10, 330, 30))
         self.assertFalse(bf.wrap_in(90, 330, 30))
 
-    def test_north_wind_aloft_kills_laguna_horse(self):
-        sites = json.loads((ROOT / "sites.json").read_text())["sites"]
-        lag = next(x for x in sites if x["id"] == "lagunahorse")
-        hr = {"temperature_2m": [20], "dew_point_2m": [2], "precipitation": [0], "cape": [0],
+    def _launches(self):
+        parents = json.loads((ROOT / "sites.json").read_text())["sites"]
+        kids = [x for x in bf.expand_sites(parents) if x["parent"] == "lagunahorse"]
+        return {k["launch_name"]: k for k in kids}
+
+    def test_north_wind_aloft_kills_horse(self):
+        horse = self._launches()["Horse"]
+        hr = {"temperature_2m": [20], "dew_point_2m": [2], "precipitation": [0], "cape": [0], "shortwave_radiation": [650],
               "wind_speed_10m": [6], "wind_direction_10m": [240],
               "temperature_850hPa": [14], "wind_speed_850hPa": [12], "wind_direction_850hPa": [20],
               "temperature_700hPa": [2], "wind_speed_700hPa": [14], "wind_direction_700hPa": [30]}
-        h = bf.score_hour(lag, hr, 0, [850, 700], 1300)
+        h = bf.score_hour(horse, hr, 0, [850, 700], 1006)
         self.assertLess(h["q"], 0.2)
         self.assertEqual(h["xc_s"], 0.0)
 
-    def test_laguna_horse_takes_either_wind(self):
-        # Horse faces west, Laguna east: either wind is on, a north wind is over the back
-        sites = json.loads((ROOT / "sites.json").read_text())["sites"]
-        lag = next(x for x in sites if x["id"] == "lagunahorse")
+    def test_each_launch_takes_its_own_wind(self):
+        L = self._launches()
         base = {"temperature_2m": [18], "dew_point_2m": [2], "precipitation": [0], "cape": [0], "shortwave_radiation": [600],
-                "temperature_850hPa": [16], "wind_speed_850hPa": [4], "wind_direction_850hPa": [90],
-                "temperature_700hPa": [4], "wind_speed_700hPa": [5], "wind_direction_700hPa": [100]}
-        east = bf.score_hour(lag, dict(base, wind_speed_10m=[6], wind_direction_10m=[90]), 0, [850, 700], 1676)
-        west = bf.score_hour(lag, dict(base, wind_speed_10m=[8], wind_direction_10m=[260]), 0, [850, 700], 1676)
-        north = bf.score_hour(lag, dict(base, wind_speed_10m=[10], wind_direction_10m=[0]), 0, [850, 700], 1676)
-        self.assertNotIn("otb", east["codes"])
-        self.assertNotIn("otb", west["codes"])
-        self.assertIn("otb", north["codes"])
-        self.assertEqual(north["launch"], "over the back")
+                "temperature_850hPa": [16], "wind_speed_850hPa": [4], "wind_direction_850hPa": [250],
+                "temperature_700hPa": [4], "wind_speed_700hPa": [5], "wind_direction_700hPa": [260]}
+        def launch_verdict(site, d, spd):   # put the launch at the model ground so the 10 m wind is used
+            return bf.score_hour(site, dict(base, wind_speed_10m=[spd], wind_direction_10m=[d]), 0, [850, 700], site["launch_ft"] / bf.FT)["launch"]
+        self.assertEqual(launch_verdict(L["Laguna"], 90, 7), "good")
+        self.assertEqual(launch_verdict(L["Horse"], 260, 7), "good")
+        self.assertEqual(launch_verdict(L["Horse"], 0, 10), "over the back")
+        self.assertEqual(launch_verdict(L["Laguna"], 270, 10), "over the back")
+
+    def test_sites_have_real_positions(self):
+        parents = json.loads((ROOT / "sites.json").read_text())["sites"]
+        for x in bf.expand_sites(parents):
+            self.assertIsNotNone(x.get("lz_ft"), x["id"])
+            self.assertLess(x["lz_ft"], x["launch_ft"], x["id"])
 
     def test_offshore_hour_is_no_go(self):
         site = json.loads((ROOT / "sites.json").read_text())["sites"][0]   # Little Black
