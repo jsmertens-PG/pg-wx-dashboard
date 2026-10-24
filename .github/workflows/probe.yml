@@ -8,9 +8,8 @@ jobs:
     steps:
       - run: |
           mkdir out && cd out
-          curl -sSL -A "Mozilla/5.0" https://www.soaringpredictor.info/windgram/windmain.htm -o windmain.htm
-          for u in $(grep -o -i -E '(href|src)="[^"]*"' windmain.htm | sed -E 's/^[^"]*"//;s/"$//' | grep -i -E '\.(htm|html|js|txt|csv|json)$' | grep -v -i -E '^(https?:)?//(ww2010|keisan|www\.crh|www\.statcounter)' | sort -u | head -40); do
-            f=$(echo "$u" | tr '/:?&' '____'); curl -sSL -A "Mozilla/5.0" "https://www.soaringpredictor.info/windgram/$u" -o "sub_$f" || true
+          for n in S_SCAL_LittleBlack_windgram S_SCAL+1_LittleBlack_windgram S_SCAL+2_LittleBlack_windgram S_SCAL+1_Elsinore_windgram; do
+            curl -sSL -A "Mozilla/5.0" -D "$n.hdr" "https://www.soaringpredictor.com/windgram/data/$n.png" -o "$n.png" || true
           done
           ls -la
           git init -q && git checkout -q -b probe && git add . && git -c user.name=probe -c user.email=probe@x commit -qm probe
