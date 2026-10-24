@@ -1,6 +1,6 @@
 # SoCal Flying Radar
 
-A one-page, 7-day outlook for the main Southern California paragliding launches: Little Black, Blossom, Elsinore, Torrey, Laguna/Horse, Marshall/Crestline, Otay and Soboba.
+A one-page, 7-day outlook for the main Southern California paragliding launches: Little Black, Blossom, Elsinore, Torrey, Laguna/Horse, Marshall/Crestline, Otay, Soboba and Santa Barbara.
 
 The top of the page has the weather story from the NWS San Diego discussion (synopsis, the systems moving through, and flags). Below that, each day gets a full-width card. The home sites (Little Black, Blossom, Elsinore) get large panels, Torrey gets a row, and Laguna/Horse, Marshall, Otay and Soboba get a compact strip. Each site shows a 0–10 rating with a coloured bar, a label (XC, Thermal, Glass-off, Ridge soaring, Marginal, No go), and a short note: an XC direction, the glass-off time, or why the day doesn't work. Tap a site for details: lift, cloudbase, winds, rain, an hour-by-hour strip, and what each model says.
 
@@ -38,11 +38,12 @@ For each model run, each hour from 9 am to 6 pm is checked at each launch:
 - **Rain or storms:** 0.5 mm/h or more, or CAPE with showers, is a no-go. Light showers or high CAPE reduce the rating.
 - **Launch wind:** it must be inside the site's direction window. Wind from behind launch above 5 mph is a no-go, as is wind well over the site's limit.
 - **Wind aloft:** both strength and direction through the lift band. Each site has an `aloft_bad` range (for example north and east for Laguna/Horse). Wind aloft from that range above about 6 kt mostly kills the hour and rules out XC.
-- **Lift:** a dry thermal from the surface temperature, rising until it meets the model's temperature profile (blended with the model's boundary-layer height where available), and capped at cloudbase. Height above launch drives the rating. Torrey is rated on ridge wind instead.
+- **Lift:** thermal strength (W*) comes from the sunshine and the depth of the mixed layer (the lower of a dry surface parcel and the model's boundary-layer height). A paraglider only uses the part of that layer where thermals beat its sink rate, the idea behind Soaring Predictor's Hcrit: about half on weak days, most of it on strong ones, never above cloudbase. Height over launch and thermal strength drive the rating. Torrey is rated on ridge wind instead.
 - **XC:** lift above the site's `xc_top_ft` with no rain and no bad wind aloft. The XC rating grows with the height above that threshold and with how many hours it lasts.
-- **Glass-off:** at least two hours from 4 pm on with smooth onshore wind on launch (3–13 mph), no rain and nothing strong aloft.
+- **Glass-off:** at least two of the last hours before sunset with smooth onshore wind on launch (3–13 mph), no rain and nothing strong aloft. Labelled Glass-off only when there's no real midday thermal window.
+- **Showers:** the share of ensemble runs with rain at the site during flying hours. 20% or more adds a "showers around" tag; the same number drives the rain bar.
 
-The day's rating blends the median of the five models with the ensemble average. **XC** appears when the blend is at least 6 and at least 40% of the runs agree. The XC note suggests a direction from the drift and the site's `routes`, and warns when the drift heads into a `blocked` direction (airspace, the border).
+The day's rating is the median of the five regular models. The ensembles (coarser, without boundary-layer height) are recentred on that median and give the chance of a flyable or XC day. **XC** appears when the rating is at least 6 and at least 40% of the runs agree. The XC note suggests a direction from the drift and the site's `routes`, and warns when the drift heads into a `blocked` direction (airspace, the border).
 
 ## Tuning
 

@@ -1,0 +1,40 @@
+name: Update forecast
+
+on:
+  schedule:
+    - cron: "17 */2 * * *"   # every 2 hours (UTC); new HRRR runs arrive hourly
+  workflow_dispatch: {}       # "Run workflow" button on the Actions tab
+
+permissions:
+  contents: write
+
+concurrency:
+  group: forecast
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run tests
+        run: python -m unittest discover -s tests -v
+      - name: Build forecast
+        run: python scripts/build_forecast.py
+      - name: Commit data
+        run: |
+          git config user.name "forecast-bot"
+          git config user.email "forecast-bot@users.noreply.github.com"
+          git add data/forecast.json
+          git diff --cached --quiet && exit 0
+          git commit -m "Forecast update $(date -u +%Y-%m-%dT%H:%MZ)"
+          # if files were committed while the job ran, take them in first, then save
+          for i in 1 2 3; do
+            git pull --rebase -X theirs origin main && git push && exit 0
+            sleep 5
+          done
+          exit 1
