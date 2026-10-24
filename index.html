@@ -402,7 +402,7 @@ function detail(d, s) {
     </div>`).join("");
   return `<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline">
       <h3 style="font-size:1.1rem;font-family:var(--font-body);font-weight:600">${esc(s.name)} <span class="muted" style="font-size:.9rem;font-weight:500">${r1(c.rating)}/10</span></h3>${labelHtml(c)}</div>
-    <p class="note">${esc(c.note)}</p>
+    ${c.note && !/thermals/i.test(c.note) ? `<p class="note">${esc(c.note)}</p>` : ""}
     <div class="factors">${rows}</div>
     <span class="muted" style="font-size:.76rem">Chance flyable ${pct(c.p_fly)} · XC ${pct(c.p_xc)}${c.sunset ? ` · sunset ${esc(c.sunset)}` : ""}${c.ground_ft != null ? ` · model ground ${c.ground_ft.toLocaleString()} ft${c.launch_name ? ` (${esc(c.launch_name)})` : ""}, launch ${(c.launch_ft || 0).toLocaleString()} ft` : ""}</span>`;
 }
