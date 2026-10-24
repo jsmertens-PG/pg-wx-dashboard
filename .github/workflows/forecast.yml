@@ -25,6 +25,8 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Build forecast
         run: python scripts/build_forecast.py
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}   # optional: Claude summary of the NWS discussion
       - name: Commit data
         run: |
           git config user.name "forecast-bot"
