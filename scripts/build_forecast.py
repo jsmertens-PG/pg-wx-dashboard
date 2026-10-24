@@ -91,6 +91,15 @@ def level_vars(levels, heights=True):
     return out
 
 
+def surface_filled(data):
+    """True when most sites have 2 m temperature for the next day."""
+    ok = 0
+    for d in data:
+        t = (d.get("hourly") or {}).get("temperature_2m") or []
+        ok += sum(x is not None for x in t[:48]) >= 24
+    return ok >= max(1, len(data) // 2)
+
+
 def om_url(base, sites, model, hourly):
     q = {
         "latitude": ",".join(str(s["lat"]) for s in sites),
@@ -132,8 +141,17 @@ def fetch_model(kind, name, ids, sites, log):
         for hv in (hourly, [v for v in hourly if v != "boundary_layer_height"]):
             try:
                 if kind == "det":
-                    data = http_json(om_url(base, sites, mid, hv))
-                    data = data if isinstance(data, list) else [data]
+                    # a model run that is still loading can come back with empty surface fields:
+                    # wait and ask again rather than losing the model for the day
+                    for attempt in range(4):
+                        data = http_json(om_url(base, sites, mid, hv))
+                        data = data if isinstance(data, list) else [data]
+                        if surface_filled(data):
+                            break
+                        log.append(f"{name}: {mid} surface fields empty, retrying")
+                        time.sleep(45)
+                    else:
+                        raise ValueError("surface fields empty")
                 else:   # one site per request keeps each ensemble response small and fast
                     data = []
                     for site in sites:
@@ -1040,23 +1058,18 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             if ridge:
                 factors[0]["q"] = round(clamp((agl_ft or 0) / 1200), 2)
                 factors = [f for f in factors if f["k"] != "Wind aloft"]
-            # altitude: the high-resolution models at 1 pm (RRFS, HRRR, NAM), up to two bars
+            # altitude: RRFS and HRRR at 1 pm; no height bar past their range
             scale = 1200 if ridge else target
             def height_row(label, top_m):
                 agl = (top_m * FT - launch_ft) if top_m is not None else None
                 return {"k": label, "v": f"{round(top_m * FT, -2):,.0f} ft" if top_m else "–", "sub": "",
                         "q": round(clamp((agl or 0) / scale) if ridge else ceil_q(top_m * FT if top_m else None), 2)}
-            hi_res = [m for m in ("RRFS", "HRRR", "NAM") if m in D and D[m].get("top13") is not None][:2]
-            rows = [height_row(m, D[m]["top13"]) for m in hi_res]
-            if rows:
+            hi_res = [m for m in ("RRFS", "HRRR") if m in D and D[m].get("top13") is not None]
+            factors[0:1] = [height_row(m, D[m]["top13"]) for m in hi_res]
+            if hi_res:
                 top, src = D[hi_res[0]]["top13"], hi_res[0]
             else:
-                models = [m for m in ("ECMWF", "GFS", "ICON") if m in D and D[m].get("top13") is not None]
-                if models:
-                    top = wmedian((D[m]["top13"], MODEL_WEIGHT.get(m, 1)) for m in models)
-                    rows = [height_row("Models", top)]
                 src = "models"
-            factors[0:1] = rows or [height_row("Thermal height", top)]
             lead_view = dict(lead, label=label, top=top if top is not None else lead.get("top"), shower_p=shower_p) if lead else None
             drow["sites"][s["id"]] = {
                 "rating": round(rating, 1), "label": label, "tags": tags, "xc": xc,
