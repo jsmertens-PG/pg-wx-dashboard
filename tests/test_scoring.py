@@ -99,6 +99,15 @@ class Physics(unittest.TestCase):
         self.assertEqual(launch_verdict(L["Horse"], 0, 10), "over the back")
         self.assertEqual(launch_verdict(L["Laguna"], 270, 10), "over the back")
 
+    def test_torrey_cross_vs_over_the_back(self):
+        base = {"temperature_2m": [18], "dew_point_2m": [8], "precipitation": [0], "cape": [0], "shortwave_radiation": [500]}
+        torrey = next(x for x in json.loads((ROOT / "sites.json").read_text())["sites"] if x["id"] == "torrey")
+        def v(d, spd):
+            return bf.score_hour(torrey, dict(base, wind_speed_10m=[spd], wind_direction_10m=[d]), 0, [], 0)["launch"]
+        self.assertEqual(v(330, 10), "cross-NW")
+        self.assertEqual(v(220, 10), "cross-SW")
+        self.assertEqual(v(90, 10), "over the back")
+
     def test_sites_have_real_positions(self):
         parents = json.loads((ROOT / "sites.json").read_text())["sites"]
         for x in bf.expand_sites(parents):

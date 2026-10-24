@@ -521,7 +521,7 @@ REASON_TEXT = {
     "rain": "rain or storms", "showers": "showers around", "cape": "overdevelopment risk",
     "otb": "over the back", "windy": "blown out", "strong": "strong on launch",
     "light": "too light to soar", "aloft": "strong wind aloft", "aloftdir": "wrong wind aloft",
-    "lid": "low lid", "weak": "weak thermals",
+    "lid": "low lid", "weak": "weak thermals", "cross": "cross wind",
 }
 SINK = 1.1   # paraglider sink rate, m/s
 
@@ -613,6 +613,7 @@ def score_hour(site, hr, i, levels, elev_m):
     gust_f = max(1.0, g10 / w10) if (w10 and g10 and w10 > 1) else 1.0
     lg_mph = lw_mph * gust_f if lw_mph is not None else None
     a_max, a_spd, a_dir = layer_wind(pts, launch_m + 150, max(launch_m + 600, usable))
+    tw_spd, tw_dir = interp_wind(pts, max(usable, launch_m + 150))
 
     codes, q = [], 1.0
     launch = None
@@ -632,7 +633,10 @@ def score_hour(site, hr, i, levels, elev_m):
         on = dir_ok(site, ld)
         good_launch = (on and lo <= lw_mph <= hi) or (lw_mph <= 5 and site["kind"] != "ridge")
         launch = "good"
-        if not on and lw_mph > 5:
+        cross = next((c for c in site.get("cross", []) if wrap_in(ld, c[0], c[1])), None) if not on else None
+        if cross and lw_mph > 3:
+            q *= 0.5; codes.append("cross"); launch = cross[2]
+        elif not on and lw_mph > 5:
             q = 0.0; codes.append("otb"); launch = "over the back"
         elif lw_mph > hi + 5:
             q = 0.0; codes.append("windy"); launch = "blown out"
@@ -682,7 +686,7 @@ def score_hour(site, hr, i, levels, elev_m):
              and not bad_dir and (a_max is None or a_max <= site["aloft_max_kt"]))
     return {"q": q, "xc_s": xc_s, "glass": glass, "cold": cold_aloft, "good_launch": bool(good_launch), "launch": launch,
             "usable": usable, "base": base, "agl": agl, "wstar": wstar, "climb": max(0.0, wstar - SINK + 0.3),
-            "lw": lw_mph, "ld": ld, "lg": lg_mph, "a_max": a_max, "a_spd": a_spd, "a_dir": a_dir,
+            "lw": lw_mph, "ld": ld, "lg": lg_mph, "a_max": a_max, "tw": (tw_dir, tw_spd) if tw_spd is not None else None, "a_spd": a_spd, "a_dir": a_dir,
             "pr": pr, "cape": cape, "codes": codes}
 
 
@@ -742,7 +746,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     for s in (blk if local >= 0.25 else [s for _, s in hours]):
         for c in s["codes"]:
             counts[c] = counts.get(c, 0) + 1
-    prio = ["rain", "otb", "windy", "aloftdir", "aloft", "lid", "weak", "strong", "light", "showers", "cape"]
+    prio = ["rain", "otb", "windy", "aloftdir", "aloft", "cross", "lid", "weak", "strong", "light", "showers", "cape"]
     codes = sorted(counts, key=lambda c: (-(counts[c] >= 2), prio.index(c) if c in prio else 99))
 
     def med(key, block=blk):
@@ -767,6 +771,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     wind_1pm = wind_at([13, 12, 14])
     return {
         "top13": h13["usable"] if h13 else None,
+        "tw13": h13["tw"] if h13 else None,
         "wind_1pm": wind_1pm,
         "wind_now": wind_now, "wind_later": wind_later,
         "rating": rating, "local": local, "xc_day": xc_day, "label": label, "codes": codes,
@@ -826,6 +831,8 @@ def note_for(site, a, xc):
             return f"{round(a['lw'])} mph" if a["lw"] is not None else ""
         return f"thermals to {ft100(a['top'])}" if a.get("top") else ""
     why = [REASON_TEXT.get(c, c) for c in a["codes"] if not (c == "showers" and a.get("shower_p", 1) < 0.2)]
+    if a["codes"] and a["codes"][0] == "cross" and a.get("launch", "").startswith("cross"):
+        why[0] = a["launch"]
     if a["codes"] and a["codes"][0] == "aloftdir" and a["a_dir"] is not None:
         why[0] = f"{compass(a['a_dir'])} wind aloft"
     if a["codes"] and a["codes"][0] == "lid" and a.get("top"):
@@ -995,14 +1002,16 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 {"k": "Thermal height", "v": f"{round(top * FT, -2):,.0f} ft" if top else "–",
                  "sub": f"{round(agl_ft, -2):,.0f} ft over launch" if agl_ft is not None else "",
                  "q": round(clamp((agl_ft or 0) / target), 2)},
-                {"k": "Launch wind 1 pm", "v": wind_txt(lead.get("wind_1pm") or lead.get("wind_now")) if lead else "–",
+                {"k": "Wind 1 pm", "v": wind_txt(lead.get("wind_1pm") or lead.get("wind_now")) if lead else "–",
                  "sub": " · ".join(x for x in (
                      f"later {wind_txt(lead['wind_later'])}" if lead and lead.get("wind_later") else "",
-                     lead.get("launch") if lead and lead.get("launch") in ("over the back", "blown out", "strong") else "") if x),
+                     lead.get("launch") if lead and (lead.get("launch") in ("over the back", "blown out", "strong") or str(lead.get("launch")).startswith("cross")) else "") if x),
                  "q": round(lead["launch_q"] if lead else 0, 2)},
-                {"k": "Wind aloft", "v": (f"{compass(lead['a_dir'])} {round(lead['a_spd'])} kt" if lead and lead["a_spd"] is not None else "–"),
-                 "sub": (f"gusting layers up to {round(a_max)} kt" if a_max is not None and lead and lead["a_spd"] is not None and a_max - lead["a_spd"] >= 4 else "")
-                        + (" · blows over the back" if aloftdir else ""),
+                {"k": "Wind aloft", "v": (f"{compass(lead['tw13'][0])} {round(lead['tw13'][1])} kt" if lead and lead.get("tw13")
+                       else f"{compass(lead['a_dir'])} {round(lead['a_spd'])} kt" if lead and lead.get("a_spd") is not None else "–"),
+                 "sub": " · ".join(x for x in (
+                     f"at {round(lead['top13'] * FT, -2):,.0f} ft, top of lift 1 pm" if lead and lead.get("top13") else "",
+                     "blows over the back" if aloftdir else "") if x),
                  "q": round(0.15 if aloftdir else 1 - clamp(((a_max or 0) - 0.6 * s["aloft_max_kt"]) / (0.8 * s["aloft_max_kt"])), 2)},
                 {"k": "Rain & storms", "v": f"{round(shower_p * 100)}% of runs" if shower_p >= 0.05 else "dry",
                  "sub": "storm risk" if (cape or 0) >= 1000 else "",
@@ -1013,6 +1022,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             ]
             if ridge:
                 factors[0]["q"] = round(clamp((agl_ft or 0) / 1200), 2)
+                factors = [f for f in factors if f["k"] != "Wind aloft"]
             # altitude, two ways: Soaring Predictor's ceiling, and one model's height at 1 pm
             sp_here = sp.get((s.get("parent", s["id"]), dstr), [])
             if s.get("launch_name"):

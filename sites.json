@@ -199,7 +199,7 @@
           "why": "the ocean"
         }
       ],
-      "note": "Ridge soaring in a steady W to WNW sea breeze. Rare thermal days (1,200 ft+) are flagged as a Thermal day.",
+      "note": "Ridge soaring in a steady W to WNW sea breeze. SW or NW is cross (soarable but not great); only east is over the back. Rare thermal days (1,200 ft+) are flagged as a Thermal day.",
       "xc_span_ft": 1000,
       "sp": [
         {
@@ -209,7 +209,19 @@
           "lz_ft": 0
         }
       ],
-      "lz_ft": 0
+      "lz_ft": 0,
+      "cross": [
+        [
+          180,
+          245,
+          "cross-SW"
+        ],
+        [
+          300,
+          360,
+          "cross-NW"
+        ]
+      ]
     },
     {
       "id": "lagunahorse",
