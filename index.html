@@ -35,9 +35,6 @@
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
-.wg { margin: 12px 0 8px; }
-.wg img { display: block; width: 100%; max-width: 512px; height: auto; border-radius: 8px; border: 1px solid var(--line); }
-.wg figcaption { font-size: .72rem; margin-top: 4px; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--font-body); }
 .wrap { max-width: 1180px; margin: 0 auto; padding-block: 24px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 20px; }
 h1, h2, h3 { font-family: var(--font-display); font-weight: 500; margin: 0; line-height: 1.1; text-wrap: balance; }
@@ -394,21 +391,6 @@ function siteRow(d, s, i, kind) {
   </button>`;
 }
 
-/* Dr. Jack RASP windgrams from Soaring Predictor: today, +1, +2 */
-const WG = { lb: "LittleBlack", blossom: "Blossom", elsinore: "Elsinore", torrey: "Torrey", marshall: "Marshall",
-  otay: "OtayMesa", soboba: "Soboba", "lagunahorse:Horse": "Horse", "lagunahorse:Laguna": "Laguna" };
-function windgram(d, s, c) {
-  const name = WG[s.id] || WG[`${s.id}:${c.launch_name || "Horse"}`];
-  if (!name) return "";
-  const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
-  const off = Math.round((Date.parse(d.date) - Date.parse(today)) / 864e5);
-  if (off < 0 || off > 2) return "";
-  const dom = name === "Marshall" ? "N_SCAL" : "S_SCAL";
-  const url = `https://www.soaringpredictor.com/windgram/data/${dom}${off ? "+" + off : ""}_${name}_windgram.png?A${new Date().getDate()}`;
-  return `<figure class="wg"><a href="https://www.soaringpredictor.info/windgram/windmain.htm" target="_blank" rel="noopener">
-      <img src="${url}" alt="RASP windgram for ${esc(name)}" loading="lazy" onerror="this.closest('figure').remove()"></a>
-      <figcaption class="muted">Windgram · RASP via Soaring Predictor</figcaption></figure>`;
-}
 function detail(d, s) {
   const c = d.sites[s.id];
   const fq = (x) => (x >= 0.7 ? "var(--q3)" : x >= 0.4 ? "var(--q1)" : "var(--q0)");
@@ -422,7 +404,6 @@ function detail(d, s) {
       <h3 style="font-size:1.1rem;font-family:var(--font-body);font-weight:600">${esc(s.name)} <span class="muted" style="font-size:.9rem;font-weight:500">${r1(c.rating)}/10</span></h3>${labelHtml(c)}</div>
     ${c.note && !/thermals/i.test(c.note) ? `<p class="note">${esc(c.note)}</p>` : ""}
     <div class="factors">${rows}</div>
-    ${windgram(d, s, c)}
     <span class="muted" style="font-size:.76rem">Chance flyable ${pct(c.p_fly)} · XC ${pct(c.p_xc)}${c.sunset ? ` · sunset ${esc(c.sunset)}` : ""}${c.ground_ft != null ? ` · model ground ${c.ground_ft.toLocaleString()} ft${c.launch_name ? ` (${esc(c.launch_name)})` : ""}, launch ${(c.launch_ft || 0).toLocaleString()} ft` : ""}</span>`;
 }
 
