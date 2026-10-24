@@ -418,7 +418,7 @@ def score_hour(site, hr, i, levels, elev_m):
     on = good_launch = None
     if lw_mph is not None and ld is not None:
         on = wrap_in(ld, *site["dir"])
-        good_launch = on and lo <= lw_mph <= hi or (lw_mph < lo and site["kind"] != "ridge")
+        good_launch = (on and lo <= lw_mph <= hi) or (lw_mph <= 5 and site["kind"] != "ridge")
         if not on and lw_mph > 5:
             q = 0.0; codes.append("otb")
         elif lw_mph > hi + 5:
@@ -587,7 +587,7 @@ def note_for(site, a, xc):
             bits = [f"thermals to {ft100(a['top'])}" if a.get("top") else "thermals"]
         bits.append(f"{fmt_h(a['start'])}–{fmt_h(a['start'] + WINDOW)}")
         return " · ".join(bits)
-    why = [REASON_TEXT.get(c, c) for c in a["codes"]]
+    why = [REASON_TEXT.get(c, c) for c in a["codes"] if not (c == "showers" and a.get("shower_p", 1) < 0.2)]
     if a["codes"] and a["codes"][0] == "aloftdir" and a["a_dir"] is not None:
         why[0] = f"{compass(a['a_dir'])} wind aloft"
     if a["codes"] and a["codes"][0] == "lid" and a.get("top"):
@@ -698,8 +698,11 @@ def build(sites, det, ens, nws, log, sample=False, sources=None):
                 tags.append("post-frontal")
             if lead and lead["glass"] and label in ("Thermal", "Marginal", "XC") and not ridge:
                 tags.append("glass-off")
-            if lead and lead["pr"] >= 0.3 and label != "No go":
-                tags.append("showers around")
+            # scattered showers rarely hit one grid point, so use the share of runs with rain here
+            runs_all = cell["ens"] or list(D.values())
+            shower_p = sum(1 for a in runs_all if a["pr"] >= 0.2) / len(runs_all)
+            if shower_p >= 0.2 and label != "No go":
+                tags.append(f"showers around {round(shower_p * 100)}%")
             spread = (max(det_r.values()) - min(det_r.values())) if len(det_r) > 1 else 0
 
             # key values: median across the regular models (directions from the lead model)
@@ -720,22 +723,22 @@ def build(sites, det, ens, nws, log, sample=False, sources=None):
                 {"k": "Thermal strength", "v": f"{wstar:.1f} m/s" if wstar is not None else "–",
                  "sub": "W*, climb about " + (f"{max(0, wstar - SINK + 0.3):.1f} m/s" if wstar is not None else "–"),
                  "q": round(clamp((wstar or 0) / 2.5), 2)},
-                {"k": "Launch wind", "v": f"{compass(lead['ld'])} {round(lw)} mph" if lead and lead["ld"] is not None and lw is not None else "–",
+                {"k": "Launch wind", "v": f"{compass(lead['ld'])} {round(lead['lw'])} mph" if lead and lead["ld"] is not None and lead["lw"] is not None else "–",
                  "sub": f"site likes {compass(s['dir'][0])}–{compass(s['dir'][1])}, {s['wind_mph'][0]}–{s['wind_mph'][1]} mph",
-                 "q": round(launch_q if launch_q is not None else 0, 2)},
+                 "q": round(lead["launch_q"] if lead else 0, 2)},
                 {"k": "Wind aloft", "v": (f"{compass(lead['a_dir'])} {round(lead['a_spd'])} kt" if lead and lead["a_spd"] is not None else "–"),
                  "sub": (f"up to {round(a_max)} kt" if a_max is not None else "") + (" · wrong direction" if aloftdir else ""),
                  "q": round(0.15 if aloftdir else 1 - clamp(((a_max or 0) - 0.6 * s["aloft_max_kt"]) / (0.8 * s["aloft_max_kt"])), 2)},
-                {"k": "Rain & storms", "v": f"{rain:.1f} mm" if rain is not None else "–",
-                 "sub": f"CAPE up to {round(cape)}" if cape is not None else "",
-                 "q": round(clamp(1 - (rain or 0) / 1.5) * (1 - 0.4 * clamp(((cape or 0) - 800) / 1500)), 2)},
+                {"k": "Rain & storms", "v": f"{round(shower_p * 100)}% of runs" if shower_p >= 0.05 else "dry",
+                 "sub": f"{rain or 0:.1f} mm at launch in the best window" + (f" · CAPE up to {round(cape)}" if cape else ""),
+                 "q": round(clamp(1 - 1.4 * shower_p) * (1 - 0.4 * clamp(((cape or 0) - 800) / 1500)), 2)},
                 {"k": "Model agreement", "v": "split" if spread >= 3 else ("mixed" if spread >= 1.5 else "agree"),
                  "sub": " · ".join(f"{k} {v:.1f}" for k, v in det_r.items()),
                  "q": round(clamp(1 - spread / 5), 2)},
             ]
             if ridge:
                 factors[0]["q"] = round(clamp((agl_ft or 0) / 1200), 2)
-            lead_view = dict(lead, label=label, top=top if top is not None else lead.get("top")) if lead else None
+            lead_view = dict(lead, label=label, top=top if top is not None else lead.get("top"), shower_p=shower_p) if lead else None
             drow["sites"][s["id"]] = {
                 "rating": round(rating, 1), "label": label, "tags": tags, "xc": xc,
                 "note": note_for(s, lead_view, xc),
@@ -781,7 +784,9 @@ def headline(sites, d):
         return f"XC at {by[k]['short']}: {cells[k]['note']}" + (f" · also {', '.join(others)}" if others else "") + tail
     good = [k for k in main if cells[k]["rating"] >= 3.5]
     if good:
-        return " · ".join(f"{by[k]['short']} {cells[k]['label'].lower()}" for k in good) + tail
+        showers = any(t.startswith("showers") for k in main for t in cells[k]["tags"])
+        return (" · ".join(f"{by[k]['short']} {cells[k]['label'].lower()}" for k in good)
+                + (" · showers around" if showers else "") + tail)
     if main:
         k = max(main, key=lambda m: cells[m]["rating"])
         return f"Poor at home sites: {cells[k]['note']}" + tail
