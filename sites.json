@@ -68,7 +68,7 @@
       "kind": "thermal",
       "dir": [
         200,
-        300
+        315
       ],
       "wind_mph": [
         3,
@@ -355,7 +355,7 @@
       "kind": "thermal",
       "dir": [
         200,
-        300
+        320
       ],
       "wind_mph": [
         3,
