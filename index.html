@@ -59,9 +59,11 @@ header.top { display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: end; j
 .banner { border: 1px solid var(--line); border-left: 3px solid var(--q0); padding: 9px 14px; font-size: .88rem; display: grid; gap: 4px; }
 
 /* weather story */
-.story { display: grid; gap: 8px; max-width: 90ch; }
+.story { display: grid; gap: 10px; }
 .story .row1 { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
 .story ul { margin: 0; padding-left: 1.1em; display: grid; gap: 2px; font-size: .92rem; }
+.story .grps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 10px 32px; }
+.story .grp { display: grid; gap: 4px; min-width: 0; }
 .flags { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .tag { font-size: .64rem; text-transform: uppercase; letter-spacing: .12em; border: 1px solid var(--line); padding: 2px 7px; color: var(--muted); white-space: nowrap; }
 .tag.ink { border-color: var(--ink); color: var(--ink); }
@@ -267,12 +269,14 @@ function render(data) {
 
   /* weather story from the NWS discussion */
   const n = data.nws;
+  const sm = n && n.summary && ((n.summary.pattern || []).length || (n.summary.flying || []).length) ? n.summary : null;
   const bl = (n && (n.bullets && n.bullets.length ? n.bullets : [n.synopsis].filter(Boolean))) || [];
+  const group = (title, items) => items && items.length ? `<div class="grp"><span class="eyebrow">${title}</span><ul>${items.map((b) => `<li>${esc(b)}</li>`).join("")}</ul></div>` : "";
   $("#story").innerHTML = n ? `
     <div class="row1"><span class="eyebrow">Weather · NWS San Diego · ${fmtWhen(n.issued)}</span>
       ${(n.flags || []).map((f) => `<span class="tag ink">${esc(f)}</span>`).join("")}
       <a href="${esc(n.url)}" target="_blank" rel="noopener" class="muted" style="font-size:.78rem">full discussion</a></div>
-    <ul>${bl.map((b) => `<li>${esc(b)}</li>`).join("")}</ul>` : '<span class="muted">NWS discussion not available on the last run.</span>';
+    ${sm ? `<div class="grps">${group("Pattern", sm.pattern)}${group("For flying", sm.flying)}</div>` : `<ul>${bl.map((b) => `<li>${esc(b)}</li>`).join("")}</ul>`}` : '<span class="muted">NWS discussion not available on the last run.</span>';
 
   /* day cards */
   $("#days").innerHTML = data.days.map((d, i) => {
