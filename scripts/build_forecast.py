@@ -112,8 +112,8 @@ def om_url(base, sites, model, hourly, past_days=0):
     }
     if past_days:
         q["past_days"] = past_days                          # the day type needs the days before
-    if all(s.get("lz_ft") is not None for s in sites):
-        q["elevation"] = ",".join(f"{s['lz_ft'] / FT:.0f}" for s in sites)   # thermals start from the valley ground
+    if all(s.get("lz_ft") is not None for s in sites):    # thermals start from the valley ground
+        q["elevation"] = ",".join(f"{s.get('model_ground_ft', s['lz_ft']) / FT:.0f}" for s in sites)
     return base + "?" + urllib.parse.urlencode(q)
 
 
@@ -668,7 +668,7 @@ def score_hour(site, hr, i, levels, elev_m):
         cross = next((c for c in site.get("cross", []) if wrap_in(ld, c[0], c[1])), None) if not on else None
         if cross and lw_mph > 3:
             q *= 0.5; codes.append("cross"); launch = cross[2]
-        elif not on and lw_mph > 5:
+        elif not on and lw_mph > site.get("otb_mph", 5):
             q = 0.0; codes.append("otb"); launch = "over the back"
         elif lw_mph > hi + 5:
             q = 0.0; codes.append("windy"); launch = "blown out"
