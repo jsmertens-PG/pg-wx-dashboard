@@ -29,7 +29,7 @@ class SampleRun(unittest.TestCase):
                 for k in ("p_fly", "p_xc"):
                     self.assertTrue(0 <= c[k] <= 1)
                 if c["xc"]:
-                    self.assertGreaterEqual(c["rating"], 3.75)     # XC only on a 4-ish day
+                    self.assertGreaterEqual(c["rating"], 3.5)      # XC only when the shown number is 4+
                 self.assertIn(c["label"], {"XC", "Thermal day", "Thermal", "Glass-off", "Ridge soaring", "Marginal", "No go"})
 
     def test_sources_have_timestamps(self):

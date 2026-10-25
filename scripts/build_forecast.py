@@ -869,7 +869,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
                 else:
                     rating = lv
                     switch_tag = f"switch ~{fmt_h(switch_h)}"
-                xc_now = rating >= 3.75
+                xc_now = rating >= 3.5
             else:
                 rating = min(2.0, 1.0 + local)
                 if win:
@@ -882,7 +882,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
             rating = sum(x[1] for x in scored[best:best + n]) / n
             best_h, _r, sc = max(scored[best:best + n], key=lambda x: x[1])
             peak = sc["peak_top"]
-            xc_now = sc["xc_s"] > 0 and rating >= 3.75
+            xc_now = sc["xc_s"] > 0 and rating >= 3.5
         if style not in ("convergence", "switch"):
             gw = [x["lw"] for h, x in gwin if h in glass_hours and x["lw"] is not None]
             good_glass = glass_ok and len(gw) >= 2 and all(6 <= w <= 12 for w in gw)
@@ -893,7 +893,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         not win or max(1.0 + (min(ceil_level(site, sc["peak_top"] * FT), 3.5) - 1.0) * clamp(sc["q"] / 0.6) for _, sc in win) < 2.8)
     if style == "ridge":
         label = "Thermal day" if xc_now else ("Ridge soaring" if local >= 0.5 else ("Marginal" if rating >= 1.6 else "No go"))
-    elif xc_now and rating >= 3.75:
+    elif xc_now and rating >= 3.5:
         label = "XC"
     elif glass_led:
         label = "Glass-off"
@@ -1259,13 +1259,13 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             if ens_r:
                 shift = rating - median(ens_r)
                 p_fly = sum(r + shift >= 2.5 for r in ens_r) / len(ens_r)
-                p_xc = sum(r + shift >= 3.75 for r in ens_r) / len(ens_r)
+                p_xc = sum(r + shift >= 3.5 for r in ens_r) / len(ens_r)
             else:
                 p_fly = sum(r >= 2.5 for r in det_r.values()) / len(det_r)
                 p_xc = sum(a["xc_day"] > 0 for a in D.values()) / len(D)
             det_xc = (sum(MODEL_WEIGHT.get(k, 1) for k, a in D.items() if a["xc_day"] > 0)
                       / max(1, sum(MODEL_WEIGHT.get(k, 1) for k in D)))
-            xc = bool(s.get("xc_top_ft")) and rating >= 3.75 and det_xc >= 0.4
+            xc = bool(s.get("xc_top_ft")) and rating >= 3.5 and det_xc >= 0.4
             order = [m for m in ("HRRR", "RRFS", "NAM", "ECMWF", "GFS", "ICON") if m in D]
             close = [m for m in order if abs(det_r[m] - rating) <= 1.0]
             lead_name = close[0] if close else (min(order, key=lambda m: abs(det_r[m] - rating)) if order else None)
@@ -1444,7 +1444,7 @@ def inland_check(site, D, inland):
             continue
         a["inland_ft"] = max(tops) * FT
         a["rating"] = min(a["rating"], max(3.0, ceil_level(site, a["inland_ft"])))
-        if a["rating"] < 3.75 and a["label"] == "XC":
+        if a["rating"] < 3.5 and a["label"] == "XC":
             a["label"], a["xc_day"] = "Thermal", 0.0
 
 

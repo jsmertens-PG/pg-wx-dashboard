@@ -123,11 +123,11 @@ details.fold > :not(summary) { margin-top: 10px; }
 .lab { font-size: .86rem; font-weight: 600; }
 .note { font-size: .86rem; margin: 0; }
 
-/* 1-5 bar with flyable (2.5) and XC (3.75) marks */
+/* 1-5 bar with flyable (2.5) and XC (3.5) marks */
 .bar { height: 8px; background: var(--sunk); position: relative; display: block; }
 .bar i { position: absolute; inset: 0 auto 0 0; display: block; }
 .bar::before, .bar::after { content: ""; position: absolute; top: -2px; bottom: -2px; width: 1px; background: var(--muted); opacity: .5; }
-.bar::before { left: 50%; } .bar::after { left: 75%; }
+.bar::before { left: 50%; } .bar::after { left: 70%; }
 .bar.thin { height: 5px; }
 
 .row { display: grid; grid-template-columns: 110px minmax(80px, 200px) 46px minmax(0, 1fr); gap: 12px; align-items: center; padding: 8px 16px; border: 0; border-top: 1px solid var(--line); background: transparent; width: 100%; text-align: left; min-height: 0; cursor: pointer; }

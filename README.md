@@ -42,7 +42,7 @@ Heights map onto the scale through each site's ceilings: `ok_ft` is 3, `xc_top_f
 
 **Day type.** Each day also gets a region-wide type from the models (three days of history plus the forecast at Little Black, Blossom and Elsinore): **Front** (regional rain with cooling), **Post-frontal** (the days after: colder air at 850 hPa, W–NW flow), **Pre-frontal** (S–SW flow aloft ahead of a front), **Santa Ana** (NE–E flow at 850 hPa with dry air) and **Switch day** (the day Santa Ana ends). The models vote with the same weights as the rating; "maybe" means they disagree.
 
-The day's rating is a weighted median of the regular models: HRRR and RRFS ×3, NAM ×2, GFS/ECMWF/ICON ×1 (`MODEL_WEIGHT`). The ensembles are recentred on that median and give the chance of a flyable (2.5+) or XC (3.75+) day. Height bars show RRFS and HRRR; past their range a rough global-model height is shown.
+The day's rating is a weighted median of the regular models: HRRR and RRFS ×3, NAM ×2, GFS/ECMWF/ICON ×1 (`MODEL_WEIGHT`). The ensembles are recentred on that median and give the chance of a flyable (2.5+) or XC (3.5+) day. Height bars show RRFS and HRRR; past their range a rough global-model height is shown.
 
 ## Tuning
 
