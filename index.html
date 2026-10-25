@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>SoCal Flying Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
+<script>try { document.documentElement.setAttribute("data-style", localStorage.getItem("radar-layout") || "clean"); } catch (e) { document.documentElement.setAttribute("data-style", "clean"); }</script>
 <script>try { var t = localStorage.getItem("radar-theme") || "light"; if (t !== "auto") document.documentElement.setAttribute("data-theme", t); } catch (e) { document.documentElement.setAttribute("data-theme", "light"); }</script>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
@@ -213,34 +214,91 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .daynav a span.rx .rq { display: none; }
 .empty { padding: 30px; border: 1px dashed var(--ink); text-align: center; }
 
-/* site tabs: soft moulded tiles; the details open as part of the tile */
-:root { --tile-a: #ffffff; --tile-b: #eef0ee; --tile-edge: rgba(0,0,0,.10); --tile-hl: rgba(255,255,255,.95); --tile-sh: rgba(20,30,25,.10); }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --tile-a: #1a1d1b; --tile-b: #111312; --tile-edge: rgba(255,255,255,.09); --tile-hl: rgba(255,255,255,.07); --tile-sh: rgba(0,0,0,.6); } }
-:root[data-theme="dark"] { --tile-a: #1a1d1b; --tile-b: #111312; --tile-edge: rgba(255,255,255,.09); --tile-hl: rgba(255,255,255,.07); --tile-sh: rgba(0,0,0,.6); }
-.list { gap: 8px; padding: 10px 12px 12px; }
-.minor { gap: 8px; border-top: 0; padding-top: 4px; }
-.list > .srow + .srow, .minor > .srow, .minor > .srow:nth-child(2) { border-top: 1px solid var(--tile-edge); }
-.srow, .srow.coast { background: linear-gradient(180deg, var(--tile-a), var(--tile-b)); border: 1px solid var(--tile-edge) !important;
-  border-radius: 10px; box-shadow: inset 0 1px 0 var(--tile-hl), 0 1px 2px var(--tile-sh), 0 3px 8px -2px var(--tile-sh);
-  transition: box-shadow .15s ease, transform .15s ease; }
-.srow:hover { background: linear-gradient(180deg, var(--tile-a), var(--tile-b)); box-shadow: inset 0 1px 0 var(--tile-hl), 0 2px 4px var(--tile-sh), 0 6px 14px -4px var(--tile-sh); }
-.srow:active { transform: translateY(1px); }
-.srow.small { border-radius: 8px; }
-.srow[aria-expanded="true"] { border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom-color: transparent !important;
-  background: linear-gradient(180deg, var(--tile-a), var(--tile-b)); box-shadow: inset 0 1px 0 var(--tile-hl), 0 1px 2px var(--tile-sh); }
-.det { margin-top: -9px; border: 1px solid var(--tile-edge); border-top: 1px dashed var(--tile-edge); border-radius: 0 0 10px 10px;
-  background: var(--tile-b); box-shadow: 0 3px 8px -2px var(--tile-sh); padding: 12px 16px 14px; }
-@media (max-width: 640px) { .list { padding: 8px 8px 10px; } .det { padding: 10px 12px 12px; } }
-/* day tabs: small moulded tiles tinted by the day's quality */
-.daynav { gap: 8px; padding: 10px 2px; }
-.daynav a { min-width: 60px; padding: 6px 8px 7px; gap: 3px; border-radius: 10px; border: 1px solid var(--tile-edge); border-bottom: 1px solid var(--tile-edge);
-  background: linear-gradient(180deg, color-mix(in srgb, var(--qc) 18%, var(--tile-a)), color-mix(in srgb, var(--qc) 36%, var(--tile-b)));
-  box-shadow: inset 0 1px 0 var(--tile-hl), inset 0 -3px 0 var(--qc), 0 1px 2px var(--tile-sh), 0 3px 8px -3px var(--tile-sh); }
-.daynav a:active { transform: translateY(1px); }
+/* ---------- layouts: six looks, switched with the buttons at the bottom (data-style on <html>) ---------- */
+/* shared by all layouts */
 .daynav a b { font-size: .74rem; font-weight: 600; color: var(--muted); letter-spacing: .02em; }
 .daynav a span.n { font-family: var(--font-body); font-size: 1.15rem; font-weight: 700; line-height: 1; color: var(--ink); display: inline-flex; align-items: center; gap: 4px; }
 .daynav a span.n .xcmark { font-size: .55rem; padding: 1px 4px; }
-.daynav a span.rx { margin-bottom: 2px; }
+.daynav a { gap: 3px; min-width: 58px; padding: 6px 8px 7px; }
+.det { margin: 0; }
+.srow { transition: background-color .12s ease; }
+
+/* 1 Clean: hairlines, generous radius, no shadows */
+:root[data-style="clean"] .day { border: 1px solid var(--line); border-radius: 14px; }
+:root[data-style="clean"] .day > .hd { background: color-mix(in srgb, var(--qc) 16%, var(--surface)); border-bottom: 1px solid var(--line); box-shadow: inset 4px 0 0 var(--qc); }
+:root[data-style="clean"] .day { border-left: 1px solid var(--line); }
+:root[data-style="clean"] .srow.coast, :root[data-style="clean"] .minor { border-top-color: var(--line) !important; }
+:root[data-style="clean"] .srow:hover { background: var(--sunk); }
+:root[data-style="clean"] .srow[aria-expanded="true"] { background: var(--sunk); }
+:root[data-style="clean"] .det { background: var(--sunk); border-top: 0; border-bottom: 1px solid var(--line); }
+:root[data-style="clean"] .daynav a { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); box-shadow: inset 0 -3px 0 var(--qc); }
+
+/* 2 Soft: grey page, white cards floating on a whisper of shadow */
+:root[data-style="soft"] body, :root[data-style="soft"] .daynav, :root[data-style="soft"] body::before { background: var(--sunk); }
+:root[data-style="soft"] .day { border: 0; border-radius: 18px; box-shadow: 0 1px 2px rgba(0,0,0,.05), 0 4px 16px -6px rgba(0,0,0,.08); }
+:root[data-style="soft"] .day > .hd { background: var(--surface); border-bottom: 1px solid var(--line); }
+:root[data-style="soft"] .day > .hd .when::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--qc); margin-right: 10px; vertical-align: middle; }
+:root[data-style="soft"] #story > .hd .when::before { display: none; }
+:root[data-style="soft"] .srow.coast, :root[data-style="soft"] .minor { border-top-color: var(--line) !important; }
+:root[data-style="soft"] .srow:hover, :root[data-style="soft"] .srow[aria-expanded="true"] { background: color-mix(in srgb, var(--sunk) 70%, var(--surface)); }
+:root[data-style="soft"] .det { background: color-mix(in srgb, var(--sunk) 70%, var(--surface)); border: 0; }
+:root[data-style="soft"] .daynav a { border: 0; border-radius: 12px; background: var(--surface); box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 3px 10px -4px rgba(0,0,0,.10); }
+:root[data-style="soft"] .daynav a span.n { color: var(--qc); }
+
+/* 3 Tinted: each site is a flat tile washed in its own rating colour */
+:root[data-style="tinted"] .day { border: 1px solid var(--line); border-radius: 12px; }
+:root[data-style="tinted"] .day > .hd { background: color-mix(in srgb, var(--qc) 22%, var(--surface)); border-bottom: 0; }
+:root[data-style="tinted"] .list { gap: 6px; padding: 10px; }
+:root[data-style="tinted"] .minor { gap: 6px; border-top: 0; }
+:root[data-style="tinted"] .srow, :root[data-style="tinted"] .srow.coast { border: 0 !important; border-radius: 8px; background: color-mix(in srgb, var(--rc) 9%, var(--surface)); box-shadow: inset 3px 0 0 var(--rc); }
+:root[data-style="tinted"] .srow:hover { background: color-mix(in srgb, var(--rc) 15%, var(--surface)); }
+:root[data-style="tinted"] .srow[aria-expanded="true"] { border-radius: 8px 8px 0 0; background: color-mix(in srgb, var(--rc) 15%, var(--surface)); }
+:root[data-style="tinted"] .det { margin-top: -6px; border: 0; border-radius: 0 0 8px 8px; background: color-mix(in srgb, var(--sunk) 80%, var(--surface)); box-shadow: inset 3px 0 0 var(--line); }
+:root[data-style="tinted"] .daynav a { border: 0; border-radius: 8px; background: color-mix(in srgb, var(--qc) 22%, var(--surface)); }
+
+/* 4 Editorial: no boxes, big type, colour as a rule under the date */
+:root[data-style="editorial"] .day { border: 0; border-radius: 0; background: transparent; }
+:root[data-style="editorial"] .day > .hd { background: transparent; border-bottom: 3px solid var(--qc); padding-inline: 2px; }
+:root[data-style="editorial"] #story > .hd { border-bottom-color: var(--ink); }
+:root[data-style="editorial"] .day .when { font-family: var(--font-display); font-weight: 500; font-size: 1.6rem; }
+:root[data-style="editorial"] .big { font-family: var(--font-display); font-size: 1.8rem; font-weight: 500; }
+:root[data-style="editorial"] .srow { padding-inline: 2px; }
+:root[data-style="editorial"] .srow .nm { font-family: var(--font-display); font-size: 1.1rem; }
+:root[data-style="editorial"] .srow.coast, :root[data-style="editorial"] .minor { border-top-color: var(--line) !important; }
+:root[data-style="editorial"] .srow:hover, :root[data-style="editorial"] .srow[aria-expanded="true"] { background: transparent; }
+:root[data-style="editorial"] .srow[aria-expanded="true"] .nm { text-decoration: underline; text-decoration-color: var(--rc); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+:root[data-style="editorial"] .det { background: transparent; border: 0; border-left: 2px solid var(--line); margin: 0 0 8px 2px; }
+:root[data-style="editorial"] .daynav a { border: 0; background: transparent; border-bottom: 3px solid var(--qc); border-radius: 0; }
+
+/* 5 Technical: square, ruled, monospaced numbers */
+:root[data-style="technical"] .day { border: 1px solid var(--ink); border-radius: 0; }
+:root[data-style="technical"] .day > .hd { background: var(--surface); border-bottom: 1px solid var(--ink); box-shadow: inset 0 4px 0 var(--qc); }
+:root[data-style="technical"] .big, :root[data-style="technical"] .srow .rt, :root[data-style="technical"] .daynav a span.n, :root[data-style="technical"] .fv { font-family: var(--font-data); }
+:root[data-style="technical"] .srow.coast, :root[data-style="technical"] .minor { border-top-color: var(--ink) !important; }
+:root[data-style="technical"] .srow:hover { background: var(--sunk); }
+:root[data-style="technical"] .srow[aria-expanded="true"] { background: var(--ink); color: var(--bg); }
+:root[data-style="technical"] .srow[aria-expanded="true"] .nm, :root[data-style="technical"] .srow[aria-expanded="true"] .rt, :root[data-style="technical"] .srow[aria-expanded="true"] .note { color: var(--bg); }
+:root[data-style="technical"] .det { border-top: 0; border-bottom: 1px solid var(--ink); background: var(--surface); }
+:root[data-style="technical"] .bar, :root[data-style="technical"] .factor .fbar { height: 10px; }
+:root[data-style="technical"] .daynav a { border: 1px solid var(--ink); border-radius: 0; background: var(--surface); box-shadow: inset 0 4px 0 var(--qc); padding-top: 9px; }
+
+/* 6 Bold: the day header is a solid band of the day's colour */
+:root[data-style="bold"] .day { border: 0; border-radius: 12px; box-shadow: 0 0 0 1px var(--line); }
+:root[data-style="bold"] .day > .hd { background: var(--qc); color: #fff; border-bottom: 0; }
+:root[data-style="bold"] .day > .hd .when small, :root[data-style="bold"] .day > .hd .big small { color: rgba(255,255,255,.8); }
+:root[data-style="bold"] .day > .hd .rx { background: rgba(255,255,255,.95); color: var(--rxc); }
+:root[data-style="bold"] #story > .hd { background: var(--sunk); color: var(--ink); }
+:root[data-style="bold"] #story > .hd small, :root[data-style="bold"] #story > .hd a { color: var(--muted); }
+:root[data-style="bold"] .srow.coast, :root[data-style="bold"] .minor { border-top-color: var(--line) !important; }
+:root[data-style="bold"] .srow:hover, :root[data-style="bold"] .srow[aria-expanded="true"] { background: var(--sunk); }
+:root[data-style="bold"] .det { background: var(--sunk); border: 0; }
+:root[data-style="bold"] .daynav a { border: 0; border-radius: 10px; background: var(--qc); }
+:root[data-style="bold"] .daynav a b, :root[data-style="bold"] .daynav a span.n { color: #fff; }
+:root[data-style="bold"] .daynav a span.n .xcmark { background: #fff; color: var(--ink); }
+:root[data-style="bold"] .daynav a span.rx { background: rgba(255,255,255,.92); color: var(--rxc); }
+
+footer .styles { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+footer .styles span { margin-right: 2px; }
 </style>
 </head>
 <body>
@@ -285,6 +343,14 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 
   <footer>
     <span id="foot"></span>
+    <span class="styles" id="layouts"><span>Layout</span>
+      <button type="button" data-l="clean">Clean</button>
+      <button type="button" data-l="soft">Soft</button>
+      <button type="button" data-l="tinted">Tinted</button>
+      <button type="button" data-l="editorial">Editorial</button>
+      <button type="button" data-l="technical">Technical</button>
+      <button type="button" data-l="bold">Bold</button>
+    </span>
     <span class="presets" id="theme">
       <button type="button" data-t="auto">Auto</button>
       <button type="button" data-t="light">Light</button>
@@ -333,6 +399,13 @@ const setTheme = (t) => {
 let saved = "light"; try { saved = localStorage.getItem("radar-theme") || "light"; } catch (e) {}   // light by default; switch at the bottom of the page
 setTheme(saved);
 $("#theme").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) setTheme(b.dataset.t); });
+const setLayout = (l) => {
+  try { localStorage.setItem("radar-layout", l); } catch (e) {}
+  document.documentElement.setAttribute("data-style", l);
+  document.querySelectorAll("#layouts button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.l === l)));
+};
+setLayout(document.documentElement.getAttribute("data-style") || "clean");
+$("#layouts").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) setLayout(b.dataset.l); });
 
 function dayLabel(dstr) {
   const d = new Date(dstr + "T12:00:00");
@@ -435,7 +508,7 @@ function siteRow(d, s, i, kind) {
   const c = d.sites[s.id];
   const name = s.id === "lb" ? "Little Black" : s.short;
   if (!c) return `<div class="srow ${kind}"><span class="nm">${esc(name)}</span><span class="muted">no data</span></div>`;
-  return `<button type="button" class="srow ${kind}" data-site="${s.id}" data-day="${i}" aria-expanded="false">
+  return `<button type="button" class="srow ${kind}" style="--rc:${qv(c.rating)}" data-site="${s.id}" data-day="${i}" aria-expanded="false">
     <span class="nm">${esc(name)}</span>${bar(c.rating, kind === "small")}<span class="rt">${r1(c.rating)}</span>
     <span class="tx"><span class="lab" style="color:${qv(c.rating)}">${esc(c.label)}</span>${c.xc ? '<span class="xcmark">XC</span>' : ""}${(c.tags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join("")}${rowNote(c) ? `<span class="note">${esc(rowNote(c))}</span>` : ""}</span>
   </button>`;
