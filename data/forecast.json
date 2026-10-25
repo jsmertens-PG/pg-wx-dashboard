@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-25T03:16+00:00",
+ "generated": "2026-10-25T03:25+00:00",
  "sample": false,
  "models": {
   "HRRR": "ncep_hrrr_conus",
@@ -42,7 +42,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-10-25T01:00+00:00",
-   "fetched": "2026-10-25T03:09+00:00",
+   "fetched": "2026-10-25T03:17+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -51,8 +51,8 @@
    "provider": "Open-Meteo",
    "id": "ncep_rrfs_conus",
    "status": "ok",
-   "run": null,
-   "fetched": "2026-10-25T03:09+00:00",
+   "run": "2026-10-24T18:00+00:00",
+   "fetched": "2026-10-25T03:17+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -62,7 +62,7 @@
    "id": "ncep_nam_conus",
    "status": "ok",
    "run": "2026-10-25T00:00+00:00",
-   "fetched": "2026-10-25T03:09+00:00",
+   "fetched": "2026-10-25T03:17+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -72,7 +72,7 @@
    "id": "gfs_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-25T03:09+00:00",
+   "fetched": "2026-10-25T03:17+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -81,8 +81,8 @@
    "provider": "Open-Meteo",
    "id": "ecmwf_ifs025",
    "status": "ok",
-   "run": "2026-10-24T18:00+00:00",
-   "fetched": "2026-10-25T03:11+00:00",
+   "run": null,
+   "fetched": "2026-10-25T03:18+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -92,7 +92,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-25T03:11+00:00",
+   "fetched": "2026-10-25T03:18+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -102,7 +102,7 @@
    "id": "gfs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-25T03:12+00:00",
+   "fetched": "2026-10-25T03:19+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -112,7 +112,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-25T03:15+00:00",
+   "fetched": "2026-10-25T03:22+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -122,7 +122,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-25T03:16+00:00",
+   "fetched": "2026-10-25T03:25+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -132,7 +132,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-10-25T00:24:00+00:00",
-   "fetched": "2026-10-25T03:16+00:00",
+   "fetched": "2026-10-25T03:25+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   }
  ],
@@ -394,7 +394,7 @@
      ],
      "xc": false,
      "note": "thermals to 3,800 ft",
-     "p_fly": 0.82,
+     "p_fly": 0.9,
      "p_xc": 0.0,
      "agree": "split",
      "models": {
@@ -982,7 +982,7 @@
      "tags": [],
      "xc": false,
      "note": "",
-     "p_fly": 0.77,
+     "p_fly": 0.86,
      "p_xc": 0.0,
      "agree": "mixed",
      "models": {
@@ -1096,8 +1096,8 @@
      "tags": [],
      "xc": true,
      "note": "light drift: triangle or out-and-return",
-     "p_fly": 1.0,
-     "p_xc": 0.86,
+     "p_fly": 0.97,
+     "p_xc": 0.56,
      "agree": "split",
      "models": {
       "HRRR": 4.3,
@@ -1313,13 +1313,50 @@
    },
    "regime": {
     "type": "Post-frontal",
-    "agree": 0.67,
+    "agree": 1.0,
     "models": {
-     "HRRR": null,
+     "HRRR": "Post-frontal",
      "RRFS": "Post-frontal",
      "GFS": "Post-frontal",
      "ECMWF": "Post-frontal",
      "ICON": "Post-frontal"
+    },
+    "features": {
+     "HRRR": {
+      "rain_mm": 0.0,
+      "t850": 11.3,
+      "w850": "NE 7",
+      "w700": "NE 10",
+      "rh": 54
+     },
+     "RRFS": {
+      "rain_mm": 0.1,
+      "t850": 11.8,
+      "w850": "ENE 11",
+      "w700": "NNE 10",
+      "rh": 54
+     },
+     "GFS": {
+      "rain_mm": 0.2,
+      "t850": 11.1,
+      "w850": "NE 8",
+      "w700": "NE 10",
+      "rh": 39
+     },
+     "ECMWF": {
+      "rain_mm": 0.7,
+      "t850": 11.2,
+      "w850": "NE 7",
+      "w700": "NE 11",
+      "rh": 54
+     },
+     "ICON": {
+      "rain_mm": 0.0,
+      "t850": 11.5,
+      "w850": "NE 8",
+      "w700": "NNE 10",
+      "rh": 55
+     }
     }
    },
    "best": "soboba",
@@ -1452,7 +1489,7 @@
      "xc": false,
      "note": "thermals to 4,000 ft",
      "p_fly": 1.0,
-     "p_xc": 0.41,
+     "p_xc": 0.42,
      "agree": "split",
      "models": {
       "HRRR": 4.7,
@@ -1902,7 +1939,7 @@
      ],
      "xc": false,
      "note": "thermals to 6,600 ft",
-     "p_fly": 0.88,
+     "p_fly": 0.9,
      "p_xc": 0.29,
      "agree": "split",
      "models": {
@@ -2014,7 +2051,7 @@
      "xc": false,
      "note": "",
      "p_fly": 0.71,
-     "p_xc": 0.03,
+     "p_xc": 0.02,
      "agree": "split",
      "models": {
       "HRRR": 2.7,
@@ -2239,7 +2276,7 @@
      "xc": false,
      "note": "thermals to 4,700 ft",
      "p_fly": 1.0,
-     "p_xc": 0.01,
+     "p_xc": 0.05,
      "agree": "mixed",
      "models": {
       "HRRR": 2.9,
@@ -2348,6 +2385,43 @@
      "GFS": null,
      "ECMWF": null,
      "ICON": null
+    },
+    "features": {
+     "HRRR": {
+      "rain_mm": 0.0,
+      "t850": 13.0,
+      "w850": "N 6",
+      "w700": "NNE 9",
+      "rh": 46
+     },
+     "RRFS": {
+      "rain_mm": 0.0,
+      "t850": 13.4,
+      "w850": "NNE 2",
+      "w700": "N 11",
+      "rh": 47
+     },
+     "GFS": {
+      "rain_mm": 0.0,
+      "t850": 12.9,
+      "w850": "ENE 3",
+      "w700": "NNE 8",
+      "rh": 30
+     },
+     "ECMWF": {
+      "rain_mm": 0.0,
+      "t850": 13.5,
+      "w850": "ENE 5",
+      "w700": "NNE 10",
+      "rh": 41
+     },
+     "ICON": {
+      "rain_mm": 0.0,
+      "t850": 13.3,
+      "w850": "NNE 5",
+      "w700": "NNE 11",
+      "rh": 44
+     }
     }
    },
    "best": "soboba",
@@ -2365,8 +2439,8 @@
      ],
      "xc": false,
      "note": "thermals to 2,000 ft",
-     "p_fly": 0.89,
-     "p_xc": 0.34,
+     "p_fly": 0.9,
+     "p_xc": 0.41,
      "agree": "mixed",
      "models": {
       "HRRR": 3.1,
@@ -2482,7 +2556,7 @@
      "xc": false,
      "note": "thermals to 3,700 ft",
      "p_fly": 1.0,
-     "p_xc": 0.01,
+     "p_xc": 0.0,
      "agree": "agree",
      "models": {
       "HRRR": 3.4,
@@ -3049,8 +3123,8 @@
      "tags": [],
      "xc": false,
      "note": "thermals to 2,900 ft",
-     "p_fly": 0.66,
-     "p_xc": 0.0,
+     "p_fly": 0.67,
+     "p_xc": 0.01,
      "agree": "split",
      "models": {
       "HRRR": 3.4,
@@ -3170,7 +3244,7 @@
      "xc": false,
      "note": "thermals to 6,400 ft",
      "p_fly": 1.0,
-     "p_xc": 0.3,
+     "p_xc": 0.42,
      "agree": "split",
      "models": {
       "HRRR": 2.2,
@@ -3278,7 +3352,7 @@
      "tags": [],
      "xc": false,
      "note": "thermals to 4,500 ft",
-     "p_fly": 0.7,
+     "p_fly": 0.75,
      "p_xc": 0.0,
      "agree": "mixed",
      "models": {
@@ -3392,6 +3466,43 @@
      "GFS": null,
      "ECMWF": null,
      "ICON": null
+    },
+    "features": {
+     "HRRR": {
+      "rain_mm": 0.0,
+      "t850": 14.4,
+      "w850": "N 3",
+      "w700": "WNW 4",
+      "rh": 45
+     },
+     "RRFS": {
+      "rain_mm": 0.0,
+      "t850": 13.9,
+      "w850": "W 2",
+      "w700": "W 7",
+      "rh": 45
+     },
+     "GFS": {
+      "rain_mm": 0.0,
+      "t850": 13.6,
+      "w850": "NW 2",
+      "w700": "W 10",
+      "rh": 37
+     },
+     "ECMWF": {
+      "rain_mm": 0.0,
+      "t850": 14.4,
+      "w850": "NW 4",
+      "w700": "WNW 9",
+      "rh": 39
+     },
+     "ICON": {
+      "rain_mm": 0.0,
+      "t850": 13.4,
+      "w850": "W 2",
+      "w700": "W 8",
+      "rh": 44
+     }
     }
    },
    "best": "soboba",
@@ -3407,8 +3518,8 @@
      "tags": [],
      "xc": false,
      "note": "",
-     "p_fly": 0.64,
-     "p_xc": 0.03,
+     "p_fly": 0.75,
+     "p_xc": 0.02,
      "agree": "split",
      "models": {
       "RRFS": 2.4,
@@ -3497,7 +3608,7 @@
      "tags": [],
      "xc": false,
      "note": "",
-     "p_fly": 0.93,
+     "p_fly": 0.91,
      "p_xc": 0.01,
      "agree": "mixed",
      "models": {
@@ -3950,7 +4061,7 @@
      "tags": [],
      "xc": false,
      "note": "",
-     "p_fly": 0.94,
+     "p_fly": 0.95,
      "p_xc": 0.0,
      "agree": "agree",
      "models": {
@@ -4042,8 +4153,8 @@
      "tags": [],
      "xc": false,
      "note": "thermals to 4,800 ft",
-     "p_fly": 0.8,
-     "p_xc": 0.31,
+     "p_fly": 0.89,
+     "p_xc": 0.29,
      "agree": "split",
      "models": {
       "RRFS": 3.4,
@@ -4222,6 +4333,36 @@
      "GFS": null,
      "ECMWF": null,
      "ICON": null
+    },
+    "features": {
+     "RRFS": {
+      "rain_mm": 0.0,
+      "t850": 16.9,
+      "w850": "N 1",
+      "w700": "W 5",
+      "rh": 49
+     },
+     "GFS": {
+      "rain_mm": 0.0,
+      "t850": 14.7,
+      "w850": "WNW 5",
+      "w700": "WSW 9",
+      "rh": 31
+     },
+     "ECMWF": {
+      "rain_mm": 0.1,
+      "t850": 16.3,
+      "w850": "NW 6",
+      "w700": "W 9",
+      "rh": 42
+     },
+     "ICON": {
+      "rain_mm": 0.0,
+      "t850": 15.0,
+      "w850": "NW 6",
+      "w700": "W 8",
+      "rh": 53
+     }
     }
    },
    "best": "soboba",
@@ -4240,7 +4381,7 @@
      "xc": false,
      "note": "thermals to 2,700 ft",
      "p_fly": 0.99,
-     "p_xc": 0.25,
+     "p_xc": 0.38,
      "agree": "mixed",
      "models": {
       "GFS": 4.1,
@@ -4312,8 +4453,8 @@
      "tags": [],
      "xc": false,
      "note": "",
-     "p_fly": 0.34,
-     "p_xc": 0.02,
+     "p_fly": 0.28,
+     "p_xc": 0.0,
      "agree": "agree",
      "models": {
       "GFS": 2.4,
@@ -4467,7 +4608,7 @@
      "xc": false,
      "note": "too light to soar",
      "p_fly": 0.06,
-     "p_xc": 0.01,
+     "p_xc": 0.0,
      "agree": "mixed",
      "models": {
       "GFS": 2.7,
@@ -4695,7 +4836,7 @@
      "tags": [],
      "xc": false,
      "note": "low lid, 2,800 ft",
-     "p_fly": 0.32,
+     "p_fly": 0.33,
      "p_xc": 0.0,
      "agree": "agree",
      "models": {
@@ -4773,7 +4914,7 @@
      "tags": [],
      "xc": false,
      "note": "low lid, 3,500 ft",
-     "p_fly": 0.11,
+     "p_fly": 0.02,
      "p_xc": 0.0,
      "agree": "agree",
      "models": {
@@ -4850,7 +4991,7 @@
      "tags": [],
      "xc": false,
      "note": "",
-     "p_fly": 0.11,
+     "p_fly": 0.09,
      "p_xc": 0.0,
      "agree": "mixed",
      "models": {
@@ -4921,12 +5062,35 @@
     }
    },
    "regime": {
-    "type": null,
-    "agree": 1.0,
+    "type": "Pre-frontal",
+    "agree": 0.67,
     "models": {
      "GFS": null,
-     "ECMWF": null,
-     "ICON": null
+     "ECMWF": "Pre-frontal",
+     "ICON": "Pre-frontal"
+    },
+    "features": {
+     "GFS": {
+      "rain_mm": 0.0,
+      "t850": 13.6,
+      "w850": "SW 5",
+      "w700": "W 9",
+      "rh": 38
+     },
+     "ECMWF": {
+      "rain_mm": 0.0,
+      "t850": 16.1,
+      "w850": "SSW 5",
+      "w700": "SSW 10",
+      "rh": 45
+     },
+     "ICON": {
+      "rain_mm": 0.0,
+      "t850": 14.6,
+      "w850": "SW 5",
+      "w700": "W 4",
+      "rh": 51
+     }
     }
    },
    "best": "lb",
@@ -4945,8 +5109,8 @@
      ],
      "xc": true,
      "note": "light drift: triangle or out-and-return",
-     "p_fly": 0.95,
-     "p_xc": 0.72,
+     "p_fly": 0.96,
+     "p_xc": 0.7,
      "agree": "agree",
      "models": {
       "GFS": 4.1,
@@ -5018,7 +5182,7 @@
      "tags": [],
      "xc": false,
      "note": "",
-     "p_fly": 0.2,
+     "p_fly": 0.1,
      "p_xc": 0.0,
      "agree": "agree",
      "models": {
@@ -5178,7 +5342,7 @@
      "xc": false,
      "note": "too light to soar",
      "p_fly": 0.48,
-     "p_xc": 0.0,
+     "p_xc": 0.03,
      "agree": "agree",
      "models": {
       "GFS": 2.4,
@@ -5330,7 +5494,7 @@
      "tags": [],
      "xc": false,
      "note": "",
-     "p_fly": 0.58,
+     "p_fly": 0.57,
      "p_xc": 0.0,
      "agree": "agree",
      "models": {
@@ -5488,7 +5652,7 @@
      "tags": [],
      "xc": false,
      "note": "",
-     "p_fly": 0.48,
+     "p_fly": 0.41,
      "p_xc": 0.0,
      "agree": "mixed",
      "models": {
@@ -5567,8 +5731,8 @@
      ],
      "xc": false,
      "note": "thermals to 4,700 ft",
-     "p_fly": 0.81,
-     "p_xc": 0.21,
+     "p_fly": 0.77,
+     "p_xc": 0.16,
      "agree": "mixed",
      "models": {
       "GFS": 3.1,
@@ -5637,12 +5801,35 @@
     }
    },
    "regime": {
-    "type": null,
-    "agree": 1.0,
+    "type": "Front",
+    "agree": 0.67,
     "models": {
-     "GFS": null,
-     "ECMWF": null,
-     "ICON": null
+     "GFS": "Pre-frontal",
+     "ECMWF": "Front",
+     "ICON": "Front"
+    },
+    "features": {
+     "GFS": {
+      "rain_mm": 0.0,
+      "t850": 12.1,
+      "w850": "SSW 5",
+      "w700": "SSW 12",
+      "rh": 48
+     },
+     "ECMWF": {
+      "rain_mm": 0.2,
+      "t850": 13.5,
+      "w850": "SSE 5",
+      "w700": "SW 11",
+      "rh": 54
+     },
+     "ICON": {
+      "rain_mm": 0.4,
+      "t850": 12.4,
+      "w850": "SSE 10",
+      "w700": "SW 10",
+      "rh": 61
+     }
     }
    },
    "best": "lb",
@@ -5660,8 +5847,8 @@
      ],
      "xc": false,
      "note": "thermals to 2,900 ft",
-     "p_fly": 0.56,
-     "p_xc": 0.03,
+     "p_fly": 0.59,
+     "p_xc": 0.05,
      "agree": "split",
      "models": {
       "GFS": 5.0,
@@ -5740,7 +5927,7 @@
      ],
      "xc": false,
      "note": "thermals to 3,000 ft",
-     "p_fly": 0.52,
+     "p_fly": 0.53,
      "p_xc": 0.0,
      "agree": "split",
      "models": {
@@ -6144,8 +6331,8 @@
      ],
      "xc": false,
      "note": "thermals to 3,300 ft",
-     "p_fly": 0.61,
-     "p_xc": 0.07,
+     "p_fly": 0.62,
+     "p_xc": 0.1,
      "agree": "split",
      "models": {
       "GFS": 3.4,
@@ -6227,7 +6414,7 @@
      ],
      "xc": false,
      "note": "showers around",
-     "p_fly": 0.46,
+     "p_fly": 0.45,
      "p_xc": 0.0,
      "agree": "split",
      "models": {
@@ -6305,8 +6492,8 @@
      ],
      "xc": false,
      "note": "thermals to 5,100 ft",
-     "p_fly": 0.65,
-     "p_xc": 0.3,
+     "p_fly": 0.7,
+     "p_xc": 0.34,
      "agree": "agree",
      "models": {
       "GFS": 3.4,
@@ -6379,12 +6566,35 @@
     }
    },
    "regime": {
-    "type": null,
-    "agree": 0.67,
+    "type": "Front",
+    "agree": 1.0,
     "models": {
-     "GFS": null,
-     "ECMWF": null,
-     "ICON": "Post-frontal"
+     "GFS": "Front",
+     "ECMWF": "Front",
+     "ICON": "Front"
+    },
+    "features": {
+     "GFS": {
+      "rain_mm": 1.9,
+      "t850": 7.6,
+      "w850": "SSW 7",
+      "w700": "SW 17",
+      "rh": 55
+     },
+     "ECMWF": {
+      "rain_mm": 2.0,
+      "t850": 9.2,
+      "w850": "WSW 2",
+      "w700": "SW 17",
+      "rh": 67
+     },
+     "ICON": {
+      "rain_mm": 1.6,
+      "t850": 8.8,
+      "w850": "SSW 9",
+      "w700": "WSW 16",
+      "rh": 70
+     }
     }
    },
    "best": "torrey",
