@@ -222,15 +222,15 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .srow { transition: background-color .12s ease; }
 
 /* Tinted: each site is a flat tile washed in its own rating colour */
-.day { border: 1px solid var(--line); border-radius: 12px; }
-.day > .hd { background: color-mix(in srgb, var(--qc) 22%, var(--surface)); border-bottom: 0; }
+.day { border: 2.5px solid var(--ink); border-radius: 12px; }
+.day > .hd { background: color-mix(in srgb, var(--qc) 22%, var(--surface)); border-bottom: 1.5px solid var(--ink); }
 .list { gap: 6px; padding: 10px; }
 .minor { gap: 6px; border-top: 0; }
-.srow, .srow.coast { border: 0 !important; border-radius: 8px; background: color-mix(in srgb, var(--rc) 9%, var(--surface)); box-shadow: inset 3px 0 0 var(--rc); }
+.srow, .srow.coast { border: 1.25px solid color-mix(in srgb, var(--ink) 70%, transparent) !important; border-radius: 8px; background: color-mix(in srgb, var(--rc) 9%, var(--surface)); box-shadow: inset 3px 0 0 var(--rc); }
 .srow:hover { background: color-mix(in srgb, var(--rc) 15%, var(--surface)); }
-.srow[aria-expanded="true"] { border-radius: 8px 8px 0 0; background: color-mix(in srgb, var(--rc) 15%, var(--surface)); }
-.det { margin-top: -6px; border: 0; border-radius: 0 0 8px 8px; background: color-mix(in srgb, var(--sunk) 80%, var(--surface)); box-shadow: inset 3px 0 0 var(--line); }
-.daynav a { border: 0; border-radius: 8px; background: color-mix(in srgb, var(--qc) 22%, var(--surface)); }
+.srow[aria-expanded="true"] { border-bottom-color: transparent !important; border-radius: 8px 8px 0 0; background: color-mix(in srgb, var(--rc) 15%, var(--surface)); }
+.det { margin-top: -6px; border: 1.25px solid color-mix(in srgb, var(--ink) 70%, transparent); border-top: 1px dashed var(--line); border-radius: 0 0 8px 8px; background: color-mix(in srgb, var(--sunk) 80%, var(--surface)); box-shadow: inset 3px 0 0 var(--line); }
+.daynav a { border: 1.5px solid var(--ink); border-radius: 8px; background: color-mix(in srgb, var(--qc) 22%, var(--surface)); }
 
 </style>
 </head>
