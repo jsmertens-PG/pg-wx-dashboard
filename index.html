@@ -20,7 +20,7 @@
    Same paper/ink look as the PG logbook; colour is reserved for day quality (1-5) and the day type. */
 :root {
   --bg: #ffffff; --surface: #ffffff; --sunk: #f3f4f3; --ink: #0b0b0b; --muted: #676d69; --line: #e2e4e2;
-  --q0: #c8412f; --q1: #df8a17; --q2: #8dbf3f; --q3: #3a9d57; --q4: #1a7a45; --q5: #0d5a44;
+  --q0: #c8412f; --q1: #df8a17; --q2: #9aae2c; --q3: #3a9d57; --q4: #1a7a45; --q5: #0d5a44;
   --font-display: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
   --font-body: "Work Sans", "Helvetica Neue", Arial, sans-serif;
   --font-data: "JetBrains Mono", ui-monospace, Menlo, monospace;
@@ -28,10 +28,10 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) { --bg: #000; --surface: #080908; --sunk: #121412; --ink: #f1f2f1; --muted: #8e958f; --line: #252826;
-    --q0: #ec5f4c; --q1: #f2a33a; --q2: #a7d65c; --q3: #4fc072; --q4: #2fa864; --q5: #2bd19a; color-scheme: dark; }
+    --q0: #ec5f4c; --q1: #f2a33a; --q2: #b5c443; --q3: #4fc072; --q4: #2fa864; --q5: #2bd19a; color-scheme: dark; }
 }
 :root[data-theme="dark"] { --bg: #000; --surface: #080908; --sunk: #121412; --ink: #f1f2f1; --muted: #8e958f; --line: #252826;
-  --q0: #ec5f4c; --q1: #f2a33a; --q2: #a7d65c; --q3: #4fc072; --q4: #2fa864; --q5: #2bd19a; color-scheme: dark; }
+  --q0: #ec5f4c; --q1: #f2a33a; --q2: #b5c443; --q3: #4fc072; --q4: #2fa864; --q5: #2bd19a; color-scheme: dark; }
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -86,7 +86,7 @@ details.fold > :not(summary) { margin-top: 10px; }
 /* day cards */
 .days { display: grid; gap: 18px; }
 .day { border: 2px solid color-mix(in srgb, var(--ink) 75%, transparent); border-left: 6px solid var(--qc); border-radius: 4px; overflow: hidden; background: var(--surface); display: grid; scroll-margin-top: 12px; }
-.day > .hd { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 18px; align-items: baseline; padding: 12px 18px 10px; background: color-mix(in srgb, var(--qc) 14%, var(--surface)); border-bottom: 1px solid color-mix(in srgb, var(--qc) 35%, var(--line)); }
+.day > .hd { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 18px; align-items: baseline; padding: 12px 18px 10px; background: color-mix(in srgb, var(--qc) 18%, var(--surface)); border-bottom: 1px solid color-mix(in srgb, var(--qc) 35%, var(--line)); }
 .day .when { font-family: var(--font-body); font-weight: 600; font-size: 1.15rem; white-space: nowrap; }
 .day .when small { font-weight: 400; font-size: .85rem; color: var(--muted); margin-left: 8px; }
 .day .headline { margin: 0; font-size: .9rem; }
@@ -272,7 +272,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   <div class="legend">
     <span class="chip"><i style="background:var(--q0)"></i>1 no go</span>
     <span class="chip"><i style="background:var(--q1)"></i>2 marginal</span>
-    <span class="chip"><i style="background:var(--q3)"></i>3 good local / glass-off</span>
+    <span class="chip"><i style="background:var(--q2)"></i>3 good local / glass-off</span>
     <span class="chip"><i style="background:var(--q4)"></i>4 XC</span>
     <span class="chip"><i style="background:var(--q5)"></i>5 outstanding</span>
   </div>
@@ -312,7 +312,7 @@ const ago = (iso) => {
   if (!isFinite(m)) return "";
   return m < 60 ? `${m} min ago` : m < 2880 ? `${Math.round(m / 60)} h ago` : `${Math.round(m / 1440)} days ago`;
 };
-const q = (r) => (r >= 4.5 ? 5 : r >= 3.75 ? 4 : r >= 3 ? 3 : r >= 2.5 ? 2 : r >= 1.6 ? 1 : 0);
+const q = (r) => [0, 0, 1, 2, 4, 5][Math.max(1, Math.min(5, Math.round(r)))];   // same colour as the number shown
 const qv = (r) => `var(--q${q(r)})`;
 const ft = (v) => (v == null ? "–" : (Math.round(v / 100) * 100).toLocaleString());
 const pct = (p) => (p == null ? "–" : `${Math.round(p * 100)}%`);
