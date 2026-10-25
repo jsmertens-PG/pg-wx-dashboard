@@ -957,7 +957,7 @@ def note_for(site, a, xc):
     if xc and site["kind"] == "ridge":
         return f"thermals above the cliffs to about {ft100(a['top'])}" if a.get("top") else "thermals above the cliffs"
     if xc:
-        return route_note(site, a)
+        return ""                                   # routes are planned by hand with Skysight / XC Skies
     if a["label"] == "Glass-off":
         return ""                                   # the label says it all
     if a["label"] in ("Thermal", "Ridge soaring", "XC"):
@@ -1401,7 +1401,7 @@ def headline(sites, d):
     if xc:
         k = next((m for m in xc if m in main), xc[0])
         others = [by[x]["short"] for x in xc if x != k]
-        return f"XC at {by[k]['short']}: {cells[k]['note']}" + (f" · also {', '.join(others)}" if others else "") + tail
+        return f"XC at {by[k]['short']}" + (f" · also {', '.join(others)}" if others else "") + tail
     good = [k for k in main if cells[k]["rating"] >= 2.5]
     if good:
         showers = any(t.startswith("showers") for k in main for t in cells[k]["tags"])
