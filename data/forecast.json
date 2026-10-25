@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-25T04:02+00:00",
+ "generated": "2026-10-25T04:27+00:00",
  "sample": false,
  "models": {
   "HRRR": "ncep_hrrr_conus",
@@ -49,7 +49,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-10-25T02:00+00:00",
-   "fetched": "2026-10-25T03:54+00:00",
+   "fetched": "2026-10-25T04:15+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -59,7 +59,7 @@
    "id": "ncep_nam_conus",
    "status": "ok",
    "run": "2026-10-25T00:00+00:00",
-   "fetched": "2026-10-25T03:57+00:00",
+   "fetched": "2026-10-25T04:19+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -69,7 +69,7 @@
    "id": "gfs_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-25T03:57+00:00",
+   "fetched": "2026-10-25T04:19+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -79,7 +79,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": "2026-10-24T18:00+00:00",
-   "fetched": "2026-10-25T03:57+00:00",
+   "fetched": "2026-10-25T04:21+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -89,7 +89,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-25T03:57+00:00",
+   "fetched": "2026-10-25T04:21+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -99,7 +99,7 @@
    "id": "gfs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-25T03:58+00:00",
+   "fetched": "2026-10-25T04:22+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -109,7 +109,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-25T04:00+00:00",
+   "fetched": "2026-10-25T04:24+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -119,7 +119,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-25T04:02+00:00",
+   "fetched": "2026-10-25T04:27+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -129,7 +129,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-10-25T00:24:00+00:00",
-   "fetched": "2026-10-25T04:02+00:00",
+   "fetched": "2026-10-25T04:27+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   }
  ],
@@ -299,10 +299,13 @@
      "sunset": "6:06pm",
      "factors": [
       {
-       "k": "HRRR",
+       "k": "Height",
        "v": "3,000 ft",
-       "sub": "",
-       "q": 0.73
+       "q": 0.73,
+       "qs": [
+        0.73
+       ],
+       "sub": "HRRR"
       },
       {
        "k": "Wind 1 pm",
@@ -398,10 +401,13 @@
      "sunset": "6:05pm",
      "factors": [
       {
-       "k": "HRRR",
+       "k": "Height",
        "v": "3,500 ft",
-       "sub": "",
-       "q": 0.56
+       "q": 0.56,
+       "qs": [
+        0.56
+       ],
+       "sub": "HRRR"
       },
       {
        "k": "Wind 1 pm",
@@ -500,10 +506,13 @@
      "sunset": "6:07pm",
      "factors": [
       {
-       "k": "HRRR",
+       "k": "Height",
        "v": "8,600 ft",
-       "sub": "",
-       "q": 0.88
+       "q": 0.88,
+       "qs": [
+        0.88
+       ],
+       "sub": "HRRR"
       },
       {
        "k": "Wind 1 pm",
@@ -605,10 +614,13 @@
      "sunset": "6:07pm",
      "factors": [
       {
-       "k": "HRRR",
+       "k": "Height",
        "v": "900 ft",
-       "sub": "",
-       "q": 0.51
+       "q": 0.51,
+       "qs": [
+        0.51
+       ],
+       "sub": "HRRR"
       },
       {
        "k": "Wind 1 pm",
@@ -696,10 +708,13 @@
      "sunset": "6:04pm",
      "factors": [
       {
-       "k": "HRRR",
+       "k": "Height",
        "v": "8,500 ft",
-       "sub": "",
-       "q": 0.63
+       "q": 0.63,
+       "qs": [
+        0.63
+       ],
+       "sub": "HRRR"
       },
       {
        "k": "Wind 1 pm",
@@ -800,10 +815,13 @@
      "sunset": "6:06pm",
      "factors": [
       {
-       "k": "HRRR",
+       "k": "Height",
        "v": "2,600 ft",
-       "sub": "",
-       "q": 0.0
+       "q": 0.0,
+       "qs": [
+        0.0
+       ],
+       "sub": "HRRR"
       },
       {
        "k": "Wind 1 pm",
@@ -909,10 +927,13 @@
      "sunset": "6:06pm",
      "factors": [
       {
-       "k": "HRRR",
+       "k": "Height",
        "v": "2,900 ft",
-       "sub": "",
-       "q": 0.48
+       "q": 0.48,
+       "qs": [
+        0.48
+       ],
+       "sub": "HRRR"
       },
       {
        "k": "Wind 1 pm",
@@ -1010,10 +1031,13 @@
      "sunset": "6:05pm",
      "factors": [
       {
-       "k": "HRRR",
+       "k": "Height",
        "v": "7,100 ft",
-       "sub": "",
-       "q": 0.89
+       "q": 0.89,
+       "qs": [
+        0.89
+       ],
+       "sub": "HRRR"
       },
       {
        "k": "Wind 1 pm",
@@ -1107,10 +1131,13 @@
      "sunset": "6:15pm",
      "factors": [
       {
-       "k": "HRRR",
+       "k": "Height",
        "v": "6,300 ft",
-       "sub": "",
-       "q": 0.79
+       "q": 0.79,
+       "qs": [
+        0.79
+       ],
+       "sub": "HRRR"
       },
       {
        "k": "Wind 1 pm",
@@ -1254,10 +1281,13 @@
      "sunset": "6:05pm",
      "factors": [
       {
-       "k": "HRRR",
+       "k": "Height",
        "v": "3,000 ft",
-       "sub": "",
-       "q": 0.74
+       "q": 0.74,
+       "qs": [
+        0.74
+       ],
+       "sub": "HRRR"
       },
       {
        "k": "Wind 1 pm",
@@ -1355,10 +1385,13 @@
      "sunset": "6:04pm",
      "factors": [
       {
-       "k": "HRRR",
+       "k": "Height",
        "v": "6,400 ft",
-       "sub": "",
-       "q": 0.98
+       "q": 0.98,
+       "qs": [
+        0.98
+       ],
+       "sub": "HRRR"
       },
       {
        "k": "Wind 1 pm",
@@ -1452,10 +1485,13 @@
      "sunset": "6:06pm",
      "factors": [
       {
-       "k": "HRRR",
+       "k": "Height",
        "v": "7,100 ft",
-       "sub": "",
-       "q": 0.76
+       "q": 0.76,
+       "qs": [
+        0.76
+       ],
+       "sub": "HRRR"
       },
       {
        "k": "Wind 1 pm",
@@ -1549,10 +1585,13 @@
      "sunset": "6:06pm",
      "factors": [
       {
-       "k": "HRRR",
+       "k": "Height",
        "v": "800 ft",
-       "sub": "",
-       "q": 0.42
+       "q": 0.42,
+       "qs": [
+        0.42
+       ],
+       "sub": "HRRR"
       },
       {
        "k": "Wind 1 pm",
@@ -1643,10 +1682,13 @@
      "sunset": "6:03pm",
      "factors": [
       {
-       "k": "HRRR",
+       "k": "Height",
        "v": "8,700 ft",
-       "sub": "",
-       "q": 0.64
+       "q": 0.64,
+       "qs": [
+        0.64
+       ],
+       "sub": "HRRR"
       },
       {
        "k": "Wind 1 pm",
@@ -1749,10 +1791,13 @@
      "sunset": "6:05pm",
      "factors": [
       {
-       "k": "HRRR",
+       "k": "Height",
        "v": "6,600 ft",
-       "sub": "",
-       "q": 0.69
+       "q": 0.69,
+       "qs": [
+        0.69
+       ],
+       "sub": "HRRR"
       },
       {
        "k": "Wind 1 pm",
@@ -1847,10 +1892,13 @@
      "sunset": "6:05pm",
      "factors": [
       {
-       "k": "HRRR",
+       "k": "Height",
        "v": "3,100 ft",
-       "sub": "",
-       "q": 0.51
+       "q": 0.51,
+       "qs": [
+        0.51
+       ],
+       "sub": "HRRR"
       },
       {
        "k": "Wind 1 pm",
@@ -1949,10 +1997,13 @@
      "sunset": "6:04pm",
      "factors": [
       {
-       "k": "HRRR",
+       "k": "Height",
        "v": "7,300 ft",
-       "sub": "",
-       "q": 0.91
+       "q": 0.91,
+       "qs": [
+        0.91
+       ],
+       "sub": "HRRR"
       },
       {
        "k": "Wind 1 pm",
@@ -2042,10 +2093,13 @@
      "sunset": "6:14pm",
      "factors": [
       {
-       "k": "HRRR",
+       "k": "Height",
        "v": "4,400 ft",
-       "sub": "",
-       "q": 0.45
+       "q": 0.45,
+       "qs": [
+        0.45
+       ],
+       "sub": "HRRR"
       },
       {
        "k": "Wind 1 pm",
@@ -2187,10 +2241,13 @@
      "sunset": "6:04pm",
      "factors": [
       {
-       "k": "HRRR",
+       "k": "Height",
        "v": "2,500 ft",
-       "sub": "",
-       "q": 0.52
+       "q": 0.52,
+       "qs": [
+        0.52
+       ],
+       "sub": "HRRR"
       },
       {
        "k": "Wind 1 pm",
@@ -2287,10 +2344,13 @@
      "sunset": "6:03pm",
      "factors": [
       {
-       "k": "HRRR",
+       "k": "Height",
        "v": "4,500 ft",
-       "sub": "",
-       "q": 0.69
+       "q": 0.69,
+       "qs": [
+        0.69
+       ],
+       "sub": "HRRR"
       },
       {
        "k": "Wind 1 pm",
@@ -2386,10 +2446,13 @@
      "sunset": "6:05pm",
      "factors": [
       {
-       "k": "HRRR",
+       "k": "Height",
        "v": "5,900 ft",
-       "sub": "",
-       "q": 0.62
+       "q": 0.62,
+       "qs": [
+        0.62
+       ],
+       "sub": "HRRR"
       },
       {
        "k": "Wind 1 pm",
@@ -2488,10 +2551,13 @@
      "sunset": "6:05pm",
      "factors": [
       {
-       "k": "HRRR",
+       "k": "Height",
        "v": "800 ft",
-       "sub": "",
-       "q": 0.42
+       "q": 0.42,
+       "qs": [
+        0.42
+       ],
+       "sub": "HRRR"
       },
       {
        "k": "Wind 1 pm",
@@ -2577,10 +2643,13 @@
      "sunset": "6:02pm",
      "factors": [
       {
-       "k": "HRRR",
+       "k": "Height",
        "v": "7,500 ft",
-       "sub": "",
-       "q": 0.54
+       "q": 0.54,
+       "qs": [
+        0.54
+       ],
+       "sub": "HRRR"
       },
       {
        "k": "Wind 1 pm",
@@ -2677,10 +2746,13 @@
      "sunset": "6:04pm",
      "factors": [
       {
-       "k": "HRRR",
+       "k": "Height",
        "v": "5,600 ft",
-       "sub": "",
-       "q": 0.52
+       "q": 0.52,
+       "qs": [
+        0.52
+       ],
+       "sub": "HRRR"
       },
       {
        "k": "Wind 1 pm",
@@ -2779,10 +2851,13 @@
      "sunset": "6:04pm",
      "factors": [
       {
-       "k": "HRRR",
+       "k": "Height",
        "v": "3,600 ft",
-       "sub": "",
-       "q": 0.6
+       "q": 0.6,
+       "qs": [
+        0.6
+       ],
+       "sub": "HRRR"
       },
       {
        "k": "Wind 1 pm",
@@ -2881,10 +2956,13 @@
      "sunset": "6:03pm",
      "factors": [
       {
-       "k": "HRRR",
+       "k": "Height",
        "v": "5,900 ft",
-       "sub": "",
-       "q": 0.73
+       "q": 0.73,
+       "qs": [
+        0.73
+       ],
+       "sub": "HRRR"
       },
       {
        "k": "Wind 1 pm",
@@ -2977,10 +3055,13 @@
      "sunset": "6:13pm",
      "factors": [
       {
-       "k": "HRRR",
+       "k": "Height",
        "v": "4,500 ft",
-       "sub": "",
-       "q": 0.5
+       "q": 0.5,
+       "qs": [
+        0.5
+       ],
+       "sub": "HRRR"
       },
       {
        "k": "Wind 1 pm",
@@ -3120,9 +3201,9 @@
      "sunset": "6:03pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~2,900 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.69
       },
       {
@@ -3195,9 +3276,9 @@
      "sunset": "6:02pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~2,300 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.26
       },
       {
@@ -3271,9 +3352,9 @@
      "sunset": "6:03pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~4,600 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.42
       },
       {
@@ -3345,9 +3426,9 @@
      "sunset": "6:04pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~1,400 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.9
       },
       {
@@ -3417,9 +3498,9 @@
      "sunset": "6:01pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~4,700 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.03
       },
       {
@@ -3496,9 +3577,9 @@
      "sunset": "6:02pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~3,100 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.0
       },
       {
@@ -3575,9 +3656,9 @@
      "sunset": "6:03pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~2,900 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.45
       },
       {
@@ -3654,9 +3735,9 @@
      "sunset": "6:02pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~4,200 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.53
       },
       {
@@ -3728,9 +3809,9 @@
      "sunset": "6:12pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~3,900 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.28
       },
       {
@@ -3845,9 +3926,9 @@
      "sunset": "6:02pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~2,700 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.61
       },
       {
@@ -3918,9 +3999,9 @@
      "sunset": "6:01pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~2,200 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.25
       },
       {
@@ -3993,9 +4074,9 @@
      "sunset": "6:02pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~4,300 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.35
       },
       {
@@ -4070,9 +4151,9 @@
      "sunset": "6:03pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~1,400 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.94
       },
       {
@@ -4142,9 +4223,9 @@
      "sunset": "6:00pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~4,800 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.05
       },
       {
@@ -4220,9 +4301,9 @@
      "sunset": "6:01pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~2,600 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.0
       },
       {
@@ -4299,9 +4380,9 @@
      "sunset": "6:02pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~2,600 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.35
       },
       {
@@ -4377,9 +4458,9 @@
      "sunset": "6:01pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~3,500 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.36
       },
       {
@@ -4454,9 +4535,9 @@
      "sunset": "6:11pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~3,600 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.19
       },
       {
@@ -4572,9 +4653,9 @@
      "sunset": "6:01pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~3,200 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.78
       },
       {
@@ -4647,9 +4728,9 @@
      "sunset": "6:00pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~2,100 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.21
       },
       {
@@ -4725,9 +4806,9 @@
      "sunset": "6:01pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~4,100 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.3
       },
       {
@@ -4806,9 +4887,9 @@
      "sunset": "6:02pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~1,600 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 1.0
       },
       {
@@ -4878,9 +4959,9 @@
      "sunset": "5:59pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~5,300 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.15
       },
       {
@@ -4956,9 +5037,9 @@
      "sunset": "6:00pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~2,000 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.0
       },
       {
@@ -5037,9 +5118,9 @@
      "sunset": "6:01pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~2,800 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.43
       },
       {
@@ -5114,9 +5195,9 @@
      "sunset": "6:00pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~3,100 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.25
       },
       {
@@ -5192,9 +5273,9 @@
      "sunset": "6:10pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~3,600 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.19
       },
       {
@@ -5311,9 +5392,9 @@
      "sunset": "6:00pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~4,200 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.94
       },
       {
@@ -5390,9 +5471,9 @@
      "sunset": "5:59pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~4,000 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.63
       },
       {
@@ -5469,9 +5550,9 @@
      "sunset": "6:00pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~4,100 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.3
       },
       {
@@ -5554,9 +5635,9 @@
      "sunset": "6:01pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~2,300 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 1.0
       },
       {
@@ -5626,9 +5707,9 @@
      "sunset": "5:58pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~5,300 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.15
       },
       {
@@ -5712,9 +5793,9 @@
      "sunset": "5:59pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~4,500 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.15
       },
       {
@@ -5796,9 +5877,9 @@
      "sunset": "6:00pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~3,600 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.6
       },
       {
@@ -5877,9 +5958,9 @@
      "sunset": "5:59pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~4,200 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.52
       },
       {
@@ -5955,9 +6036,9 @@
      "sunset": "6:09pm",
      "factors": [
       {
-       "k": "Global models",
+       "k": "Height",
        "v": "~5,100 ft",
-       "sub": "",
+       "sub": "global models",
        "q": 0.61
       },
       {
