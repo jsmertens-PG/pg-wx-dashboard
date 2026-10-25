@@ -516,7 +516,7 @@
       "kind": "thermal",
       "dir": [
         140,
-        290
+        285
       ],
       "wind_mph": [
         3,
@@ -563,7 +563,7 @@
         11,
         15
       ],
-      "otb_mph": 8,
+      "otb_mph": 6,
       "model_ground_ft": 3100
     }
   ]
