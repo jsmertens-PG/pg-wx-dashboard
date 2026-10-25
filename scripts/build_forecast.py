@@ -823,6 +823,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     win = [(h, sc) for h, sc in hours if w0 <= h <= w1]
     rating, best_h, peak = 1.0, None, None
     xc_now = False
+    switch_h, switch_tag = None, None
     if style == "ridge":
         rating = 1.0 + 2.0 * clamp(local / 0.7)
         if xc_day > 0:
@@ -845,6 +846,35 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
                 if win:
                     best_h, sc = max(win, key=lambda x: x[1]["q"])
                     peak = sc["peak_top"]
+        elif style == "switch":
+            # Elsinore: launch in the light pre-switch air, then the west wind (the switch) builds the
+            # convergence inland. Height over the range decides; the inland check happens in build().
+            def west(sc):
+                return sc["ld"] is not None and sc["lw"] is not None and wrap_in(sc["ld"], 200, 320) and sc["lw"] >= 6
+            for k2, (h, sc) in enumerate(hours):
+                if h >= 11 and west(sc) and (k2 + 1 >= len(hours) or west(hours[k2 + 1][1])):
+                    switch_h = h
+                    break
+            launchable = [(h, sc) for h, sc in hours if w0 - 1 <= h <= w1 and (switch_h is None or h < switch_h)
+                          and not west(sc) and sc["pr"] < 0.3 and (sc["lw"] or 0) <= site["wind_mph"][1]
+                          and (sc["a_max"] is None or sc["a_max"] <= site["aloft_max_kt"] + 5)]
+            if launchable:
+                during = [(h, sc) for h, sc in hours if switch_h is not None and switch_h <= h <= switch_h + 1]
+                best_h, sc = max(launchable + during, key=lambda x: x[1]["peak_top"])
+                peak = sc["peak_top"]
+                lv = 1.0 + (ceil_level(site, peak * FT) - 1.0) * clamp(max(x["q"] for _, x in launchable) / 0.6)
+                if switch_h is None or switch_h > 16:
+                    rating = min(lv, 3.2)
+                    switch_tag = "late switch" if switch_h else "no switch"
+                else:
+                    rating = lv
+                    switch_tag = f"switch ~{fmt_h(switch_h)}"
+                xc_now = rating >= 3.75
+            else:
+                rating = min(2.0, 1.0 + local)
+                if win:
+                    best_h, sc = max(win, key=lambda x: x[1]["q"])
+                    peak = sc["peak_top"]
         elif win:
             n = min(1 if style == "window" else 2, len(win))
             scored = [(h, hour_r(sc, True), sc) for h, sc in win]
@@ -853,13 +883,13 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
             best_h, _r, sc = max(scored[best:best + n], key=lambda x: x[1])
             peak = sc["peak_top"]
             xc_now = sc["xc_s"] > 0 and rating >= 3.75
-        if style != "convergence":
+        if style not in ("convergence", "switch"):
             gw = [x["lw"] for h, x in gwin if h in glass_hours and x["lw"] is not None]
             good_glass = glass_ok and len(gw) >= 2 and all(6 <= w <= 12 for w in gw)
             glass_r = 3.0 if good_glass else (2.4 if glass_ok else (1.8 if glass_hours else 1.0))
             if glass_r > rating:
                 rating = glass_r
-    glass_led = style != "ridge" and style != "convergence" and glass_ok and rating <= 3.05 and rating >= 2.0 and (
+    glass_led = style not in ("ridge", "convergence", "switch") and glass_ok and rating <= 3.05 and rating >= 2.0 and (
         not win or max(1.0 + (min(ceil_level(site, sc["peak_top"] * FT), 3.5) - 1.0) * clamp(sc["q"] / 0.6) for _, sc in win) < 2.8)
     if style == "ridge":
         label = "Thermal day" if xc_now else ("Ridge soaring" if local >= 0.5 else ("Marginal" if rating >= 1.6 else "No go"))
@@ -904,7 +934,8 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     wind_1pm = wind_at([13, 12, 14])
     return {
         "top13": h13["usable"] if h13 else None,
-        "peak": peak, "best_h": best_h, "style": style,
+        "peak": peak, "best_h": best_h, "style": style, "switch_h": switch_h, "switch_tag": switch_tag,
+        "hrs": [(h, x["peak_top"]) for h, x in hours],
         "tw13": h13["tw"] if h13 else None,
         "wind_1pm": wind_1pm,
         "wind_now": wind_now, "wind_later": wind_later,
@@ -1215,6 +1246,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             if not cell or (not cell["det"] and not cell["ens"]):
                 continue
             D = cell["det"]
+            if s.get("style") == "switch" and s.get("inland"):
+                inland_check(s, D, days[dstr].get(s["inland"], {}).get("det", {}))
             det_r = {k: v["rating"] for k, v in D.items()}
             # rating from the regular models; the ensembles (coarser, no PBL height) only give the
             # spread of outcomes, recentred on the regular models so their bias doesn't leak in
@@ -1250,6 +1283,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             elif label in ("Marginal", "No go") and rating >= 2.5:
                 label = "Ridge soaring" if ridge else ("Glass-off" if lead and lead["glass"] else "Thermal")
             tags = []
+            if lead and lead.get("switch_tag") and rating >= 2.5:
+                tags.append(lead["switch_tag"])
             if xc and lead and lead.get("style") == "window" and lead.get("best_h") is not None:
                 tags.append(f"window ~{fmt_h(lead['best_h'])}")
             if lead and lead["glass"] and label in ("Thermal", "Marginal", "XC") and not ridge and lead.get("style") != "convergence":
@@ -1395,6 +1430,21 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
 WHY_GROUPS = [("Rain", {"rain", "showers", "cape"}), ("Too windy", {"windy", "strong", "gusty", "aloft"}),
               ("Over the back", {"otb", "aloftdir", "cross"}), ("Low inversion", {"lid"}),
               ("Weak thermals", {"weak"}), ("Too light", {"light"})]
+
+
+def inland_check(site, D, inland):
+    """Elsinore XC needs the convergence inland too: cap the rating by the height there after the switch."""
+    for m, a in D.items():
+        sh, other = a.get("switch_h"), inland.get(m)
+        if a.get("style") != "switch" or sh is None or sh > 16 or not other or a["rating"] < 3.0:
+            continue
+        tops = [pk for h, pk in other.get("hrs", []) if sh <= h <= sh + 3 and pk is not None]
+        if not tops:
+            continue
+        a["inland_ft"] = max(tops) * FT
+        a["rating"] = min(a["rating"], max(3.0, ceil_level(site, a["inland_ft"])))
+        if a["rating"] < 3.75 and a["label"] == "XC":
+            a["label"], a["xc_day"] = "Thermal", 0.0
 
 
 def day_reason(sites, d):

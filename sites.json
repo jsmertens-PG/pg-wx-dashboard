@@ -1,5 +1,5 @@
 {
-  "_note": "Starting values to check against the SDHGPA guide and your own tracks. Directions are where the wind blows FROM (degrees). Launch wind in mph, wind aloft in knots. 'aloft_bad' is the range of wind-aloft directions that kills the site (offshore, over the back). 'routes' are XC directions (degrees you fly TOWARD) with a short description; 'blocked' are directions where drift takes you into airspace, sea or the border. Positions, launch and LZ heights come from the soaringpredictor.info site pages. Models are asked for the forecast at the LZ height (lz_ft), so thermals start from the valley ground. A site with 'launches' is scored per launch and shows the better one. 'ok_ft' / 'xc_top_ft' / 'xc_top_ft'+'xc_span_ft' are the ceilings (MSL) for an OK local day, the start of XC, and a great XC day; they scale the height bars. 'gust_mph' is where gusts start to hurt (fully bad 5 mph above). 'style' sets how a day is rated (1-5): 'window' = the best single hour inside 'window' (local hours) decides, plus glass-off; 'thermal' = best two hours inside 'window'; 'convergence' = XC only, local flying caps at 2; 'ridge' = ridge soaring up to 3, thermal day 4-5. 'model_ground_ft' (optional) is the height the models are asked for instead of the LZ, for launches above a marine layer. 'otb_mph' (default 5) is the wind from behind launch that counts as over the back.",
+  "_note": "Starting values to check against the SDHGPA guide and your own tracks. Directions are where the wind blows FROM (degrees). Launch wind in mph, wind aloft in knots. 'aloft_bad' is the range of wind-aloft directions that kills the site (offshore, over the back). 'routes' are XC directions (degrees you fly TOWARD) with a short description; 'blocked' are directions where drift takes you into airspace, sea or the border. Positions, launch and LZ heights come from the soaringpredictor.info site pages. Models are asked for the forecast at the LZ height (lz_ft), so thermals start from the valley ground. A site with 'launches' is scored per launch and shows the better one. 'ok_ft' / 'xc_top_ft' / 'xc_top_ft'+'xc_span_ft' are the ceilings (MSL) for an OK local day, the start of XC, and a great XC day; they scale the height bars. 'gust_mph' is where gusts start to hurt (fully bad 5 mph above). 'style' sets how a day is rated (1-5): 'window' = the best single hour inside 'window' (local hours) decides, plus glass-off; 'thermal' = best two hours inside 'window'; 'convergence' = XC only, local flying caps at 2; 'ridge' = ridge soaring up to 3, thermal day 4-5. 'model_ground_ft' (optional) is the height the models are asked for instead of the LZ, for launches above a marine layer. 'otb_mph' (default 5) is the wind from behind launch that counts as over the back. 'switch' style (Elsinore): needs a launchable hour before the west wind arrives; the height over the range during the switch is capped by the height at the 'inland' site in the 3 hours after it; no switch or a switch after 4 pm caps at 3.",
   "sites": [
     {
       "id": "lb",
@@ -162,7 +162,7 @@
         }
       ],
       "blocked": [],
-      "note": "East-facing over the lake; its own animal. The sea-breeze convergence line is the XC engine.",
+      "note": "East-facing over the lake; its own animal. Launch in the light air before the switch; the west wind then builds the convergence inland (Perris, Hemet, Soboba). XC wants 7-8k over the range during the switch and the same or more inland.",
       "sp": [
         {
           "page": "scal",
@@ -174,11 +174,12 @@
       "lz_ft": 1350,
       "ok_ft": 5000,
       "gust_mph": 15,
-      "style": "convergence",
+      "style": "switch",
       "window": [
         11,
         16
-      ]
+      ],
+      "inland": "soboba"
     },
     {
       "id": "torrey",
