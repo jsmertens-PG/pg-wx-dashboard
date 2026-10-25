@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-25T15:17+00:00",
+ "generated": "2026-10-25T15:26+00:00",
  "sample": false,
  "models": {
   "HRRR": "ncep_hrrr_conus",
@@ -24,7 +24,6 @@
  },
  "log": [
   "HRRR: ok (ncep_hrrr_conus)",
-  "RRFS: ncep_rrfs_conus surface fields empty, retrying",
   "RRFS: ok (ncep_rrfs_conus)",
   "NAM: ok (ncep_nam_conus)",
   "GFS: ok (gfs_global)",
@@ -43,7 +42,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-10-25T13:00+00:00",
-   "fetched": "2026-10-25T15:10+00:00",
+   "fetched": "2026-10-25T15:19+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -52,8 +51,8 @@
    "provider": "Open-Meteo",
    "id": "ncep_rrfs_conus",
    "status": "ok",
-   "run": "2026-10-25T06:00+00:00",
-   "fetched": "2026-10-25T15:11+00:00",
+   "run": null,
+   "fetched": "2026-10-25T15:19+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -63,7 +62,7 @@
    "id": "ncep_nam_conus",
    "status": "ok",
    "run": "2026-10-25T12:00+00:00",
-   "fetched": "2026-10-25T15:11+00:00",
+   "fetched": "2026-10-25T15:19+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -73,7 +72,7 @@
    "id": "gfs_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-25T15:11+00:00",
+   "fetched": "2026-10-25T15:19+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -82,8 +81,8 @@
    "provider": "Open-Meteo",
    "id": "ecmwf_ifs025",
    "status": "ok",
-   "run": null,
-   "fetched": "2026-10-25T15:12+00:00",
+   "run": "2026-10-25T06:00+00:00",
+   "fetched": "2026-10-25T15:21+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -93,7 +92,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-25T15:12+00:00",
+   "fetched": "2026-10-25T15:21+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -103,7 +102,7 @@
    "id": "gfs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-25T15:14+00:00",
+   "fetched": "2026-10-25T15:22+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -113,7 +112,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-25T15:15+00:00",
+   "fetched": "2026-10-25T15:23+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -123,7 +122,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-25T15:17+00:00",
+   "fetched": "2026-10-25T15:26+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -133,7 +132,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-10-25T11:34:00+00:00",
-   "fetched": "2026-10-25T15:17+00:00",
+   "fetched": "2026-10-25T15:26+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   }
  ],
@@ -287,7 +286,7 @@
      "xc": false,
      "note": "thermals to 2,200 ft",
      "p_fly": 1.0,
-     "p_xc": 0.42,
+     "p_xc": 0.41,
      "agree": "split",
      "models": {
       "HRRR": 3.2,
@@ -343,6 +342,7 @@
      "ground_ft": 751,
      "launch_ft": 1050,
      "style": "window",
+     "why": [],
      "diag": {
       "HRRR": {
        "r": 3.2,
@@ -458,6 +458,7 @@
      "ground_ft": 699,
      "launch_ft": 1500,
      "style": "window",
+     "why": [],
      "diag": {
       "HRRR": {
        "r": 4.8,
@@ -509,7 +510,7 @@
      "tags": [],
      "xc": false,
      "note": "low lid, 7,000 ft",
-     "p_fly": 0.24,
+     "p_fly": 0.34,
      "p_xc": 0.0,
      "agree": "mixed",
      "models": {
@@ -566,6 +567,9 @@
      "ground_ft": 1348,
      "launch_ft": 2650,
      "style": "convergence",
+     "why": [
+      "lid"
+     ],
      "diag": {
       "HRRR": {
        "r": 1.7,
@@ -669,6 +673,7 @@
      "ground_ft": 0,
      "launch_ft": 300,
      "style": "ridge",
+     "why": [],
      "diag": {
       "HRRR": {
        "r": 3.0,
@@ -780,6 +785,7 @@
      "ground_ft": 3301,
      "launch_ft": 4540,
      "style": "convergence",
+     "why": [],
      "diag": {
       "HRRR": {
        "r": 2.0,
@@ -844,7 +850,7 @@
      ],
      "xc": false,
      "note": "thermals to 7,200 ft",
-     "p_fly": 0.84,
+     "p_fly": 0.8,
      "p_xc": 0.17,
      "agree": "split",
      "models": {
@@ -901,6 +907,7 @@
      "ground_ft": 1699,
      "launch_ft": 4040,
      "style": "thermal",
+     "why": [],
      "diag": {
       "HRRR": {
        "r": 3.4,
@@ -953,7 +960,7 @@
      "tags": [],
      "xc": false,
      "note": "low lid, 2,400 ft",
-     "p_fly": 0.06,
+     "p_fly": 0.05,
      "p_xc": 0.0,
      "agree": "split",
      "models": {
@@ -1010,6 +1017,10 @@
      "ground_ft": 600,
      "launch_ft": 1550,
      "style": "window",
+     "why": [
+      "lid",
+      "gusty"
+     ],
      "diag": {
       "HRRR": {
        "r": 1.8,
@@ -1129,6 +1140,7 @@
      "ground_ft": 1519,
      "launch_ft": 2260,
      "style": "thermal",
+     "why": [],
      "diag": {
       "HRRR": {
        "r": 4.7,
@@ -1177,7 +1189,7 @@
      "xc": false,
      "note": "",
      "p_fly": 1.0,
-     "p_xc": 0.01,
+     "p_xc": 0.05,
      "agree": "split",
      "models": {
       "HRRR": 2.4,
@@ -1233,6 +1245,9 @@
      "ground_ft": 3100,
      "launch_ft": 3100,
      "style": "thermal",
+     "why": [
+      "lid"
+     ],
      "diag": {
       "HRRR": {
        "r": 2.4,
@@ -1327,7 +1342,8 @@
    },
    "best": "blossom",
    "best_main": "blossom",
-   "headline": "XC at Blossom \u00b7 also Soboba"
+   "headline": "XC at Blossom \u00b7 also Soboba",
+   "why": null
   },
   {
    "date": "2026-10-26",
@@ -1397,6 +1413,7 @@
      "ground_ft": 751,
      "launch_ft": 1050,
      "style": "window",
+     "why": [],
      "diag": {
       "HRRR": {
        "r": 3.4,
@@ -1509,6 +1526,7 @@
      "ground_ft": 699,
      "launch_ft": 1500,
      "style": "window",
+     "why": [],
      "diag": {
       "HRRR": {
        "r": 3.4,
@@ -1619,6 +1637,11 @@
      "ground_ft": 1348,
      "launch_ft": 2650,
      "style": "convergence",
+     "why": [
+      "otb",
+      "aloftdir",
+      "lid"
+     ],
      "diag": {
       "HRRR": {
        "r": 1.2,
@@ -1734,6 +1757,9 @@
      "ground_ft": 0,
      "launch_ft": 300,
      "style": "ridge",
+     "why": [
+      "cross"
+     ],
      "diag": {
       "HRRR": {
        "r": 2.9,
@@ -1842,6 +1868,7 @@
      "ground_ft": 3301,
      "launch_ft": 4540,
      "style": "convergence",
+     "why": [],
      "diag": {
       "HRRR": {
        "r": 1.6,
@@ -1955,6 +1982,9 @@
      "ground_ft": 1699,
      "launch_ft": 4040,
      "style": "thermal",
+     "why": [
+      "lid"
+     ],
      "diag": {
       "HRRR": {
        "r": 3.0,
@@ -2013,8 +2043,8 @@
      "tags": [],
      "xc": false,
      "note": "thermals to 3,000 ft",
-     "p_fly": 0.54,
-     "p_xc": 0.0,
+     "p_fly": 0.73,
+     "p_xc": 0.03,
      "agree": "split",
      "models": {
       "HRRR": 3.4,
@@ -2070,6 +2100,9 @@
      "ground_ft": 600,
      "launch_ft": 1550,
      "style": "window",
+     "why": [
+      "lid"
+     ],
      "diag": {
       "HRRR": {
        "r": 3.4,
@@ -2186,6 +2219,10 @@
      "ground_ft": 1519,
      "launch_ft": 2260,
      "style": "thermal",
+     "why": [
+      "otb",
+      "lid"
+     ],
      "diag": {
       "HRRR": {
        "r": 1.0,
@@ -2296,6 +2333,7 @@
      "ground_ft": 3100,
      "launch_ft": 3100,
      "style": "thermal",
+     "why": [],
      "diag": {
       "HRRR": {
        "r": 2.7,
@@ -2392,7 +2430,8 @@
    },
    "best": "blossom",
    "best_main": "blossom",
-   "headline": "LB thermal \u00b7 Blossom thermal"
+   "headline": "LB thermal \u00b7 Blossom thermal",
+   "why": null
   },
   {
    "date": "2026-10-27",
@@ -2403,8 +2442,8 @@
      "tags": [],
      "xc": false,
      "note": "",
-     "p_fly": 0.67,
-     "p_xc": 0.18,
+     "p_fly": 0.68,
+     "p_xc": 0.26,
      "agree": "mixed",
      "models": {
       "RRFS": 3.0,
@@ -2458,6 +2497,7 @@
      "ground_ft": 751,
      "launch_ft": 1050,
      "style": "window",
+     "why": [],
      "diag": {
       "RRFS": {
        "r": 3.0,
@@ -2503,8 +2543,8 @@
      "tags": [],
      "xc": false,
      "note": "",
-     "p_fly": 1.0,
-     "p_xc": 0.05,
+     "p_fly": 0.99,
+     "p_xc": 0.0,
      "agree": "agree",
      "models": {
       "RRFS": 3.0,
@@ -2558,6 +2598,9 @@
      "ground_ft": 699,
      "launch_ft": 1500,
      "style": "window",
+     "why": [
+      "lid"
+     ],
      "diag": {
       "RRFS": {
        "r": 3.0,
@@ -2662,6 +2705,7 @@
      "ground_ft": 1348,
      "launch_ft": 2650,
      "style": "convergence",
+     "why": [],
      "diag": {
       "RRFS": {
        "r": 1.5,
@@ -2756,6 +2800,10 @@
      "ground_ft": 0,
      "launch_ft": 300,
      "style": "ridge",
+     "why": [
+      "light",
+      "cross"
+     ],
      "diag": {
       "RRFS": {
        "r": 2.0,
@@ -2861,6 +2909,7 @@
      "ground_ft": 3301,
      "launch_ft": 4540,
      "style": "convergence",
+     "why": [],
      "diag": {
       "RRFS": {
        "r": 1.3,
@@ -2965,6 +3014,10 @@
      "ground_ft": 1699,
      "launch_ft": 4040,
      "style": "thermal",
+     "why": [
+      "lid",
+      "aloftdir"
+     ],
      "diag": {
       "RRFS": {
        "r": 2.4,
@@ -3072,6 +3125,9 @@
      "ground_ft": 600,
      "launch_ft": 1550,
      "style": "window",
+     "why": [
+      "lid"
+     ],
      "diag": {
       "RRFS": {
        "r": 3.0,
@@ -3121,8 +3177,8 @@
      "tags": [],
      "xc": false,
      "note": "thermals to 4,300 ft",
-     "p_fly": 0.79,
-     "p_xc": 0.04,
+     "p_fly": 0.86,
+     "p_xc": 0.0,
      "agree": "split",
      "models": {
       "RRFS": 3.1,
@@ -3176,6 +3232,7 @@
      "ground_ft": 1519,
      "launch_ft": 2260,
      "style": "thermal",
+     "why": [],
      "diag": {
       "RRFS": {
        "r": 3.1,
@@ -3220,7 +3277,7 @@
      "tags": [],
      "xc": false,
      "note": "low lid, 3,600 ft",
-     "p_fly": 0.16,
+     "p_fly": 0.11,
      "p_xc": 0.0,
      "agree": "split",
      "models": {
@@ -3275,6 +3332,9 @@
      "ground_ft": 3100,
      "launch_ft": 3100,
      "style": "thermal",
+     "why": [
+      "lid"
+     ],
      "diag": {
       "RRFS": {
        "r": 1.8,
@@ -3359,7 +3419,8 @@
    },
    "best": "lb",
    "best_main": "lb",
-   "headline": "LB glass-off \u00b7 Blossom glass-off"
+   "headline": "LB glass-off \u00b7 Blossom glass-off",
+   "why": null
   },
   {
    "date": "2026-10-28",
@@ -3370,8 +3431,8 @@
      "tags": [],
      "xc": false,
      "note": "low lid, 1,600 ft",
-     "p_fly": 0.14,
-     "p_xc": 0.02,
+     "p_fly": 0.2,
+     "p_xc": 0.0,
      "agree": "split",
      "models": {
       "RRFS": 1.3,
@@ -3424,6 +3485,9 @@
      "ground_ft": 751,
      "launch_ft": 1050,
      "style": "window",
+     "why": [
+      "lid"
+     ],
      "diag": {
       "RRFS": {
        "r": 1.3,
@@ -3459,7 +3523,7 @@
      "tags": [],
      "xc": false,
      "note": "low lid, 1,600 ft",
-     "p_fly": 0.06,
+     "p_fly": 0.02,
      "p_xc": 0.0,
      "agree": "split",
      "models": {
@@ -3513,6 +3577,9 @@
      "ground_ft": 699,
      "launch_ft": 1500,
      "style": "window",
+     "why": [
+      "lid"
+     ],
      "diag": {
       "RRFS": {
        "r": 1.1,
@@ -3606,6 +3673,9 @@
      "ground_ft": 1348,
      "launch_ft": 2650,
      "style": "convergence",
+     "why": [
+      "lid"
+     ],
      "diag": {
       "RRFS": {
        "r": 1.1,
@@ -3684,6 +3754,9 @@
      "ground_ft": 0,
      "launch_ft": 300,
      "style": "ridge",
+     "why": [
+      "light"
+     ],
      "diag": {
       "RRFS": {
        "r": 1.8,
@@ -3779,6 +3852,10 @@
      "ground_ft": 3301,
      "launch_ft": 4540,
      "style": "convergence",
+     "why": [
+      "lid",
+      "otb"
+     ],
      "diag": {
       "RRFS": {
        "r": 1.1,
@@ -3876,6 +3953,10 @@
      "ground_ft": 1699,
      "launch_ft": 4040,
      "style": "thermal",
+     "why": [
+      "otb",
+      "lid"
+     ],
      "diag": {
       "RRFS": {
        "r": 1.0,
@@ -3920,7 +4001,7 @@
      "tags": [],
      "xc": false,
      "note": "low lid, 1,500 ft",
-     "p_fly": 0.02,
+     "p_fly": 0.0,
      "p_xc": 0.0,
      "agree": "split",
      "models": {
@@ -3974,6 +4055,9 @@
      "ground_ft": 600,
      "launch_ft": 1550,
      "style": "window",
+     "why": [
+      "lid"
+     ],
      "diag": {
       "RRFS": {
        "r": 1.0,
@@ -4060,6 +4144,9 @@
      "ground_ft": 1519,
      "launch_ft": 2260,
      "style": "thermal",
+     "why": [
+      "lid"
+     ],
      "diag": {
       "RRFS": {
        "r": 1.0,
@@ -4154,6 +4241,9 @@
      "ground_ft": 3100,
      "launch_ft": 3100,
      "style": "thermal",
+     "why": [
+      "lid"
+     ],
      "diag": {
       "RRFS": {
        "r": 1.2,
@@ -4222,7 +4312,8 @@
    },
    "best": "lb",
    "best_main": "lb",
-   "headline": "Poor at home sites: low lid, 1,600 ft"
+   "headline": "Poor at home sites: low lid, 1,600 ft",
+   "why": "Low inversion"
   },
   {
    "date": "2026-10-29",
@@ -4280,6 +4371,9 @@
      "ground_ft": 751,
      "launch_ft": 1050,
      "style": "window",
+     "why": [
+      "gusty"
+     ],
      "diag": {
       "GFS": {
        "r": 4.1,
@@ -4311,7 +4405,7 @@
      "tags": [],
      "xc": false,
      "note": "",
-     "p_fly": 0.61,
+     "p_fly": 0.54,
      "p_xc": 0.0,
      "agree": "mixed",
      "models": {
@@ -4355,6 +4449,9 @@
      "ground_ft": 699,
      "launch_ft": 1500,
      "style": "window",
+     "why": [
+      "lid"
+     ],
      "diag": {
       "GFS": {
        "r": 3.0,
@@ -4430,6 +4527,7 @@
      "ground_ft": 1348,
      "launch_ft": 2650,
      "style": "convergence",
+     "why": [],
      "diag": {
       "GFS": {
        "r": 1.2,
@@ -4464,8 +4562,8 @@
      "tags": [],
      "xc": false,
      "note": "W 4 mph",
-     "p_fly": 0.25,
-     "p_xc": 0.03,
+     "p_fly": 0.23,
+     "p_xc": 0.02,
      "agree": "agree",
      "models": {
       "GFS": 2.4,
@@ -4502,6 +4600,9 @@
      "ground_ft": 0,
      "launch_ft": 300,
      "style": "ridge",
+     "why": [
+      "light"
+     ],
      "diag": {
       "GFS": {
        "r": 2.4,
@@ -4579,6 +4680,11 @@
      "ground_ft": 3301,
      "launch_ft": 4540,
      "style": "convergence",
+     "why": [
+      "lid",
+      "otb",
+      "gusty"
+     ],
      "diag": {
       "GFS": {
        "r": 1.1,
@@ -4616,7 +4722,7 @@
      "tags": [],
      "xc": false,
      "note": "",
-     "p_fly": 0.63,
+     "p_fly": 0.62,
      "p_xc": 0.0,
      "agree": "agree",
      "models": {
@@ -4660,6 +4766,10 @@
      "ground_ft": 1699,
      "launch_ft": 4040,
      "style": "thermal",
+     "why": [
+      "gusty",
+      "lid"
+     ],
      "diag": {
       "GFS": {
        "r": 3.0,
@@ -4698,8 +4808,8 @@
      ],
      "xc": false,
      "note": "",
-     "p_fly": 0.55,
-     "p_xc": 0.01,
+     "p_fly": 0.56,
+     "p_xc": 0.0,
      "agree": "agree",
      "models": {
       "GFS": 3.0,
@@ -4742,6 +4852,11 @@
      "ground_ft": 600,
      "launch_ft": 1550,
      "style": "window",
+     "why": [
+      "gusty",
+      "lid",
+      "showers"
+     ],
      "diag": {
       "GFS": {
        "r": 3.0,
@@ -4775,7 +4890,7 @@
      "tags": [],
      "xc": false,
      "note": "thermals to 4,000 ft",
-     "p_fly": 0.88,
+     "p_fly": 0.85,
      "p_xc": 0.0,
      "agree": "mixed",
      "models": {
@@ -4819,6 +4934,10 @@
      "ground_ft": 1519,
      "launch_ft": 2260,
      "style": "thermal",
+     "why": [
+      "lid",
+      "gusty"
+     ],
      "diag": {
       "GFS": {
        "r": 2.6,
@@ -4851,8 +4970,8 @@
      ],
      "xc": false,
      "note": "",
-     "p_fly": 0.8,
-     "p_xc": 0.18,
+     "p_fly": 0.81,
+     "p_xc": 0.07,
      "agree": "agree",
      "models": {
       "GFS": 2.9,
@@ -4895,6 +5014,9 @@
      "ground_ft": 3100,
      "launch_ft": 3100,
      "style": "thermal",
+     "why": [
+      "gusty"
+     ],
      "diag": {
       "GFS": {
        "r": 2.9,
@@ -4953,7 +5075,8 @@
    },
    "best": "lb",
    "best_main": "lb",
-   "headline": "XC at LB"
+   "headline": "XC at LB",
+   "why": null
   },
   {
    "date": "2026-10-30",
@@ -5012,6 +5135,7 @@
      "ground_ft": 751,
      "launch_ft": 1050,
      "style": "window",
+     "why": [],
      "diag": {
       "GFS": {
        "r": 5.0,
@@ -5046,7 +5170,7 @@
      ],
      "xc": false,
      "note": "thermals to 4,100 ft",
-     "p_fly": 0.79,
+     "p_fly": 0.8,
      "p_xc": 0.11,
      "agree": "mixed",
      "models": {
@@ -5090,6 +5214,10 @@
      "ground_ft": 699,
      "launch_ft": 1500,
      "style": "window",
+     "why": [
+      "gusty",
+      "showers"
+     ],
      "diag": {
       "GFS": {
        "r": 4.2,
@@ -5166,6 +5294,7 @@
      "ground_ft": 1348,
      "launch_ft": 2650,
      "style": "convergence",
+     "why": [],
      "diag": {
       "GFS": {
        "r": 1.5,
@@ -5199,8 +5328,8 @@
      ],
      "xc": false,
      "note": "cross-SW",
-     "p_fly": 0.3,
-     "p_xc": 0.02,
+     "p_fly": 0.35,
+     "p_xc": 0.11,
      "agree": "split",
      "models": {
       "GFS": 4.5,
@@ -5237,6 +5366,10 @@
      "ground_ft": 0,
      "launch_ft": 300,
      "style": "ridge",
+     "why": [
+      "cross",
+      "light"
+     ],
      "diag": {
       "GFS": {
        "r": 4.5,
@@ -5314,6 +5447,11 @@
      "ground_ft": 3301,
      "launch_ft": 4540,
      "style": "convergence",
+     "why": [
+      "aloft",
+      "gusty",
+      "lid"
+     ],
      "diag": {
       "GFS": {
        "r": 1.3,
@@ -5356,7 +5494,7 @@
      "xc": false,
      "note": "",
      "p_fly": 0.61,
-     "p_xc": 0.01,
+     "p_xc": 0.0,
      "agree": "agree",
      "models": {
       "GFS": 3.0,
@@ -5399,6 +5537,10 @@
      "ground_ft": 1699,
      "launch_ft": 4040,
      "style": "thermal",
+     "why": [
+      "gusty",
+      "lid"
+     ],
      "diag": {
       "GFS": {
        "r": 3.0,
@@ -5436,8 +5578,8 @@
      ],
      "xc": false,
      "note": "",
-     "p_fly": 0.74,
-     "p_xc": 0.44,
+     "p_fly": 0.79,
+     "p_xc": 0.48,
      "agree": "mixed",
      "models": {
       "GFS": 4.4,
@@ -5480,6 +5622,11 @@
      "ground_ft": 600,
      "launch_ft": 1550,
      "style": "window",
+     "why": [
+      "gusty",
+      "lid",
+      "showers"
+     ],
      "diag": {
       "GFS": {
        "r": 4.4,
@@ -5516,8 +5663,8 @@
      ],
      "xc": false,
      "note": "thermals to 5,000 ft",
-     "p_fly": 0.74,
-     "p_xc": 0.47,
+     "p_fly": 0.75,
+     "p_xc": 0.13,
      "agree": "agree",
      "models": {
       "GFS": 3.4,
@@ -5560,6 +5707,7 @@
      "ground_ft": 1519,
      "launch_ft": 2260,
      "style": "thermal",
+     "why": [],
      "diag": {
       "GFS": {
        "r": 3.4,
@@ -5589,8 +5737,8 @@
      ],
      "xc": false,
      "note": "thermals to 5,100 ft",
-     "p_fly": 0.81,
-     "p_xc": 0.46,
+     "p_fly": 0.8,
+     "p_xc": 0.48,
      "agree": "mixed",
      "models": {
       "GFS": 4.6,
@@ -5633,6 +5781,9 @@
      "ground_ft": 3100,
      "launch_ft": 3100,
      "style": "thermal",
+     "why": [
+      "showers"
+     ],
      "diag": {
       "GFS": {
        "r": 4.6,
@@ -5691,7 +5842,8 @@
    },
    "best": "lb",
    "best_main": "lb",
-   "headline": "XC at LB"
+   "headline": "XC at LB",
+   "why": null
   },
   {
    "date": "2026-10-31",
@@ -5750,6 +5902,7 @@
      "ground_ft": 751,
      "launch_ft": 1050,
      "style": "window",
+     "why": [],
      "diag": {
       "GFS": {
        "r": 4.8,
@@ -5823,6 +5976,9 @@
      "ground_ft": 699,
      "launch_ft": 1500,
      "style": "window",
+     "why": [
+      "lid"
+     ],
      "diag": {
       "GFS": {
        "r": 3.0,
@@ -5898,6 +6054,9 @@
      "ground_ft": 1348,
      "launch_ft": 2650,
      "style": "convergence",
+     "why": [
+      "lid"
+     ],
      "diag": {
       "GFS": {
        "r": 1.1,
@@ -5972,6 +6131,9 @@
      "ground_ft": 0,
      "launch_ft": 300,
      "style": "ridge",
+     "why": [
+      "light"
+     ],
      "diag": {
       "GFS": {
        "r": 3.0,
@@ -6048,6 +6210,10 @@
      "ground_ft": 3301,
      "launch_ft": 4540,
      "style": "convergence",
+     "why": [
+      "gusty",
+      "lid"
+     ],
      "diag": {
       "GFS": {
        "r": 1.3,
@@ -6130,6 +6296,10 @@
      "ground_ft": 1699,
      "launch_ft": 4040,
      "style": "thermal",
+     "why": [
+      "gusty",
+      "lid"
+     ],
      "diag": {
       "GFS": {
        "r": 3.0,
@@ -6212,6 +6382,11 @@
      "ground_ft": 600,
      "launch_ft": 1550,
      "style": "window",
+     "why": [
+      "gusty",
+      "lid",
+      "showers"
+     ],
      "diag": {
       "GFS": {
        "r": 3.4,
@@ -6289,6 +6464,7 @@
      "ground_ft": 1519,
      "launch_ft": 2260,
      "style": "thermal",
+     "why": [],
      "diag": {
       "GFS": {
        "r": 2.4,
@@ -6364,6 +6540,9 @@
      "ground_ft": 3100,
      "launch_ft": 3100,
      "style": "thermal",
+     "why": [
+      "gusty"
+     ],
      "diag": {
       "GFS": {
        "r": 2.6,
@@ -6424,7 +6603,8 @@
    },
    "best": "lb",
    "best_main": "lb",
-   "headline": "XC at LB"
+   "headline": "XC at LB",
+   "why": null
   }
  ]
 }
