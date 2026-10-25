@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-25T03:25+00:00",
+ "generated": "2026-10-25T03:35+00:00",
  "sample": false,
  "models": {
   "HRRR": "ncep_hrrr_conus",
@@ -24,6 +24,8 @@
  },
  "log": [
   "HRRR: ok (ncep_hrrr_conus)",
+  "RRFS: ncep_rrfs_conus surface fields empty, retrying",
+  "RRFS: ncep_rrfs_conus surface fields empty, retrying",
   "RRFS: ok (ncep_rrfs_conus)",
   "NAM: ok (ncep_nam_conus)",
   "GFS: ok (gfs_global)",
@@ -42,7 +44,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-10-25T01:00+00:00",
-   "fetched": "2026-10-25T03:17+00:00",
+   "fetched": "2026-10-25T03:26+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -52,7 +54,7 @@
    "id": "ncep_rrfs_conus",
    "status": "ok",
    "run": "2026-10-24T18:00+00:00",
-   "fetched": "2026-10-25T03:17+00:00",
+   "fetched": "2026-10-25T03:27+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -62,7 +64,7 @@
    "id": "ncep_nam_conus",
    "status": "ok",
    "run": "2026-10-25T00:00+00:00",
-   "fetched": "2026-10-25T03:17+00:00",
+   "fetched": "2026-10-25T03:27+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -72,7 +74,7 @@
    "id": "gfs_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-25T03:17+00:00",
+   "fetched": "2026-10-25T03:27+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -82,7 +84,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-25T03:18+00:00",
+   "fetched": "2026-10-25T03:29+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -92,7 +94,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-25T03:18+00:00",
+   "fetched": "2026-10-25T03:29+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -102,7 +104,7 @@
    "id": "gfs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-25T03:19+00:00",
+   "fetched": "2026-10-25T03:30+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -112,7 +114,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-25T03:22+00:00",
+   "fetched": "2026-10-25T03:33+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -122,7 +124,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-25T03:25+00:00",
+   "fetched": "2026-10-25T03:35+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -132,7 +134,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-10-25T00:24:00+00:00",
-   "fetched": "2026-10-25T03:25+00:00",
+   "fetched": "2026-10-25T03:35+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   }
  ],
@@ -5062,12 +5064,12 @@
     }
    },
    "regime": {
-    "type": "Pre-frontal",
-    "agree": 0.67,
+    "type": null,
+    "agree": 1.0,
     "models": {
      "GFS": null,
-     "ECMWF": "Pre-frontal",
-     "ICON": "Pre-frontal"
+     "ECMWF": null,
+     "ICON": null
     },
     "features": {
      "GFS": {
@@ -5801,12 +5803,12 @@
     }
    },
    "regime": {
-    "type": "Front",
+    "type": "Pre-frontal",
     "agree": 0.67,
     "models": {
      "GFS": "Pre-frontal",
-     "ECMWF": "Front",
-     "ICON": "Front"
+     "ECMWF": null,
+     "ICON": "Pre-frontal"
     },
     "features": {
      "GFS": {
@@ -6567,10 +6569,10 @@
    },
    "regime": {
     "type": "Front",
-    "agree": 1.0,
+    "agree": 0.67,
     "models": {
      "GFS": "Front",
-     "ECMWF": "Front",
+     "ECMWF": "Pre-frontal",
      "ICON": "Front"
     },
     "features": {
