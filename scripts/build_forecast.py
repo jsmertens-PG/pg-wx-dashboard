@@ -1514,6 +1514,40 @@ def sample_nws():
 
 
 # ---------------------------------------------------------------- main
+# ---------------------------------------------------------------- daily snapshots (for checking against real flights)
+SNAPSHOT_HOUR = 7          # keep the first run of each day from 7 am on: the morning forecast
+
+
+def snapshot_of(result):
+    """A small copy of one forecast: per day and site, what the radar said."""
+    days = []
+    for d in result.get("days", []):
+        sites = {}
+        for k, c in d["sites"].items():
+            h = next((f for f in c.get("factors", []) if f["k"] == "Height"), None)
+            sites[k] = {"r": c["rating"], "label": c["label"], "xc": c["xc"], "tags": c.get("tags", []),
+                        "note": c.get("note"), "height": h["v"] if h else None, "height_src": h.get("sub") if h else None,
+                        "p_fly": c.get("p_fly"), "p_xc": c.get("p_xc"), "launch": c.get("launch_name")}
+        rg = d.get("regime") or {}
+        days.append({"date": d["date"], "type": rg.get("type"), "agree": rg.get("agree"), "sites": sites})
+    return {"generated": result.get("generated"), "models": result.get("models"), "days": days}
+
+
+def save_snapshot(result, folder, now=None):
+    """Write data/history/<date>.json once per day (the first run from SNAPSHOT_HOUR on) and keep an index."""
+    now = now or datetime.now(timezone.utc).astimezone(_tz())
+    if now.hour < SNAPSHOT_HOUR:
+        return None
+    folder.mkdir(parents=True, exist_ok=True)
+    path = folder / f"{now.date().isoformat()}.json"
+    if path.exists():
+        return None
+    path.write_text(json.dumps(snapshot_of(result), separators=(",", ":")))
+    dates = sorted(p.stem for p in folder.glob("????-??-??.json"))
+    (folder / "index.json").write_text(json.dumps({"dates": dates}))
+    return path
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--sample", action="store_true", help="synthetic data, no network")
@@ -1551,6 +1585,8 @@ def main(argv=None):
     result = build(sites, det, ens, nws, log, sample=args.sample, sources=sources, sp=sp, parents=parents)
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     Path(args.out).write_text(json.dumps(result, indent=1))
+    if not args.sample:
+        save_snapshot(result, ROOT / "data" / "history")
     print("\n".join(log))
     print(f"wrote {args.out}: {len(result['days'])} days")
 

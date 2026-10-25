@@ -170,6 +170,10 @@ td.mono { font-family: var(--font-data); }
 .how p { margin: 0; }
 footer { border-top: 1px solid var(--ink); padding-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; font-size: .78rem; color: var(--muted); }
 footer .presets { display: flex; gap: 6px; }
+.snaps summary { cursor: pointer; font-size: .72rem; color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 2px 8px; list-style: none; }
+.snaps summary::-webkit-details-marker { display: none; }
+.snaps[open] { flex-basis: 100%; }
+.snaps #snapList { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 8px; font-family: var(--font-data); font-size: .72rem; }
 footer button[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
 /* sticky day buttons (phone and desktop) */
 .daynav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--bg); display: flex; gap: 6px; overflow-x: auto; padding: 8px 0; border-bottom: 1px solid var(--line); scrollbar-width: none; }
@@ -276,6 +280,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 
   <footer>
     <span id="foot"></span>
+    <details class="snaps" id="snaps" hidden><summary>Snapshots</summary><span id="snapList"></span></details>
     <span class="presets" id="theme">
       <button type="button" data-t="auto">Auto</button>
       <button type="button" data-t="light">Light</button>
@@ -498,6 +503,14 @@ const seed = $("#seed").textContent.trim();
 if (seed) { render(JSON.parse(seed)); $("#reload").hidden = true; }
 else load();
 $("#reload").addEventListener("click", load);
+/* morning forecast snapshots kept for checking against real flights */
+fetch(`data/history/index.json?t=${Date.now()}`, { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).then((ix) => {
+  const ds = (ix && ix.dates) || [];
+  if (!ds.length) return;
+  $("#snaps summary").textContent = `Snapshots · ${ds.length}`;
+  $("#snapList").innerHTML = ds.slice().reverse().map((d) => `<a href="data/history/${esc(d)}.json" target="_blank" rel="noopener">${esc(d)}</a>`).join("");
+  $("#snaps").hidden = false;
+}).catch(() => {});
 })();
 </script>
 </body>

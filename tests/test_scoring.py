@@ -52,6 +52,24 @@ class SampleRun(unittest.TestCase):
                 self.assertIn(r["type"], bf.REGIMES)
 
 
+class Snapshots(unittest.TestCase):
+    def test_one_small_snapshot_per_day(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "f.json"
+            bf.main(["--sample", "--out", str(out)])
+            data = json.loads(out.read_text())
+            folder = Path(tmp) / "history"
+            t = bf.datetime(2026, 10, 24, 8, 0, tzinfo=bf._tz())
+            self.assertIsNotNone(bf.save_snapshot(data, folder, now=t))
+            self.assertIsNone(bf.save_snapshot(data, folder, now=t.replace(hour=10)))      # one per day
+            self.assertIsNone(bf.save_snapshot(data, folder, now=t.replace(day=25, hour=5)))  # not before 7 am
+            snap = json.loads((folder / "2026-10-24.json").read_text())
+            self.assertEqual(len(snap["days"]), 7)
+            self.assertLess((folder / "2026-10-24.json").stat().st_size, 40000)
+            self.assertEqual(json.loads((folder / "index.json").read_text())["dates"], ["2026-10-24"])
+
+
 class DayTypes(unittest.TestCase):
     @staticmethod
     def feats(rows):
