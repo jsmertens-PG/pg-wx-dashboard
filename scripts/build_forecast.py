@@ -140,7 +140,46 @@ def now_iso():
     return datetime.now(timezone.utc).isoformat(timespec="minutes")
 
 
+CACHE_DIR = ROOT / "cache"          # last good run of each regular model (kept by the Actions cache, not committed)
+CACHE_MAX_H = 12
+
+
+def cache_save(name, mid, data, info):
+    try:
+        import gzip
+        CACHE_DIR.mkdir(exist_ok=True)
+        with gzip.open(CACHE_DIR / f"{name}.json.gz", "wt") as fh:
+            json.dump({"mid": mid, "info": info, "data": data}, fh)
+    except Exception:
+        pass
+
+
+def cache_load(name, log):
+    """The last good run of a model, if it is less than CACHE_MAX_H hours old."""
+    try:
+        import gzip
+        with gzip.open(CACHE_DIR / f"{name}.json.gz", "rt") as fh:
+            c = json.load(fh)
+        age_h = (datetime.now(timezone.utc) - datetime.fromisoformat(c["info"]["fetched"])).total_seconds() / 3600
+        if age_h > CACHE_MAX_H:
+            return None
+        log.append(f"{name}: using the last good run, fetched {age_h:.1f} h ago")
+        return c["mid"], c["data"], dict(c["info"], status="ok", note=f"cached, fetched {age_h:.0f} h ago")
+    except Exception:
+        return None
+
+
 def fetch_model(kind, name, ids, sites, log):
+    res = _fetch_model(kind, name, ids, sites, log)
+    if kind == "det":
+        if res[0]:
+            cache_save(name, *res)
+        else:
+            res = cache_load(name, log) or res
+    return res
+
+
+def _fetch_model(kind, name, ids, sites, log):
     """Return (model_id, [per-site hourly dict], source-info) — model_id None on failure."""
     if kind == "det":
         base, hourly = "https://api.open-meteo.com/v1/forecast", SURFACE_VARS + ["boundary_layer_height"] + level_vars(DET_LEVELS)
@@ -1277,15 +1316,24 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                         "q": round(clamp((agl or 0) / scale) if ridge else ceil_q(top_m * FT if top_m else None), 2)}
             hkey = "top13" if ridge else "peak"
             hi_res = [m for m in ("RRFS", "HRRR") if m in D and D[m].get(hkey) is not None]
-            factors[0:1] = [height_row(m, D[m][hkey]) for m in hi_res]
+            if hi_res:
+                # one bar, one translucent fill per model: where they overlap the models agree
+                rows = [height_row(m, D[m][hkey]) for m in hi_res]
+                fts = [round(D[m][hkey] * FT, -2) for m in hi_res]
+                v = f"{min(fts):,.0f} ft" if max(fts) - min(fts) < 250 else f"{min(fts):,.0f}–{max(fts):,.0f} ft"
+                factors[0:1] = [{"k": "Height", "v": v, "q": max(r["q"] for r in rows), "qs": [r["q"] for r in rows],
+                                 "sub": " · ".join(f"{m} {ft:,.0f}" for m, ft in zip(hi_res, fts)) if len(hi_res) > 1 else hi_res[0]}]
+            else:
+                factors[0:1] = []
             if hi_res:
                 top, src = D[hi_res[0]][hkey], hi_res[0]
             else:
                 glob = [m for m in ("ECMWF", "GFS", "ICON") if m in D and D[m].get(hkey) is not None]
                 if glob:
                     top = wmedian((D[m][hkey], MODEL_WEIGHT.get(m, 1)) for m in glob)
-                    row = height_row("Global models", top)
+                    row = height_row("Height", top)
                     row["v"] = "~" + row["v"]
+                    row["sub"] = "global models"
                     factors[0:1] = [row]
                 src = "models"
             lead_view = dict(lead, label=label, top=top if top is not None else lead.get("top"), shower_p=shower_p) if lead else None

@@ -451,7 +451,7 @@ function detail(d, s, inline) {
     .map((f) => `<span class="ind" title="${esc(f.sub || "")}"><i style="background:${flagCol(f)}"></i>${f.k === "Rain & storms" ? `rain ${esc(f.v)}${f.sub ? " · " + esc(f.sub) : ""}` : `models ${esc(f.v)}`}</span>`).join("");
   const rows = (c.factors || []).filter((f) => !isFlag(f)).map((f) => `<div class="factor">
       <span class="fk">${esc(f.k)}</span>
-      <span class="fbar"><i style="width:${Math.max(3, Math.round(f.q * 100))}%;background:${fq(f.q)}"></i></span>
+      <span class="fbar">${(f.qs || [f.q]).map((x) => `<i style="width:${Math.max(3, Math.round(x * 100))}%;background:${fq(x)}${f.qs && f.qs.length > 1 ? ";opacity:.5" : ""}"></i>`).join("")}</span>
       <span class="fv">${esc(f.v)}</span>
       ${f.sub ? `<span class="fs">${esc(f.sub)}</span>` : ""}
     </div>`).join("");

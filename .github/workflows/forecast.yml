@@ -23,10 +23,22 @@ jobs:
           python-version: "3.12"
       - name: Run tests
         run: python -m unittest discover -s tests -v
+      - name: Restore last good model runs
+        uses: actions/cache/restore@v4
+        with:
+          path: cache
+          key: om-${{ github.run_id }}
+          restore-keys: om-
       - name: Build forecast
         run: python scripts/build_forecast.py
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}   # optional: Claude summary of the NWS discussion
+      - name: Keep model runs for next time
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: cache
+          key: om-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Commit data
         run: |
           git config user.name "forecast-bot"
