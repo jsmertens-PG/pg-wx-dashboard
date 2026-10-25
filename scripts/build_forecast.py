@@ -921,7 +921,10 @@ def note_for(site, a, xc):
         return ""                                   # the label says it all
     if a["label"] in ("Thermal", "Ridge soaring", "XC"):
         if site["kind"] == "ridge":
-            return f"{round(a['lw'])} mph" if a["lw"] is not None else ""
+            w = a.get("wind_1pm") or a.get("wind_now")
+            if w:
+                return f"{compass(w[0])} {round(w[1])} mph"
+            return f"{compass(a['ld'])} {round(a['lw'])} mph" if a["lw"] is not None and a.get("ld") is not None else ""
         return f"thermals to {ft100(a['top'])}" if a.get("top") else ""
     why = [REASON_TEXT.get(c, c) for c in a["codes"] if not (c == "showers" and a.get("shower_p", 1) < 0.2)]
     if a["codes"] and a["codes"][0] == "cross" and a.get("launch", "").startswith("cross"):
