@@ -57,6 +57,17 @@ python -m unittest discover -s tests
 python -m http.server                        # then open http://localhost:8000
 ```
 
+## Checking the radar against real flights
+
+Every morning (first run from 7 am) the radar keeps a small copy of its forecast in `data/history/<date>.json`; the **Snapshots** button at the bottom of the page lists them. `scripts/compare_flights.py` sets those snapshots against what was actually flown and suggests calibration changes:
+
+```
+python scripts/compare_flights.py --igc ~/logbook/igc           # your own IGC files, matched to sites by takeoff position
+python scripts/compare_flights.py --csv flights.csv --out report.md
+```
+
+The CSV takes one flight per row with `date, site` and any of `max_alt_ft, dist_km, dist_mi, duration_min, pilot`, so it can be filled from XContest day lists, club reports or notes. Each day at a site gets an observed 1–5 score on the site's own scale (height, distance, duration); days without flights are skipped.
+
 ## Known limits
 
 - Model terrain is smoothed, so launch winds at small hills (Little Black, Torrey) are approximate. The sea breeze and the convergence lines are the parts the models handle worst.
