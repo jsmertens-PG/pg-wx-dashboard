@@ -213,6 +213,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .rx-front { --rxc: #34508f; } .rx-pre { --rxc: #6b7899; } .rx-post { --rxc: #11827f; }
 .rx-sa { --rxc: #d2691e; } .rx-switch { --rxc: #b8860b; }
 .day .when .rx { margin-left: 10px; }
+.day .when .why { margin-left: 8px; display: inline-flex; vertical-align: middle; font-size: .7rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase;
+  border: 1.5px solid var(--ink); border-radius: 999px; padding: 1px 8px; color: var(--ink); background: var(--surface); }
 .daynav a span.rx { color: #fff; font-family: var(--font-body); font-size: .56rem; }
 .daynav a span.rx .rq { display: none; }
 .empty { padding: 30px; border: 1px dashed var(--ink); text-align: center; }
@@ -379,7 +381,7 @@ function render(data) {
     const tint = Math.max(...main.map((s) => d.sites[s.id]?.rating ?? 0));
     return `<article class="day" id="day-${i}" style="--qc:${qv(tint)}">
       <div class="hd">
-        <span class="when">${esc(L.long)}<small>${esc(L.date)}</small>${regimeHtml(d.regime)}</span>
+        <span class="when">${esc(L.long)}<small>${esc(L.date)}</small>${regimeHtml(d.regime)}${d.why ? `<span class="why">${esc(d.why)}</span>` : ""}</span>
         <span class="big" title="Best home site">${r1(bm?.rating)}<small>/5</small></span>
       </div>
       <div class="list">

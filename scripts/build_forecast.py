@@ -1352,6 +1352,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 "alt_source": src,
                 "ground_ft": lead.get("ground_ft") if lead else None,
                 "launch_ft": s["launch_ft"], "style": lead.get("style") if lead else None,
+                "why": (lead.get("codes") or [])[:3] if lead else [],
                 "diag": {k: {"r": round(v["rating"], 1), "top": round(v["top"] * FT, -2) if v["top"] else None,
                              "w": round(v["wstar"], 1) if v["wstar"] is not None else None,
                              "why": v["codes"][:3]} for k, v in D.items()},
@@ -1377,6 +1378,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             drow["best"] = max(drow["sites"], key=lambda k: drow["sites"][k]["rating"])
             drow["best_main"] = max(main, key=lambda k: drow["sites"][k]["rating"])
             drow["headline"] = headline(parents or sites, drow)
+            drow["why"] = day_reason(parents or sites, drow)
             out_days.append(drow)
 
     return {
@@ -1388,6 +1390,25 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
         "sites": [{k: s.get(k) for k in ("id", "name", "short", "tier", "launch_ft", "lz_ft", "kind", "xc_top_ft", "note")} for s in (parents or sites)],
         "days": out_days,
     }
+
+
+WHY_GROUPS = [("Rain", {"rain", "showers", "cape"}), ("Too windy", {"windy", "strong", "gusty", "aloft"}),
+              ("Over the back", {"otb", "aloftdir", "cross"}), ("Low inversion", {"lid"}),
+              ("Weak thermals", {"weak"}), ("Too light", {"light"})]
+
+
+def day_reason(sites, d):
+    """On a poor day at the home sites, the main reason in two words (rain, wind, offshore, inversion...)."""
+    main = [s["id"] for s in sites if s.get("tier") == "main" and s["id"] in d["sites"]]
+    if not main or max(d["sites"][k]["rating"] for k in main) >= 2.5:
+        return None
+    score = {}
+    for k in main:
+        for n, code in enumerate(d["sites"][k].get("why") or []):
+            for name, codes in WHY_GROUPS:
+                if code in codes:
+                    score[name] = score.get(name, 0) + (1.0 if n == 0 else 0.5)
+    return max(score, key=score.get) if score else None
 
 
 def headline(sites, d):
