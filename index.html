@@ -86,7 +86,7 @@ details.fold > :not(summary) { margin-top: 10px; }
 /* day cards */
 .days { display: grid; gap: 18px; }
 .day { border: 2px solid color-mix(in srgb, var(--ink) 75%, transparent); border-left: 6px solid var(--qc); border-radius: 4px; overflow: hidden; background: var(--surface); display: grid; scroll-margin-top: 12px; }
-.day > .hd { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 18px; align-items: baseline; padding: 12px 18px 10px; background: color-mix(in srgb, var(--qc) 18%, var(--surface)); border-bottom: 1px solid color-mix(in srgb, var(--qc) 35%, var(--line)); }
+.day > .hd { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 18px; align-items: baseline; padding: 12px 18px 10px; background: linear-gradient(180deg, color-mix(in srgb, var(--qc) 20%, var(--surface)), color-mix(in srgb, var(--qc) 30%, var(--surface))); border-bottom: 1px solid color-mix(in srgb, var(--qc) 45%, var(--line)); }
 .day .when { font-family: var(--font-body); font-weight: 600; font-size: 1.15rem; white-space: nowrap; }
 .day .when small { font-weight: 400; font-size: .85rem; color: var(--muted); margin-left: 8px; }
 .day .headline { margin: 0; font-size: .9rem; }
@@ -234,7 +234,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 /* day tabs: small moulded tiles tinted by the day's quality */
 .daynav { gap: 8px; padding: 10px 2px; }
 .daynav a { min-width: 60px; padding: 6px 8px 7px; gap: 3px; border-radius: 10px; border: 1px solid var(--tile-edge); border-bottom: 1px solid var(--tile-edge);
-  background: linear-gradient(180deg, color-mix(in srgb, var(--qc) 10%, var(--tile-a)), color-mix(in srgb, var(--qc) 24%, var(--tile-b)));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--qc) 18%, var(--tile-a)), color-mix(in srgb, var(--qc) 36%, var(--tile-b)));
   box-shadow: inset 0 1px 0 var(--tile-hl), inset 0 -3px 0 var(--qc), 0 1px 2px var(--tile-sh), 0 3px 8px -3px var(--tile-sh); }
 .daynav a:active { transform: translateY(1px); }
 .daynav a b { font-size: .74rem; font-weight: 600; color: var(--muted); letter-spacing: .02em; }
