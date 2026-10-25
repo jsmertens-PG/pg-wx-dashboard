@@ -69,6 +69,11 @@ class DayTypes(unittest.TestCase):
         self.assertEqual(t[2], "Front")
         self.assertEqual(t[3], "Post-frontal")
 
+    def test_light_rain_front_with_cooling(self):
+        F = self.feats([{}, {}, {"rain": 0.8, "t850": 11}, {"t850": 8, "d700": 300}])
+        t = list(bf.classify_days(F).values())
+        self.assertEqual(t[1:4], ["Pre-frontal", "Front", "Post-frontal"])
+
     def test_santa_ana_then_switch(self):
         sa = {"d850": 60, "s850": 20, "rh": 12, "sfc15": (10, 60)}
         F = self.feats([{}, sa, sa, {"d850": 280, "s850": 6, "rh": 40}, {}])

@@ -107,7 +107,7 @@ def om_url(base, sites, model, hourly, past_days=0):
         "hourly": ",".join(hourly),
         "models": model,
         "timezone": TZ,
-        "forecast_days": DAYS,
+        "forecast_days": DAYS + (1 if past_days else 0),     # deterministic: one extra day so day 7 has a "next day"
         "wind_speed_unit": "kn",
     }
     if past_days:
@@ -997,10 +997,13 @@ def classify_days(F):
         offshore = wrap_in(dd, 0, 120)
         return offshore and (sp >= 15 or (sp >= 8 and rh is not None and rh <= 35))
     def front(d):
+        """Regional rain with the cold air arriving: SoCal fronts are often light on rain."""
         rain = g(d, "rain", 0) or 0
-        t_b, t_a = g(shift(d, -1), "t850"), g(shift(d, 1), "t850")
-        cooling = t_b is not None and t_a is not None and t_a <= t_b - 2
-        return rain >= 3 or (rain >= 1 and cooling)
+        t_b, t0, t_a = g(shift(d, -1), "t850"), g(d, "t850"), g(shift(d, 1), "t850")
+        if t_b is None or t0 is None:
+            return rain >= 2
+        drop = t_b - (t_a if t_a is not None else t0)
+        return rain >= 2 or (rain >= 0.5 and drop >= 2) or (rain >= 0.2 and drop >= 4)
     def onshore15(d):
         w = g(d, "sfc15")
         return bool(w and w[0] is not None and w[1] is not None and w[0] >= 4 and wrap_in(w[1], 190, 330))
@@ -1035,7 +1038,7 @@ def day_regimes(det, sites):
     idx = {s["id"]: k for k, s in enumerate(sites)}
     if not all(r in idx for r in REGIME_SITES):
         return {}
-    votes = {}
+    votes, feats = {}, {}
     for name, (mid, data, *_i) in det.items():
         if not data:
             continue
@@ -1045,6 +1048,12 @@ def day_regimes(det, sites):
             continue
         for dstr, t in classify_days(F).items():
             votes.setdefault(dstr, []).append((name, t))
+            f = F[dstr]
+            feats.setdefault(dstr, {})[name] = {
+                "rain_mm": round(f["rain"], 1), "t850": round(f["t850"], 1),
+                "w850": f"{compass(f['d850'])} {round(f['s850'])}" if f["d850"] is not None else None,
+                "w700": f"{compass(f['d700'])} {round(f['s700'])}" if f["d700"] is not None else None,
+                "rh": round(f["rh"]) if f.get("rh") is not None else None}
     out = {}
     for dstr, vs in votes.items():
         tot = sum(MODEL_WEIGHT.get(n, 1) for n, _ in vs)
@@ -1052,7 +1061,8 @@ def day_regimes(det, sites):
         for n, t in vs:
             w[t] = w.get(t, 0) + MODEL_WEIGHT.get(n, 1)
         t, wt = max(w.items(), key=lambda x: (x[1], x[0] is not None))
-        out[dstr] = {"type": t, "agree": round(wt / tot, 2), "models": {n: t2 for n, t2 in vs}}
+        out[dstr] = {"type": t, "agree": round(wt / tot, 2), "models": {n: t2 for n, t2 in vs},
+                     "features": feats.get(dstr, {})}
     return out
 
 # ---------------------------------------------------------------- per-model plumbing
