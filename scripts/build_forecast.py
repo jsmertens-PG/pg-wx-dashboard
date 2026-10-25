@@ -96,7 +96,9 @@ def surface_filled(data, skip_h=0):
     ok = 0
     for d in data:
         t = (d.get("hourly") or {}).get("temperature_2m") or []
-        ok += sum(x is not None for x in t[skip_h:skip_h + 48]) >= 24
+        # from the current hour on: today's earlier hours can be missing for a model without an archive
+        start = skip_h + datetime.now(timezone.utc).astimezone(_tz()).hour
+        ok += sum(x is not None for x in t[start:start + 24]) >= 18
     return ok >= max(1, len(data) // 2)
 
 
