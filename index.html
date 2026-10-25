@@ -213,6 +213,18 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .rx-front { --rxc: #34508f; } .rx-pre { --rxc: #6b7899; } .rx-post { --rxc: #11827f; }
 .rx-sa { --rxc: #d2691e; } .rx-switch { --rxc: #b8860b; }
 .day .when .rx { margin-left: 10px; }
+details.day > summary { list-style: none; cursor: pointer; }
+details.day > summary::-webkit-details-marker { display: none; }
+details.day:not([open]) > summary { border-bottom: 0 !important; }
+.day > .hd .sum { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 4px; }
+.sc { display: inline-flex; align-items: center; gap: 4px; font-size: .78rem; padding: 2px 8px; border-radius: 999px;
+  background: color-mix(in srgb, var(--rc) 22%, var(--surface)); border: 1px solid color-mix(in srgb, var(--ink) 55%, transparent); font-variant-numeric: tabular-nums; }
+.sc b { font-weight: 600; }
+.sc .xcmark { font-size: .55rem; padding: 0 4px; }
+.sx { font-size: .74rem; color: var(--muted); }
+details.day[open] > summary .sum { display: none; }
+.chev { display: inline-block; width: 8px; height: 8px; margin-left: 12px; border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink); transform: rotate(45deg) translateY(-3px); transition: transform .15s ease; }
+details.day[open] .chev { transform: rotate(-135deg) translate(-2px, -1px); }
 .trend { display: inline-flex; align-items: baseline; gap: 1px; font-size: .62rem; font-weight: 700; margin-right: 4px; vertical-align: 1px; }
 .trend small { font-size: .58rem; font-weight: 500; color: var(--muted); }
 .trend.up { color: var(--q4); } .trend.down { color: var(--q0); }
@@ -259,7 +271,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   <section class="story day" id="story" aria-label="Weather" style="--qc: var(--muted)"></section>
 
 
-  <nav class="daynav" id="daynav" aria-label="Jump to day"></nav>
   <div class="days" id="days"><div class="empty">Loading forecast…</div></div>
 
   <details class="fold" id="sources">
@@ -391,26 +402,21 @@ function render(data) {
     const L = dayLabel(d.date);
     const bm = d.sites[d.best_main] || d.sites[d.best];
     const tint = Math.max(...main.map((s) => d.sites[s.id]?.rating ?? 0));
-    return `<article class="day" id="day-${i}" style="--qc:${qv(tint)}">
-      <div class="hd">
+    const open = openDays.has(d.date) || (!openDays.size && i === 0);
+    return `<details class="day" id="day-${i}" data-date="${esc(d.date)}" style="--qc:${qv(tint)}"${open ? " open" : ""}>
+      <summary class="hd">
         <span class="when">${esc(L.long)}<small>${esc(L.date)}</small>${regimeHtml(d.regime)}${d.why ? `<span class="why">${esc(d.why)}</span>` : ""}</span>
-        <span class="big" title="Best home site">${r1(bm?.rating)}<small>/5</small></span>
-      </div>
+        <span class="big" title="Best home site">${trendHtml(bm)}${r1(bm?.rating)}<small>/5</small><i class="chev" aria-hidden="true"></i></span>
+        <span class="sum">${daySummary(d, main, coast, other)}</span>
+      </summary>
       <div class="list">
         ${main.map((s) => siteRow(d, s, i, "")).join("")}
         ${coast.map((s) => siteRow(d, s, i, "coast")).join("")}
         <div class="minor">${other.map((s) => siteRow(d, s, i, "small")).join("")}</div>
       </div>
       <div class="det" id="det-${i}" hidden></div>
-    </article>`;
+    </details>`;
   }).join("") || '<div class="empty">No forecast days in the data.</div>';
-
-  $("#daynav").innerHTML = data.days.map((d, i) => {
-    const L = dayLabel(d.date), bm = d.sites[d.best_main] || d.sites[d.best];
-    const tint = Math.max(...main.map((s) => d.sites[s.id]?.rating ?? 0));
-    const xc = main.some((s) => d.sites[s.id]?.xc);
-    return `<a href="#day-${i}" style="--qc:${qv(tint)}"><b>${esc(L.short)}</b><span class="n">${r1(bm?.rating)}${trendHtml(bm)}${xc ? '<small class="xcmark">XC</small>' : ""}</span>${regimeHtml(d.regime, true)}</a>`;
-  }).join("");
 
   $("#days").onclick = (e) => {
     const b = e.target.closest("[data-site]"); if (!b) return;
@@ -441,6 +447,22 @@ const bar = (r, thin) => `<span class="bar${thin ? " thin" : ""}"><i style="widt
 
 /* in the rows, altitudes wait for a tap: keep XC directions and reasons, drop "thermals to 3,000 ft" */
 const rowNote = (c) => (!c.note || /\d,?\d{3} ft|thermals/i.test(c.note) ? (c.launch_name && c.note && c.note.startsWith(c.launch_name) ? c.launch_name : "") : c.note);
+/* what a closed day shows: the home sites and Torrey with their number, then any other XC site */
+function daySummary(d, main, coast, other) {
+  const chip = (s) => {
+    const c = d.sites[s.id]; if (!c) return "";
+    return `<span class="sc" style="--rc:${qv(c.rating)}"><b>${esc(s.id === "lb" ? "LB" : s.short)}</b> ${r1(c.rating)}${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span>`;
+  };
+  const xcOthers = other.filter((s) => d.sites[s.id]?.xc).map((s) => esc(s.short));
+  return main.concat(coast).map(chip).join("") + (xcOthers.length ? `<span class="sx">XC also: ${xcOthers.join(", ")}</span>` : "");
+}
+let openDays = new Set();
+try { openDays = new Set(JSON.parse(sessionStorage.getItem("radar-open") || "[]")); } catch (e) {}
+document.addEventListener("toggle", (e) => {
+  const el = e.target; if (!el.matches || !el.matches("details.day")) return;
+  if (el.open) openDays.add(el.dataset.date); else openDays.delete(el.dataset.date);
+  try { sessionStorage.setItem("radar-open", JSON.stringify([...openDays])); } catch (err) {}
+}, true);
 function siteRow(d, s, i, kind) {
   const c = d.sites[s.id];
   const name = s.id === "lb" ? "Little Black" : s.short;
