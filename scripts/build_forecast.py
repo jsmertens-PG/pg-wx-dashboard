@@ -1585,6 +1585,38 @@ def sample_nws():
 
 
 # ---------------------------------------------------------------- main
+# ---------------------------------------------------------------- trend since about a day ago
+TREND_KEEP_H = 40          # keep this much history of runs
+TREND_REF_H = 20           # compare with the newest run at least this old (else the oldest one kept)
+
+
+def ratings_of(result):
+    return {d["date"]: {k: round(c["rating"], 1) for k, c in d["sites"].items()} for d in result.get("days", [])}
+
+
+def add_trend(result, path, now=None):
+    """Mark each site/day with the change in rating since about a day ago, and log this run."""
+    now = now or datetime.now(timezone.utc)
+    try:
+        log = json.loads(path.read_text())
+    except Exception:
+        log = []
+    age = lambda e: (now - datetime.fromisoformat(e["t"])).total_seconds() / 3600
+    log = [e for e in log if age(e) <= TREND_KEEP_H]
+    old = [e for e in log if age(e) >= TREND_REF_H] or [e for e in log if age(e) >= 3]
+    ref = (max(old, key=lambda e: e["t"]) if any(age(e) >= TREND_REF_H for e in old) else min(old, key=lambda e: e["t"])) if old else None
+    if ref:
+        result["trend_ref"] = ref["t"]
+        for d in result.get("days", []):
+            prev = ref["r"].get(d["date"], {})
+            for k, c in d["sites"].items():
+                if k in prev:
+                    c["was"], c["trend"] = prev[k], round(c["rating"] - prev[k], 1)
+    log.append({"t": result.get("generated") or now.isoformat(timespec="minutes"), "r": ratings_of(result)})
+    path.write_text(json.dumps(log, separators=(",", ":")))
+    return ref
+
+
 # ---------------------------------------------------------------- daily snapshots (for checking against real flights)
 SNAPSHOT_HOUR = 7          # keep the first run of each day from 7 am on: the morning forecast
 
@@ -1655,6 +1687,8 @@ def main(argv=None):
             sys.exit("No model data retrieved; keeping the previous forecast.json")
     result = build(sites, det, ens, nws, log, sample=args.sample, sources=sources, sp=sp, parents=parents)
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
+    if not args.sample:
+        add_trend(result, ROOT / "data" / "trend.json")
     Path(args.out).write_text(json.dumps(result, indent=1))
     if not args.sample:
         save_snapshot(result, ROOT / "data" / "history")

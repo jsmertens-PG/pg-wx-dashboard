@@ -94,28 +94,28 @@ details.fold > :not(summary) { margin-top: 10px; }
 .big small { font-size: .7rem; color: var(--muted); }
 
 .list { display: grid; }
-.srow { display: grid; grid-template-columns: 128px minmax(70px, 180px) 30px minmax(0, 1fr); gap: 4px 14px; align-items: center;
+.srow { display: grid; grid-template-columns: 128px minmax(70px, 180px) 52px minmax(0, 1fr); gap: 4px 14px; align-items: center;
   padding: 10px 18px; border: 0; background: transparent; width: 100%; text-align: left; min-height: 0; cursor: pointer; color: var(--ink); }
 .srow:hover, .srow[aria-expanded="true"] { background: color-mix(in srgb, var(--ink) 4%, transparent); }
 .srow .nm { font-family: var(--font-body); font-weight: 500; font-size: .98rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.srow .rt { font-family: var(--font-body); font-weight: 600; font-variant-numeric: tabular-nums; font-size: 1rem; text-align: right; }
+.srow .rt { font-family: var(--font-body); font-weight: 600; font-variant-numeric: tabular-nums; font-size: 1rem; text-align: right; white-space: nowrap; }
 .srow .tx { display: flex; flex-wrap: wrap; gap: 2px 8px; align-items: baseline; min-width: 0; }
 .list > .srow + .srow, .minor > .srow { border-top: 1px solid var(--line); }
 .srow.coast { border-top-color: color-mix(in srgb, var(--ink) 22%, transparent) !important; }
 .minor { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); column-gap: 0; border-top: 1px solid color-mix(in srgb, var(--ink) 22%, transparent); }
 .minor > .srow:nth-child(-n+2) { border-top: 0; }
 @media (max-width: 840px) { .minor > .srow:nth-child(2) { border-top: 1px solid var(--line); } }
-.srow.small { padding-block: 7px; grid-template-columns: 128px minmax(60px, 110px) 30px minmax(0, 1fr); }
+.srow.small { padding-block: 7px; grid-template-columns: 128px minmax(60px, 110px) 46px minmax(0, 1fr); }
 .srow.small .nm { font-weight: 400; font-size: .86rem; color: var(--muted); }
 .srow.small .rt { font-size: .86rem; font-weight: 500; color: var(--muted); }
 .srow.small .note, .srow.small .lab { font-size: .74rem; }
 .srow.small .note { color: var(--muted); }
-.srow.small { grid-template-columns: 110px minmax(50px, 90px) 24px minmax(0, 1fr); }
+.srow.small { grid-template-columns: 110px minmax(50px, 90px) 46px minmax(0, 1fr); }
 .srow.small .tx { flex-wrap: nowrap; overflow: hidden; white-space: nowrap; }
 .srow.small .tx .note { overflow: hidden; text-overflow: ellipsis; }
 .srow.small .tag { font-size: .66rem; padding: 0 4px; }
 @media (max-width: 640px) {
-  .srow, .srow.small { grid-template-columns: minmax(0, 1fr) 90px 26px; padding-inline: 14px; }
+  .srow, .srow.small { grid-template-columns: minmax(0, 1fr) 90px 48px; padding-inline: 14px; }
   .srow .tx { grid-column: 1 / -1; }
   .srow.small .tx { white-space: normal; flex-wrap: wrap; }
 }
@@ -213,6 +213,10 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .rx-front { --rxc: #34508f; } .rx-pre { --rxc: #6b7899; } .rx-post { --rxc: #11827f; }
 .rx-sa { --rxc: #d2691e; } .rx-switch { --rxc: #b8860b; }
 .day .when .rx { margin-left: 10px; }
+.trend { display: inline-flex; align-items: baseline; gap: 1px; font-size: .62rem; font-weight: 700; margin-right: 4px; vertical-align: 1px; }
+.trend small { font-size: .58rem; font-weight: 500; color: var(--muted); }
+.trend.up { color: var(--q4); } .trend.down { color: var(--q0); }
+.daynav a span.n .trend { margin: 0 0 0 2px; }
 .day .when .why { margin-left: 8px; display: inline-flex; vertical-align: middle; font-size: .7rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase;
   border: 1.5px solid var(--ink); border-radius: 999px; padding: 1px 8px; color: var(--ink); background: var(--surface); }
 .daynav a span.rx { color: #fff; font-family: var(--font-body); font-size: .56rem; }
@@ -317,6 +321,14 @@ const pct = (p) => (p == null ? "–" : `${Math.round(p * 100)}%`);
 const r1 = (r) => (r == null ? "–" : String(Math.max(1, Math.min(5, Math.round(r)))));
 const RX = { "Front": ["front", "Front"], "Pre-frontal": ["pre", "Pre"], "Post-frontal": ["post", "Post"],
   "Santa Ana": ["sa", "SA"], "Switch day": ["switch", "Switch"] };
+/* trend since about a day ago: an arrow when the shown number changed */
+const trendHtml = (c) => {
+  if (!c || c.was == null) return "";
+  const now = Math.max(1, Math.min(5, Math.round(c.rating))), was = Math.max(1, Math.min(5, Math.round(c.was)));
+  if (now === was) return "";
+  const up = now > was;
+  return `<span class="trend ${up ? "up" : "down"}" title="was ${was} in the forecast ${up ? "earlier" : "earlier"}">${up ? "▲" : "▼"}<small>${was}</small></span>`;
+};
 const regimeHtml = (rg, small) => {
   if (!rg || !rg.type || !RX[rg.type]) return "";
   const unsure = rg.agree < 0.75;
@@ -397,7 +409,7 @@ function render(data) {
     const L = dayLabel(d.date), bm = d.sites[d.best_main] || d.sites[d.best];
     const tint = Math.max(...main.map((s) => d.sites[s.id]?.rating ?? 0));
     const xc = main.some((s) => d.sites[s.id]?.xc);
-    return `<a href="#day-${i}" style="--qc:${qv(tint)}"><b>${esc(L.short)}</b><span class="n">${r1(bm?.rating)}${xc ? '<small class="xcmark">XC</small>' : ""}</span>${regimeHtml(d.regime, true)}</a>`;
+    return `<a href="#day-${i}" style="--qc:${qv(tint)}"><b>${esc(L.short)}</b><span class="n">${r1(bm?.rating)}${trendHtml(bm)}${xc ? '<small class="xcmark">XC</small>' : ""}</span>${regimeHtml(d.regime, true)}</a>`;
   }).join("");
 
   $("#days").onclick = (e) => {
@@ -434,7 +446,7 @@ function siteRow(d, s, i, kind) {
   const name = s.id === "lb" ? "Little Black" : s.short;
   if (!c) return `<div class="srow ${kind}"><span class="nm">${esc(name)}</span><span class="muted">no data</span></div>`;
   return `<button type="button" class="srow ${kind}" style="--rc:${qv(c.rating)}" data-site="${s.id}" data-day="${i}" aria-expanded="false">
-    <span class="nm">${esc(name)}</span>${bar(c.rating, kind === "small")}<span class="rt">${r1(c.rating)}</span>
+    <span class="nm">${esc(name)}</span>${bar(c.rating, kind === "small")}<span class="rt">${trendHtml(c)}${r1(c.rating)}</span>
     <span class="tx"><span class="lab" style="color:${qv(c.rating)}">${esc(c.label)}</span>${c.xc ? '<span class="xcmark">XC</span>' : ""}${(c.tags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join("")}${rowNote(c) ? `<span class="note">${esc(rowNote(c))}</span>` : ""}</span>
   </button>`;
 }
