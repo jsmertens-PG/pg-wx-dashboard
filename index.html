@@ -214,6 +214,13 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .rx-sa { --rxc: #d2691e; } .rx-switch { --rxc: #b8860b; }
 .day .when .rx { margin-left: 10px; }
 details.day > summary { list-style: none; cursor: pointer; }
+#story > .hd { position: relative; padding-right: 44px; }
+#story > .hd .chev { position: absolute; right: 18px; top: 22px; margin: 0; }
+.day > .hd .when { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 0; white-space: normal; min-width: 0; }
+.day > .hd .when small { white-space: nowrap; }
+.day > .hd .when .rx, .day > .hd .when .why { white-space: nowrap; }
+#story > .hd .ov { grid-column: 1 / -1; font-size: .92rem; font-weight: 500; margin-top: 2px; }
+#story[open] > .hd { border-bottom: 1.5px solid var(--ink); }
 details.day > summary::-webkit-details-marker { display: none; }
 details.day:not([open]) > summary { border-bottom: 0 !important; }
 .day > .hd .sum { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 4px; }
@@ -268,7 +275,7 @@ details.day[open] .chev { transform: rotate(-135deg) translate(-2px, -1px); }
   </header>
 
   <div id="warn"></div>
-  <section class="story day" id="story" aria-label="Weather" style="--qc: var(--muted)"></section>
+  <details class="story day" id="story" aria-label="Weather" style="--qc: var(--muted)"></details>
 
 
   <div class="days" id="days"><div class="empty">Loading forecast…</div></div>
@@ -391,18 +398,20 @@ function render(data) {
   const bl = (n && (n.bullets && n.bullets.length ? n.bullets : [n.synopsis].filter(Boolean))) || [];
   const group = (title, items) => items && items.length ? `<div class="grp"><span class="eyebrow">${title}</span><ul>${items.map((b) => `<li>${esc(b)}</li>`).join("")}</ul></div>` : "";
   const lines = (title, items) => (items || []).map((b, k) => `<div class="wrow"><span class="wk">${k === 0 ? title : ""}</span><span>${esc(b)}</span></div>`).join("");
+  const ov = data.overview ? `<span class="ov">${esc(data.overview)}</span>` : "";
   $("#story").innerHTML = n ? `
-    <div class="hd"><span class="when">Weather <small><a href="${esc(n.url)}" target="_blank" rel="noopener">NWS San Diego</a> · ${fmtWhen(n.issued)}</small></span>
-      <span class="flags">${(n.flags || []).map((f) => `<span class="tag">${esc(f)}</span>`).join("")}</span></div>
+    <summary class="hd"><span class="when">Weather <small>NWS San Diego · ${fmtWhen(n.issued)}</small></span>
+      <span class="flags">${(n.flags || []).map((f) => `<span class="tag">${esc(f)}</span>`).join("")}<i class="chev" aria-hidden="true"></i></span>${ov}</summary>
     <div class="wlist">${sm ? lines("Pattern", sm.pattern) + lines("For flying", sm.flying) : lines("Outlook", bl)}</div>`
-    : '<div class="hd"><span class="when">Weather <small>NWS discussion not available on the last run</small></span></div>';
+      + `<div class="wrow"><span class="wk"></span><span><a href="${esc(n.url)}" target="_blank" rel="noopener">Full NWS discussion</a></span></div>`
+    : `<summary class="hd"><span class="when">Weather <small>NWS discussion not available on the last run</small></span>${ov}</summary>`;
 
   /* day cards */
   $("#days").innerHTML = data.days.map((d, i) => {
     const L = dayLabel(d.date);
     const bm = d.sites[d.best_main] || d.sites[d.best];
     const tint = Math.max(...main.map((s) => d.sites[s.id]?.rating ?? 0));
-    const open = openDays.has(d.date) || (!openDays.size && i === 0);
+    const open = openDays.has(d.date);
     return `<details class="day" id="day-${i}" data-date="${esc(d.date)}" style="--qc:${qv(tint)}"${open ? " open" : ""}>
       <summary class="hd">
         <span class="when">${esc(L.long)}<small>${esc(L.date)}</small>${regimeHtml(d.regime)}${d.why ? `<span class="why">${esc(d.why)}</span>` : ""}</span>
@@ -459,7 +468,7 @@ function daySummary(d, main, coast, other) {
 let openDays = new Set();
 try { openDays = new Set(JSON.parse(sessionStorage.getItem("radar-open") || "[]")); } catch (e) {}
 document.addEventListener("toggle", (e) => {
-  const el = e.target; if (!el.matches || !el.matches("details.day")) return;
+  const el = e.target; if (!el.matches || !el.matches("details.day") || !el.dataset.date) return;
   if (el.open) openDays.add(el.dataset.date); else openDays.delete(el.dataset.date);
   try { sessionStorage.setItem("radar-open", JSON.stringify([...openDays])); } catch (err) {}
 }, true);

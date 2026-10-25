@@ -1418,6 +1418,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
 
     return {
         "generated": now_iso(), "sample": sample,
+        "overview": week_overview(parents or sites, out_days, nws),
         "models": {k: v[0] for k, v in det.items() if v[0]},
         "weights": MODEL_WEIGHT,
         "ensembles": {k: v[0] for k, v in ens.items() if v[0]},
@@ -1459,6 +1460,58 @@ def day_reason(sites, d):
                 if code in codes:
                     score[name] = score.get(name, 0) + (1.0 if n == 0 else 0.5)
     return max(score, key=score.get) if score else None
+
+
+def _runs(idx):
+    """[0,1,2,4] -> [(0, 2), (4, 4)]"""
+    out = []
+    for i in idx:
+        if out and i == out[-1][1] + 1:
+            out[-1] = (out[-1][0], i)
+        else:
+            out.append((i, i))
+    return out
+
+
+def week_overview(sites, days, nws):
+    """One short line for the folded weather card: how the week looks and where it is heading."""
+    if not days:
+        return ""
+    wd = lambda dstr: WEEKDAYS[date.fromisoformat(dstr).weekday()]
+    span = lambda a, b: wd(days[a]["date"]) if a == b else f"{wd(days[a]['date'])}–{wd(days[b]['date'])}"
+    main = [s["id"] for s in sites if s.get("tier") == "main"]
+    short = {s["id"]: ("LB" if s["id"] == "lb" else s["short"]) for s in sites}
+    best = [max((d["sites"][k]["rating"] for k in main if k in d["sites"]), default=1) for d in days]
+    parts = []
+    poor = [i for i, b in enumerate(best) if b < 2.5]
+    if not poor:
+        parts.append("flyable all week")
+    else:
+        for a, b in _runs(poor)[:2]:
+            why = days[a].get("why")
+            parts.append(f"poor {span(a, b)}" + (f" ({why.lower()})" if why else ""))
+    xc = [i for i, d in enumerate(days) if any(d["sites"].get(k, {}).get("xc") for k in main)]
+    for a, b in _runs(xc)[:2]:
+        who = sorted({short[k] for i in range(a, b + 1) for k in main if days[i]["sites"].get(k, {}).get("xc")},
+                     key=lambda n: ["LB", "Blossom", "Elsinore"].index(n) if n in ("LB", "Blossom", "Elsinore") else 9)
+        parts.append(f"{'/'.join(who)} XC {span(a, b)}")
+    for t in ("Santa Ana", "Switch day", "Front"):
+        idx = [i for i, d in enumerate(days) if (d.get("regime") or {}).get("type") == t]
+        for a, b in _runs(idx)[:1]:
+            parts.append(f"{t.lower()} {span(a, b)}")
+    syn = ((nws or {}).get("synopsis") or "").lower()
+    late = bool(re.search(r"(end|middle|late).{0,25}week", syn))
+    words = []
+    if "cooler" in syn or "cooling" in syn:
+        words.append("cooler")
+    elif "warmer" in syn or "warming" in syn:
+        words.append("warmer")
+    if "unsettled" in syn or "precipitation" in syn or "showers" in syn:
+        words.append("unsettled")
+    if words:
+        parts.append(" and ".join(words) + (" late week" if late else ""))
+    line = " · ".join(parts)
+    return line[:1].upper() + line[1:]
 
 
 def headline(sites, d):
