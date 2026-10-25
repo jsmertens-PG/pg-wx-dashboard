@@ -1002,16 +1002,23 @@ def classify_days(F):
         t_b, t0, t_a = g(shift(d, -1), "t850"), g(d, "t850"), g(shift(d, 1), "t850")
         if t_b is None or t0 is None:
             return rain >= 2
-        drop = t_b - (t_a if t_a is not None else t0)
-        return rain >= 2 or (rain >= 0.5 and drop >= 2) or (rain >= 0.2 and drop >= 4)
+        drop_now = t_b - t0                                   # cold air already in by 1 pm
+        drop_next = t_b - (t_a if t_a is not None else t0)    # or arriving overnight
+        return rain >= 2 or (rain >= 0.5 and drop_next >= 2) or (rain >= 0.2 and drop_now >= 3)
     def onshore15(d):
         w = g(d, "sfc15")
         return bool(w and w[0] is not None and w[1] is not None and w[0] >= 4 and wrap_in(w[1], 190, 330))
+    def front_day(d):
+        """A front spread over two days counts on the wetter one; the day before is pre-frontal."""
+        if not front(d):
+            return False
+        nxt = shift(d, 1)
+        return not (nxt in F and front(nxt) and (g(nxt, "rain", 0) or 0) > (g(d, "rain", 0) or 0))
     out = {}
     for d in ds:
         sa, sa_prev, sa_next = santa_ana(d), santa_ana(shift(d, -1)), santa_ana(shift(d, 1))
         t = None
-        if front(d):
+        if front_day(d):
             t = "Front"
         elif (sa and not sa_next and onshore15(d) and shift(d, 1) in F) or (
                 sa_prev and not sa and not onshore15(shift(d, -1))):
@@ -1022,12 +1029,12 @@ def classify_days(F):
             t0, tm2, tm3 = g(d, "t850"), g(shift(d, -2), "t850"), g(shift(d, -3), "t850")
             d700 = g(d, "d700")
             cold_surge = t0 is not None and tm2 is not None and t0 <= tm2 - 4 and d700 is not None and wrap_in(d700, 240, 360)
-            if front(shift(d, -1)) and shift(d, -1) in F or cold_surge or (
-                    front(shift(d, -2)) and shift(d, -2) in F and tm3 is not None and t0 is not None and t0 <= tm3 - 2):
+            if front_day(shift(d, -1)) and shift(d, -1) in F or cold_surge or (
+                    front_day(shift(d, -2)) and shift(d, -2) in F and tm3 is not None and t0 is not None and t0 <= tm3 - 2):
                 t = "Post-frontal"
-            elif shift(d, 1) in F and front(shift(d, 1)):
+            elif shift(d, 1) in F and (front_day(shift(d, 1)) or front(d)):
                 t = "Pre-frontal"
-            elif shift(d, 2) in F and front(shift(d, 2)) and g(d, "d700") is not None and wrap_in(g(d, "d700"), 160, 260) and (g(d, "s700") or 0) >= 15:
+            elif shift(d, 2) in F and front_day(shift(d, 2)) and g(d, "d700") is not None and wrap_in(g(d, "d700"), 160, 260) and (g(d, "s700") or 0) >= 15:
                 t = "Pre-frontal"
         out[d] = t
     return out
