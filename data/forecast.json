@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-25T03:09+00:00",
+ "generated": "2026-10-25T03:16+00:00",
  "sample": false,
  "models": {
   "HRRR": "ncep_hrrr_conus",
@@ -19,6 +19,7 @@
  },
  "ensembles": {
   "GFS ens": "gfs025",
+  "ECMWF ens": "ecmwf_ifs025",
   "ICON ens": "icon_global"
  },
  "log": [
@@ -29,7 +30,7 @@
   "ECMWF: ok (ecmwf_ifs025)",
   "ICON: ok (icon_global)",
   "GFS ens: ok (gfs025)",
-  "ECMWF ens: ecmwf_ifs025 failed (<urlopen error _ssl.c:993: The handshake operation timed out>)",
+  "ECMWF ens: ok (ecmwf_ifs025)",
   "ICON ens: ok (icon_global)",
   "NWS AFD: ok"
  ],
@@ -41,7 +42,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-10-25T01:00+00:00",
-   "fetched": "2026-10-25T03:03+00:00",
+   "fetched": "2026-10-25T03:09+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -50,8 +51,8 @@
    "provider": "Open-Meteo",
    "id": "ncep_rrfs_conus",
    "status": "ok",
-   "run": "2026-10-24T18:00+00:00",
-   "fetched": "2026-10-25T03:03+00:00",
+   "run": null,
+   "fetched": "2026-10-25T03:09+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -61,7 +62,7 @@
    "id": "ncep_nam_conus",
    "status": "ok",
    "run": "2026-10-25T00:00+00:00",
-   "fetched": "2026-10-25T03:03+00:00",
+   "fetched": "2026-10-25T03:09+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -71,7 +72,7 @@
    "id": "gfs_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-25T03:03+00:00",
+   "fetched": "2026-10-25T03:09+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -81,7 +82,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": "2026-10-24T18:00+00:00",
-   "fetched": "2026-10-25T03:03+00:00",
+   "fetched": "2026-10-25T03:11+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -91,7 +92,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-25T03:05+00:00",
+   "fetched": "2026-10-25T03:11+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -101,7 +102,7 @@
    "id": "gfs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-25T03:07+00:00",
+   "fetched": "2026-10-25T03:12+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -109,10 +110,10 @@
    "kind": "ensemble",
    "provider": "Open-Meteo",
    "id": "ecmwf_ifs025",
-   "status": "failed",
+   "status": "ok",
    "run": null,
-   "fetched": "2026-10-25T03:08+00:00",
-   "url": "https://open-meteo.com/en/docs"
+   "fetched": "2026-10-25T03:15+00:00",
+   "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
    "name": "ICON ens",
@@ -121,7 +122,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-25T03:09+00:00",
+   "fetched": "2026-10-25T03:16+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -131,7 +132,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-10-25T00:24:00+00:00",
-   "fetched": "2026-10-25T03:09+00:00",
+   "fetched": "2026-10-25T03:16+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   }
  ],
@@ -282,7 +283,7 @@
      "xc": false,
      "note": "thermals to 2,600 ft",
      "p_fly": 1.0,
-     "p_xc": 0.0,
+     "p_xc": 0.42,
      "agree": "split",
      "models": {
       "HRRR": 3.4,
@@ -292,7 +293,7 @@
       "ECMWF": 4.4,
       "ICON": 4.3
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "HRRR",
      "top_ft": 2600.0,
      "base_ft": 4700.0,
@@ -327,7 +328,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 1.0
+       "q": 0.98
       },
       {
        "k": "Model agreement",
@@ -388,11 +389,12 @@
      "rating": 3.25,
      "label": "Thermal",
      "tags": [
-      "glass-off"
+      "glass-off",
+      "showers around 37%"
      ],
      "xc": false,
      "note": "thermals to 3,800 ft",
-     "p_fly": 0.87,
+     "p_fly": 0.82,
      "p_xc": 0.0,
      "agree": "split",
      "models": {
@@ -403,7 +405,7 @@
       "ECMWF": 1.7,
       "ICON": 3.4
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "HRRR",
      "top_ft": 3800.0,
      "base_ft": 5700.0,
@@ -436,9 +438,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "10% of runs",
+       "v": "37% of runs",
        "sub": "",
-       "q": 0.86
+       "q": 0.48
       },
       {
        "k": "Model agreement",
@@ -518,7 +520,7 @@
       "ECMWF": 1.0,
       "ICON": 1.8
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "HRRR",
      "top_ft": 3200.0,
      "base_ft": 7900.0,
@@ -553,7 +555,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.98
+       "q": 0.99
       },
       {
        "k": "Model agreement",
@@ -629,7 +631,7 @@
      "tags": [],
      "xc": false,
      "note": "9 mph",
-     "p_fly": 0.75,
+     "p_fly": 0.59,
      "p_xc": 0.0,
      "agree": "mixed",
      "models": {
@@ -640,7 +642,7 @@
       "ECMWF": 1.9,
       "ICON": 1.9
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "HRRR",
      "top_ft": 600.0,
      "base_ft": 3000.0,
@@ -746,7 +748,7 @@
       "ECMWF": 1.2,
       "ICON": 1.1
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "HRRR",
      "top_ft": 8200.0,
      "base_ft": 8800.0,
@@ -865,7 +867,7 @@
       "ECMWF": 1.0,
       "ICON": 5.0
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "HRRR",
      "top_ft": 2900.0,
      "base_ft": 8700.0,
@@ -980,7 +982,7 @@
      "tags": [],
      "xc": false,
      "note": "",
-     "p_fly": 0.93,
+     "p_fly": 0.77,
      "p_xc": 0.0,
      "agree": "mixed",
      "models": {
@@ -991,7 +993,7 @@
       "ECMWF": 2.4,
       "ICON": 3.4
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "HRRR",
      "top_ft": 3300.0,
      "base_ft": 4600.0,
@@ -1026,7 +1028,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 1.0
+       "q": 0.99
       },
       {
        "k": "Model agreement",
@@ -1095,7 +1097,7 @@
      "xc": true,
      "note": "light drift: triangle or out-and-return",
      "p_fly": 1.0,
-     "p_xc": 0.89,
+     "p_xc": 0.86,
      "agree": "split",
      "models": {
       "HRRR": 4.3,
@@ -1105,7 +1107,7 @@
       "ECMWF": 3.4,
       "ICON": 3.4
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "HRRR",
      "top_ft": 6100.0,
      "base_ft": 7900.0,
@@ -1140,7 +1142,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.98
+       "q": 0.99
       },
       {
        "k": "Model agreement",
@@ -1205,7 +1207,7 @@
      "xc": true,
      "note": "light drift: triangle or out-and-return",
      "p_fly": 1.0,
-     "p_xc": 1.0,
+     "p_xc": 0.68,
      "agree": "split",
      "models": {
       "HRRR": 3.8,
@@ -1215,7 +1217,7 @@
       "ECMWF": 4.3,
       "ICON": 5.0
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "HRRR",
      "top_ft": 5500.0,
      "base_ft": 6900.0,
@@ -1282,6 +1284,7 @@
        "w": 0.0,
        "why": [
         "lid",
+        "otb",
         "aloftdir"
        ]
       },
@@ -1335,7 +1338,7 @@
      "xc": false,
      "note": "thermals to 2,500 ft",
      "p_fly": 1.0,
-     "p_xc": 0.0,
+     "p_xc": 0.39,
      "agree": "split",
      "models": {
       "HRRR": 4.0,
@@ -1345,7 +1348,7 @@
       "ECMWF": 4.5,
       "ICON": 3.3
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "HRRR",
      "top_ft": 2500.0,
      "base_ft": 5800.0,
@@ -1449,7 +1452,7 @@
      "xc": false,
      "note": "thermals to 4,000 ft",
      "p_fly": 1.0,
-     "p_xc": 0.0,
+     "p_xc": 0.41,
      "agree": "split",
      "models": {
       "HRRR": 4.7,
@@ -1459,7 +1462,7 @@
       "ECMWF": 3.4,
       "ICON": 4.8
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "RRFS",
      "top_ft": 4000.0,
      "base_ft": 7100.0,
@@ -1569,7 +1572,7 @@
       "ECMWF": 1.6,
       "ICON": 1.8
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "HRRR",
      "top_ft": 6600.0,
      "base_ft": 9700.0,
@@ -1668,7 +1671,7 @@
      "tags": [],
      "xc": false,
      "note": "10 mph",
-     "p_fly": 1.0,
+     "p_fly": 0.87,
      "p_xc": 0.0,
      "agree": "mixed",
      "models": {
@@ -1679,7 +1682,7 @@
       "ECMWF": 2.2,
       "ICON": 3.0
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "HRRR",
      "top_ft": 300.0,
      "base_ft": 2600.0,
@@ -1788,7 +1791,7 @@
       "ECMWF": 1.0,
       "ICON": 1.2
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "HRRR",
      "top_ft": 7200.0,
      "base_ft": 11100.0,
@@ -1899,8 +1902,8 @@
      ],
      "xc": false,
      "note": "thermals to 6,600 ft",
-     "p_fly": 1.0,
-     "p_xc": 0.46,
+     "p_fly": 0.88,
+     "p_xc": 0.29,
      "agree": "split",
      "models": {
       "HRRR": 3.4,
@@ -1910,7 +1913,7 @@
       "ECMWF": 1.4,
       "ICON": 3.4
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "HRRR",
      "top_ft": 6600.0,
      "base_ft": 10000.0,
@@ -2010,8 +2013,8 @@
      "tags": [],
      "xc": false,
      "note": "",
-     "p_fly": 0.7,
-     "p_xc": 0.0,
+     "p_fly": 0.71,
+     "p_xc": 0.03,
      "agree": "split",
      "models": {
       "HRRR": 2.7,
@@ -2021,7 +2024,7 @@
       "ECMWF": 3.0,
       "ICON": 4.3
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "HRRR",
      "top_ft": 3600.0,
      "base_ft": 5300.0,
@@ -2126,7 +2129,7 @@
      "xc": true,
      "note": "light drift: triangle or out-and-return",
      "p_fly": 1.0,
-     "p_xc": 1.0,
+     "p_xc": 0.63,
      "agree": "split",
      "models": {
       "HRRR": 4.6,
@@ -2136,7 +2139,7 @@
       "ECMWF": 3.4,
       "ICON": 3.4
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "HRRR",
      "top_ft": 6600.0,
      "base_ft": 10600.0,
@@ -2236,7 +2239,7 @@
      "xc": false,
      "note": "thermals to 4,700 ft",
      "p_fly": 1.0,
-     "p_xc": 0.0,
+     "p_xc": 0.01,
      "agree": "mixed",
      "models": {
       "HRRR": 2.9,
@@ -2246,7 +2249,7 @@
       "ECMWF": 3.4,
       "ICON": 3.3
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "HRRR",
      "top_ft": 4700.0,
      "base_ft": 6200.0,
@@ -2362,8 +2365,8 @@
      ],
      "xc": false,
      "note": "thermals to 2,000 ft",
-     "p_fly": 0.83,
-     "p_xc": 0.0,
+     "p_fly": 0.89,
+     "p_xc": 0.34,
      "agree": "mixed",
      "models": {
       "HRRR": 3.1,
@@ -2373,7 +2376,7 @@
       "ECMWF": 4.1,
       "ICON": 3.1
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "HRRR",
      "top_ft": 2000.0,
      "base_ft": 6300.0,
@@ -2479,7 +2482,7 @@
      "xc": false,
      "note": "thermals to 3,700 ft",
      "p_fly": 1.0,
-     "p_xc": 0.0,
+     "p_xc": 0.01,
      "agree": "agree",
      "models": {
       "HRRR": 3.4,
@@ -2489,7 +2492,7 @@
       "ECMWF": 3.1,
       "ICON": 3.7
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "HRRR",
      "top_ft": 3700.0,
      "base_ft": 7800.0,
@@ -2524,7 +2527,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 1.0
+       "q": 0.94
       },
       {
        "k": "Model agreement",
@@ -2602,7 +2605,7 @@
       "ECMWF": 1.3,
       "ICON": 1.3
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "HRRR",
      "top_ft": 5100.0,
      "base_ft": 9900.0,
@@ -2637,7 +2640,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 1.0
+       "q": 0.99
       },
       {
        "k": "Model agreement",
@@ -2721,7 +2724,7 @@
       "ECMWF": 3.0,
       "ICON": 3.0
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "HRRR",
      "top_ft": 500.0,
      "base_ft": 2900.0,
@@ -2825,7 +2828,7 @@
       "ECMWF": 1.2,
       "ICON": 1.5
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "HRRR",
      "top_ft": 7400.0,
      "base_ft": 12700.0,
@@ -2860,7 +2863,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 1.0
+       "q": 0.97
       },
       {
        "k": "Model agreement",
@@ -2940,7 +2943,7 @@
       "ECMWF": 3.0,
       "ICON": 2.4
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "HRRR",
      "top_ft": 5400.0,
      "base_ft": 10800.0,
@@ -3046,7 +3049,7 @@
      "tags": [],
      "xc": false,
      "note": "thermals to 2,900 ft",
-     "p_fly": 0.65,
+     "p_fly": 0.66,
      "p_xc": 0.0,
      "agree": "split",
      "models": {
@@ -3057,7 +3060,7 @@
       "ECMWF": 1.8,
       "ICON": 3.0
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "HRRR",
      "top_ft": 2900.0,
      "base_ft": 6800.0,
@@ -3092,7 +3095,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 1.0
+       "q": 0.99
       },
       {
        "k": "Model agreement",
@@ -3167,7 +3170,7 @@
      "xc": false,
      "note": "thermals to 6,400 ft",
      "p_fly": 1.0,
-     "p_xc": 0.0,
+     "p_xc": 0.3,
      "agree": "split",
      "models": {
       "HRRR": 2.2,
@@ -3177,7 +3180,7 @@
       "ECMWF": 3.4,
       "ICON": 3.4
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "RRFS",
      "top_ft": 6400.0,
      "base_ft": 10100.0,
@@ -3212,7 +3215,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 1.0
+       "q": 0.99
       },
       {
        "k": "Model agreement",
@@ -3275,7 +3278,7 @@
      "tags": [],
      "xc": false,
      "note": "thermals to 4,500 ft",
-     "p_fly": 0.59,
+     "p_fly": 0.7,
      "p_xc": 0.0,
      "agree": "mixed",
      "models": {
@@ -3286,7 +3289,7 @@
       "ECMWF": 3.2,
       "ICON": 2.4
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "HRRR",
      "top_ft": 4500.0,
      "base_ft": 6800.0,
@@ -3404,8 +3407,8 @@
      "tags": [],
      "xc": false,
      "note": "",
-     "p_fly": 0.56,
-     "p_xc": 0.0,
+     "p_fly": 0.64,
+     "p_xc": 0.03,
      "agree": "split",
      "models": {
       "RRFS": 2.4,
@@ -3413,7 +3416,7 @@
       "ECMWF": 3.4,
       "ICON": 2.8
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "RRFS",
      "top_ft": 2300.0,
      "base_ft": 5400.0,
@@ -3494,8 +3497,8 @@
      "tags": [],
      "xc": false,
      "note": "",
-     "p_fly": 0.56,
-     "p_xc": 0.0,
+     "p_fly": 0.93,
+     "p_xc": 0.01,
      "agree": "mixed",
      "models": {
       "RRFS": 3.0,
@@ -3503,7 +3506,7 @@
       "ECMWF": 2.4,
       "ICON": 3.2
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "RRFS",
      "top_ft": 2600.0,
      "base_ft": 7800.0,
@@ -3532,7 +3535,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 1.0
+       "q": 0.99
       },
       {
        "k": "Model agreement",
@@ -3596,7 +3599,7 @@
       "ECMWF": 1.2,
       "ICON": 1.4
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "RRFS",
      "top_ft": 5200.0,
      "base_ft": 10800.0,
@@ -3674,7 +3677,7 @@
      "tags": [],
      "xc": false,
      "note": "cross-NW",
-     "p_fly": 0.44,
+     "p_fly": 0.36,
      "p_xc": 0.0,
      "agree": "mixed",
      "models": {
@@ -3683,7 +3686,7 @@
       "ECMWF": 1.9,
       "ICON": 1.9
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "RRFS",
      "top_ft": 400.0,
      "base_ft": 2500.0,
@@ -3770,7 +3773,7 @@
       "ECMWF": 1.1,
       "ICON": 1.4
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "RRFS",
      "top_ft": 6700.0,
      "base_ft": 14200.0,
@@ -3862,7 +3865,7 @@
       "ECMWF": 3.0,
       "ICON": 2.4
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "RRFS",
      "top_ft": 4200.0,
      "base_ft": 10400.0,
@@ -3947,7 +3950,7 @@
      "tags": [],
      "xc": false,
      "note": "",
-     "p_fly": 0.65,
+     "p_fly": 0.94,
      "p_xc": 0.0,
      "agree": "agree",
      "models": {
@@ -3956,7 +3959,7 @@
       "ECMWF": 2.4,
       "ICON": 3.0
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "RRFS",
      "top_ft": 2300.0,
      "base_ft": 6200.0,
@@ -4039,8 +4042,8 @@
      "tags": [],
      "xc": false,
      "note": "thermals to 4,800 ft",
-     "p_fly": 1.0,
-     "p_xc": 0.44,
+     "p_fly": 0.8,
+     "p_xc": 0.31,
      "agree": "split",
      "models": {
       "RRFS": 3.4,
@@ -4048,7 +4051,7 @@
       "ECMWF": 1.3,
       "ICON": 3.1
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "RRFS",
      "top_ft": 4800.0,
      "base_ft": 11500.0,
@@ -4077,7 +4080,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 1.0
+       "q": 0.99
       },
       {
        "k": "Model agreement",
@@ -4126,7 +4129,7 @@
      "tags": [],
      "xc": false,
      "note": "",
-     "p_fly": 0.17,
+     "p_fly": 0.11,
      "p_xc": 0.0,
      "agree": "mixed",
      "models": {
@@ -4135,7 +4138,7 @@
       "ECMWF": 2.4,
       "ICON": 2.4
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "RRFS",
      "top_ft": 3700.0,
      "base_ft": 6800.0,
@@ -4236,15 +4239,15 @@
      ],
      "xc": false,
      "note": "thermals to 2,700 ft",
-     "p_fly": 1.0,
-     "p_xc": 0.3,
+     "p_fly": 0.99,
+     "p_xc": 0.25,
      "agree": "mixed",
      "models": {
       "GFS": 4.1,
       "ECMWF": 3.4,
       "ICON": 3.2
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "ECMWF",
      "top_ft": 2700.0,
      "base_ft": 6000.0,
@@ -4309,15 +4312,15 @@
      "tags": [],
      "xc": false,
      "note": "",
-     "p_fly": 0.38,
-     "p_xc": 0.0,
+     "p_fly": 0.34,
+     "p_xc": 0.02,
      "agree": "agree",
      "models": {
       "GFS": 2.4,
       "ECMWF": 2.4,
       "ICON": 3.1
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "ECMWF",
      "top_ft": 2200.0,
      "base_ft": 6700.0,
@@ -4394,7 +4397,7 @@
       "ECMWF": 1.3,
       "ICON": 1.3
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "ECMWF",
      "top_ft": 4400.0,
      "base_ft": 9100.0,
@@ -4464,14 +4467,14 @@
      "xc": false,
      "note": "too light to soar",
      "p_fly": 0.06,
-     "p_xc": 0.0,
+     "p_xc": 0.01,
      "agree": "mixed",
      "models": {
       "GFS": 2.7,
       "ECMWF": 1.9,
       "ICON": 1.9
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "ECMWF",
      "top_ft": 1600.0,
      "base_ft": 4400.0,
@@ -4488,7 +4491,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 1.0
+       "q": 0.99
       },
       {
        "k": "Model agreement",
@@ -4543,7 +4546,7 @@
       "ECMWF": 1.1,
       "ICON": 1.4
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "ECMWF",
      "top_ft": 4800.0,
      "base_ft": 13000.0,
@@ -4613,7 +4616,7 @@
      "tags": [],
      "xc": false,
      "note": "",
-     "p_fly": 0.52,
+     "p_fly": 0.59,
      "p_xc": 0.0,
      "agree": "split",
      "models": {
@@ -4621,7 +4624,7 @@
       "ECMWF": 3.0,
       "ICON": 1.0
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "ECMWF",
      "top_ft": 2600.0,
      "base_ft": 9200.0,
@@ -4692,7 +4695,7 @@
      "tags": [],
      "xc": false,
      "note": "low lid, 2,800 ft",
-     "p_fly": 0.48,
+     "p_fly": 0.32,
      "p_xc": 0.0,
      "agree": "agree",
      "models": {
@@ -4700,7 +4703,7 @@
       "ECMWF": 1.8,
       "ICON": 2.4
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "ECMWF",
      "top_ft": 2800.0,
      "base_ft": 5400.0,
@@ -4723,7 +4726,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 1.0
+       "q": 0.99
       },
       {
        "k": "Model agreement",
@@ -4770,7 +4773,7 @@
      "tags": [],
      "xc": false,
      "note": "low lid, 3,500 ft",
-     "p_fly": 0.0,
+     "p_fly": 0.11,
      "p_xc": 0.0,
      "agree": "agree",
      "models": {
@@ -4778,7 +4781,7 @@
       "ECMWF": 1.3,
       "ICON": 2.0
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "ECMWF",
      "top_ft": 3500.0,
      "base_ft": 9200.0,
@@ -4847,7 +4850,7 @@
      "tags": [],
      "xc": false,
      "note": "",
-     "p_fly": 0.06,
+     "p_fly": 0.11,
      "p_xc": 0.0,
      "agree": "mixed",
      "models": {
@@ -4855,7 +4858,7 @@
       "ECMWF": 2.4,
       "ICON": 2.4
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "ECMWF",
      "top_ft": 3700.0,
      "base_ft": 6400.0,
@@ -4878,7 +4881,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 1.0
+       "q": 0.99
       },
       {
        "k": "Model agreement",
@@ -4942,15 +4945,15 @@
      ],
      "xc": true,
      "note": "light drift: triangle or out-and-return",
-     "p_fly": 0.93,
-     "p_xc": 0.54,
+     "p_fly": 0.95,
+     "p_xc": 0.72,
      "agree": "agree",
      "models": {
       "GFS": 4.1,
       "ECMWF": 4.1,
       "ICON": 3.4
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "ECMWF",
      "top_ft": 3200.0,
      "base_ft": 4800.0,
@@ -4971,9 +4974,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "6% of runs",
+       "v": "20% of runs",
        "sub": "",
-       "q": 0.92
+       "q": 0.72
       },
       {
        "k": "Model agreement",
@@ -5015,7 +5018,7 @@
      "tags": [],
      "xc": false,
      "note": "",
-     "p_fly": 0.0,
+     "p_fly": 0.2,
      "p_xc": 0.0,
      "agree": "agree",
      "models": {
@@ -5023,7 +5026,7 @@
       "ECMWF": 2.4,
       "ICON": 2.4
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "ECMWF",
      "top_ft": 2100.0,
      "base_ft": 3700.0,
@@ -5044,9 +5047,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "dry",
+       "v": "17% of runs",
        "sub": "",
-       "q": 0.96
+       "q": 0.76
       },
       {
        "k": "Model agreement",
@@ -5101,7 +5104,7 @@
       "ECMWF": 1.3,
       "ICON": 1.1
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "ECMWF",
      "top_ft": 4100.0,
      "base_ft": 6300.0,
@@ -5122,9 +5125,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "6% of runs",
+       "v": "12% of runs",
        "sub": "",
-       "q": 0.92
+       "q": 0.83
       },
       {
        "k": "Model agreement",
@@ -5169,10 +5172,12 @@
     "torrey": {
      "rating": 2.42,
      "label": "Marginal",
-     "tags": [],
+     "tags": [
+      "showers around 26%"
+     ],
      "xc": false,
      "note": "too light to soar",
-     "p_fly": 0.06,
+     "p_fly": 0.48,
      "p_xc": 0.0,
      "agree": "agree",
      "models": {
@@ -5180,7 +5185,7 @@
       "ECMWF": 2.0,
       "ICON": 2.4
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "ECMWF",
      "top_ft": 1600.0,
      "base_ft": 3600.0,
@@ -5195,9 +5200,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "6% of runs",
+       "v": "26% of runs",
        "sub": "",
-       "q": 0.92
+       "q": 0.63
       },
       {
        "k": "Model agreement",
@@ -5252,7 +5257,7 @@
       "ECMWF": 1.1,
       "ICON": 1.1
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "ECMWF",
      "top_ft": 5100.0,
      "base_ft": 9100.0,
@@ -5273,9 +5278,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "6% of runs",
+       "v": "14% of runs",
        "sub": "",
-       "q": 0.92
+       "q": 0.8
       },
       {
        "k": "Model agreement",
@@ -5325,7 +5330,7 @@
      "tags": [],
      "xc": false,
      "note": "",
-     "p_fly": 0.65,
+     "p_fly": 0.58,
      "p_xc": 0.0,
      "agree": "agree",
      "models": {
@@ -5333,7 +5338,7 @@
       "ECMWF": 3.0,
       "ICON": 2.4
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "ECMWF",
      "top_ft": 2200.0,
      "base_ft": 7800.0,
@@ -5354,9 +5359,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "dry",
+       "v": "7% of runs",
        "sub": "",
-       "q": 0.94
+       "q": 0.91
       },
       {
        "k": "Model agreement",
@@ -5401,18 +5406,20 @@
     "otay": {
      "rating": 3.0,
      "label": "Glass-off",
-     "tags": [],
+     "tags": [
+      "showers around 27%"
+     ],
      "xc": false,
      "note": "",
-     "p_fly": 0.58,
-     "p_xc": 0.0,
+     "p_fly": 0.59,
+     "p_xc": 0.01,
      "agree": "agree",
      "models": {
       "GFS": 3.0,
       "ECMWF": 3.0,
       "ICON": 2.4
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "ECMWF",
      "top_ft": 2800.0,
      "base_ft": 4000.0,
@@ -5433,9 +5440,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "6% of runs",
+       "v": "27% of runs",
        "sub": "",
-       "q": 0.92
+       "q": 0.62
       },
       {
        "k": "Model agreement",
@@ -5481,7 +5488,7 @@
      "tags": [],
      "xc": false,
      "note": "",
-     "p_fly": 0.37,
+     "p_fly": 0.48,
      "p_xc": 0.0,
      "agree": "mixed",
      "models": {
@@ -5489,7 +5496,7 @@
       "ECMWF": 2.4,
       "ICON": 1.3
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "ECMWF",
      "top_ft": 3100.0,
      "base_ft": 5300.0,
@@ -5510,9 +5517,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "dry",
+       "v": "9% of runs",
        "sub": "",
-       "q": 0.94
+       "q": 0.87
       },
       {
        "k": "Model agreement",
@@ -5555,19 +5562,20 @@
      "rating": 3.01,
      "label": "Thermal",
      "tags": [
-      "glass-off"
+      "glass-off",
+      "showers around 20%"
      ],
      "xc": false,
      "note": "thermals to 4,700 ft",
-     "p_fly": 0.82,
-     "p_xc": 0.0,
+     "p_fly": 0.81,
+     "p_xc": 0.21,
      "agree": "mixed",
      "models": {
       "GFS": 3.1,
       "ECMWF": 1.8,
       "ICON": 3.0
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "GFS",
      "top_ft": 4700.0,
      "base_ft": 6000.0,
@@ -5588,9 +5596,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "8% of runs",
+       "v": "20% of runs",
        "sub": "",
-       "q": 0.88
+       "q": 0.71
       },
       {
        "k": "Model agreement",
@@ -5648,19 +5656,19 @@
      "rating": 2.54,
      "label": "Thermal",
      "tags": [
-      "showers around 48%"
+      "showers around 39%"
      ],
      "xc": false,
      "note": "thermals to 2,900 ft",
-     "p_fly": 0.59,
-     "p_xc": 0.0,
+     "p_fly": 0.56,
+     "p_xc": 0.03,
      "agree": "split",
      "models": {
       "GFS": 5.0,
       "ECMWF": 2.2,
       "ICON": 2.5
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "ECMWF",
      "top_ft": 2900.0,
      "base_ft": 3800.0,
@@ -5681,9 +5689,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "48% of runs",
+       "v": "39% of runs",
        "sub": "",
-       "q": 0.33
+       "q": 0.46
       },
       {
        "k": "Model agreement",
@@ -5728,11 +5736,11 @@
      "rating": 3.0,
      "label": "Thermal",
      "tags": [
-      "showers around 37%"
+      "showers around 34%"
      ],
      "xc": false,
      "note": "thermals to 3,000 ft",
-     "p_fly": 0.69,
+     "p_fly": 0.52,
      "p_xc": 0.0,
      "agree": "split",
      "models": {
@@ -5740,7 +5748,7 @@
       "ECMWF": 1.2,
       "ICON": 3.0
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "GFS",
      "top_ft": 3000.0,
      "base_ft": 3400.0,
@@ -5761,9 +5769,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "37% of runs",
+       "v": "34% of runs",
        "sub": "",
-       "q": 0.49
+       "q": 0.53
       },
       {
        "k": "Model agreement",
@@ -5819,7 +5827,7 @@
       "ECMWF": 1.1,
       "ICON": 1.0
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "ECMWF",
      "top_ft": 3400.0,
      "base_ft": 3300.0,
@@ -5840,9 +5848,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "37% of runs",
+       "v": "30% of runs",
        "sub": "",
-       "q": 0.49
+       "q": 0.59
       },
       {
        "k": "Model agreement",
@@ -5892,19 +5900,19 @@
      "rating": 4.47,
      "label": "Thermal day",
      "tags": [
-      "showers around 48%"
+      "showers around 47%"
      ],
      "xc": true,
      "note": "thermals above the cliffs to about 1,800 ft",
      "p_fly": 1.0,
-     "p_xc": 0.97,
+     "p_xc": 0.98,
      "agree": "split",
      "models": {
       "GFS": 5.0,
       "ECMWF": 1.9,
       "ICON": 4.5
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "GFS",
      "top_ft": 1800.0,
      "base_ft": 2900.0,
@@ -5919,9 +5927,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "48% of runs",
+       "v": "47% of runs",
        "sub": "",
-       "q": 0.33
+       "q": 0.35
       },
       {
        "k": "Model agreement",
@@ -5975,7 +5983,7 @@
       "ECMWF": 1.0,
       "ICON": 1.0
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "ECMWF",
      "top_ft": 5300.0,
      "base_ft": 5700.0,
@@ -5996,9 +6004,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "24% of runs",
+       "v": "26% of runs",
        "sub": "",
-       "q": 0.66
+       "q": 0.63
       },
       {
        "k": "Model agreement",
@@ -6059,7 +6067,7 @@
       "ECMWF": 1.0,
       "ICON": 1.1
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "ECMWF",
      "top_ft": 4100.0,
      "base_ft": 4600.0,
@@ -6080,9 +6088,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "24% of runs",
+       "v": "21% of runs",
        "sub": "",
-       "q": 0.66
+       "q": 0.7
       },
       {
        "k": "Model agreement",
@@ -6132,19 +6140,19 @@
      "rating": 3.0,
      "label": "Thermal",
      "tags": [
-      "showers around 42%"
+      "showers around 44%"
      ],
      "xc": false,
      "note": "thermals to 3,300 ft",
-     "p_fly": 0.62,
-     "p_xc": 0.0,
+     "p_fly": 0.61,
+     "p_xc": 0.07,
      "agree": "split",
      "models": {
       "GFS": 3.4,
       "ECMWF": 1.3,
       "ICON": 3.0
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "GFS",
      "top_ft": 3300.0,
      "base_ft": 3500.0,
@@ -6165,9 +6173,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "42% of runs",
+       "v": "44% of runs",
        "sub": "",
-       "q": 0.41
+       "q": 0.38
       },
       {
        "k": "Model agreement",
@@ -6215,11 +6223,11 @@
      "rating": 2.49,
      "label": "Marginal",
      "tags": [
-      "showers around 31%"
+      "showers around 26%"
      ],
      "xc": false,
      "note": "showers around",
-     "p_fly": 0.39,
+     "p_fly": 0.46,
      "p_xc": 0.0,
      "agree": "split",
      "models": {
@@ -6227,7 +6235,7 @@
       "ECMWF": 2.5,
       "ICON": 3.1
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "ECMWF",
      "top_ft": 4200.0,
      "base_ft": 4200.0,
@@ -6248,9 +6256,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "31% of runs",
+       "v": "26% of runs",
        "sub": "",
-       "q": 0.57
+       "q": 0.63
       },
       {
        "k": "Model agreement",
@@ -6292,18 +6300,20 @@
     "santabarbara": {
      "rating": 3.4,
      "label": "Thermal",
-     "tags": [],
+     "tags": [
+      "showers around 21%"
+     ],
      "xc": false,
      "note": "thermals to 5,100 ft",
-     "p_fly": 0.69,
-     "p_xc": 0.24,
+     "p_fly": 0.65,
+     "p_xc": 0.3,
      "agree": "agree",
      "models": {
       "GFS": 3.4,
       "ECMWF": 3.4,
       "ICON": 3.0
      },
-     "n_members": 71,
+     "n_members": 122,
      "lead": "ECMWF",
      "top_ft": 5100.0,
      "base_ft": 5300.0,
@@ -6324,9 +6334,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "18% of runs",
+       "v": "21% of runs",
        "sub": "",
-       "q": 0.74
+       "q": 0.7
       },
       {
        "k": "Model agreement",
