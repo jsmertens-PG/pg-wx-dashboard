@@ -379,6 +379,7 @@ function render(data) {
   const main = SITES.filter((s) => s.tier === "main");
   const coast = SITES.filter((s) => s.tier === "coast");
   const other = SITES.filter((s) => s.tier !== "main" && s.tier !== "coast");
+  const big = SITES.filter((s) => s.tier === "main" || s.tier === "coast");   // in sites.json order: Torrey, LB, Blossom, Elsinore
 
   /* freshness */
   const src = data.sources || [];
@@ -416,11 +417,10 @@ function render(data) {
       <summary class="hd">
         <span class="when">${esc(L.long)}<small>${esc(L.date)}</small>${regimeHtml(d.regime)}${d.why ? `<span class="why">${esc(d.why)}</span>` : ""}</span>
         <span class="big" title="Best home site">${trendHtml(bm)}${r1(bm?.rating)}<small>/5</small><i class="chev" aria-hidden="true"></i></span>
-        <span class="sum">${daySummary(d, main, coast, other)}</span>
+        <span class="sum">${daySummary(d, big, other)}</span>
       </summary>
       <div class="list">
-        ${main.map((s) => siteRow(d, s, i, "")).join("")}
-        ${coast.map((s) => siteRow(d, s, i, "coast")).join("")}
+        ${big.map((s) => siteRow(d, s, i, "")).join("")}
         <div class="minor">${other.map((s) => siteRow(d, s, i, "small")).join("")}</div>
       </div>
       <div class="det" id="det-${i}" hidden></div>
@@ -457,13 +457,13 @@ const bar = (r, thin) => `<span class="bar${thin ? " thin" : ""}"><i style="widt
 /* in the rows, altitudes wait for a tap: keep XC directions and reasons, drop "thermals to 3,000 ft" */
 const rowNote = (c) => (!c.note || /\d,?\d{3} ft|thermals/i.test(c.note) ? (c.launch_name && c.note && c.note.startsWith(c.launch_name) ? c.launch_name : "") : c.note);
 /* what a closed day shows: the home sites and Torrey with their number, then any other XC site */
-function daySummary(d, main, coast, other) {
+function daySummary(d, big, other) {
   const chip = (s) => {
     const c = d.sites[s.id]; if (!c) return "";
     return `<span class="sc" style="--rc:${qv(c.rating)}"><b>${esc(s.id === "lb" ? "LB" : s.short)}</b> ${r1(c.rating)}${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span>`;
   };
   const xcOthers = other.filter((s) => d.sites[s.id]?.xc).map((s) => esc(s.short));
-  return main.concat(coast).map(chip).join("") + (xcOthers.length ? `<span class="sx">XC also: ${xcOthers.join(", ")}</span>` : "");
+  return big.map(chip).join("") + (xcOthers.length ? `<span class="sx">XC also: ${xcOthers.join(", ")}</span>` : "");
 }
 let openDays = new Set();
 try { openDays = new Set(JSON.parse(sessionStorage.getItem("radar-open") || "[]")); } catch (e) {}

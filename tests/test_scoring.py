@@ -101,7 +101,7 @@ class DayTypes(unittest.TestCase):
 
 class WindowRating(unittest.TestCase):
     def test_lb_rated_on_best_midday_hour(self):
-        lb = json.loads((ROOT / "sites.json").read_text())["sites"][0]
+        lb = next(x for x in json.loads((ROOT / "sites.json").read_text())["sites"] if x["id"] == "lb")
         self.assertEqual(lb["style"], "window")
         # one strong hour at noon to 3,200 ft: a 3-4 day, whatever the rest of the afternoon does
         self.assertGreaterEqual(bf.ceil_level(lb, 3200), 4.0)
@@ -110,7 +110,7 @@ class WindowRating(unittest.TestCase):
 
 class Routes(unittest.TestCase):
     def setUp(self):
-        self.lb = json.loads((ROOT / "sites.json").read_text())["sites"][0]
+        self.lb = next(x for x in json.loads((ROOT / "sites.json").read_text())["sites"] if x["id"] == "lb")
 
     def test_downwind_route(self):
         # wind aloft from the west at 10 kt drifts LB pilots east
@@ -178,7 +178,7 @@ class Physics(unittest.TestCase):
             self.assertLess(x["lz_ft"], x["launch_ft"], x["id"])
 
     def test_offshore_hour_is_no_go(self):
-        site = json.loads((ROOT / "sites.json").read_text())["sites"][0]   # Little Black
+        site = next(x for x in json.loads((ROOT / "sites.json").read_text())["sites"] if x["id"] == "lb")   # Little Black
         hr = {"temperature_2m": [24], "dew_point_2m": [5], "precipitation": [0], "cape": [0],
               "wind_speed_10m": [12], "wind_direction_10m": [60]}
         self.assertEqual(bf.score_hour(site, hr, 0, [], 150)["q"], 0.0)
