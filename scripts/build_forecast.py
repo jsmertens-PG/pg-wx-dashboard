@@ -52,16 +52,42 @@ ENS_MODELS = {
 OPTIONAL_MODELS = {"RRFS"}           # not listed as "failed" while Open-Meteo doesn't offer it yet
 # trust for lift and rating (local experience: HRRR usually right, then NAM; GFS/ECMWF/ICON for the longer range)
 MODEL_WEIGHT = {"HRRR": 3, "RRFS": 3, "NAM": 2, "ECMWF": 1, "GFS": 1, "ICON": 1}
-# when HRRR or RRFS covers a day they alone decide it: NAM, GFS, ICON and ECMWF are left out
-# (ECMWF's wind aloft is still shown next to theirs as a check); the rest only rate the days past their range
+# while HRRR covers a day, HRRR (+ RRFS) alone decide it (ECMWF's wind aloft is only shown as a check);
+# once HRRR runs out, RRFS leads but gets help from NAM (while it lasts) and ECMWF (good on wind),
+# as a weighted mean so the helpers actually move the number; GFS and ICON only rate days past RRFS's range
 HIRES = ("HRRR", "RRFS")
+RRFS_HELP = {"RRFS": 2, "NAM": 1, "ECMWF": 1}
 
 
 def rating_models(names):
-    """The models that decide a day: HRRR/RRFS when either is there, otherwise all of them."""
+    """The models that decide a day: HRRR/RRFS; RRFS + NAM/ECMWF once HRRR runs out; otherwise all."""
     names = list(names)
-    hi = [n for n in names if n in HIRES]
-    return hi or names
+    if "HRRR" in names:
+        return [n for n in names if n in HIRES]
+    if "RRFS" in names:
+        return [n for n in names if n in RRFS_HELP]
+    return names
+
+
+def rrfs_led(names):
+    names = set(names)
+    return "RRFS" in names and "HRRR" not in names and names <= set(RRFS_HELP)
+
+
+def model_weight(name, names):
+    """Weight of a model within the set that rates the day."""
+    return RRFS_HELP.get(name, 1) if rrfs_led(names) else MODEL_WEIGHT.get(name, 1)
+
+
+def blend(ratings):
+    """{model: value} -> the day's value: weighted mean on RRFS-led days, weighted median otherwise."""
+    ratings = {k: v for k, v in ratings.items() if v is not None}
+    if not ratings:
+        return None
+    w = {k: model_weight(k, ratings) for k in ratings}
+    if rrfs_led(ratings):
+        return sum(v * w[k] for k, v in ratings.items()) / sum(w.values())
+    return wmedian((v, w[k]) for k, v in ratings.items())
 DET_LEVELS = [1000, 975, 950, 925, 900, 850, 800, 700, 600, 500]
 ENS_LEVELS = [925, 850, 700]
 # the ensembles only feed the flyable/XC chances, so they get a slim set of fields
@@ -1150,10 +1176,11 @@ def day_regimes(det, sites):
     for dstr, vs in votes.items():
         keep = set(rating_models(n for n, _ in vs))
         vs = [(n, t) for n, t in vs if n in keep]
-        tot = sum(MODEL_WEIGHT.get(n, 1) for n, _ in vs)
+        names = [n for n, _ in vs]
+        tot = sum(model_weight(n, names) for n in names)
         w = {}
         for n, t in vs:
-            w[t] = w.get(t, 0) + MODEL_WEIGHT.get(n, 1)
+            w[t] = w.get(t, 0) + model_weight(n, names)
         t, wt = max(w.items(), key=lambda x: (x[1], x[0] is not None))
         out[dstr] = {"type": t, "agree": round(wt / tot, 2), "models": {n: t2 for n, t2 in vs},
                      "features": feats.get(dstr, {})}
@@ -1270,7 +1297,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             # spread of outcomes, recentred on the regular models so their bias doesn't leak in
             ens_r = [a["rating"] for a in cell["ens"]]
             if det_r:
-                rating = wmedian((v, MODEL_WEIGHT.get(k, 1)) for k, v in det_r.items())
+                rating = blend(det_r)
             else:
                 rating = median(ens_r)
             if ens_r:
@@ -1280,8 +1307,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             else:
                 p_fly = sum(r >= 2.5 for r in det_r.values()) / len(det_r)
                 p_xc = sum(a["xc_day"] > 0 for a in D.values()) / len(D)
-            det_xc = (sum(MODEL_WEIGHT.get(k, 1) for k, a in D.items() if a["xc_day"] > 0)
-                      / max(1, sum(MODEL_WEIGHT.get(k, 1) for k in D)))
+            det_xc = (sum(model_weight(k, D) for k, a in D.items() if a["xc_day"] > 0)
+                      / max(1, sum(model_weight(k, D) for k in D)))
             xc = bool(s.get("xc_top_ft")) and rating >= 3.5 and det_xc >= 0.4
             order = [m for m in ("HRRR", "RRFS", "NAM", "ECMWF", "GFS", "ICON") if m in D]
             close = [m for m in order if abs(det_r[m] - rating) <= 1.0]
@@ -1315,7 +1342,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
 
             # key values: median across the regular models (directions from the lead model)
             vals = list(D.values()) or cell["ens"]
-            wts = [MODEL_WEIGHT.get(k, 1) for k in D] if D else [1] * len(vals)
+            wts = [model_weight(k, D) for k in D] if D else [1] * len(vals)
             W = lambda key: wmedian((v[key], w) for v, w in zip(vals, wts))
             top, base, wstar, lw = W("top"), W("base"), W("wstar"), W("lw")
             a_max, rain, cape, launch_q = W("a_max"), W("pr_win"), W("cape"), W("launch_q")
