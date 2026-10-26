@@ -703,9 +703,10 @@ def score_hour(site, hr, i, levels, elev_m):
     # (the idea behind RASP's Hcrit): weak days use about half of it, strong days most of it
     k = clamp(0.4 + 0.2 * (wstar - 1.0), 0.3, 0.8)
     usable = z0 + zi * k
-    # the best thermal of the hour gets higher than the average usable top
-    # (calibrated on one flight: LB 2026-10-24, 3,200 ft at noon vs ~2,300 ft usable in HRRR)
-    peak_top = z0 + zi * clamp(k + 0.25, 0.55, 0.95)
+    # the best thermal of the hour gets a bit higher than the average usable top. Checked against
+    # flights: LB 2026-10-24 (2,200 typical, one thermal to 3,200; HRRR peak was 3,000 with +0.25) and
+    # Blossom 2026-10-25 (4,900 at the Cap; HRRR peak was 6,200 with +0.25), so +0.10 capped at 0.75
+    peak_top = z0 + zi * clamp(k + 0.10, 0.5, 0.75)
     base = z0 + 125 * max(0.0, t2 - td) if td is not None else None
     if base is not None:
         usable = min(usable, base)
@@ -787,16 +788,21 @@ def score_hour(site, hr, i, levels, elev_m):
     # XC strength this hour (0 = no XC)
     coast_ok = site["kind"] != "ridge" or ((t850 is not None and t850 <= 9.0) or (t700 is not None and t700 <= 0.0))
     xc_s = 0.0
+    # drift that carries an XC into airspace or bad terrain (e.g. any north component at LB and Blossom)
+    xb = site.get("xc_bad_aloft")
+    # judged on the wind at the top of lift, where the drift on a glide happens (and what the card shows)
+    xc_block = bool(xb and tw_spd is not None and tw_dir is not None and tw_spd >= xb.get("min_kt", 4)
+                    and wrap_in(tw_dir, *xb["from"]))
     # a convergence line needs real flow meeting at the site, not near-calm air
     conv_ok = site["kind"] != "convergence" or (lw_mph is not None and lw_mph >= site["wind_mph"][0] and on)
-    if site.get("xc_top_ft") and coast_ok and conv_ok and q >= 0.5 and pr < 0.3 and not bad_dir and wstar >= 1.2:
+    if site.get("xc_top_ft") and coast_ok and conv_ok and q >= 0.5 and pr < 0.3 and not bad_dir and not xc_block and wstar >= 1.2:
         over = (usable if site["kind"] == "ridge" else peak_top) * FT - site["xc_top_ft"]
         if over >= 0:
             wind_f = 1.0 if a_max is None or a_max <= site["aloft_max_kt"] - 3 else 0.8
             xc_s = (0.35 + 0.65 * clamp(over / site.get("xc_span_ft", 1500))) * wind_f * clamp(wstar / 2.0, 0.6, 1.0)
     glass = (on is True and lw_mph is not None and 3 <= lw_mph <= 13 and pr < 0.05 and cape < 500
              and not bad_dir and (a_max is None or a_max <= site["aloft_max_kt"]))
-    return {"q": q, "xc_s": xc_s, "glass": glass, "cold": cold_aloft, "good_launch": bool(good_launch), "launch": launch,
+    return {"q": q, "xc_s": xc_s, "xc_block": xc_block, "glass": glass, "cold": cold_aloft, "good_launch": bool(good_launch), "launch": launch,
             "usable": usable, "peak_top": peak_top, "base": base, "agl": agl, "wstar": wstar, "climb": max(0.0, wstar - SINK + 0.3),
             "lw": lw_mph, "ld": ld, "lg": lg_mph, "a_max": a_max, "tw": (tw_dir, tw_spd) if tw_spd is not None else None, "a_spd": a_spd, "a_dir": a_dir,
             "pr": pr, "cape": cape, "codes": codes}
@@ -983,6 +989,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "launch": max(set(x["launch"] for x in blk if x["launch"]) or {None}, key=lambda v: sum(1 for x in blk if x["launch"] == v)),
         "a_max": med("a_max"), "a_spd": a_spd, "a_dir": a_dir,
         "aloftdir": sum(1 for s in blk if "aloftdir" in s["codes"]) >= 2,
+        "xc_block": sum(1 for h, s in win if s["xc_block"]) >= max(1, len(win) // 2) if win else False,
         "pr": sum(s["pr"] for _, s in hours), "pr_win": window_rain, "cape": max(s["cape"] for _, s in hours),
     }
 
@@ -1327,6 +1334,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             elif label in ("Marginal", "No go") and rating >= 2.5:
                 label = "Ridge soaring" if ridge else ("Glass-off" if lead and lead["glass"] else "Thermal")
             tags = []
+            if lead and lead.get("xc_block") and not xc and rating >= 2.5 and s.get("xc_bad_aloft"):
+                tags.append(s["xc_bad_aloft"].get("tag", "drift: no XC"))
             if lead and lead.get("switch_tag") and rating >= 2.5:
                 tags.append(lead["switch_tag"])
             if xc and lead and lead.get("style") == "window" and lead.get("best_h") is not None:
