@@ -1,7 +1,7 @@
 {
- "generated": "2026-10-26T09:12+00:00",
+ "generated": "2026-10-26T11:05+00:00",
  "sample": false,
- "overview": "Flying today 3, Tue 3, Wed 4 XC",
+ "overview": "Flying today 3, Tue 4 XC, Wed 4 XC",
  "models": {
   "HRRR": "ncep_hrrr_conus",
   "RRFS": "ncep_rrfs_conus",
@@ -25,8 +25,6 @@
  },
  "log": [
   "HRRR: ok (ncep_hrrr_conus)",
-  "RRFS: ncep_rrfs_conus surface fields empty, retrying",
-  "RRFS: ncep_rrfs_conus surface fields empty, retrying",
   "RRFS: ok (ncep_rrfs_conus)",
   "NAM: ok (ncep_nam_conus)",
   "GFS: ok (gfs_global)",
@@ -44,8 +42,8 @@
    "provider": "Open-Meteo",
    "id": "ncep_hrrr_conus",
    "status": "ok",
-   "run": "2026-10-26T07:00+00:00",
-   "fetched": "2026-10-26T09:03+00:00",
+   "run": "2026-10-26T09:00+00:00",
+   "fetched": "2026-10-26T10:58+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -54,8 +52,8 @@
    "provider": "Open-Meteo",
    "id": "ncep_rrfs_conus",
    "status": "ok",
-   "run": "2026-10-26T00:00+00:00",
-   "fetched": "2026-10-26T09:05+00:00",
+   "run": null,
+   "fetched": "2026-10-26T10:58+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -65,7 +63,7 @@
    "id": "ncep_nam_conus",
    "status": "ok",
    "run": "2026-10-26T06:00+00:00",
-   "fetched": "2026-10-26T09:05+00:00",
+   "fetched": "2026-10-26T10:58+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -75,7 +73,7 @@
    "id": "gfs_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-26T09:05+00:00",
+   "fetched": "2026-10-26T11:00+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -84,8 +82,8 @@
    "provider": "Open-Meteo",
    "id": "ecmwf_ifs025",
    "status": "ok",
-   "run": "2026-10-25T18:00+00:00",
-   "fetched": "2026-10-26T09:05+00:00",
+   "run": "2026-10-26T00:00+00:00",
+   "fetched": "2026-10-26T11:00+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -95,7 +93,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-26T09:06+00:00",
+   "fetched": "2026-10-26T11:00+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -105,7 +103,7 @@
    "id": "gfs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-26T09:08+00:00",
+   "fetched": "2026-10-26T11:01+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -115,7 +113,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-26T09:10+00:00",
+   "fetched": "2026-10-26T11:03+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -125,7 +123,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-26T09:12+00:00",
+   "fetched": "2026-10-26T11:05+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -135,7 +133,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-10-26T09:06:00+00:00",
-   "fetched": "2026-10-26T09:12+00:00",
+   "fetched": "2026-10-26T11:05+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   }
  ],
@@ -276,16 +274,16 @@
    "date": "2026-10-26",
    "sites": {
     "torrey": {
-     "rating": 3.0,
+     "rating": 2.9,
      "label": "Ridge soaring",
      "tags": [],
      "xc": false,
      "note": "WNW 8 mph",
-     "p_fly": 0.98,
+     "p_fly": 0.97,
      "p_xc": 0.0,
      "agree": "agree",
      "models": {
-      "HRRR": 3.0,
+      "HRRR": 2.9,
       "RRFS": 2.4,
       "NAM": 3.0,
       "GFS": 3.0,
@@ -295,7 +293,7 @@
      "n_members": 122,
      "lead": "HRRR",
      "top_ft": 400.0,
-     "base_ft": 2700.0,
+     "base_ft": 2900.0,
      "wstar": 1.3,
      "sunset": "6:05pm",
      "factors": [
@@ -304,7 +302,7 @@
        "v": "400\u2013800 ft",
        "q": 0.45,
        "qs": [
-        0.11,
+        0.09,
         0.45
        ],
        "sub": "RRFS 400 \u00b7 HRRR 800"
@@ -312,8 +310,8 @@
       {
        "k": "Wind 1 pm",
        "v": "WNW 8",
-       "sub": "later WNW 11",
-       "q": 1.0
+       "sub": "later WNW 10 \u00b7 cross-NW",
+       "q": 0.33
       },
       {
        "k": "Rain & storms",
@@ -324,7 +322,7 @@
       {
        "k": "Model agreement",
        "v": "agree",
-       "sub": "HRRR 3.0 \u00b7 RRFS 2.4 \u00b7 NAM 3.0 \u00b7 GFS 3.0 \u00b7 ECMWF 3.0 \u00b7 ICON 3.0",
+       "sub": "HRRR 2.9 \u00b7 RRFS 2.4 \u00b7 NAM 3.0 \u00b7 GFS 3.0 \u00b7 ECMWF 3.0 \u00b7 ICON 3.0",
        "q": 0.77
       }
      ],
@@ -332,13 +330,17 @@
      "ground_ft": 0,
      "launch_ft": 300,
      "style": "ridge",
-     "why": [],
+     "why": [
+      "cross"
+     ],
      "diag": {
       "HRRR": {
-       "r": 3.0,
+       "r": 2.9,
        "top": 800.0,
        "w": 1.4,
-       "why": []
+       "why": [
+        "cross"
+       ]
       },
       "RRFS": {
        "r": 2.4,
@@ -373,53 +375,55 @@
        "why": []
       }
      },
-     "was": 3.0,
+     "was": 2.9,
      "trend": 0.0
     },
     "lb": {
-     "rating": 3.0,
-     "label": "Glass-off",
-     "tags": [],
+     "rating": 3.4,
+     "label": "Thermal",
+     "tags": [
+      "glass-off"
+     ],
      "xc": false,
-     "note": "",
-     "p_fly": 0.91,
+     "note": "thermals to 2,400 ft",
+     "p_fly": 1.0,
      "p_xc": 0.42,
      "agree": "split",
      "models": {
-      "HRRR": 4.0,
+      "HRRR": 3.4,
       "RRFS": 3.0,
       "NAM": 3.0,
       "GFS": 4.6,
-      "ECMWF": 4.6,
-      "ICON": 3.0
+      "ECMWF": 4.9,
+      "ICON": 3.4
      },
      "n_members": 122,
-     "lead": "RRFS",
+     "lead": "HRRR",
      "top_ft": 2400.0,
-     "base_ft": 5700.0,
+     "base_ft": 5800.0,
      "wstar": 1.6,
      "sunset": "6:04pm",
      "factors": [
       {
        "k": "Height",
        "v": "2,400\u20133,000 ft",
-       "q": 0.76,
+       "q": 0.73,
        "qs": [
-        0.46,
-        0.76
+        0.48,
+        0.73
        ],
        "sub": "RRFS 2,400 \u00b7 HRRR 3,000"
       },
       {
        "k": "Wind 1 pm",
-       "v": "WNW 6",
-       "sub": "later WNW 10",
+       "v": "WNW 8",
+       "sub": "later WNW 12",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "WNW 8 kt",
-       "sub": "at 1,800 ft",
+       "v": "WNW 7 kt",
+       "sub": "at 2,300 ft",
        "q": 1.0
       },
       {
@@ -431,20 +435,18 @@
       {
        "k": "Model agreement",
        "v": "split",
-       "sub": "HRRR 4.0 \u00b7 RRFS 3.0 \u00b7 NAM 3.0 \u00b7 GFS 4.6 \u00b7 ECMWF 4.6 \u00b7 ICON 3.0",
-       "q": 0.35
+       "sub": "HRRR 3.4 \u00b7 RRFS 3.0 \u00b7 NAM 3.0 \u00b7 GFS 4.6 \u00b7 ECMWF 4.9 \u00b7 ICON 3.4",
+       "q": 0.23
       }
      ],
      "alt_source": "RRFS",
      "ground_ft": 751,
      "launch_ft": 1050,
      "style": "window",
-     "why": [
-      "lid"
-     ],
+     "why": [],
      "diag": {
       "HRRR": {
-       "r": 4.0,
+       "r": 3.4,
        "top": 3000.0,
        "w": 1.7,
        "why": []
@@ -453,9 +455,7 @@
        "r": 3.0,
        "top": 2400.0,
        "w": 1.6,
-       "why": [
-        "lid"
-       ]
+       "why": []
       },
       "NAM": {
        "r": 3.0,
@@ -472,24 +472,24 @@
        "why": []
       },
       "ECMWF": {
-       "r": 4.6,
-       "top": 3900.0,
-       "w": 1.9,
+       "r": 4.9,
+       "top": 4400.0,
+       "w": 2.0,
        "why": [
         "gusty"
        ]
       },
       "ICON": {
-       "r": 3.0,
-       "top": 2400.0,
+       "r": 3.4,
+       "top": 2900.0,
        "w": 1.6,
        "why": [
         "gusty"
        ]
       }
      },
-     "was": 3.1,
-     "trend": -0.1
+     "was": 3.4,
+     "trend": 0.0
     },
     "blossom": {
      "rating": 3.4,
@@ -498,12 +498,12 @@
       "glass-off"
      ],
      "xc": false,
-     "note": "thermals to 3,900 ft",
+     "note": "thermals to 4,600 ft",
      "p_fly": 1.0,
      "p_xc": 0.42,
-     "agree": "agree",
+     "agree": "mixed",
      "models": {
-      "HRRR": 3.4,
+      "HRRR": 4.0,
       "RRFS": 3.4,
       "NAM": 3.0,
       "GFS": 3.4,
@@ -512,31 +512,31 @@
      },
      "n_members": 122,
      "lead": "HRRR",
-     "top_ft": 3900.0,
-     "base_ft": 7700.0,
-     "wstar": 1.9,
+     "top_ft": 4600.0,
+     "base_ft": 7900.0,
+     "wstar": 2.0,
      "sunset": "6:03pm",
      "factors": [
       {
        "k": "Height",
-       "v": "3,900\u20134,900 ft",
-       "q": 0.74,
+       "v": "4,600\u20135,000 ft",
+       "q": 0.76,
        "qs": [
-        0.61,
-        0.74
+        0.7,
+        0.76
        ],
-       "sub": "RRFS 3,900 \u00b7 HRRR 4,900"
+       "sub": "RRFS 4,600 \u00b7 HRRR 5,000"
       },
       {
        "k": "Wind 1 pm",
-       "v": "W 3",
+       "v": "W 4",
        "sub": "later WNW 12",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
        "v": "NW 5 kt",
-       "sub": "at 3,700 ft",
+       "sub": "at 3,800 ft",
        "q": 1.0
       },
       {
@@ -547,9 +547,9 @@
       },
       {
        "k": "Model agreement",
-       "v": "agree",
-       "sub": "HRRR 3.4 \u00b7 RRFS 3.4 \u00b7 NAM 3.0 \u00b7 GFS 3.4 \u00b7 ECMWF 3.4 \u00b7 ICON 3.4",
-       "q": 0.84
+       "v": "mixed",
+       "sub": "HRRR 4.0 \u00b7 RRFS 3.4 \u00b7 NAM 3.0 \u00b7 GFS 3.4 \u00b7 ECMWF 3.4 \u00b7 ICON 3.4",
+       "q": 0.59
       }
      ],
      "alt_source": "RRFS",
@@ -559,15 +559,15 @@
      "why": [],
      "diag": {
       "HRRR": {
-       "r": 3.4,
-       "top": 4900.0,
+       "r": 4.0,
+       "top": 5000.0,
        "w": 2.1,
        "why": []
       },
       "RRFS": {
        "r": 3.4,
-       "top": 3900.0,
-       "w": 1.9,
+       "top": 4600.0,
+       "w": 2.0,
        "why": []
       },
       "NAM": {
@@ -588,7 +588,7 @@
       },
       "ECMWF": {
        "r": 3.4,
-       "top": 3800.0,
+       "top": 4000.0,
        "w": 1.8,
        "why": [
         "gusty"
@@ -596,8 +596,8 @@
       },
       "ICON": {
        "r": 3.4,
-       "top": 4100.0,
-       "w": 1.9,
+       "top": 4900.0,
+       "w": 2.0,
        "why": [
         "gusty"
        ]
@@ -607,10 +607,10 @@
      "trend": 0.0
     },
     "elsinore": {
-     "rating": 3.04,
+     "rating": 3.39,
      "label": "Thermal",
      "tags": [
-      "switch ~3pm"
+      "switch ~2pm"
      ],
      "xc": false,
      "note": "thermals to 6,600 ft",
@@ -618,40 +618,40 @@
      "p_xc": 0.42,
      "agree": "split",
      "models": {
-      "HRRR": 3.6,
-      "RRFS": 1.7,
+      "HRRR": 3.7,
+      "RRFS": 3.4,
       "NAM": 1.0,
       "GFS": 3.4,
       "ECMWF": 3.0,
-      "ICON": 3.1
+      "ICON": 3.2
      },
      "n_members": 122,
      "lead": "HRRR",
      "top_ft": 6600.0,
-     "base_ft": 8900.0,
-     "wstar": 2.1,
+     "base_ft": 9200.0,
+     "wstar": 2.2,
      "sunset": "6:05pm",
      "factors": [
       {
        "k": "Height",
-       "v": "6,500 ft",
-       "q": 0.7,
+       "v": "6,600 ft",
+       "q": 0.72,
        "qs": [
         0.7,
-        0.69
+        0.72
        ],
-       "sub": "RRFS 6,600 \u00b7 HRRR 6,500"
+       "sub": "RRFS 6,600 \u00b7 HRRR 6,700"
       },
       {
        "k": "Wind 1 pm",
-       "v": "WNW 4",
+       "v": "W 3",
        "sub": "later W 8",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "WNW 2 kt",
-       "sub": "at 4,900 ft",
+       "v": "W 3 kt",
+       "sub": "at 5,100 ft",
        "q": 1.0
       },
       {
@@ -663,7 +663,7 @@
       {
        "k": "Model agreement",
        "v": "split",
-       "sub": "HRRR 3.6 \u00b7 RRFS 1.7 \u00b7 NAM 1.0 \u00b7 GFS 3.4 \u00b7 ECMWF 3.0 \u00b7 ICON 3.1",
+       "sub": "HRRR 3.7 \u00b7 RRFS 3.4 \u00b7 NAM 1.0 \u00b7 GFS 3.4 \u00b7 ECMWF 3.0 \u00b7 ICON 3.2",
        "q": 0.0
       }
      ],
@@ -676,19 +676,18 @@
      ],
      "diag": {
       "HRRR": {
-       "r": 3.6,
-       "top": 6500.0,
-       "w": 2.1,
+       "r": 3.7,
+       "top": 6700.0,
+       "w": 2.2,
        "why": [
         "aloftdir"
        ]
       },
       "RRFS": {
-       "r": 1.7,
+       "r": 3.4,
        "top": 6600.0,
        "w": 2.2,
        "why": [
-        "otb",
         "aloftdir",
         "lid"
        ]
@@ -720,7 +719,7 @@
        ]
       },
       "ICON": {
-       "r": 3.1,
+       "r": 3.2,
        "top": 6400.0,
        "w": 2.2,
        "why": [
@@ -728,20 +727,20 @@
        ]
       }
      },
-     "was": 1.3,
-     "trend": 1.7
+     "was": 1.1,
+     "trend": 2.3
     },
     "soboba": {
-     "rating": 3.4,
+     "rating": 2.58,
      "label": "Thermal",
      "tags": [],
      "xc": false,
-     "note": "thermals to 6,600 ft",
-     "p_fly": 0.98,
-     "p_xc": 0.42,
+     "note": "thermals to 6,300 ft",
+     "p_fly": 0.67,
+     "p_xc": 0.0,
      "agree": "split",
      "models": {
-      "HRRR": 4.1,
+      "HRRR": 2.6,
       "RRFS": 2.6,
       "NAM": 1.8,
       "GFS": 3.4,
@@ -750,31 +749,31 @@
      },
      "n_members": 122,
      "lead": "HRRR",
-     "top_ft": 6600.0,
-     "base_ft": 9300.0,
+     "top_ft": 6300.0,
+     "base_ft": 9600.0,
      "wstar": 2.0,
      "sunset": "6:03pm",
      "factors": [
       {
        "k": "Height",
-       "v": "6,200\u20136,600 ft",
-       "q": 0.82,
+       "v": "6,300 ft",
+       "q": 0.79,
        "qs": [
-        0.82,
-        0.78
+        0.78,
+        0.79
        ],
-       "sub": "RRFS 6,600 \u00b7 HRRR 6,200"
+       "sub": "RRFS 6,300 \u00b7 HRRR 6,300"
       },
       {
        "k": "Wind 1 pm",
        "v": "WNW 5",
-       "sub": "later WNW 7",
-       "q": 0.67
+       "sub": "later WNW 7 \u00b7 over the back",
+       "q": 0.33
       },
       {
        "k": "Wind aloft",
        "v": "W 5 kt",
-       "sub": "at 4,400 ft",
+       "sub": "at 4,500 ft",
        "q": 1.0
       },
       {
@@ -786,8 +785,8 @@
       {
        "k": "Model agreement",
        "v": "split",
-       "sub": "HRRR 4.1 \u00b7 RRFS 2.6 \u00b7 NAM 1.8 \u00b7 GFS 3.4 \u00b7 ECMWF 3.4 \u00b7 ICON 3.4",
-       "q": 0.1
+       "sub": "HRRR 2.6 \u00b7 RRFS 2.6 \u00b7 NAM 1.8 \u00b7 GFS 3.4 \u00b7 ECMWF 3.4 \u00b7 ICON 3.4",
+       "q": 0.36
       }
      ],
      "alt_source": "RRFS",
@@ -799,8 +798,8 @@
      ],
      "diag": {
       "HRRR": {
-       "r": 4.1,
-       "top": 6200.0,
+       "r": 2.6,
+       "top": 6300.0,
        "w": 2.0,
        "why": [
         "otb"
@@ -808,7 +807,7 @@
       },
       "RRFS": {
        "r": 2.6,
-       "top": 6600.0,
+       "top": 6300.0,
        "w": 2.1,
        "why": [
         "otb"
@@ -837,58 +836,58 @@
       },
       "ICON": {
        "r": 3.4,
-       "top": 5500.0,
+       "top": 5100.0,
        "w": 2.0,
        "why": []
       }
      },
      "was": 1.0,
-     "trend": 2.4
+     "trend": 1.6
     },
     "otay": {
      "rating": 3.4,
      "label": "Thermal",
      "tags": [],
      "xc": false,
-     "note": "thermals to 3,900 ft",
+     "note": "thermals to 4,200 ft",
      "p_fly": 0.82,
      "p_xc": 0.44,
-     "agree": "split",
+     "agree": "agree",
      "models": {
       "HRRR": 3.4,
       "RRFS": 3.4,
       "NAM": 3.0,
       "GFS": 3.4,
-      "ECMWF": 1.8,
-      "ICON": 2.4
+      "ECMWF": 3.0,
+      "ICON": 3.0
      },
      "n_members": 122,
      "lead": "HRRR",
-     "top_ft": 3900.0,
-     "base_ft": 6500.0,
+     "top_ft": 4200.0,
+     "base_ft": 7100.0,
      "wstar": 1.9,
      "sunset": "6:04pm",
      "factors": [
       {
        "k": "Height",
-       "v": "3,800 ft",
-       "q": 0.65,
+       "v": "3,900\u20134,200 ft",
+       "q": 0.7,
        "qs": [
-        0.65,
-        0.64
+        0.7,
+        0.66
        ],
-       "sub": "RRFS 3,900 \u00b7 HRRR 3,800"
+       "sub": "RRFS 4,200 \u00b7 HRRR 3,900"
       },
       {
        "k": "Wind 1 pm",
        "v": "NW 8",
-       "sub": "later WNW 13",
+       "sub": "later NW 13",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "NW 7 kt",
-       "sub": "at 2,900 ft",
+       "v": "NW 6 kt",
+       "sub": "at 3,000 ft",
        "q": 0.97
       },
       {
@@ -899,9 +898,9 @@
       },
       {
        "k": "Model agreement",
-       "v": "split",
-       "sub": "HRRR 3.4 \u00b7 RRFS 3.4 \u00b7 NAM 3.0 \u00b7 GFS 3.4 \u00b7 ECMWF 1.8 \u00b7 ICON 2.4",
-       "q": 0.36
+       "v": "agree",
+       "sub": "HRRR 3.4 \u00b7 RRFS 3.4 \u00b7 NAM 3.0 \u00b7 GFS 3.4 \u00b7 ECMWF 3.0 \u00b7 ICON 3.0",
+       "q": 0.84
       }
      ],
      "alt_source": "RRFS",
@@ -912,15 +911,16 @@
      "diag": {
       "HRRR": {
        "r": 3.4,
-       "top": 3800.0,
+       "top": 3900.0,
        "w": 1.9,
        "why": []
       },
       "RRFS": {
        "r": 3.4,
-       "top": 3900.0,
-       "w": 1.9,
+       "top": 4200.0,
+       "w": 2.0,
        "why": [
+        "gusty",
         "strong"
        ]
       },
@@ -939,9 +939,9 @@
        "why": []
       },
       "ECMWF": {
-       "r": 1.8,
-       "top": 2300.0,
-       "w": 1.6,
+       "r": 3.0,
+       "top": 2800.0,
+       "w": 1.7,
        "why": [
         "otb",
         "gusty",
@@ -949,20 +949,20 @@
        ]
       },
       "ICON": {
-       "r": 2.4,
-       "top": 4200.0,
-       "w": 2.0,
+       "r": 3.0,
+       "top": 2900.0,
+       "w": 1.7,
        "why": [
         "gusty",
         "lid"
        ]
       }
      },
-     "was": 2.4,
-     "trend": 1.0
+     "was": 3.0,
+     "trend": 0.4
     },
     "lagunahorse": {
-     "rating": 1.47,
+     "rating": 1.48,
      "label": "No go",
      "tags": [],
      "xc": false,
@@ -981,23 +981,23 @@
      "n_members": 122,
      "lead": "HRRR",
      "top_ft": 7200.0,
-     "base_ft": 10900.0,
-     "wstar": 1.9,
+     "base_ft": 11300.0,
+     "wstar": 2.0,
      "sunset": "6:02pm",
      "factors": [
       {
        "k": "Height",
-       "v": "6,700\u20137,200 ft",
+       "v": "6,800\u20137,200 ft",
        "q": 0.51,
        "qs": [
         0.51,
-        0.44
+        0.46
        ],
-       "sub": "RRFS 7,200 \u00b7 HRRR 6,700"
+       "sub": "RRFS 7,200 \u00b7 HRRR 6,800"
       },
       {
        "k": "Wind 1 pm",
-       "v": "WSW 3",
+       "v": "WSW 2",
        "sub": "later WNW 9",
        "q": 1.0
       },
@@ -1017,7 +1017,7 @@
        "k": "Model agreement",
        "v": "agree",
        "sub": "HRRR 1.5 \u00b7 RRFS 1.6 \u00b7 NAM 1.1 \u00b7 GFS 1.5 \u00b7 ECMWF 1.2 \u00b7 ICON 1.5",
-       "q": 0.83
+       "q": 0.82
       }
      ],
      "alt_source": "RRFS",
@@ -1028,8 +1028,8 @@
      "diag": {
       "HRRR": {
        "r": 1.5,
-       "top": 6700.0,
-       "w": 1.9,
+       "top": 6800.0,
+       "w": 2.0,
        "why": []
       },
       "RRFS": {
@@ -1056,7 +1056,7 @@
       },
       "ECMWF": {
        "r": 1.2,
-       "top": 5900.0,
+       "top": 5700.0,
        "w": 1.8,
        "why": [
         "otb",
@@ -1066,9 +1066,11 @@
       },
       "ICON": {
        "r": 1.5,
-       "top": 6900.0,
-       "w": 1.9,
-       "why": []
+       "top": 6800.0,
+       "w": 2.0,
+       "why": [
+        "gusty"
+       ]
       }
      },
      "launch_name": "Horse",
@@ -1077,37 +1079,39 @@
     },
     "marshall": {
      "rating": 3.0,
-     "label": "Glass-off",
-     "tags": [],
+     "label": "Thermal",
+     "tags": [
+      "glass-off"
+     ],
      "xc": false,
-     "note": "",
+     "note": "thermals to 6,300 ft",
      "p_fly": 0.7,
      "p_xc": 0.0,
      "agree": "mixed",
      "models": {
       "HRRR": 3.0,
-      "RRFS": 3.3,
+      "RRFS": 3.4,
       "NAM": 2.4,
       "GFS": 3.0,
       "ECMWF": 3.0,
-      "ICON": 3.0
+      "ICON": 2.6
      },
      "n_members": 122,
      "lead": "HRRR",
      "top_ft": 6300.0,
      "base_ft": 9800.0,
-     "wstar": 1.9,
+     "wstar": 2.0,
      "sunset": "6:04pm",
      "factors": [
       {
        "k": "Height",
-       "v": "5,900\u20136,300 ft",
-       "q": 0.63,
+       "v": "6,100 ft",
+       "q": 0.64,
        "qs": [
-        0.63,
-        0.57
+        0.64,
+        0.59
        ],
-       "sub": "RRFS 6,300 \u00b7 HRRR 5,900"
+       "sub": "RRFS 6,300 \u00b7 HRRR 6,100"
       },
       {
        "k": "Wind 1 pm",
@@ -1117,8 +1121,8 @@
       },
       {
        "k": "Wind aloft",
-       "v": "SSW 4 kt",
-       "sub": "at 4,400 ft",
+       "v": "SSW 5 kt",
+       "sub": "at 4,600 ft",
        "q": 1.0
       },
       {
@@ -1130,8 +1134,8 @@
       {
        "k": "Model agreement",
        "v": "mixed",
-       "sub": "HRRR 3.0 \u00b7 RRFS 3.3 \u00b7 NAM 2.4 \u00b7 GFS 3.0 \u00b7 ECMWF 3.0 \u00b7 ICON 3.0",
-       "q": 0.66
+       "sub": "HRRR 3.0 \u00b7 RRFS 3.4 \u00b7 NAM 2.4 \u00b7 GFS 3.0 \u00b7 ECMWF 3.0 \u00b7 ICON 2.6",
+       "q": 0.6
       }
      ],
      "alt_source": "RRFS",
@@ -1144,17 +1148,19 @@
      "diag": {
       "HRRR": {
        "r": 3.0,
-       "top": 5900.0,
-       "w": 1.9,
+       "top": 6100.0,
+       "w": 2.0,
        "why": [
         "lid"
        ]
       },
       "RRFS": {
-       "r": 3.3,
+       "r": 3.4,
        "top": 6300.0,
        "w": 2.1,
-       "why": []
+       "why": [
+        "lid"
+       ]
       },
       "NAM": {
        "r": 2.4,
@@ -1174,7 +1180,7 @@
       },
       "ECMWF": {
        "r": 3.0,
-       "top": 4500.0,
+       "top": 4200.0,
        "w": 1.8,
        "why": [
         "gusty",
@@ -1182,9 +1188,9 @@
        ]
       },
       "ICON": {
-       "r": 3.0,
-       "top": 6100.0,
-       "w": 2.1,
+       "r": 2.6,
+       "top": 6000.0,
+       "w": 2.0,
        "why": [
         "lid"
        ]
@@ -1194,49 +1200,49 @@
      "trend": 0.4
     },
     "santabarbara": {
-     "rating": 2.9,
+     "rating": 3.0,
      "label": "Thermal",
      "tags": [],
      "xc": false,
-     "note": "thermals to 4,500 ft",
+     "note": "thermals to 4,300 ft",
      "p_fly": 0.69,
      "p_xc": 0.0,
-     "agree": "split",
+     "agree": "mixed",
      "models": {
-      "HRRR": 2.9,
-      "RRFS": 2.8,
+      "HRRR": 3.0,
+      "RRFS": 2.2,
       "NAM": 3.0,
       "GFS": 3.7,
-      "ECMWF": 3.4,
-      "ICON": 1.8
+      "ECMWF": 3.1,
+      "ICON": 2.4
      },
      "n_members": 122,
      "lead": "HRRR",
-     "top_ft": 4500.0,
+     "top_ft": 4300.0,
      "base_ft": 6500.0,
-     "wstar": 1.5,
+     "wstar": 1.4,
      "sunset": "6:13pm",
      "factors": [
       {
        "k": "Height",
-       "v": "4,500 ft",
-       "q": 0.51,
+       "v": "4,300\u20134,600 ft",
+       "q": 0.52,
        "qs": [
-        0.49,
-        0.51
+        0.42,
+        0.52
        ],
-       "sub": "RRFS 4,500 \u00b7 HRRR 4,600"
+       "sub": "RRFS 4,300 \u00b7 HRRR 4,600"
       },
       {
        "k": "Wind 1 pm",
-       "v": "SSW 4",
-       "sub": "later W 8",
+       "v": "SSW 3",
+       "sub": "later W 7",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "SSW 2 kt",
-       "sub": "at 4,000 ft",
+       "v": "SW 2 kt",
+       "sub": "at 4,100 ft",
        "q": 1.0
       },
       {
@@ -1247,9 +1253,9 @@
       },
       {
        "k": "Model agreement",
-       "v": "split",
-       "sub": "HRRR 2.9 \u00b7 RRFS 2.8 \u00b7 NAM 3.0 \u00b7 GFS 3.7 \u00b7 ECMWF 3.4 \u00b7 ICON 1.8",
-       "q": 0.24
+       "v": "mixed",
+       "sub": "HRRR 3.0 \u00b7 RRFS 2.2 \u00b7 NAM 3.0 \u00b7 GFS 3.7 \u00b7 ECMWF 3.1 \u00b7 ICON 2.4",
+       "q": 0.41
       }
      ],
      "alt_source": "RRFS",
@@ -1259,15 +1265,15 @@
      "why": [],
      "diag": {
       "HRRR": {
-       "r": 2.9,
+       "r": 3.0,
        "top": 4600.0,
        "w": 1.5,
        "why": []
       },
       "RRFS": {
-       "r": 2.8,
-       "top": 4500.0,
-       "w": 1.5,
+       "r": 2.2,
+       "top": 4300.0,
+       "w": 1.4,
        "why": []
       },
       "NAM": {
@@ -1285,16 +1291,16 @@
        "why": []
       },
       "ECMWF": {
-       "r": 3.4,
-       "top": 5100.0,
-       "w": 1.6,
+       "r": 3.1,
+       "top": 4800.0,
+       "w": 1.5,
        "why": [
         "gusty"
        ]
       },
       "ICON": {
-       "r": 1.8,
-       "top": 4000.0,
+       "r": 2.4,
+       "top": 4100.0,
        "w": 1.3,
        "why": [
         "lid"
@@ -1302,7 +1308,7 @@
       }
      },
      "was": 3.0,
-     "trend": -0.1
+     "trend": 0.0
     }
    },
    "regime": {
@@ -1318,17 +1324,17 @@
     "features": {
      "HRRR": {
       "rain_mm": 0.0,
-      "t850": 13.3,
-      "w850": "N 4",
-      "w700": "W 7",
-      "rh": 50
+      "t850": 13.2,
+      "w850": "N 3",
+      "w700": "W 8",
+      "rh": 51
      },
      "RRFS": {
       "rain_mm": 0.0,
-      "t850": 13.5,
-      "w850": "NNW 5",
-      "w700": "WNW 8",
-      "rh": 44
+      "t850": 13.4,
+      "w850": "N 6",
+      "w700": "WNW 10",
+      "rh": 41
      },
      "GFS": {
       "rain_mm": 0.0,
@@ -1339,47 +1345,47 @@
      },
      "ECMWF": {
       "rain_mm": 0.0,
-      "t850": 13.9,
-      "w850": "N 4",
-      "w700": "WNW 6",
-      "rh": 36
+      "t850": 13.6,
+      "w850": "NNW 4",
+      "w700": "WNW 8",
+      "rh": 33
      },
      "ICON": {
       "rain_mm": 0.0,
       "t850": 13.4,
-      "w850": "WNW 3",
+      "w850": "WNW 4",
       "w700": "WNW 8",
-      "rh": 47
+      "rh": 46
      }
     }
    },
-   "best": "blossom",
-   "best_main": "blossom",
-   "headline": "Little Black glass-off \u00b7 Blossom thermal \u00b7 Elsinore thermal",
+   "best": "lb",
+   "best_main": "lb",
+   "headline": "Little Black thermal \u00b7 Blossom thermal \u00b7 Elsinore thermal",
    "why": null
   },
   {
    "date": "2026-10-27",
    "sites": {
     "torrey": {
-     "rating": 1.86,
-     "label": "Marginal",
+     "rating": 2.52,
+     "label": "Ridge soaring",
      "tags": [],
      "xc": false,
-     "note": "too light to soar",
-     "p_fly": 0.25,
+     "note": "WSW 7 mph",
+     "p_fly": 0.51,
      "p_xc": 0.0,
      "agree": "mixed",
      "models": {
       "HRRR": 3.0,
-      "RRFS": 1.9,
+      "RRFS": 2.5,
       "NAM": 1.9,
       "GFS": 2.4,
-      "ECMWF": 1.9,
+      "ECMWF": 2.5,
       "ICON": 1.9
      },
      "n_members": 122,
-     "lead": "RRFS",
+     "lead": "HRRR",
      "top_ft": 800.0,
      "base_ft": 3000.0,
      "wstar": 1.5,
@@ -1390,16 +1396,16 @@
        "v": "800 ft",
        "q": 0.62,
        "qs": [
-        0.39,
+        0.41,
         0.62
        ],
        "sub": "RRFS 800 \u00b7 HRRR 1,000"
       },
       {
        "k": "Wind 1 pm",
-       "v": "W 6",
-       "sub": "later W 7",
-       "q": 0.0
+       "v": "WSW 7",
+       "sub": "later W 8",
+       "q": 1.0
       },
       {
        "k": "Rain & storms",
@@ -1410,7 +1416,7 @@
       {
        "k": "Model agreement",
        "v": "mixed",
-       "sub": "HRRR 3.0 \u00b7 RRFS 1.9 \u00b7 NAM 1.9 \u00b7 GFS 2.4 \u00b7 ECMWF 1.9 \u00b7 ICON 1.9",
+       "sub": "HRRR 3.0 \u00b7 RRFS 2.5 \u00b7 NAM 1.9 \u00b7 GFS 2.4 \u00b7 ECMWF 2.5 \u00b7 ICON 1.9",
        "q": 0.54
       }
      ],
@@ -1418,9 +1424,7 @@
      "ground_ft": 0,
      "launch_ft": 300,
      "style": "ridge",
-     "why": [
-      "light"
-     ],
+     "why": [],
      "diag": {
       "HRRR": {
        "r": 3.0,
@@ -1429,7 +1433,7 @@
        "why": []
       },
       "RRFS": {
-       "r": 1.9,
+       "r": 2.5,
        "top": 800.0,
        "w": 1.4,
        "why": [
@@ -1453,60 +1457,61 @@
        ]
       },
       "ECMWF": {
-       "r": 1.9,
-       "top": 1300.0,
-       "w": 1.6,
+       "r": 2.5,
+       "top": 1000.0,
+       "w": 1.5,
        "why": [
         "light"
        ]
       },
       "ICON": {
        "r": 1.9,
-       "top": 1300.0,
-       "w": 1.6,
+       "top": 1400.0,
+       "w": 1.7,
        "why": [
         "light"
        ]
       }
      },
      "was": 2.0,
-     "trend": -0.1
+     "trend": 0.5
     },
     "lb": {
-     "rating": 3.4,
-     "label": "Thermal",
+     "rating": 4.0,
+     "label": "XC",
      "tags": [
+      "window ~12pm",
       "glass-off"
      ],
-     "xc": false,
-     "note": "thermals to 2,800 ft",
+     "xc": true,
+     "note": "",
      "p_fly": 1.0,
-     "p_xc": 0.42,
+     "p_xc": 0.76,
      "agree": "mixed",
      "models": {
       "HRRR": 4.0,
-      "RRFS": 3.4,
+      "RRFS": 4.0,
       "NAM": 3.0,
       "GFS": 4.4,
-      "ECMWF": 3.4,
+      "ECMWF": 4.0,
       "ICON": 3.0
      },
      "n_members": 122,
      "lead": "HRRR",
-     "top_ft": 2800.0,
+     "top_ft": 3000.0,
      "base_ft": 4400.0,
      "wstar": 1.6,
      "sunset": "6:03pm",
      "factors": [
       {
        "k": "Height",
-       "v": "2,800 ft",
+       "v": "3,000 ft",
        "q": 0.75,
        "qs": [
-        0.66,
+        0.75,
         0.75
        ],
-       "sub": "RRFS 2,800 \u00b7 HRRR 3,000"
+       "sub": "RRFS 3,000 \u00b7 HRRR 3,000"
       },
       {
        "k": "Wind 1 pm",
@@ -1529,7 +1534,7 @@
       {
        "k": "Model agreement",
        "v": "mixed",
-       "sub": "HRRR 4.0 \u00b7 RRFS 3.4 \u00b7 NAM 3.0 \u00b7 GFS 4.4 \u00b7 ECMWF 3.4 \u00b7 ICON 3.0",
+       "sub": "HRRR 4.0 \u00b7 RRFS 4.0 \u00b7 NAM 3.0 \u00b7 GFS 4.4 \u00b7 ECMWF 4.0 \u00b7 ICON 3.0",
        "q": 0.44
       }
      ],
@@ -1546,8 +1551,8 @@
        "why": []
       },
       "RRFS": {
-       "r": 3.4,
-       "top": 2800.0,
+       "r": 4.0,
+       "top": 3000.0,
        "w": 1.6,
        "why": []
       },
@@ -1567,16 +1572,16 @@
        "why": []
       },
       "ECMWF": {
-       "r": 3.4,
-       "top": 2800.0,
-       "w": 1.6,
+       "r": 4.0,
+       "top": 3000.0,
+       "w": 1.7,
        "why": [
         "gusty"
        ]
       },
       "ICON": {
        "r": 3.0,
-       "top": 2400.0,
+       "top": 2500.0,
        "w": 1.5,
        "why": [
         "gusty"
@@ -1584,7 +1589,7 @@
       }
      },
      "was": 3.0,
-     "trend": 0.4
+     "trend": 1.0
     },
     "blossom": {
      "rating": 3.0,
@@ -1603,7 +1608,7 @@
       "NAM": 3.0,
       "GFS": 3.0,
       "ECMWF": 2.4,
-      "ICON": 3.1
+      "ICON": 3.2
      },
      "n_members": 122,
      "lead": "HRRR",
@@ -1617,7 +1622,7 @@
        "v": "2,900\u20133,400 ft",
        "q": 0.55,
        "qs": [
-        0.48,
+        0.46,
         0.55
        ],
        "sub": "RRFS 2,900 \u00b7 HRRR 3,400"
@@ -1643,7 +1648,7 @@
       {
        "k": "Model agreement",
        "v": "mixed",
-       "sub": "HRRR 3.2 \u00b7 RRFS 3.0 \u00b7 NAM 3.0 \u00b7 GFS 3.0 \u00b7 ECMWF 2.4 \u00b7 ICON 3.1",
+       "sub": "HRRR 3.2 \u00b7 RRFS 3.0 \u00b7 NAM 3.0 \u00b7 GFS 3.0 \u00b7 ECMWF 2.4 \u00b7 ICON 3.2",
        "q": 0.67
       }
      ],
@@ -1683,15 +1688,15 @@
       },
       "ECMWF": {
        "r": 2.4,
-       "top": 2500.0,
+       "top": 2300.0,
        "w": 1.6,
        "why": [
         "lid"
        ]
       },
       "ICON": {
-       "r": 3.1,
-       "top": 3200.0,
+       "r": 3.2,
+       "top": 3300.0,
        "w": 1.8,
        "why": []
       }
@@ -1700,38 +1705,38 @@
      "trend": 0.0
     },
     "elsinore": {
-     "rating": 2.32,
+     "rating": 2.37,
      "label": "Marginal",
      "tags": [],
      "xc": false,
      "note": "over the back",
      "p_fly": 0.42,
-     "p_xc": 0.37,
-     "agree": "mixed",
+     "p_xc": 0.39,
+     "agree": "split",
      "models": {
       "HRRR": 1.8,
-      "RRFS": 2.3,
+      "RRFS": 2.4,
       "NAM": 1.0,
       "GFS": 2.4,
-      "ECMWF": 2.5,
-      "ICON": 2.3
+      "ECMWF": 2.6,
+      "ICON": 2.4
      },
      "n_members": 122,
      "lead": "HRRR",
-     "top_ft": 4800.0,
+     "top_ft": 5000.0,
      "base_ft": 8300.0,
-     "wstar": 1.8,
+     "wstar": 1.9,
      "sunset": "6:03pm",
      "factors": [
       {
        "k": "Height",
-       "v": "4,300\u20134,800 ft",
-       "q": 0.47,
+       "v": "4,300\u20135,000 ft",
+       "q": 0.51,
        "qs": [
-        0.47,
+        0.51,
         0.36
        ],
-       "sub": "RRFS 4,800 \u00b7 HRRR 4,300"
+       "sub": "RRFS 5,000 \u00b7 HRRR 4,300"
       },
       {
        "k": "Wind 1 pm",
@@ -1753,9 +1758,9 @@
       },
       {
        "k": "Model agreement",
-       "v": "mixed",
-       "sub": "HRRR 1.8 \u00b7 RRFS 2.3 \u00b7 NAM 1.0 \u00b7 GFS 2.4 \u00b7 ECMWF 2.5 \u00b7 ICON 2.3",
-       "q": 0.41
+       "v": "split",
+       "sub": "HRRR 1.8 \u00b7 RRFS 2.4 \u00b7 NAM 1.0 \u00b7 GFS 2.4 \u00b7 ECMWF 2.6 \u00b7 ICON 2.4",
+       "q": 0.37
       }
      ],
      "alt_source": "RRFS",
@@ -1779,8 +1784,8 @@
        ]
       },
       "RRFS": {
-       "r": 2.3,
-       "top": 4800.0,
+       "r": 2.4,
+       "top": 5000.0,
        "w": 1.9,
        "why": [
         "lid"
@@ -1804,24 +1809,22 @@
        ]
       },
       "ECMWF": {
-       "r": 2.5,
+       "r": 2.6,
        "top": 4800.0,
        "w": 1.9,
-       "why": [
-        "gusty"
-       ]
+       "why": []
       },
       "ICON": {
-       "r": 2.3,
-       "top": 4700.0,
-       "w": 1.8,
+       "r": 2.4,
+       "top": 4800.0,
+       "w": 1.9,
        "why": [
         "lid"
        ]
       }
      },
      "was": 1.4,
-     "trend": 0.9
+     "trend": 1.0
     },
     "soboba": {
      "rating": 3.4,
@@ -1830,21 +1833,21 @@
       "glass-off"
      ],
      "xc": false,
-     "note": "thermals to 5,100 ft",
+     "note": "thermals to 4,900 ft",
      "p_fly": 0.98,
      "p_xc": 0.49,
-     "agree": "mixed",
+     "agree": "agree",
      "models": {
       "HRRR": 3.4,
       "RRFS": 3.4,
       "NAM": 3.0,
       "GFS": 3.2,
-      "ECMWF": 2.2,
-      "ICON": 3.1
+      "ECMWF": 3.0,
+      "ICON": 3.2
      },
      "n_members": 122,
      "lead": "HRRR",
-     "top_ft": 5100.0,
+     "top_ft": 4900.0,
      "base_ft": 10100.0,
      "wstar": 1.8,
      "sunset": "6:02pm",
@@ -1852,12 +1855,12 @@
       {
        "k": "Height",
        "v": "4,900 ft",
-       "q": 0.63,
+       "q": 0.62,
        "qs": [
-        0.63,
+        0.62,
         0.61
        ],
-       "sub": "RRFS 5,100 \u00b7 HRRR 4,900"
+       "sub": "RRFS 4,900 \u00b7 HRRR 4,900"
       },
       {
        "k": "Wind 1 pm",
@@ -1879,9 +1882,9 @@
       },
       {
        "k": "Model agreement",
-       "v": "mixed",
-       "sub": "HRRR 3.4 \u00b7 RRFS 3.4 \u00b7 NAM 3.0 \u00b7 GFS 3.2 \u00b7 ECMWF 2.2 \u00b7 ICON 3.1",
-       "q": 0.52
+       "v": "agree",
+       "sub": "HRRR 3.4 \u00b7 RRFS 3.4 \u00b7 NAM 3.0 \u00b7 GFS 3.2 \u00b7 ECMWF 3.0 \u00b7 ICON 3.2",
+       "q": 0.84
       }
      ],
      "alt_source": "RRFS",
@@ -1898,7 +1901,7 @@
       },
       "RRFS": {
        "r": 3.4,
-       "top": 5100.0,
+       "top": 4900.0,
        "w": 1.9,
        "why": []
       },
@@ -1917,17 +1920,18 @@
        "why": []
       },
       "ECMWF": {
-       "r": 2.2,
-       "top": 3700.0,
+       "r": 3.0,
+       "top": 3300.0,
        "w": 1.6,
        "why": [
-        "lid"
+        "lid",
+        "gusty"
        ]
       },
       "ICON": {
-       "r": 3.1,
-       "top": 4200.0,
-       "w": 1.7,
+       "r": 3.2,
+       "top": 4500.0,
+       "w": 1.8,
        "why": []
       }
      },
@@ -1953,20 +1957,20 @@
      },
      "n_members": 122,
      "lead": "HRRR",
-     "top_ft": 2500.0,
+     "top_ft": 2400.0,
      "base_ft": 5800.0,
      "wstar": 1.6,
      "sunset": "6:03pm",
      "factors": [
       {
        "k": "Height",
-       "v": "2,500\u20132,900 ft",
+       "v": "2,400\u20132,900 ft",
        "q": 0.46,
        "qs": [
-        0.33,
+        0.3,
         0.46
        ],
-       "sub": "RRFS 2,500 \u00b7 HRRR 2,900"
+       "sub": "RRFS 2,400 \u00b7 HRRR 2,900"
       },
       {
        "k": "Wind 1 pm",
@@ -2011,7 +2015,7 @@
       },
       "RRFS": {
        "r": 3.0,
-       "top": 2500.0,
+       "top": 2400.0,
        "w": 1.6,
        "why": [
         "lid"
@@ -2033,7 +2037,7 @@
       },
       "ECMWF": {
        "r": 2.4,
-       "top": 2300.0,
+       "top": 2200.0,
        "w": 1.6,
        "why": [
         "gusty",
@@ -2042,11 +2046,11 @@
       },
       "ICON": {
        "r": 3.0,
-       "top": 2800.0,
+       "top": 2900.0,
        "w": 1.7,
        "why": [
-        "gusty",
-        "lid"
+        "lid",
+        "gusty"
        ]
       }
      },
@@ -2109,7 +2113,7 @@
        "k": "Model agreement",
        "v": "agree",
        "sub": "HRRR 1.2 \u00b7 RRFS 1.2 \u00b7 NAM 1.1 \u00b7 GFS 1.1 \u00b7 ECMWF 1.1 \u00b7 ICON 1.4",
-       "q": 0.9
+       "q": 0.89
       }
      ],
      "alt_source": "RRFS",
@@ -2155,7 +2159,7 @@
       },
       "ECMWF": {
        "r": 1.1,
-       "top": 4800.0,
+       "top": 4700.0,
        "w": 1.5,
        "why": [
         "gusty",
@@ -2164,8 +2168,8 @@
       },
       "ICON": {
        "r": 1.4,
-       "top": 6900.0,
-       "w": 1.9,
+       "top": 6800.0,
+       "w": 2.0,
        "why": [
         "gusty"
        ]
@@ -2176,17 +2180,17 @@
      "trend": -0.0
     },
     "marshall": {
-     "rating": 2.4,
+     "rating": 3.0,
      "label": "Glass-off",
      "tags": [],
      "xc": false,
      "note": "",
-     "p_fly": 0.0,
+     "p_fly": 0.66,
      "p_xc": 0.0,
      "agree": "agree",
      "models": {
       "HRRR": 3.0,
-      "RRFS": 2.4,
+      "RRFS": 3.0,
       "NAM": 2.4,
       "GFS": 3.0,
       "ECMWF": 3.0,
@@ -2202,9 +2206,9 @@
       {
        "k": "Height",
        "v": "5,000 ft",
-       "q": 0.33,
+       "q": 0.34,
        "qs": [
-        0.31,
+        0.34,
         0.33
        ],
        "sub": "RRFS 5,000 \u00b7 HRRR 5,000"
@@ -2230,7 +2234,7 @@
       {
        "k": "Model agreement",
        "v": "agree",
-       "sub": "HRRR 3.0 \u00b7 RRFS 2.4 \u00b7 NAM 2.4 \u00b7 GFS 3.0 \u00b7 ECMWF 3.0 \u00b7 ICON 2.4",
+       "sub": "HRRR 3.0 \u00b7 RRFS 3.0 \u00b7 NAM 2.4 \u00b7 GFS 3.0 \u00b7 ECMWF 3.0 \u00b7 ICON 2.4",
        "q": 0.76
       }
      ],
@@ -2251,9 +2255,9 @@
        ]
       },
       "RRFS": {
-       "r": 2.4,
+       "r": 3.0,
        "top": 5000.0,
-       "w": 1.9,
+       "w": 1.8,
        "why": [
         "lid"
        ]
@@ -2286,7 +2290,7 @@
       },
       "ICON": {
        "r": 2.4,
-       "top": 4400.0,
+       "top": 4500.0,
        "w": 1.8,
        "why": [
         "lid"
@@ -2294,7 +2298,7 @@
       }
      },
      "was": 2.4,
-     "trend": 0.0
+     "trend": 0.6
     },
     "santabarbara": {
      "rating": 2.4,
@@ -2315,7 +2319,7 @@
      },
      "n_members": 122,
      "lead": "HRRR",
-     "top_ft": 3900.0,
+     "top_ft": 4000.0,
      "base_ft": 4900.0,
      "wstar": 1.2,
      "sunset": "6:12pm",
@@ -2323,12 +2327,12 @@
       {
        "k": "Height",
        "v": "3,900 ft",
-       "q": 0.29,
+       "q": 0.3,
        "qs": [
-        0.27,
+        0.3,
         0.29
        ],
-       "sub": "RRFS 3,900 \u00b7 HRRR 3,900"
+       "sub": "RRFS 4,000 \u00b7 HRRR 3,900"
       },
       {
        "k": "Wind 1 pm",
@@ -2373,8 +2377,8 @@
       },
       "RRFS": {
        "r": 2.4,
-       "top": 3900.0,
-       "w": 1.2,
+       "top": 4000.0,
+       "w": 1.3,
        "why": [
         "lid"
        ]
@@ -2405,14 +2409,14 @@
       "ICON": {
        "r": 2.4,
        "top": 3900.0,
-       "w": 1.1,
+       "w": 1.2,
        "why": [
         "lid"
        ]
       }
      },
-     "was": 1.8,
-     "trend": 0.6
+     "was": 2.4,
+     "trend": 0.0
     }
    },
    "regime": {
@@ -2435,10 +2439,10 @@
      },
      "RRFS": {
       "rain_mm": 0.0,
-      "t850": 15.1,
-      "w850": "NNW 4",
+      "t850": 15.6,
+      "w850": "NW 4",
       "w700": "WSW 9",
-      "rh": 59
+      "rh": 57
      },
      "GFS": {
       "rain_mm": 0.0,
@@ -2449,39 +2453,39 @@
      },
      "ECMWF": {
       "rain_mm": 0.0,
-      "t850": 15.1,
-      "w850": "NW 4",
+      "t850": 15.4,
+      "w850": "NW 5",
       "w700": "W 9",
-      "rh": 49
+      "rh": 42
      },
      "ICON": {
       "rain_mm": 0.0,
-      "t850": 15.4,
-      "w850": "NNW 5",
+      "t850": 15.1,
+      "w850": "NW 6",
       "w700": "W 9",
-      "rh": 53
+      "rh": 57
      }
     }
    },
    "best": "lb",
    "best_main": "lb",
-   "headline": "Little Black thermal \u00b7 Blossom thermal",
+   "headline": "XC at Little Black",
    "why": null
   },
   {
    "date": "2026-10-28",
    "sites": {
     "torrey": {
-     "rating": 2.14,
-     "label": "Ridge soaring",
+     "rating": 1.86,
+     "label": "Marginal",
      "tags": [],
      "xc": false,
-     "note": "WSW 7 mph",
-     "p_fly": 0.38,
+     "note": "too light to soar",
+     "p_fly": 0.16,
      "p_xc": 0.0,
      "agree": "mixed",
      "models": {
-      "RRFS": 2.4,
+      "RRFS": 1.9,
       "NAM": 1.8,
       "GFS": 2.7,
       "ECMWF": 1.9,
@@ -2490,7 +2494,7 @@
      "n_members": 122,
      "lead": "RRFS",
      "top_ft": 1200.0,
-     "base_ft": 2600.0,
+     "base_ft": 2700.0,
      "wstar": 1.6,
      "sunset": "6:03pm",
      "factors": [
@@ -2505,8 +2509,8 @@
       },
       {
        "k": "Wind 1 pm",
-       "v": "WSW 7",
-       "sub": "later WSW 8 \u00b7 cross-SW",
+       "v": "WSW 6",
+       "sub": "later WSW 7",
        "q": 0.0
       },
       {
@@ -2518,7 +2522,7 @@
       {
        "k": "Model agreement",
        "v": "mixed",
-       "sub": "RRFS 2.4 \u00b7 NAM 1.8 \u00b7 GFS 2.7 \u00b7 ECMWF 1.9 \u00b7 ICON 1.9",
+       "sub": "RRFS 1.9 \u00b7 NAM 1.8 \u00b7 GFS 2.7 \u00b7 ECMWF 1.9 \u00b7 ICON 1.9",
        "q": 0.65
       }
      ],
@@ -2527,15 +2531,15 @@
      "launch_ft": 300,
      "style": "ridge",
      "why": [
-      "cross"
+      "light"
      ],
      "diag": {
       "RRFS": {
-       "r": 2.4,
+       "r": 1.9,
        "top": 1300.0,
        "w": 1.6,
        "why": [
-        "cross"
+        "light"
        ]
       },
       "NAM": {
@@ -2573,7 +2577,7 @@
       }
      },
      "was": 1.9,
-     "trend": 0.2
+     "trend": -0.0
     },
     "lb": {
      "rating": 3.74,
@@ -2592,13 +2596,13 @@
       "NAM": 1.0,
       "GFS": 4.1,
       "ECMWF": 3.4,
-      "ICON": 2.7
+      "ICON": 2.6
      },
      "n_members": 122,
      "lead": "RRFS",
      "top_ft": 3100.0,
-     "base_ft": 5100.0,
-     "wstar": 1.7,
+     "base_ft": 5000.0,
+     "wstar": 1.6,
      "sunset": "6:02pm",
      "factors": [
       {
@@ -2612,13 +2616,13 @@
       },
       {
        "k": "Wind 1 pm",
-       "v": "SW 3",
-       "sub": "later WSW 8",
+       "v": "WSW 3",
+       "sub": "later WSW 9",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "SW 4 kt",
+       "v": "SW 3 kt",
        "sub": "at 2,400 ft",
        "q": 1.0
       },
@@ -2631,7 +2635,7 @@
       {
        "k": "Model agreement",
        "v": "split",
-       "sub": "RRFS 4.1 \u00b7 NAM 1.0 \u00b7 GFS 4.1 \u00b7 ECMWF 3.4 \u00b7 ICON 2.7",
+       "sub": "RRFS 4.1 \u00b7 NAM 1.0 \u00b7 GFS 4.1 \u00b7 ECMWF 3.4 \u00b7 ICON 2.6",
        "q": 0.0
       }
      ],
@@ -2664,13 +2668,11 @@
       "ECMWF": {
        "r": 3.4,
        "top": 2800.0,
-       "w": 1.7,
-       "why": [
-        "gusty"
-       ]
+       "w": 1.6,
+       "why": []
       },
       "ICON": {
-       "r": 2.7,
+       "r": 2.6,
        "top": 2400.0,
        "w": 1.5,
        "why": []
@@ -2680,47 +2682,47 @@
      "trend": 1.7
     },
     "blossom": {
-     "rating": 2.97,
+     "rating": 2.73,
      "label": "Glass-off",
      "tags": [],
      "xc": false,
      "note": "",
      "p_fly": 0.94,
-     "p_xc": 0.28,
+     "p_xc": 0.01,
      "agree": "split",
      "models": {
       "RRFS": 3.0,
       "NAM": 1.0,
       "GFS": 3.0,
       "ECMWF": 2.4,
-      "ICON": 2.9
+      "ICON": 2.5
      },
      "n_members": 122,
      "lead": "RRFS",
-     "top_ft": 3000.0,
-     "base_ft": 6100.0,
+     "top_ft": 2900.0,
+     "base_ft": 5700.0,
      "wstar": 1.6,
      "sunset": "6:01pm",
      "factors": [
       {
        "k": "Height",
-       "v": "3,000 ft",
-       "q": 0.5,
+       "v": "2,900 ft",
+       "q": 0.48,
        "qs": [
-        0.5
+        0.48
        ],
        "sub": "RRFS"
       },
       {
        "k": "Wind 1 pm",
-       "v": "WSW 5",
-       "sub": "later WSW 8",
+       "v": "W 4",
+       "sub": "later WSW 9",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "WSW 5 kt",
-       "sub": "at 2,300 ft",
+       "v": "WSW 4 kt",
+       "sub": "at 2,200 ft",
        "q": 1.0
       },
       {
@@ -2732,7 +2734,7 @@
       {
        "k": "Model agreement",
        "v": "split",
-       "sub": "RRFS 3.0 \u00b7 NAM 1.0 \u00b7 GFS 3.0 \u00b7 ECMWF 2.4 \u00b7 ICON 2.9",
+       "sub": "RRFS 3.0 \u00b7 NAM 1.0 \u00b7 GFS 3.0 \u00b7 ECMWF 2.4 \u00b7 ICON 2.5",
        "q": 0.2
       }
      ],
@@ -2744,8 +2746,8 @@
      "diag": {
       "RRFS": {
        "r": 3.0,
-       "top": 3000.0,
-       "w": 1.8,
+       "top": 2900.0,
+       "w": 1.7,
        "why": []
       },
       "NAM": {
@@ -2766,63 +2768,63 @@
       },
       "ECMWF": {
        "r": 2.4,
-       "top": 2100.0,
+       "top": 2200.0,
        "w": 1.5,
        "why": [
         "lid"
        ]
       },
       "ICON": {
-       "r": 2.9,
-       "top": 3200.0,
-       "w": 1.8,
+       "r": 2.5,
+       "top": 3000.0,
+       "w": 1.7,
        "why": []
       }
      },
      "was": 1.8,
-     "trend": 1.2
+     "trend": 0.9
     },
     "elsinore": {
-     "rating": 2.0,
+     "rating": 2.09,
      "label": "Marginal",
      "tags": [],
      "xc": false,
-     "note": "low lid, 4,700 ft",
-     "p_fly": 0.34,
-     "p_xc": 0.07,
-     "agree": "mixed",
+     "note": "low lid, 4,900 ft",
+     "p_fly": 0.37,
+     "p_xc": 0.08,
+     "agree": "split",
      "models": {
-      "RRFS": 2.3,
+      "RRFS": 2.6,
       "NAM": 1.0,
       "GFS": 1.8,
-      "ECMWF": 2.0,
-      "ICON": 2.0
+      "ECMWF": 2.4,
+      "ICON": 1.4
      },
      "n_members": 122,
      "lead": "RRFS",
-     "top_ft": 4700.0,
-     "base_ft": 8600.0,
+     "top_ft": 4900.0,
+     "base_ft": 8500.0,
      "wstar": 1.8,
      "sunset": "6:02pm",
      "factors": [
       {
        "k": "Height",
-       "v": "4,700 ft",
-       "q": 0.43,
+       "v": "4,900 ft",
+       "q": 0.47,
        "qs": [
-        0.43
+        0.47
        ],
        "sub": "RRFS"
       },
       {
        "k": "Wind 1 pm",
-       "v": "ESE 3",
-       "sub": "later WSW 6",
+       "v": "SSW 4",
+       "sub": "later WSW 9",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "S 2 kt",
+       "v": "SSW 3 kt",
        "sub": "at 3,500 ft",
        "q": 1.0
       },
@@ -2834,9 +2836,9 @@
       },
       {
        "k": "Model agreement",
-       "v": "mixed",
-       "sub": "RRFS 2.3 \u00b7 NAM 1.0 \u00b7 GFS 1.8 \u00b7 ECMWF 2.0 \u00b7 ICON 2.0",
-       "q": 0.47
+       "v": "split",
+       "sub": "RRFS 2.6 \u00b7 NAM 1.0 \u00b7 GFS 1.8 \u00b7 ECMWF 2.4 \u00b7 ICON 1.4",
+       "q": 0.36
       }
      ],
      "alt_source": "RRFS",
@@ -2848,8 +2850,8 @@
      ],
      "diag": {
       "RRFS": {
-       "r": 2.3,
-       "top": 4700.0,
+       "r": 2.6,
+       "top": 4900.0,
        "w": 1.9,
        "why": [
         "lid"
@@ -2872,51 +2874,51 @@
        ]
       },
       "ECMWF": {
-       "r": 2.0,
-       "top": 4600.0,
+       "r": 2.4,
+       "top": 4700.0,
        "w": 1.8,
        "why": [
-        "gusty"
+        "lid"
        ]
       },
       "ICON": {
-       "r": 2.0,
-       "top": 4400.0,
-       "w": 1.8,
+       "r": 1.4,
+       "top": 3900.0,
+       "w": 1.7,
        "why": [
         "lid"
        ]
       }
      },
-     "was": 1.1,
+     "was": 1.2,
      "trend": 0.9
     },
     "soboba": {
-     "rating": 2.03,
+     "rating": 1.8,
      "label": "Marginal",
      "tags": [],
      "xc": false,
-     "note": "low lid, 4,500 ft",
-     "p_fly": 0.24,
+     "note": "low lid, 4,600 ft",
+     "p_fly": 0.01,
      "p_xc": 0.0,
      "agree": "split",
      "models": {
-      "RRFS": 3.2,
+      "RRFS": 3.3,
       "NAM": 1.0,
       "GFS": 1.7,
-      "ECMWF": 1.3,
-      "ICON": 2.4
+      "ECMWF": 1.8,
+      "ICON": 1.8
      },
      "n_members": 122,
-     "lead": "ECMWF",
-     "top_ft": 4500.0,
-     "base_ft": 9200.0,
+     "lead": "NAM",
+     "top_ft": 4600.0,
+     "base_ft": 8800.0,
      "wstar": 1.6,
      "sunset": "6:01pm",
      "factors": [
       {
        "k": "Height",
-       "v": "4,500 ft",
+       "v": "4,600 ft",
        "q": 0.57,
        "qs": [
         0.57
@@ -2925,14 +2927,14 @@
       },
       {
        "k": "Wind 1 pm",
-       "v": "WSW 2g10",
-       "sub": "later S 3g10",
+       "v": "SSE 2",
+       "sub": "",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "SW 3 kt",
-       "sub": "at 2,300 ft",
+       "v": "SSW 2 kt",
+       "sub": "",
        "q": 1.0
       },
       {
@@ -2944,8 +2946,8 @@
       {
        "k": "Model agreement",
        "v": "split",
-       "sub": "RRFS 3.2 \u00b7 NAM 1.0 \u00b7 GFS 1.7 \u00b7 ECMWF 1.3 \u00b7 ICON 2.4",
-       "q": 0.11
+       "sub": "RRFS 3.3 \u00b7 NAM 1.0 \u00b7 GFS 1.7 \u00b7 ECMWF 1.8 \u00b7 ICON 1.8",
+       "q": 0.09
       }
      ],
      "alt_source": "RRFS",
@@ -2953,13 +2955,12 @@
      "launch_ft": 2260,
      "style": "thermal",
      "why": [
-      "lid",
-      "otb"
+      "lid"
      ],
      "diag": {
       "RRFS": {
-       "r": 3.2,
-       "top": 4500.0,
+       "r": 3.3,
+       "top": 4600.0,
        "w": 1.8,
        "why": []
       },
@@ -2980,62 +2981,62 @@
        ]
       },
       "ECMWF": {
-       "r": 1.3,
-       "top": 3000.0,
-       "w": 1.4,
+       "r": 1.8,
+       "top": 3200.0,
+       "w": 1.5,
        "why": [
         "lid",
         "otb"
        ]
       },
       "ICON": {
-       "r": 2.4,
-       "top": 3700.0,
-       "w": 1.6,
+       "r": 1.8,
+       "top": 3500.0,
+       "w": 1.5,
        "why": [
         "lid"
        ]
       }
      },
      "was": 1.1,
-     "trend": 0.9
+     "trend": 0.7
     },
     "otay": {
-     "rating": 2.7,
+     "rating": 2.4,
      "label": "Glass-off",
      "tags": [],
      "xc": false,
      "note": "",
-     "p_fly": 0.93,
-     "p_xc": 0.01,
+     "p_fly": 0.33,
+     "p_xc": 0.0,
      "agree": "split",
      "models": {
       "RRFS": 3.0,
       "NAM": 1.0,
       "GFS": 2.4,
       "ECMWF": 2.4,
-      "ICON": 3.0
+      "ICON": 2.4
      },
      "n_members": 122,
      "lead": "RRFS",
      "top_ft": 2500.0,
-     "base_ft": 5200.0,
-     "wstar": 1.7,
+     "base_ft": 4900.0,
+     "wstar": 1.6,
      "sunset": "6:02pm",
      "factors": [
       {
        "k": "Height",
        "v": "2,500 ft",
-       "q": 0.34,
+       "q": 0.33,
        "qs": [
-        0.34
+        0.33
        ],
        "sub": "RRFS"
       },
       {
        "k": "Wind 1 pm",
-       "v": "SW 6",
-       "sub": "later W 7",
+       "v": "SW 5",
+       "sub": "later WSW 9",
        "q": 1.0
       },
       {
@@ -3053,7 +3054,7 @@
       {
        "k": "Model agreement",
        "v": "split",
-       "sub": "RRFS 3.0 \u00b7 NAM 1.0 \u00b7 GFS 2.4 \u00b7 ECMWF 2.4 \u00b7 ICON 3.0",
+       "sub": "RRFS 3.0 \u00b7 NAM 1.0 \u00b7 GFS 2.4 \u00b7 ECMWF 2.4 \u00b7 ICON 2.4",
        "q": 0.2
       }
      ],
@@ -3092,16 +3093,16 @@
       "ECMWF": {
        "r": 2.4,
        "top": 2700.0,
-       "w": 1.7,
+       "w": 1.6,
        "why": [
         "gusty",
         "lid"
        ]
       },
       "ICON": {
-       "r": 3.0,
-       "top": 2600.0,
-       "w": 1.7,
+       "r": 2.4,
+       "top": 2500.0,
+       "w": 1.6,
        "why": [
         "gusty",
         "lid"
@@ -3109,19 +3110,19 @@
       }
      },
      "was": 1.7,
-     "trend": 1.0
+     "trend": 0.7
     },
     "lagunahorse": {
      "rating": 1.15,
      "label": "No go",
      "tags": [],
      "xc": false,
-     "note": "Horse: low lid, 4,500 ft",
+     "note": "Horse: low lid, 5,600 ft",
      "p_fly": 0.0,
      "p_xc": 0.0,
      "agree": "agree",
      "models": {
-      "RRFS": 1.1,
+      "RRFS": 1.2,
       "NAM": 1.1,
       "GFS": 1.1,
       "ECMWF": 1.1,
@@ -3129,30 +3130,30 @@
      },
      "n_members": 122,
      "lead": "RRFS",
-     "top_ft": 4500.0,
-     "base_ft": 13500.0,
-     "wstar": 1.4,
+     "top_ft": 5600.0,
+     "base_ft": 12900.0,
+     "wstar": 1.6,
      "sunset": "6:00pm",
      "factors": [
       {
        "k": "Height",
-       "v": "4,500 ft",
-       "q": 0.0,
+       "v": "5,600 ft",
+       "q": 0.22,
        "qs": [
-        0.0
+        0.22
        ],
        "sub": "RRFS"
       },
       {
        "k": "Wind 1 pm",
        "v": "SW 7",
-       "sub": "later WSW 9",
+       "sub": "later WSW 10",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "WSW 6 kt",
-       "sub": "at 4,700 ft",
+       "v": "SW 7 kt",
+       "sub": "at 4,900 ft",
        "q": 1.0
       },
       {
@@ -3164,8 +3165,8 @@
       {
        "k": "Model agreement",
        "v": "agree",
-       "sub": "RRFS 1.1 \u00b7 NAM 1.1 \u00b7 GFS 1.1 \u00b7 ECMWF 1.1 \u00b7 ICON 1.6",
-       "q": 0.83
+       "sub": "RRFS 1.2 \u00b7 NAM 1.1 \u00b7 GFS 1.1 \u00b7 ECMWF 1.1 \u00b7 ICON 1.6",
+       "q": 0.8
       }
      ],
      "alt_source": "RRFS",
@@ -3177,9 +3178,9 @@
      ],
      "diag": {
       "RRFS": {
-       "r": 1.1,
-       "top": 4500.0,
-       "w": 1.4,
+       "r": 1.2,
+       "top": 5600.0,
+       "w": 1.7,
        "why": [
         "lid"
        ]
@@ -3202,19 +3203,18 @@
       },
       "ECMWF": {
        "r": 1.1,
-       "top": 4800.0,
-       "w": 1.5,
+       "top": 4600.0,
+       "w": 1.4,
        "why": [
-        "lid"
+        "lid",
+        "gusty"
        ]
       },
       "ICON": {
        "r": 1.6,
-       "top": 7200.0,
+       "top": 7400.0,
        "w": 2.0,
-       "why": [
-        "gusty"
-       ]
+       "why": []
       }
      },
      "launch_name": "Horse",
@@ -3239,30 +3239,30 @@
      },
      "n_members": 122,
      "lead": "RRFS",
-     "top_ft": 4500.0,
-     "base_ft": 8900.0,
+     "top_ft": 4700.0,
+     "base_ft": 9000.0,
      "wstar": 1.3,
      "sunset": "6:01pm",
      "factors": [
       {
        "k": "Height",
-       "v": "4,500 ft",
-       "q": 0.16,
+       "v": "4,700 ft",
+       "q": 0.21,
        "qs": [
-        0.16
+        0.21
        ],
        "sub": "RRFS"
       },
       {
        "k": "Wind 1 pm",
-       "v": "SSE 6g11",
-       "sub": "later SSE 5",
+       "v": "SE 6g15",
+       "sub": "later SSE 6",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
        "v": "SSE 6 kt",
-       "sub": "at 3,400 ft",
+       "sub": "at 3,500 ft",
        "q": 1.0
       },
       {
@@ -3289,8 +3289,8 @@
      "diag": {
       "RRFS": {
        "r": 2.4,
-       "top": 4500.0,
-       "w": 1.7,
+       "top": 4700.0,
+       "w": 1.8,
        "why": [
         "otb",
         "lid"
@@ -3323,12 +3323,10 @@
       },
       "ICON": {
        "r": 1.8,
-       "top": 2400.0,
+       "top": 2500.0,
        "w": 1.1,
        "why": [
-        "gusty",
-        "lid",
-        "otb"
+        "lid"
        ]
       }
      },
@@ -3348,7 +3346,7 @@
       "RRFS": 2.4,
       "NAM": 1.1,
       "GFS": 3.3,
-      "ECMWF": 1.2,
+      "ECMWF": 1.8,
       "ICON": 2.4
      },
      "n_members": 122,
@@ -3361,21 +3359,21 @@
       {
        "k": "Height",
        "v": "3,800 ft",
-       "q": 0.26,
+       "q": 0.27,
        "qs": [
-        0.26
+        0.27
        ],
        "sub": "RRFS"
       },
       {
        "k": "Wind 1 pm",
-       "v": "SE 6",
-       "sub": "later S 5",
+       "v": "SE 4",
+       "sub": "later SSW 5",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "ESE 3 kt",
+       "v": "ESE 1 kt",
        "sub": "at 3,600 ft",
        "q": 1.0
       },
@@ -3388,7 +3386,7 @@
       {
        "k": "Model agreement",
        "v": "split",
-       "sub": "RRFS 2.4 \u00b7 NAM 1.1 \u00b7 GFS 3.3 \u00b7 ECMWF 1.2 \u00b7 ICON 2.4",
+       "sub": "RRFS 2.4 \u00b7 NAM 1.1 \u00b7 GFS 3.3 \u00b7 ECMWF 1.8 \u00b7 ICON 2.4",
        "q": 0.11
       }
      ],
@@ -3423,7 +3421,7 @@
        "why": []
       },
       "ECMWF": {
-       "r": 1.2,
+       "r": 1.8,
        "top": 3500.0,
        "w": 1.0,
        "why": [
@@ -3432,7 +3430,7 @@
       },
       "ICON": {
        "r": 2.4,
-       "top": 3900.0,
+       "top": 4100.0,
        "w": 1.2,
        "why": [
         "lid"
@@ -3445,20 +3443,20 @@
    },
    "regime": {
     "type": null,
-    "agree": 0.83,
+    "agree": 1.0,
     "models": {
      "RRFS": null,
      "GFS": null,
-     "ECMWF": "Pre-frontal",
+     "ECMWF": null,
      "ICON": null
     },
     "features": {
      "RRFS": {
       "rain_mm": 0.0,
-      "t850": 14.8,
-      "w850": "SW 5",
-      "w700": "SW 9",
-      "rh": 54
+      "t850": 14.7,
+      "w850": "SSW 6",
+      "w700": "WSW 9",
+      "rh": 56
      },
      "GFS": {
       "rain_mm": 0.0,
@@ -3469,17 +3467,17 @@
      },
      "ECMWF": {
       "rain_mm": 0.0,
-      "t850": 15.7,
-      "w850": "SSW 3",
-      "w700": "SW 10",
-      "rh": 49
+      "t850": 15.0,
+      "w850": "SW 3",
+      "w700": "SW 14",
+      "rh": 50
      },
      "ICON": {
       "rain_mm": 0.0,
-      "t850": 15.2,
-      "w850": "SSW 4",
-      "w700": "SSW 7",
-      "rh": 51
+      "t850": 15.1,
+      "w850": "SSW 3",
+      "w700": "SW 10",
+      "rh": 53
      }
     }
    },
@@ -3492,25 +3490,26 @@
    "date": "2026-10-29",
    "sites": {
     "torrey": {
-     "rating": 2.43,
+     "rating": 1.66,
      "label": "Marginal",
      "tags": [
       "rain 16%"
      ],
      "xc": false,
-     "note": "cross-SW",
-     "p_fly": 0.14,
+     "note": "over the back",
+     "p_fly": 0.02,
      "p_xc": 0.02,
-     "agree": "agree",
+     "agree": "mixed",
      "models": {
+      "RRFS": 1.5,
       "GFS": 2.9,
-      "ECMWF": 2.2,
+      "ECMWF": 1.9,
       "ICON": 2.4
      },
      "n_members": 122,
-     "lead": "ECMWF",
+     "lead": "RRFS",
      "top_ft": 1800.0,
-     "base_ft": 3400.0,
+     "base_ft": 2900.0,
      "wstar": 1.5,
      "sunset": "6:02pm",
      "factors": [
@@ -3522,8 +3521,8 @@
       },
       {
        "k": "Wind 1 pm",
-       "v": "WSW 4g14",
-       "sub": "later W 7g18 \u00b7 cross-SW",
+       "v": "ESE 6",
+       "sub": "over the back",
        "q": 0.0
       },
       {
@@ -3534,9 +3533,9 @@
       },
       {
        "k": "Model agreement",
-       "v": "agree",
-       "sub": "GFS 2.9 \u00b7 ECMWF 2.2 \u00b7 ICON 2.4",
-       "q": 0.71
+       "v": "mixed",
+       "sub": "RRFS 1.5 \u00b7 GFS 2.9 \u00b7 ECMWF 1.9 \u00b7 ICON 2.4",
+       "q": 0.43
       }
      ],
      "alt_source": "models",
@@ -3544,11 +3543,19 @@
      "launch_ft": 300,
      "style": "ridge",
      "why": [
-      "cross",
-      "light",
-      "showers"
+      "otb",
+      "cross"
      ],
      "diag": {
+      "RRFS": {
+       "r": 1.5,
+       "top": 1300.0,
+       "w": 1.4,
+       "why": [
+        "otb",
+        "cross"
+       ]
+      },
       "GFS": {
        "r": 2.9,
        "top": 1700.0,
@@ -3558,13 +3565,11 @@
        ]
       },
       "ECMWF": {
-       "r": 2.2,
-       "top": 1400.0,
-       "w": 1.4,
+       "r": 1.9,
+       "top": 1600.0,
+       "w": 1.6,
        "why": [
-        "cross",
-        "light",
-        "showers"
+        "light"
        ]
       },
       "ICON": {
@@ -3577,48 +3582,49 @@
       }
      },
      "was": 2.4,
-     "trend": 0.0
+     "trend": -0.7
     },
     "lb": {
-     "rating": 4.52,
-     "label": "XC",
-     "tags": [
-      "window ~1pm",
-      "glass-off"
-     ],
-     "xc": true,
-     "note": "",
-     "p_fly": 1.0,
-     "p_xc": 0.98,
+     "rating": 3.4,
+     "label": "Thermal",
+     "tags": [],
+     "xc": false,
+     "note": "thermals to 2,700 ft",
+     "p_fly": 0.98,
+     "p_xc": 0.42,
      "agree": "mixed",
      "models": {
+      "RRFS": 3.4,
       "GFS": 4.6,
-      "ECMWF": 4.5,
+      "ECMWF": 4.3,
       "ICON": 3.4
      },
      "n_members": 122,
-     "lead": "ECMWF",
-     "top_ft": 3800.0,
-     "base_ft": 4100.0,
-     "wstar": 1.6,
+     "lead": "RRFS",
+     "top_ft": 2700.0,
+     "base_ft": 3400.0,
+     "wstar": 1.4,
      "sunset": "6:01pm",
      "factors": [
       {
        "k": "Height",
-       "v": "~3,800 ft",
-       "sub": "global models",
-       "q": 0.88
+       "v": "2,700 ft",
+       "q": 0.62,
+       "qs": [
+        0.62
+       ],
+       "sub": "RRFS"
       },
       {
        "k": "Wind 1 pm",
-       "v": "SW 5g13",
-       "sub": "later WSW 7g17",
+       "v": "ESE 5",
+       "sub": "",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "SW 4 kt",
-       "sub": "at 2,800 ft",
+       "v": "S 4 kt",
+       "sub": "",
        "q": 1.0
       },
       {
@@ -3630,18 +3636,26 @@
       {
        "k": "Model agreement",
        "v": "mixed",
-       "sub": "GFS 4.6 \u00b7 ECMWF 4.5 \u00b7 ICON 3.4",
+       "sub": "RRFS 3.4 \u00b7 GFS 4.6 \u00b7 ECMWF 4.3 \u00b7 ICON 3.4",
        "q": 0.52
       }
      ],
-     "alt_source": "models",
+     "alt_source": "RRFS",
      "ground_ft": 751,
      "launch_ft": 1050,
      "style": "window",
      "why": [
-      "gusty"
+      "lid"
      ],
      "diag": {
+      "RRFS": {
+       "r": 3.4,
+       "top": 2700.0,
+       "w": 1.4,
+       "why": [
+        "lid"
+       ]
+      },
       "GFS": {
        "r": 4.6,
        "top": 3900.0,
@@ -3649,62 +3663,64 @@
        "why": []
       },
       "ECMWF": {
-       "r": 4.5,
-       "top": 3800.0,
-       "w": 1.6,
+       "r": 4.3,
+       "top": 3500.0,
+       "w": 1.7,
        "why": [
         "gusty"
        ]
       },
       "ICON": {
        "r": 3.4,
-       "top": 3000.0,
+       "top": 2800.0,
        "w": 1.5,
        "why": []
       }
      },
      "was": 4.2,
-     "trend": 0.3
+     "trend": -0.8
     },
     "blossom": {
-     "rating": 3.0,
-     "label": "Thermal",
-     "tags": [
-      "glass-off"
-     ],
+     "rating": 1.89,
+     "label": "Marginal",
+     "tags": [],
      "xc": false,
-     "note": "thermals to 3,200 ft",
-     "p_fly": 0.61,
+     "note": "low lid, 2,400 ft",
+     "p_fly": 0.0,
      "p_xc": 0.0,
-     "agree": "agree",
+     "agree": "split",
      "models": {
+      "RRFS": 1.4,
       "GFS": 3.1,
-      "ECMWF": 3.0,
+      "ECMWF": 2.4,
       "ICON": 3.0
      },
      "n_members": 122,
-     "lead": "ECMWF",
-     "top_ft": 3200.0,
-     "base_ft": 4000.0,
-     "wstar": 1.7,
+     "lead": "RRFS",
+     "top_ft": 2400.0,
+     "base_ft": 3500.0,
+     "wstar": 1.4,
      "sunset": "6:00pm",
      "factors": [
       {
        "k": "Height",
-       "v": "~3,200 ft",
-       "sub": "global models",
-       "q": 0.52
+       "v": "2,400 ft",
+       "q": 0.31,
+       "qs": [
+        0.31
+       ],
+       "sub": "RRFS"
       },
       {
        "k": "Wind 1 pm",
-       "v": "WSW 5g13",
-       "sub": "later WSW 7g15",
+       "v": "E 4",
+       "sub": "",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "WSW 5 kt",
-       "sub": "at 2,400 ft",
+       "v": "S 5 kt",
+       "sub": "",
        "q": 1.0
       },
       {
@@ -3715,17 +3731,27 @@
       },
       {
        "k": "Model agreement",
-       "v": "agree",
-       "sub": "GFS 3.1 \u00b7 ECMWF 3.0 \u00b7 ICON 3.0",
-       "q": 0.98
+       "v": "split",
+       "sub": "RRFS 1.4 \u00b7 GFS 3.1 \u00b7 ECMWF 2.4 \u00b7 ICON 3.0",
+       "q": 0.33
       }
      ],
-     "alt_source": "models",
+     "alt_source": "RRFS",
      "ground_ft": 699,
      "launch_ft": 1500,
      "style": "window",
-     "why": [],
+     "why": [
+      "lid"
+     ],
      "diag": {
+      "RRFS": {
+       "r": 1.4,
+       "top": 2400.0,
+       "w": 1.3,
+       "why": [
+        "lid"
+       ]
+      },
       "GFS": {
        "r": 3.1,
        "top": 3200.0,
@@ -3733,10 +3759,13 @@
        "why": []
       },
       "ECMWF": {
-       "r": 3.0,
-       "top": 3200.0,
-       "w": 1.7,
-       "why": []
+       "r": 2.4,
+       "top": 2300.0,
+       "w": 1.5,
+       "why": [
+        "lid",
+        "gusty"
+       ]
       },
       "ICON": {
        "r": 3.0,
@@ -3746,45 +3775,49 @@
       }
      },
      "was": 3.0,
-     "trend": 0.0
+     "trend": -1.1
     },
     "elsinore": {
-     "rating": 2.03,
-     "label": "Marginal",
+     "rating": 1.27,
+     "label": "No go",
      "tags": [],
      "xc": false,
-     "note": "not flyable",
-     "p_fly": 0.38,
-     "p_xc": 0.17,
+     "note": "low lid, 3,200 ft",
+     "p_fly": 0.24,
+     "p_xc": 0.01,
      "agree": "mixed",
      "models": {
+      "RRFS": 1.2,
       "GFS": 2.0,
-      "ECMWF": 2.6,
+      "ECMWF": 2.5,
       "ICON": 1.3
      },
      "n_members": 122,
-     "lead": "ECMWF",
-     "top_ft": 4600.0,
-     "base_ft": 5600.0,
-     "wstar": 1.7,
+     "lead": "RRFS",
+     "top_ft": 3200.0,
+     "base_ft": 3800.0,
+     "wstar": 1.5,
      "sunset": "6:01pm",
      "factors": [
       {
        "k": "Height",
-       "v": "~4,600 ft",
-       "sub": "global models",
-       "q": 0.41
+       "v": "3,200 ft",
+       "q": 0.12,
+       "qs": [
+        0.12
+       ],
+       "sub": "RRFS"
       },
       {
        "k": "Wind 1 pm",
-       "v": "SW 3g12",
-       "sub": "later SSW 2",
+       "v": "SSE 5g24",
+       "sub": "",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "SSW 3 kt",
-       "sub": "at 3,500 ft",
+       "v": "S 6 kt",
+       "sub": "",
        "q": 1.0
       },
       {
@@ -3796,16 +3829,28 @@
       {
        "k": "Model agreement",
        "v": "mixed",
-       "sub": "GFS 2.0 \u00b7 ECMWF 2.6 \u00b7 ICON 1.3",
-       "q": 0.48
+       "sub": "RRFS 1.2 \u00b7 GFS 2.0 \u00b7 ECMWF 2.5 \u00b7 ICON 1.3",
+       "q": 0.49
       }
      ],
-     "alt_source": "models",
+     "alt_source": "RRFS",
      "ground_ft": 1348,
      "launch_ft": 2650,
      "style": "switch",
-     "why": [],
+     "why": [
+      "lid",
+      "gusty"
+     ],
      "diag": {
+      "RRFS": {
+       "r": 1.2,
+       "top": 3200.0,
+       "w": 1.4,
+       "why": [
+        "lid",
+        "gusty"
+       ]
+      },
       "GFS": {
        "r": 2.0,
        "top": 4600.0,
@@ -3816,44 +3861,47 @@
        ]
       },
       "ECMWF": {
-       "r": 2.6,
+       "r": 2.5,
        "top": 4900.0,
-       "w": 1.7,
-       "why": []
+       "w": 1.8,
+       "why": [
+        "gusty"
+       ]
       },
       "ICON": {
        "r": 1.3,
        "top": 4000.0,
-       "w": 1.6,
+       "w": 1.7,
        "why": [
         "otb",
-        "lid",
-        "gusty"
+        "gusty",
+        "lid"
        ]
       }
      },
      "was": 1.2,
-     "trend": 0.8
+     "trend": 0.1
     },
     "soboba": {
-     "rating": 3.02,
-     "label": "Thermal",
+     "rating": 1.4,
+     "label": "No go",
      "tags": [],
      "xc": false,
-     "note": "thermals to 4,200 ft",
-     "p_fly": 0.52,
+     "note": "low lid, 4,200 ft",
+     "p_fly": 0.0,
      "p_xc": 0.0,
-     "agree": "agree",
+     "agree": "split",
      "models": {
+      "RRFS": 1.0,
       "GFS": 3.2,
-      "ECMWF": 2.9,
-      "ICON": 3.0
+      "ECMWF": 1.8,
+      "ICON": 2.9
      },
      "n_members": 122,
-     "lead": "ECMWF",
+     "lead": "RRFS",
      "top_ft": 4200.0,
-     "base_ft": 7500.0,
-     "wstar": 1.6,
+     "base_ft": 4000.0,
+     "wstar": 1.2,
      "sunset": "6:00pm",
      "factors": [
       {
@@ -3864,14 +3912,14 @@
       },
       {
        "k": "Wind 1 pm",
-       "v": "SW 3g12",
-       "sub": "later S 2g15",
+       "v": "NW 2",
+       "sub": "",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "SW 4 kt",
-       "sub": "at 2,800 ft",
+       "v": "S 3 kt",
+       "sub": "",
        "q": 1.0
       },
       {
@@ -3882,9 +3930,9 @@
       },
       {
        "k": "Model agreement",
-       "v": "agree",
-       "sub": "GFS 3.2 \u00b7 ECMWF 2.9 \u00b7 ICON 3.0",
-       "q": 0.88
+       "v": "split",
+       "sub": "RRFS 1.0 \u00b7 GFS 3.2 \u00b7 ECMWF 1.8 \u00b7 ICON 2.9",
+       "q": 0.14
       }
      ],
      "alt_source": "models",
@@ -3895,6 +3943,14 @@
       "lid"
      ],
      "diag": {
+      "RRFS": {
+       "r": 1.0,
+       "top": 2000.0,
+       "w": 1.0,
+       "why": [
+        "lid"
+       ]
+      },
       "GFS": {
        "r": 3.2,
        "top": 4300.0,
@@ -3902,62 +3958,68 @@
        "why": []
       },
       "ECMWF": {
-       "r": 2.9,
-       "top": 4100.0,
+       "r": 1.8,
+       "top": 3200.0,
        "w": 1.5,
        "why": [
-        "lid"
+        "lid",
+        "otb",
+        "gusty"
        ]
       },
       "ICON": {
-       "r": 3.0,
+       "r": 2.9,
        "top": 4200.0,
        "w": 1.6,
        "why": []
       }
      },
      "was": 2.5,
-     "trend": 0.5
+     "trend": -1.1
     },
     "otay": {
-     "rating": 3.0,
-     "label": "Thermal",
+     "rating": 2.14,
+     "label": "Marginal",
      "tags": [
       "rain 19%"
      ],
      "xc": false,
-     "note": "thermals to 3,100 ft",
-     "p_fly": 0.54,
+     "note": "low lid, 2,200 ft",
+     "p_fly": 0.06,
      "p_xc": 0.0,
-     "agree": "mixed",
+     "agree": "split",
      "models": {
+      "RRFS": 1.3,
       "GFS": 3.3,
-      "ECMWF": 2.1,
+      "ECMWF": 3.0,
       "ICON": 3.0
      },
      "n_members": 122,
-     "lead": "ECMWF",
-     "top_ft": 3100.0,
-     "base_ft": 3900.0,
-     "wstar": 1.6,
+     "lead": "RRFS",
+     "top_ft": 2200.0,
+     "base_ft": 3600.0,
+     "wstar": 1.5,
      "sunset": "6:01pm",
      "factors": [
       {
        "k": "Height",
-       "v": "~3,100 ft",
-       "sub": "global models",
-       "q": 0.52
+       "v": "2,200 ft",
+       "q": 0.21,
+       "qs": [
+        0.21
+       ],
+       "sub": "RRFS"
       },
       {
        "k": "Wind 1 pm",
-       "v": "WSW 3g13",
-       "sub": "later W 7g18",
+       "v": "SSE 4",
+       "sub": "",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "W 4 kt",
-       "sub": "at 2,200 ft",
+       "v": "S 4 kt",
+       "sub": "",
        "q": 1.0
       },
       {
@@ -3968,20 +4030,27 @@
       },
       {
        "k": "Model agreement",
-       "v": "mixed",
-       "sub": "GFS 3.3 \u00b7 ECMWF 2.1 \u00b7 ICON 3.0",
-       "q": 0.53
+       "v": "split",
+       "sub": "RRFS 1.3 \u00b7 GFS 3.3 \u00b7 ECMWF 3.0 \u00b7 ICON 3.0",
+       "q": 0.19
       }
      ],
-     "alt_source": "models",
+     "alt_source": "RRFS",
      "ground_ft": 600,
      "launch_ft": 1550,
      "style": "window",
      "why": [
-      "lid",
-      "gusty"
+      "lid"
      ],
      "diag": {
+      "RRFS": {
+       "r": 1.3,
+       "top": 2200.0,
+       "w": 1.4,
+       "why": [
+        "lid"
+       ]
+      },
       "GFS": {
        "r": 3.3,
        "top": 3400.0,
@@ -3989,63 +4058,67 @@
        "why": []
       },
       "ECMWF": {
-       "r": 2.1,
-       "top": 2900.0,
+       "r": 3.0,
+       "top": 2600.0,
        "w": 1.5,
        "why": [
-        "lid",
-        "gusty"
+        "gusty",
+        "lid"
        ]
       },
       "ICON": {
        "r": 3.0,
        "top": 3100.0,
-       "w": 1.6,
+       "w": 1.7,
        "why": [
         "gusty"
        ]
       }
      },
      "was": 3.0,
-     "trend": 0.0
+     "trend": -0.9
     },
     "lagunahorse": {
      "rating": 1.15,
      "label": "No go",
      "tags": [],
      "xc": false,
-     "note": "Horse: gusty",
+     "note": "Horse: low lid, 4,700 ft",
      "p_fly": 0.0,
      "p_xc": 0.0,
      "agree": "agree",
      "models": {
+      "RRFS": 1.1,
       "GFS": 1.2,
       "ECMWF": 1.1,
-      "ICON": 1.1
+      "ICON": 1.5
      },
      "n_members": 122,
-     "lead": "ECMWF",
-     "top_ft": 5900.0,
-     "base_ft": 7000.0,
-     "wstar": 1.8,
+     "lead": "RRFS",
+     "top_ft": 4700.0,
+     "base_ft": 10700.0,
+     "wstar": 1.3,
      "sunset": "5:59pm",
      "factors": [
       {
        "k": "Height",
-       "v": "~5,900 ft",
-       "sub": "global models",
-       "q": 0.29
+       "v": "4,700 ft",
+       "q": 0.02,
+       "qs": [
+        0.02
+       ],
+       "sub": "RRFS"
       },
       {
        "k": "Wind 1 pm",
-       "v": "SSW 6g14",
-       "sub": "later WSW 7g16",
+       "v": "SSE 4",
+       "sub": "",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "SW 6 kt",
-       "sub": "at 4,700 ft",
+       "v": "SSW 6 kt",
+       "sub": "",
        "q": 1.0
       },
       {
@@ -4057,19 +4130,26 @@
       {
        "k": "Model agreement",
        "v": "agree",
-       "sub": "GFS 1.2 \u00b7 ECMWF 1.1 \u00b7 ICON 1.1",
-       "q": 0.95
+       "sub": "RRFS 1.1 \u00b7 GFS 1.2 \u00b7 ECMWF 1.1 \u00b7 ICON 1.5",
+       "q": 0.87
       }
      ],
-     "alt_source": "models",
+     "alt_source": "RRFS",
      "ground_ft": 3301,
      "launch_ft": 4540,
      "style": "convergence",
      "why": [
-      "gusty",
       "lid"
      ],
      "diag": {
+      "RRFS": {
+       "r": 1.1,
+       "top": 4700.0,
+       "w": 1.2,
+       "why": [
+        "lid"
+       ]
+      },
       "GFS": {
        "r": 1.2,
        "top": 5900.0,
@@ -4080,20 +4160,18 @@
       },
       "ECMWF": {
        "r": 1.1,
-       "top": 4900.0,
+       "top": 4700.0,
        "w": 1.4,
        "why": [
-        "gusty",
         "lid"
        ]
       },
       "ICON": {
-       "r": 1.1,
-       "top": 6500.0,
-       "w": 1.8,
+       "r": 1.5,
+       "top": 6900.0,
+       "w": 1.9,
        "why": [
-        "gusty",
-        "lid"
+        "gusty"
        ]
       }
      },
@@ -4102,43 +4180,47 @@
      "trend": 0.0
     },
     "marshall": {
-     "rating": 3.0,
-     "label": "Glass-off",
+     "rating": 1.4,
+     "label": "No go",
      "tags": [],
      "xc": false,
-     "note": "",
-     "p_fly": 0.64,
+     "note": "over the back",
+     "p_fly": 0.0,
      "p_xc": 0.0,
-     "agree": "agree",
+     "agree": "split",
      "models": {
+      "RRFS": 1.0,
       "GFS": 3.0,
       "ECMWF": 3.0,
-      "ICON": 2.4
+      "ICON": 1.8
      },
      "n_members": 122,
-     "lead": "ECMWF",
-     "top_ft": 1900.0,
-     "base_ft": 8000.0,
-     "wstar": 0.8,
+     "lead": "RRFS",
+     "top_ft": 2900.0,
+     "base_ft": 5700.0,
+     "wstar": 1.2,
      "sunset": "6:00pm",
      "factors": [
       {
        "k": "Height",
-       "v": "~1,900 ft",
-       "sub": "global models",
-       "q": 0.0
+       "v": "2,900 ft",
+       "q": 0.0,
+       "qs": [
+        0.0
+       ],
+       "sub": "RRFS"
       },
       {
        "k": "Wind 1 pm",
-       "v": "S 8g24",
-       "sub": "later S 10g25 \u00b7 gusty",
-       "q": 1.0
+       "v": "SE 8g16",
+       "sub": "over the back",
+       "q": 0.0
       },
       {
        "k": "Wind aloft",
-       "v": "S 9 kt",
-       "sub": "at 2,800 ft",
-       "q": 1.0
+       "v": "SSE 9 kt",
+       "sub": "",
+       "q": 0.94
       },
       {
        "k": "Rain & storms",
@@ -4148,20 +4230,29 @@
       },
       {
        "k": "Model agreement",
-       "v": "agree",
-       "sub": "GFS 3.0 \u00b7 ECMWF 3.0 \u00b7 ICON 2.4",
-       "q": 0.76
+       "v": "split",
+       "sub": "RRFS 1.0 \u00b7 GFS 3.0 \u00b7 ECMWF 3.0 \u00b7 ICON 1.8",
+       "q": 0.2
       }
      ],
-     "alt_source": "models",
+     "alt_source": "RRFS",
      "ground_ft": 1699,
      "launch_ft": 4040,
      "style": "thermal",
      "why": [
-      "gusty",
+      "otb",
       "lid"
      ],
      "diag": {
+      "RRFS": {
+       "r": 1.0,
+       "top": 2900.0,
+       "w": 1.2,
+       "why": [
+        "otb",
+        "lid"
+       ]
+      },
       "GFS": {
        "r": 3.0,
        "top": 1900.0,
@@ -4172,17 +4263,17 @@
       },
       "ECMWF": {
        "r": 3.0,
-       "top": 2900.0,
-       "w": 1.3,
+       "top": 3100.0,
+       "w": 1.4,
        "why": [
         "gusty",
         "lid"
        ]
       },
       "ICON": {
-       "r": 2.4,
-       "top": 1900.0,
-       "w": 0.6,
+       "r": 1.8,
+       "top": 2300.0,
+       "w": 1.0,
        "why": [
         "otb",
         "lid"
@@ -4190,49 +4281,52 @@
       }
      },
      "was": 3.0,
-     "trend": 0.0
+     "trend": -1.6
     },
     "santabarbara": {
-     "rating": 3.26,
-     "label": "Thermal",
+     "rating": 1.4,
+     "label": "No go",
      "tags": [
-      "rain 22%",
-      "glass-off"
+      "rain 22%"
      ],
      "xc": false,
-     "note": "thermals to 4,900 ft",
-     "p_fly": 0.9,
-     "p_xc": 0.35,
+     "note": "low lid, 3,800 ft",
+     "p_fly": 0.0,
+     "p_xc": 0.0,
      "agree": "split",
      "models": {
+      "RRFS": 1.0,
       "GFS": 3.4,
-      "ECMWF": 3.3,
-      "ICON": 1.3
+      "ECMWF": 1.8,
+      "ICON": 2.8
      },
      "n_members": 122,
-     "lead": "ECMWF",
-     "top_ft": 4900.0,
-     "base_ft": 5800.0,
-     "wstar": 1.4,
+     "lead": "RRFS",
+     "top_ft": 3800.0,
+     "base_ft": 4700.0,
+     "wstar": 1.0,
      "sunset": "6:10pm",
      "factors": [
       {
        "k": "Height",
-       "v": "~4,900 ft",
-       "sub": "global models",
-       "q": 0.57
+       "v": "3,800 ft",
+       "q": 0.25,
+       "qs": [
+        0.25
+       ],
+       "sub": "RRFS"
       },
       {
        "k": "Wind 1 pm",
-       "v": "SSE 5g15",
-       "sub": "later S 5g17",
-       "q": 1.0
+       "v": "ESE 4g11",
+       "sub": "",
+       "q": 0.33
       },
       {
        "k": "Wind aloft",
-       "v": "ESE 6 kt",
-       "sub": "at 4,300 ft",
-       "q": 0.97
+       "v": "ESE 7 kt",
+       "sub": "",
+       "q": 1.0
       },
       {
        "k": "Rain & storms",
@@ -4243,19 +4337,28 @@
       {
        "k": "Model agreement",
        "v": "split",
-       "sub": "GFS 3.4 \u00b7 ECMWF 3.3 \u00b7 ICON 1.3",
-       "q": 0.18
+       "sub": "RRFS 1.0 \u00b7 GFS 3.4 \u00b7 ECMWF 1.8 \u00b7 ICON 2.8",
+       "q": 0.04
       }
      ],
-     "alt_source": "models",
+     "alt_source": "RRFS",
      "ground_ft": 3100,
      "launch_ft": 3100,
      "style": "thermal",
      "why": [
-      "showers",
-      "gusty"
+      "lid",
+      "otb"
      ],
      "diag": {
+      "RRFS": {
+       "r": 1.0,
+       "top": 3800.0,
+       "w": 1.0,
+       "why": [
+        "lid",
+        "otb"
+       ]
+      },
       "GFS": {
        "r": 3.4,
        "top": 5400.0,
@@ -4263,33 +4366,31 @@
        "why": []
       },
       "ECMWF": {
-       "r": 3.3,
-       "top": 4900.0,
-       "w": 1.4,
+       "r": 1.8,
+       "top": 3400.0,
+       "w": 0.8,
        "why": [
-        "showers",
-        "gusty"
+        "gusty",
+        "lid"
        ]
       },
       "ICON": {
-       "r": 1.3,
-       "top": 3800.0,
-       "w": 0.9,
-       "why": [
-        "lid"
-       ]
+       "r": 2.8,
+       "top": 4500.0,
+       "w": 1.3,
+       "why": []
       }
      },
-     "was": 3.1,
-     "trend": 0.2
+     "was": 2.9,
+     "trend": -1.5
     }
    },
    "regime": {
-    "type": "Front",
-    "agree": 0.33,
+    "type": null,
+    "agree": 0.67,
     "models": {
      "GFS": null,
-     "ECMWF": "Front",
+     "ECMWF": null,
      "ICON": "Pre-frontal"
     },
     "features": {
@@ -4301,62 +4402,62 @@
       "rh": 50
      },
      "ECMWF": {
-      "rain_mm": 0.5,
-      "t850": 9.7,
-      "w850": "SE 7",
-      "w700": "SW 11",
-      "rh": 60
+      "rain_mm": 0.0,
+      "t850": 12.3,
+      "w850": "SSE 7",
+      "w700": "SSW 8",
+      "rh": 50
      },
      "ICON": {
       "rain_mm": 0.0,
-      "t850": 12.3,
-      "w850": "S 12",
-      "w700": "SW 11",
-      "rh": 61
+      "t850": 13.8,
+      "w850": "SSE 9",
+      "w700": "SSW 15",
+      "rh": 62
      }
     }
    },
    "best": "lb",
    "best_main": "lb",
-   "headline": "XC at Little Black",
+   "headline": "Little Black thermal",
    "why": null
   },
   {
    "date": "2026-10-30",
    "sites": {
     "torrey": {
-     "rating": 2.42,
+     "rating": 2.35,
      "label": "Marginal",
      "tags": [
       "rain 48%"
      ],
      "xc": false,
      "note": "cross-SW",
-     "p_fly": 0.21,
+     "p_fly": 0.2,
      "p_xc": 0.05,
-     "agree": "split",
+     "agree": "agree",
      "models": {
       "GFS": 2.4,
-      "ECMWF": 2.4,
-      "ICON": 4.6
+      "ECMWF": 2.3,
+      "ICON": 2.4
      },
      "n_members": 122,
      "lead": "ECMWF",
-     "top_ft": 2100.0,
-     "base_ft": 3100.0,
-     "wstar": 1.6,
+     "top_ft": 1800.0,
+     "base_ft": 2900.0,
+     "wstar": 1.5,
      "sunset": "6:01pm",
      "factors": [
       {
        "k": "Height",
-       "v": "~2,100 ft",
+       "v": "~1,800 ft",
        "sub": "global models",
        "q": 1.0
       },
       {
        "k": "Wind 1 pm",
-       "v": "SW 7g15",
-       "sub": "cross-SW",
+       "v": "SSW 6g15",
+       "sub": "later SW 8g15 \u00b7 cross-SW",
        "q": 0.0
       },
       {
@@ -4367,9 +4468,9 @@
       },
       {
        "k": "Model agreement",
-       "v": "split",
-       "sub": "GFS 2.4 \u00b7 ECMWF 2.4 \u00b7 ICON 4.6",
-       "q": 0.11
+       "v": "agree",
+       "sub": "GFS 2.4 \u00b7 ECMWF 2.3 \u00b7 ICON 2.4",
+       "q": 0.95
       }
      ],
      "alt_source": "models",
@@ -4377,7 +4478,8 @@
      "launch_ft": 300,
      "style": "ridge",
      "why": [
-      "cross"
+      "cross",
+      "showers"
      ],
      "diag": {
       "GFS": {
@@ -4389,17 +4491,18 @@
        ]
       },
       "ECMWF": {
-       "r": 2.4,
+       "r": 2.3,
        "top": 1600.0,
-       "w": 1.4,
+       "w": 1.2,
        "why": [
-        "cross"
+        "cross",
+        "showers"
        ]
       },
       "ICON": {
-       "r": 4.6,
-       "top": 2000.0,
-       "w": 1.6,
+       "r": 2.4,
+       "top": 1700.0,
+       "w": 1.5,
        "why": [
         "cross",
         "showers"
@@ -4407,38 +4510,37 @@
       }
      },
      "was": 2.2,
-     "trend": 0.2
+     "trend": 0.1
     },
     "lb": {
-     "rating": 4.56,
+     "rating": 4.34,
      "label": "XC",
      "tags": [
       "rain 35%",
-      "window ~1pm",
-      "glass-off"
+      "window ~1pm"
      ],
      "xc": true,
      "note": "",
-     "p_fly": 1.0,
+     "p_fly": 0.98,
      "p_xc": 0.95,
      "agree": "agree",
      "models": {
       "GFS": 4.9,
-      "ECMWF": 4.6,
-      "ICON": 4.1
+      "ECMWF": 4.3,
+      "ICON": 4.3
      },
      "n_members": 122,
      "lead": "ECMWF",
-     "top_ft": 3800.0,
-     "base_ft": 4000.0,
+     "top_ft": 3500.0,
+     "base_ft": 3800.0,
      "wstar": 1.6,
      "sunset": "6:00pm",
      "factors": [
       {
        "k": "Height",
-       "v": "~3,800 ft",
+       "v": "~3,500 ft",
        "sub": "global models",
-       "q": 0.89
+       "q": 0.84
       },
       {
        "k": "Wind 1 pm",
@@ -4448,8 +4550,8 @@
       },
       {
        "k": "Wind aloft",
-       "v": "SSW 8 kt",
-       "sub": "at 3,000 ft",
+       "v": "SSW 9 kt",
+       "sub": "at 2,500 ft",
        "q": 1.0
       },
       {
@@ -4461,8 +4563,8 @@
       {
        "k": "Model agreement",
        "v": "agree",
-       "sub": "GFS 4.9 \u00b7 ECMWF 4.6 \u00b7 ICON 4.1",
-       "q": 0.71
+       "sub": "GFS 4.9 \u00b7 ECMWF 4.3 \u00b7 ICON 4.3",
+       "q": 0.76
       }
      ],
      "alt_source": "models",
@@ -4481,56 +4583,55 @@
        "why": []
       },
       "ECMWF": {
-       "r": 4.6,
-       "top": 3800.0,
-       "w": 1.6,
+       "r": 4.3,
+       "top": 3400.0,
+       "w": 1.3,
        "why": [
         "gusty",
         "showers"
        ]
       },
       "ICON": {
-       "r": 4.1,
-       "top": 3200.0,
+       "r": 4.3,
+       "top": 3500.0,
        "w": 1.6,
        "why": [
-        "gusty",
-        "showers"
+        "gusty"
        ]
       }
      },
-     "was": 5.0,
-     "trend": -0.4
+     "was": 4.8,
+     "trend": -0.5
     },
     "blossom": {
-     "rating": 2.53,
+     "rating": 3.22,
      "label": "Thermal",
      "tags": [
       "rain 39%",
       "glass-off"
      ],
      "xc": false,
-     "note": "thermals to 3,300 ft",
-     "p_fly": 0.68,
-     "p_xc": 0.0,
+     "note": "thermals to 3,400 ft",
+     "p_fly": 0.84,
+     "p_xc": 0.16,
      "agree": "split",
      "models": {
       "GFS": 3.4,
-      "ECMWF": 1.5,
-      "ICON": 2.5
+      "ECMWF": 1.3,
+      "ICON": 3.2
      },
      "n_members": 122,
      "lead": "GFS",
-     "top_ft": 3300.0,
-     "base_ft": 3500.0,
+     "top_ft": 3400.0,
+     "base_ft": 3600.0,
      "wstar": 1.5,
      "sunset": "5:59pm",
      "factors": [
       {
        "k": "Height",
-       "v": "~3,300 ft",
+       "v": "~3,400 ft",
        "sub": "global models",
-       "q": 0.54
+       "q": 0.55
       },
       {
        "k": "Wind 1 pm",
@@ -4553,8 +4654,8 @@
       {
        "k": "Model agreement",
        "v": "split",
-       "sub": "GFS 3.4 \u00b7 ECMWF 1.5 \u00b7 ICON 2.5",
-       "q": 0.24
+       "sub": "GFS 3.4 \u00b7 ECMWF 1.3 \u00b7 ICON 3.2",
+       "q": 0.15
       }
      ],
      "alt_source": "models",
@@ -4570,9 +4671,9 @@
        "why": []
       },
       "ECMWF": {
-       "r": 1.5,
-       "top": 2700.0,
-       "w": 1.2,
+       "r": 1.3,
+       "top": 2400.0,
+       "w": 1.3,
        "why": [
         "gusty",
         "lid",
@@ -4580,57 +4681,56 @@
        ]
       },
       "ICON": {
-       "r": 2.5,
-       "top": 3300.0,
+       "r": 3.2,
+       "top": 3400.0,
        "w": 1.5,
        "why": [
-        "gusty",
-        "lid"
+        "gusty"
        ]
       }
      },
      "was": 3.4,
-     "trend": -0.9
+     "trend": -0.2
     },
     "elsinore": {
-     "rating": 1.0,
+     "rating": 1.37,
      "label": "No go",
      "tags": [
       "rain 32%"
      ],
      "xc": false,
      "note": "over the back",
-     "p_fly": 0.07,
-     "p_xc": 0.0,
+     "p_fly": 0.11,
+     "p_xc": 0.03,
      "agree": "split",
      "models": {
       "GFS": 2.5,
       "ECMWF": 1.0,
-      "ICON": 1.0
+      "ICON": 1.4
      },
      "n_members": 122,
      "lead": "ECMWF",
-     "top_ft": 4800.0,
-     "base_ft": 3900.0,
-     "wstar": 1.8,
+     "top_ft": 4300.0,
+     "base_ft": 4400.0,
+     "wstar": 1.7,
      "sunset": "6:00pm",
      "factors": [
       {
        "k": "Height",
-       "v": "~4,800 ft",
+       "v": "~4,300 ft",
        "sub": "global models",
-       "q": 0.47
+       "q": 0.36
       },
       {
        "k": "Wind 1 pm",
-       "v": "S 6g13",
-       "sub": "later SSW 8g13 \u00b7 over the back",
-       "q": 0.33
+       "v": "SSW 8g13",
+       "sub": "later SSW 11 \u00b7 over the back",
+       "q": 0.0
       },
       {
        "k": "Wind aloft",
-       "v": "SSW 6 kt",
-       "sub": "at 3,800 ft",
+       "v": "SSW 9 kt",
+       "sub": "at 3,200 ft",
        "q": 1.0
       },
       {
@@ -4642,7 +4742,7 @@
       {
        "k": "Model agreement",
        "v": "split",
-       "sub": "GFS 2.5 \u00b7 ECMWF 1.0 \u00b7 ICON 1.0",
+       "sub": "GFS 2.5 \u00b7 ECMWF 1.0 \u00b7 ICON 1.4",
        "q": 0.38
       }
      ],
@@ -4652,8 +4752,8 @@
      "style": "switch",
      "why": [
       "otb",
-      "lid",
-      "showers"
+      "aloft",
+      "lid"
      ],
      "diag": {
       "GFS": {
@@ -4666,67 +4766,66 @@
       },
       "ECMWF": {
        "r": 1.0,
-       "top": 5000.0,
-       "w": 1.8,
-       "why": [
-        "otb",
-        "lid",
-        "showers"
-       ]
-      },
-      "ICON": {
-       "r": 1.0,
-       "top": 3900.0,
-       "w": 1.5,
+       "top": 4300.0,
+       "w": 1.7,
        "why": [
         "otb",
         "aloft",
         "lid"
        ]
+      },
+      "ICON": {
+       "r": 1.4,
+       "top": 4200.0,
+       "w": 1.5,
+       "why": [
+        "otb",
+        "lid"
+       ]
       }
      },
-     "was": 1.3,
-     "trend": -0.3
+     "was": 1.5,
+     "trend": -0.1
     },
     "soboba": {
-     "rating": 3.08,
+     "rating": 3.22,
      "label": "Thermal",
      "tags": [
       "rain 25%",
       "glass-off"
      ],
      "xc": false,
-     "note": "thermals to 4,300 ft",
-     "p_fly": 0.65,
-     "p_xc": 0.0,
+     "note": "thermals to 4,500 ft",
+     "p_fly": 0.93,
+     "p_xc": 0.22,
      "agree": "agree",
      "models": {
       "GFS": 2.9,
-      "ECMWF": 3.3,
-      "ICON": 3.1
+      "ECMWF": 3.2,
+      "ICON": 3.4
      },
      "n_members": 122,
      "lead": "ECMWF",
-     "top_ft": 4300.0,
-     "base_ft": 5100.0,
-     "wstar": 1.6,
+     "top_ft": 4500.0,
+     "base_ft": 5200.0,
+     "wstar": 1.7,
      "sunset": "5:59pm",
      "factors": [
       {
        "k": "Height",
-       "v": "~4,300 ft",
+       "v": "~4,500 ft",
        "sub": "global models",
-       "q": 0.54
+       "q": 0.56
       },
       {
        "k": "Wind 1 pm",
-       "v": "SSW 4g13",
-       "sub": "later SSW 8g18",
+       "v": "SSW 6g13",
+       "sub": "later SSW 9g18",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "SSW 7 kt",
+       "v": "SSW 9 kt",
        "sub": "at 3,500 ft",
        "q": 1.0
       },
@@ -4739,8 +4838,8 @@
       {
        "k": "Model agreement",
        "v": "agree",
-       "sub": "GFS 2.9 \u00b7 ECMWF 3.3 \u00b7 ICON 3.1",
-       "q": 0.85
+       "sub": "GFS 2.9 \u00b7 ECMWF 3.2 \u00b7 ICON 3.4",
+       "q": 0.82
       }
      ],
      "alt_source": "models",
@@ -4758,62 +4857,63 @@
        "why": []
       },
       "ECMWF": {
-       "r": 3.3,
-       "top": 4700.0,
-       "w": 1.6,
+       "r": 3.2,
+       "top": 4500.0,
+       "w": 1.7,
        "why": [
         "showers"
        ]
       },
       "ICON": {
-       "r": 3.1,
-       "top": 4300.0,
-       "w": 1.5,
+       "r": 3.4,
+       "top": 4900.0,
+       "w": 1.7,
        "why": []
       }
      },
      "was": 3.4,
-     "trend": -0.3
+     "trend": -0.2
     },
     "otay": {
-     "rating": 2.4,
-     "label": "Glass-off",
+     "rating": 3.0,
+     "label": "Thermal",
      "tags": [
-      "rain 51%"
+      "rain 51%",
+      "glass-off"
      ],
      "xc": false,
-     "note": "",
-     "p_fly": 0.2,
-     "p_xc": 0.01,
-     "agree": "split",
+     "note": "thermals to 3,700 ft",
+     "p_fly": 0.53,
+     "p_xc": 0.02,
+     "agree": "agree",
      "models": {
       "GFS": 3.4,
-      "ECMWF": 2.4,
-      "ICON": 1.6
+      "ECMWF": 3.0,
+      "ICON": 3.0
      },
      "n_members": 122,
      "lead": "ECMWF",
-     "top_ft": 3800.0,
-     "base_ft": 4100.0,
-     "wstar": 1.6,
+     "top_ft": 3700.0,
+     "base_ft": 4000.0,
+     "wstar": 1.5,
      "sunset": "6:00pm",
      "factors": [
       {
        "k": "Height",
-       "v": "~3,800 ft",
+       "v": "~3,700 ft",
        "sub": "global models",
-       "q": 0.63
+       "q": 0.62
       },
       {
        "k": "Wind 1 pm",
-       "v": "SW 7g14",
-       "sub": "later WSW 7g22",
+       "v": "SSW 9",
+       "sub": "later SW 7g21 \u00b7 gusty",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "SW 7 kt",
-       "sub": "at 2,000 ft",
+       "v": "SSW 9 kt",
+       "sub": "at 2,600 ft",
        "q": 1.0
       },
       {
@@ -4824,9 +4924,9 @@
       },
       {
        "k": "Model agreement",
-       "v": "split",
-       "sub": "GFS 3.4 \u00b7 ECMWF 2.4 \u00b7 ICON 1.6",
-       "q": 0.3
+       "v": "agree",
+       "sub": "GFS 3.4 \u00b7 ECMWF 3.0 \u00b7 ICON 3.0",
+       "q": 0.84
       }
      ],
      "alt_source": "models",
@@ -4834,9 +4934,7 @@
      "launch_ft": 1550,
      "style": "window",
      "why": [
-      "gusty",
-      "lid",
-      "showers"
+      "gusty"
      ],
      "diag": {
       "GFS": {
@@ -4846,19 +4944,17 @@
        "why": []
       },
       "ECMWF": {
-       "r": 2.4,
-       "top": 2800.0,
-       "w": 1.2,
+       "r": 3.0,
+       "top": 3700.0,
+       "w": 1.3,
        "why": [
-        "gusty",
-        "lid",
-        "showers"
+        "gusty"
        ]
       },
       "ICON": {
-       "r": 1.6,
-       "top": 3800.0,
-       "w": 1.6,
+       "r": 3.0,
+       "top": 3100.0,
+       "w": 1.5,
        "why": [
         "gusty",
         "lid",
@@ -4867,10 +4963,10 @@
       }
      },
      "was": 3.4,
-     "trend": -1.0
+     "trend": -0.4
     },
     "lagunahorse": {
-     "rating": 1.03,
+     "rating": 1.05,
      "label": "No go",
      "tags": [
       "rain 25%"
@@ -4883,32 +4979,32 @@
      "models": {
       "GFS": 1.1,
       "ECMWF": 1.0,
-      "ICON": 1.0
+      "ICON": 1.1
      },
      "n_members": 122,
      "lead": "ECMWF",
-     "top_ft": 4800.0,
-     "base_ft": 5200.0,
+     "top_ft": 4400.0,
+     "base_ft": 5800.0,
      "wstar": 1.2,
      "sunset": "5:58pm",
      "factors": [
       {
        "k": "Height",
-       "v": "~4,800 ft",
+       "v": "~4,400 ft",
        "sub": "global models",
-       "q": 0.06
+       "q": 0.0
       },
       {
        "k": "Wind 1 pm",
-       "v": "WSW 10g25",
-       "sub": "later WSW 13g26 \u00b7 gusty",
+       "v": "WSW 12g27",
+       "sub": "later WSW 14g28 \u00b7 gusty",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "SW 10 kt",
-       "sub": "at 4,300 ft",
-       "q": 0.68
+       "v": "WSW 12 kt",
+       "sub": "at 4,200 ft",
+       "q": 0.94
       },
       {
        "k": "Rain & storms",
@@ -4919,8 +5015,8 @@
       {
        "k": "Model agreement",
        "v": "agree",
-       "sub": "GFS 1.1 \u00b7 ECMWF 1.0 \u00b7 ICON 1.0",
-       "q": 0.94
+       "sub": "GFS 1.1 \u00b7 ECMWF 1.0 \u00b7 ICON 1.1",
+       "q": 0.95
       }
      ],
      "alt_source": "models",
@@ -4943,8 +5039,8 @@
       },
       "ECMWF": {
        "r": 1.0,
-       "top": 4800.0,
-       "w": 1.2,
+       "top": 4000.0,
+       "w": 1.0,
        "why": [
         "aloft",
         "gusty",
@@ -4952,13 +5048,13 @@
        ]
       },
       "ICON": {
-       "r": 1.0,
-       "top": 5100.0,
-       "w": 1.6,
+       "r": 1.1,
+       "top": 5700.0,
+       "w": 1.7,
        "why": [
-        "windy",
         "aloft",
-        "gusty"
+        "gusty",
+        "lid"
        ]
       }
      },
@@ -4967,26 +5063,26 @@
      "trend": -0.1
     },
     "marshall": {
-     "rating": 1.21,
-     "label": "No go",
+     "rating": 2.4,
+     "label": "Glass-off",
      "tags": [
       "rain 28%"
      ],
      "xc": false,
-     "note": "gusty",
-     "p_fly": 0.0,
+     "note": "",
+     "p_fly": 0.5,
      "p_xc": 0.0,
      "agree": "split",
      "models": {
       "GFS": 3.0,
       "ECMWF": 1.0,
-      "ICON": 1.2
+      "ICON": 2.4
      },
      "n_members": 122,
-     "lead": "ECMWF",
+     "lead": "GFS",
      "top_ft": 4400.0,
-     "base_ft": 4400.0,
-     "wstar": 1.5,
+     "base_ft": 5000.0,
+     "wstar": 1.7,
      "sunset": "5:59pm",
      "factors": [
       {
@@ -4997,15 +5093,15 @@
       },
       {
        "k": "Wind 1 pm",
-       "v": "S 12g34",
-       "sub": "later S 14g39 \u00b7 gusty",
+       "v": "S 7",
+       "sub": "later SSW 8",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "S 12 kt",
-       "sub": "at 3,000 ft",
-       "q": 0.82
+       "v": "S 8 kt",
+       "sub": "at 3,600 ft",
+       "q": 0.93
       },
       {
        "k": "Rain & storms",
@@ -5016,7 +5112,7 @@
       {
        "k": "Model agreement",
        "v": "split",
-       "sub": "GFS 3.0 \u00b7 ECMWF 1.0 \u00b7 ICON 1.2",
+       "sub": "GFS 3.0 \u00b7 ECMWF 1.0 \u00b7 ICON 2.4",
        "q": 0.2
       }
      ],
@@ -5025,9 +5121,7 @@
      "launch_ft": 4040,
      "style": "thermal",
      "why": [
-      "gusty",
-      "lid",
-      "showers"
+      "lid"
      ],
      "diag": {
       "GFS": {
@@ -5040,7 +5134,7 @@
       },
       "ECMWF": {
        "r": 1.0,
-       "top": 2900.0,
+       "top": 2800.0,
        "w": 1.2,
        "why": [
         "gusty",
@@ -5049,18 +5143,17 @@
        ]
       },
       "ICON": {
-       "r": 1.2,
-       "top": 4800.0,
-       "w": 1.5,
+       "r": 2.4,
+       "top": 5000.0,
+       "w": 1.7,
        "why": [
-        "rain",
-        "gusty",
-        "lid"
+        "lid",
+        "gusty"
        ]
       }
      },
      "was": 3.0,
-     "trend": -1.8
+     "trend": -0.6
     },
     "santabarbara": {
      "rating": 3.4,
@@ -5069,38 +5162,38 @@
       "rain 45%"
      ],
      "xc": false,
-     "note": "thermals to 5,100 ft",
+     "note": "thermals to 5,600 ft",
      "p_fly": 0.87,
      "p_xc": 0.49,
-     "agree": "mixed",
+     "agree": "agree",
      "models": {
       "GFS": 3.7,
       "ECMWF": 3.4,
-      "ICON": 2.2
+      "ICON": 3.4
      },
      "n_members": 122,
      "lead": "ECMWF",
-     "top_ft": 5100.0,
-     "base_ft": 5800.0,
+     "top_ft": 5600.0,
+     "base_ft": 6000.0,
      "wstar": 1.5,
      "sunset": "6:09pm",
      "factors": [
       {
        "k": "Height",
-       "v": "~5,100 ft",
+       "v": "~5,600 ft",
        "sub": "global models",
-       "q": 0.6
+       "q": 0.69
       },
       {
        "k": "Wind 1 pm",
-       "v": "SSE 5g12",
-       "sub": "later S 5g15",
+       "v": "S 5g12",
+       "sub": "later SW 4g15",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "SSE 5 kt",
-       "sub": "at 4,400 ft",
+       "v": "SSE 4 kt",
+       "sub": "at 4,600 ft",
        "q": 1.0
       },
       {
@@ -5111,9 +5204,9 @@
       },
       {
        "k": "Model agreement",
-       "v": "mixed",
-       "sub": "GFS 3.7 \u00b7 ECMWF 3.4 \u00b7 ICON 2.2",
-       "q": 0.4
+       "v": "agree",
+       "sub": "GFS 3.7 \u00b7 ECMWF 3.4 \u00b7 ICON 3.4",
+       "q": 0.87
       }
      ],
      "alt_source": "models",
@@ -5132,19 +5225,17 @@
       },
       "ECMWF": {
        "r": 3.4,
-       "top": 5100.0,
+       "top": 5400.0,
        "w": 1.5,
        "why": [
         "showers"
        ]
       },
       "ICON": {
-       "r": 2.2,
-       "top": 4500.0,
-       "w": 1.0,
-       "why": [
-        "showers"
-       ]
+       "r": 3.4,
+       "top": 5600.0,
+       "w": 1.4,
+       "why": []
       }
      },
      "was": 3.4,
@@ -5152,11 +5243,11 @@
     }
    },
    "regime": {
-    "type": "Post-frontal",
+    "type": "Pre-frontal",
     "agree": 0.33,
     "models": {
      "GFS": null,
-     "ECMWF": "Post-frontal",
+     "ECMWF": "Pre-frontal",
      "ICON": "Front"
     },
     "features": {
@@ -5168,18 +5259,18 @@
       "rh": 51
      },
      "ECMWF": {
-      "rain_mm": 0.9,
-      "t850": 8.0,
+      "rain_mm": 2.3,
+      "t850": 8.3,
       "w850": "S 6",
-      "w700": "SW 17",
+      "w700": "SSW 21",
       "rh": 62
      },
      "ICON": {
-      "rain_mm": 1.2,
-      "t850": 8.9,
-      "w850": "SSW 13",
-      "w700": "SW 21",
-      "rh": 68
+      "rain_mm": 1.0,
+      "t850": 9.5,
+      "w850": "SSW 6",
+      "w700": "SW 13",
+      "rh": 64
      }
     }
    },
@@ -5192,19 +5283,19 @@
    "date": "2026-10-31",
    "sites": {
     "torrey": {
-     "rating": 2.43,
-     "label": "Ridge soaring",
+     "rating": 1.97,
+     "label": "Marginal",
      "tags": [
       "rain 59%"
      ],
      "xc": false,
-     "note": "S 5 mph",
-     "p_fly": 0.5,
+     "note": "cross-SW",
+     "p_fly": 0.22,
      "p_xc": 0.04,
      "agree": "mixed",
      "models": {
       "GFS": 3.0,
-      "ECMWF": 2.4,
+      "ECMWF": 2.0,
       "ICON": 1.9
      },
      "n_members": 122,
@@ -5222,8 +5313,8 @@
       },
       {
        "k": "Wind 1 pm",
-       "v": "S 5g13",
-       "sub": "later WSW 4g14 \u00b7 cross-SW",
+       "v": "SSW 6g13",
+       "sub": "later SW 4g14 \u00b7 cross-SW",
        "q": 0.0
       },
       {
@@ -5235,7 +5326,7 @@
       {
        "k": "Model agreement",
        "v": "mixed",
-       "sub": "GFS 3.0 \u00b7 ECMWF 2.4 \u00b7 ICON 1.9",
+       "sub": "GFS 3.0 \u00b7 ECMWF 2.0 \u00b7 ICON 1.9",
        "q": 0.54
       }
      ],
@@ -5244,7 +5335,8 @@
      "launch_ft": 300,
      "style": "ridge",
      "why": [
-      "cross"
+      "cross",
+      "showers"
      ],
      "diag": {
       "GFS": {
@@ -5256,11 +5348,12 @@
        ]
       },
       "ECMWF": {
-       "r": 2.4,
-       "top": 1600.0,
-       "w": 1.5,
+       "r": 2.0,
+       "top": 1100.0,
+       "w": 1.3,
        "why": [
-        "cross"
+        "cross",
+        "showers"
        ]
       },
       "ICON": {
@@ -5273,28 +5366,28 @@
       }
      },
      "was": 2.5,
-     "trend": -0.1
+     "trend": -0.5
     },
     "lb": {
      "rating": 4.91,
      "label": "XC",
      "tags": [
       "rain 54%",
-      "window ~12pm",
+      "window ~1pm",
       "glass-off"
      ],
      "xc": true,
      "note": "",
      "p_fly": 1.0,
      "p_xc": 1.0,
-     "agree": "agree",
+     "agree": "split",
      "models": {
       "GFS": 5.0,
-      "ECMWF": 4.2,
+      "ECMWF": 1.8,
       "ICON": 4.9
      },
      "n_members": 122,
-     "lead": "ECMWF",
+     "lead": "GFS",
      "top_ft": 4400.0,
      "base_ft": 4500.0,
      "wstar": 1.8,
@@ -5308,14 +5401,14 @@
       },
       {
        "k": "Wind 1 pm",
-       "v": "SSW 4g12",
-       "sub": "later SW 4g15",
+       "v": "SW 5",
+       "sub": "later W 8",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "SSW 3 kt",
-       "sub": "at 2,300 ft",
+       "v": "SW 3 kt",
+       "sub": "at 3,300 ft",
        "q": 1.0
       },
       {
@@ -5326,9 +5419,9 @@
       },
       {
        "k": "Model agreement",
-       "v": "agree",
-       "sub": "GFS 5.0 \u00b7 ECMWF 4.2 \u00b7 ICON 4.9",
-       "q": 0.71
+       "v": "split",
+       "sub": "GFS 5.0 \u00b7 ECMWF 1.8 \u00b7 ICON 4.9",
+       "q": 0.0
       }
      ],
      "alt_source": "models",
@@ -5344,10 +5437,14 @@
        "why": []
       },
       "ECMWF": {
-       "r": 4.2,
-       "top": 3300.0,
-       "w": 1.5,
-       "why": []
+       "r": 1.8,
+       "top": 2300.0,
+       "w": 1.1,
+       "why": [
+        "otb",
+        "lid",
+        "showers"
+       ]
       },
       "ICON": {
        "r": 4.9,
@@ -5372,21 +5469,21 @@
      "agree": "split",
      "models": {
       "GFS": 3.0,
-      "ECMWF": 1.3,
+      "ECMWF": 1.2,
       "ICON": 3.4
      },
      "n_members": 122,
      "lead": "GFS",
-     "top_ft": 2300.0,
+     "top_ft": 2100.0,
      "base_ft": 4400.0,
      "wstar": 1.4,
      "sunset": "5:58pm",
      "factors": [
       {
        "k": "Height",
-       "v": "~2,300 ft",
+       "v": "~2,100 ft",
        "sub": "global models",
-       "q": 0.28
+       "q": 0.2
       },
       {
        "k": "Wind 1 pm",
@@ -5409,8 +5506,8 @@
       {
        "k": "Model agreement",
        "v": "split",
-       "sub": "GFS 3.0 \u00b7 ECMWF 1.3 \u00b7 ICON 3.4",
-       "q": 0.17
+       "sub": "GFS 3.0 \u00b7 ECMWF 1.2 \u00b7 ICON 3.4",
+       "q": 0.13
       }
      ],
      "alt_source": "models",
@@ -5430,11 +5527,12 @@
        ]
       },
       "ECMWF": {
-       "r": 1.3,
-       "top": 2300.0,
-       "w": 1.2,
+       "r": 1.2,
+       "top": 2100.0,
+       "w": 1.0,
        "why": [
-        "lid"
+        "lid",
+        "showers"
        ]
       },
       "ICON": {
@@ -5460,13 +5558,13 @@
      "agree": "mixed",
      "models": {
       "GFS": 1.7,
-      "ECMWF": 1.3,
+      "ECMWF": 1.0,
       "ICON": 2.1
      },
      "n_members": 122,
      "lead": "ECMWF",
      "top_ft": 4300.0,
-     "base_ft": 5400.0,
+     "base_ft": 4000.0,
      "wstar": 1.7,
      "sunset": "6:00pm",
      "factors": [
@@ -5478,14 +5576,14 @@
       },
       {
        "k": "Wind 1 pm",
-       "v": "S 8g13",
-       "sub": "later S 4",
-       "q": 1.0
+       "v": "SSW 6g13",
+       "sub": "gusty",
+       "q": 0.67
       },
       {
        "k": "Wind aloft",
-       "v": "SSE 5 kt",
-       "sub": "at 2,800 ft",
+       "v": "SSW 6 kt",
+       "sub": "at 2,200 ft",
        "q": 1.0
       },
       {
@@ -5497,8 +5595,8 @@
       {
        "k": "Model agreement",
        "v": "mixed",
-       "sub": "GFS 1.7 \u00b7 ECMWF 1.3 \u00b7 ICON 2.1",
-       "q": 0.67
+       "sub": "GFS 1.7 \u00b7 ECMWF 1.0 \u00b7 ICON 2.1",
+       "q": 0.56
       }
      ],
      "alt_source": "models",
@@ -5507,6 +5605,7 @@
      "style": "switch",
      "why": [
       "otb",
+      "gusty",
       "lid"
      ],
      "diag": {
@@ -5519,11 +5618,12 @@
        ]
       },
       "ECMWF": {
-       "r": 1.3,
-       "top": 3600.0,
-       "w": 1.5,
+       "r": 1.0,
+       "top": 3300.0,
+       "w": 1.2,
        "why": [
         "otb",
+        "gusty",
         "lid"
        ]
       },
@@ -5551,14 +5651,14 @@
      "note": "",
      "p_fly": 0.5,
      "p_xc": 0.05,
-     "agree": "mixed",
+     "agree": "split",
      "models": {
       "GFS": 2.5,
-      "ECMWF": 2.4,
+      "ECMWF": 1.2,
       "ICON": 3.2
      },
      "n_members": 122,
-     "lead": "ECMWF",
+     "lead": "GFS",
      "top_ft": 4000.0,
      "base_ft": 4700.0,
      "wstar": 1.5,
@@ -5572,14 +5672,14 @@
       },
       {
        "k": "Wind 1 pm",
-       "v": "SW 4g9",
-       "sub": "later SSW 3g11",
+       "v": "WSW 4",
+       "sub": "later SW 3",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "SSW 4 kt",
-       "sub": "at 2,200 ft",
+       "v": "SW 3 kt",
+       "sub": "at 2,800 ft",
        "q": 1.0
       },
       {
@@ -5590,18 +5690,16 @@
       },
       {
        "k": "Model agreement",
-       "v": "mixed",
-       "sub": "GFS 2.5 \u00b7 ECMWF 2.4 \u00b7 ICON 3.2",
-       "q": 0.68
+       "v": "split",
+       "sub": "GFS 2.5 \u00b7 ECMWF 1.2 \u00b7 ICON 3.2",
+       "q": 0.21
       }
      ],
      "alt_source": "models",
      "ground_ft": 1519,
      "launch_ft": 2260,
      "style": "thermal",
-     "why": [
-      "lid"
-     ],
+     "why": [],
      "diag": {
       "GFS": {
        "r": 2.5,
@@ -5610,11 +5708,13 @@
        "why": []
       },
       "ECMWF": {
-       "r": 2.4,
-       "top": 2700.0,
-       "w": 1.1,
+       "r": 1.2,
+       "top": 3200.0,
+       "w": 1.3,
        "why": [
-        "lid"
+        "rain",
+        "lid",
+        "showers"
        ]
       },
       "ICON": {
@@ -5641,7 +5741,7 @@
      "agree": "split",
      "models": {
       "GFS": 3.4,
-      "ECMWF": 1.4,
+      "ECMWF": 1.1,
       "ICON": 3.4
      },
      "n_members": 122,
@@ -5678,8 +5778,8 @@
       {
        "k": "Model agreement",
        "v": "split",
-       "sub": "GFS 3.4 \u00b7 ECMWF 1.4 \u00b7 ICON 3.4",
-       "q": 0.2
+       "sub": "GFS 3.4 \u00b7 ECMWF 1.1 \u00b7 ICON 3.4",
+       "q": 0.06
       }
      ],
      "alt_source": "models",
@@ -5695,10 +5795,11 @@
        "why": []
       },
       "ECMWF": {
-       "r": 1.4,
-       "top": 2600.0,
-       "w": 1.2,
+       "r": 1.1,
+       "top": 1900.0,
+       "w": 1.0,
        "why": [
+        "otb",
         "gusty",
         "lid"
        ]
@@ -5716,7 +5817,7 @@
      "trend": 0.0
     },
     "lagunahorse": {
-     "rating": 1.15,
+     "rating": 1.11,
      "label": "No go",
      "tags": [
       "rain 48%"
@@ -5733,27 +5834,27 @@
      },
      "n_members": 122,
      "lead": "ECMWF",
-     "top_ft": 5400.0,
+     "top_ft": 4600.0,
      "base_ft": 6600.0,
-     "wstar": 1.5,
+     "wstar": 1.4,
      "sunset": "5:57pm",
      "factors": [
       {
        "k": "Height",
-       "v": "~5,400 ft",
+       "v": "~4,600 ft",
        "sub": "global models",
-       "q": 0.17
+       "q": 0.0
       },
       {
        "k": "Wind 1 pm",
-       "v": "SSW 5g12",
-       "sub": "later SSW 3g14",
+       "v": "SW 7g16",
+       "sub": "later SW 6g19 \u00b7 gusty",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "S 4 kt",
-       "sub": "at 4,500 ft",
+       "v": "SW 7 kt",
+       "sub": "at 3,900 ft",
        "q": 1.0
       },
       {
@@ -5775,7 +5876,8 @@
      "style": "convergence",
      "why": [
       "gusty",
-      "lid"
+      "lid",
+      "showers"
      ],
      "diag": {
       "GFS": {
@@ -5788,11 +5890,12 @@
       },
       "ECMWF": {
        "r": 1.1,
-       "top": 5400.0,
-       "w": 1.5,
+       "top": 4200.0,
+       "w": 0.7,
        "why": [
         "gusty",
-        "lid"
+        "lid",
+        "showers"
        ]
       },
       "ICON": {
@@ -5819,35 +5922,35 @@
      "note": "",
      "p_fly": 0.37,
      "p_xc": 0.0,
-     "agree": "agree",
+     "agree": "mixed",
      "models": {
       "GFS": 2.4,
-      "ECMWF": 3.0,
+      "ECMWF": 1.0,
       "ICON": 2.4
      },
      "n_members": 122,
-     "lead": "ECMWF",
-     "top_ft": 2600.0,
-     "base_ft": 4400.0,
-     "wstar": 1.1,
+     "lead": "GFS",
+     "top_ft": 2100.0,
+     "base_ft": 4200.0,
+     "wstar": 0.9,
      "sunset": "5:58pm",
      "factors": [
       {
        "k": "Height",
-       "v": "~2,600 ft",
+       "v": "~2,100 ft",
        "sub": "global models",
        "q": 0.0
       },
       {
        "k": "Wind 1 pm",
-       "v": "S 10g27",
-       "sub": "later S 8g37 \u00b7 gusty",
+       "v": "SSW 7",
+       "sub": "later SSW 6g11",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "S 9 kt",
-       "sub": "at 2,500 ft",
+       "v": "SSW 6 kt",
+       "sub": "at 2,000 ft",
        "q": 1.0
       },
       {
@@ -5858,9 +5961,9 @@
       },
       {
        "k": "Model agreement",
-       "v": "agree",
-       "sub": "GFS 2.4 \u00b7 ECMWF 3.0 \u00b7 ICON 2.4",
-       "q": 0.76
+       "v": "mixed",
+       "sub": "GFS 2.4 \u00b7 ECMWF 1.0 \u00b7 ICON 2.4",
+       "q": 0.44
       }
      ],
      "alt_source": "models",
@@ -5868,9 +5971,7 @@
      "launch_ft": 4040,
      "style": "thermal",
      "why": [
-      "gusty",
-      "lid",
-      "showers"
+      "lid"
      ],
      "diag": {
       "GFS": {
@@ -5882,9 +5983,9 @@
        ]
       },
       "ECMWF": {
-       "r": 3.0,
-       "top": 2600.0,
-       "w": 1.1,
+       "r": 1.0,
+       "top": 2100.0,
+       "w": 0.8,
        "why": [
         "gusty",
         "lid",
@@ -5918,7 +6019,7 @@
      "agree": "split",
      "models": {
       "GFS": 3.4,
-      "ECMWF": 1.1,
+      "ECMWF": 1.8,
       "ICON": 3.4
      },
      "n_members": 122,
@@ -5955,8 +6056,8 @@
       {
        "k": "Model agreement",
        "v": "split",
-       "sub": "GFS 3.4 \u00b7 ECMWF 1.1 \u00b7 ICON 3.4",
-       "q": 0.07
+       "sub": "GFS 3.4 \u00b7 ECMWF 1.8 \u00b7 ICON 3.4",
+       "q": 0.36
       }
      ],
      "alt_source": "models",
@@ -5972,13 +6073,13 @@
        "why": []
       },
       "ECMWF": {
-       "r": 1.1,
-       "top": 3500.0,
-       "w": 0.6,
+       "r": 1.8,
+       "top": 4300.0,
+       "w": 1.2,
        "why": [
-        "rain",
         "gusty",
-        "lid"
+        "lid",
+        "showers"
        ]
       },
       "ICON": {
@@ -5993,11 +6094,11 @@
     }
    },
    "regime": {
-    "type": "Post-frontal",
-    "agree": 0.67,
+    "type": "Pre-frontal",
+    "agree": 0.33,
     "models": {
      "GFS": "Pre-frontal",
-     "ECMWF": "Post-frontal",
+     "ECMWF": "Front",
      "ICON": "Post-frontal"
     },
     "features": {
@@ -6009,11 +6110,11 @@
       "rh": 49
      },
      "ECMWF": {
-      "rain_mm": 1.6,
-      "t850": 10.3,
-      "w850": "S 6",
-      "w700": "SSW 16",
-      "rh": 55
+      "rain_mm": 7.6,
+      "t850": 8.7,
+      "w850": "SSW 6",
+      "w700": "SW 11",
+      "rh": 76
      },
      "ICON": {
       "rain_mm": 0.5,
@@ -6033,38 +6134,38 @@
    "date": "2026-11-01",
    "sites": {
     "torrey": {
-     "rating": 1.55,
-     "label": "No go",
+     "rating": 1.86,
+     "label": "Marginal",
      "tags": [
       "rain 61%"
      ],
      "xc": false,
-     "note": "rain or storms",
-     "p_fly": 0.2,
+     "note": "too light to soar",
+     "p_fly": 0.26,
      "p_xc": 0.07,
-     "agree": "mixed",
+     "agree": "agree",
      "models": {
       "GFS": 1.6,
-      "ECMWF": 1.0,
+      "ECMWF": 1.9,
       "ICON": 2.2
      },
      "n_members": 122,
      "lead": "ECMWF",
-     "top_ft": 900.0,
-     "base_ft": 1400.0,
-     "wstar": 1.4,
+     "top_ft": 1900.0,
+     "base_ft": 2800.0,
+     "wstar": 1.7,
      "sunset": "5:59pm",
      "factors": [
       {
        "k": "Height",
-       "v": "~900 ft",
+       "v": "~1,900 ft",
        "sub": "global models",
-       "q": 0.48
+       "q": 1.0
       },
       {
        "k": "Wind 1 pm",
-       "v": "SSE 13g30",
-       "sub": "later SSE 6g30 \u00b7 over the back",
+       "v": "WSW 3g12",
+       "sub": "later W 5g17",
        "q": 0.0
       },
       {
@@ -6075,9 +6176,9 @@
       },
       {
        "k": "Model agreement",
-       "v": "mixed",
-       "sub": "GFS 1.6 \u00b7 ECMWF 1.0 \u00b7 ICON 2.2",
-       "q": 0.51
+       "v": "agree",
+       "sub": "GFS 1.6 \u00b7 ECMWF 1.9 \u00b7 ICON 2.2",
+       "q": 0.73
       }
      ],
      "alt_source": "models",
@@ -6085,9 +6186,7 @@
      "launch_ft": 300,
      "style": "ridge",
      "why": [
-      "rain",
-      "otb",
-      "gusty"
+      "light"
      ],
      "diag": {
       "GFS": {
@@ -6101,13 +6200,11 @@
        ]
       },
       "ECMWF": {
-       "r": 1.0,
-       "top": 900.0,
-       "w": 1.4,
+       "r": 1.9,
+       "top": 1900.0,
+       "w": 1.7,
        "why": [
-        "rain",
-        "otb",
-        "gusty"
+        "light"
        ]
       },
       "ICON": {
@@ -6122,44 +6219,46 @@
      }
     },
     "lb": {
-     "rating": 1.0,
-     "label": "No go",
+     "rating": 4.3,
+     "label": "XC",
      "tags": [
-      "rain 61%"
+      "rain 61%",
+      "window ~12pm",
+      "glass-off"
      ],
-     "xc": false,
-     "note": "rain or storms",
-     "p_fly": 0.32,
-     "p_xc": 0.1,
+     "xc": true,
+     "note": "",
+     "p_fly": 1.0,
+     "p_xc": 1.0,
      "agree": "split",
      "models": {
       "GFS": 1.0,
-      "ECMWF": 1.0,
+      "ECMWF": 4.3,
       "ICON": 5.0
      },
      "n_members": 122,
      "lead": "ECMWF",
-     "top_ft": 1600.0,
-     "base_ft": 2300.0,
-     "wstar": 1.1,
+     "top_ft": 3400.0,
+     "base_ft": 3500.0,
+     "wstar": 1.6,
      "sunset": "5:58pm",
      "factors": [
       {
        "k": "Height",
-       "v": "~1,600 ft",
+       "v": "~3,400 ft",
        "sub": "global models",
-       "q": 0.2
+       "q": 0.82
       },
       {
        "k": "Wind 1 pm",
-       "v": "SE 9g49",
-       "sub": "later ENE 2g36 \u00b7 over the back",
-       "q": 0.33
+       "v": "WSW 5g14",
+       "sub": "later WSW 7g19",
+       "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "SSE 9 kt",
-       "sub": "at 1,100 ft",
+       "v": "WSW 6 kt",
+       "sub": "at 2,500 ft",
        "q": 1.0
       },
       {
@@ -6171,7 +6270,7 @@
       {
        "k": "Model agreement",
        "v": "split",
-       "sub": "GFS 1.0 \u00b7 ECMWF 1.0 \u00b7 ICON 5.0",
+       "sub": "GFS 1.0 \u00b7 ECMWF 4.3 \u00b7 ICON 5.0",
        "q": 0.0
       }
      ],
@@ -6180,9 +6279,7 @@
      "launch_ft": 1050,
      "style": "window",
      "why": [
-      "rain",
-      "otb",
-      "aloft"
+      "gusty"
      ],
      "diag": {
       "GFS": {
@@ -6196,13 +6293,11 @@
        ]
       },
       "ECMWF": {
-       "r": 1.0,
-       "top": 1600.0,
-       "w": 1.1,
+       "r": 4.3,
+       "top": 3400.0,
+       "w": 1.6,
        "why": [
-        "rain",
-        "otb",
-        "aloft"
+        "gusty"
        ]
       },
       "ICON": {
@@ -6220,38 +6315,38 @@
       "rain 64%"
      ],
      "xc": false,
-     "note": "rain or storms",
+     "note": "gusty",
      "p_fly": 0.34,
      "p_xc": 0.2,
      "agree": "split",
      "models": {
       "GFS": 1.8,
-      "ECMWF": 1.0,
+      "ECMWF": 1.4,
       "ICON": 3.4
      },
      "n_members": 122,
      "lead": "ECMWF",
-     "top_ft": 1200.0,
-     "base_ft": 2100.0,
-     "wstar": 0.8,
+     "top_ft": 2500.0,
+     "base_ft": 2300.0,
+     "wstar": 1.6,
      "sunset": "5:58pm",
      "factors": [
       {
        "k": "Height",
-       "v": "~1,200 ft",
+       "v": "~2,500 ft",
        "sub": "global models",
-       "q": 0.0
+       "q": 0.32
       },
       {
        "k": "Wind 1 pm",
-       "v": "SSE 5g47",
-       "sub": "later WNW 3g29 \u00b7 gusty",
+       "v": "WSW 7g18",
+       "sub": "later WSW 9g23 \u00b7 gusty",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "SSE 6 kt",
-       "sub": "at 1,000 ft",
+       "v": "WSW 7 kt",
+       "sub": "at 2,100 ft",
        "q": 1.0
       },
       {
@@ -6263,8 +6358,8 @@
       {
        "k": "Model agreement",
        "v": "split",
-       "sub": "GFS 1.8 \u00b7 ECMWF 1.0 \u00b7 ICON 3.4",
-       "q": 0.04
+       "sub": "GFS 1.8 \u00b7 ECMWF 1.4 \u00b7 ICON 3.4",
+       "q": 0.19
       }
      ],
      "alt_source": "models",
@@ -6272,9 +6367,9 @@
      "launch_ft": 1500,
      "style": "window",
      "why": [
-      "rain",
-      "otb",
-      "gusty"
+      "gusty",
+      "lid",
+      "showers"
      ],
      "diag": {
       "GFS": {
@@ -6288,13 +6383,13 @@
        ]
       },
       "ECMWF": {
-       "r": 1.0,
-       "top": 1200.0,
-       "w": 0.8,
+       "r": 1.4,
+       "top": 2500.0,
+       "w": 1.6,
        "why": [
-        "rain",
-        "otb",
-        "gusty"
+        "gusty",
+        "lid",
+        "showers"
        ]
       },
       "ICON": {
@@ -6306,45 +6401,45 @@
      }
     },
     "elsinore": {
-     "rating": 1.02,
+     "rating": 1.1,
      "label": "No go",
      "tags": [
       "rain 59%"
      ],
      "xc": false,
-     "note": "rain or storms",
+     "note": "over the back",
      "p_fly": 0.01,
      "p_xc": 0.0,
      "agree": "mixed",
      "models": {
       "GFS": 1.0,
-      "ECMWF": 1.0,
+      "ECMWF": 1.1,
       "ICON": 2.1
      },
      "n_members": 122,
      "lead": "ECMWF",
-     "top_ft": 2900.0,
+     "top_ft": 4500.0,
      "base_ft": 3400.0,
-     "wstar": 1.3,
+     "wstar": 1.8,
      "sunset": "5:59pm",
      "factors": [
       {
        "k": "Height",
-       "v": "~2,900 ft",
+       "v": "~4,500 ft",
        "sub": "global models",
-       "q": 0.06
+       "q": 0.39
       },
       {
        "k": "Wind 1 pm",
-       "v": "E 8g29",
-       "sub": "later SE 6g28 \u00b7 gusty",
+       "v": "SSW 4g18",
+       "sub": "later W 8g30",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "SE 7 kt",
-       "sub": "at 2,400 ft",
-       "q": 1.0
+       "v": "WSW 6 kt",
+       "sub": "at 3,400 ft \u00b7 blows over the back",
+       "q": 0.15
       },
       {
        "k": "Rain & storms",
@@ -6355,7 +6450,7 @@
       {
        "k": "Model agreement",
        "v": "mixed",
-       "sub": "GFS 1.0 \u00b7 ECMWF 1.0 \u00b7 ICON 2.1",
+       "sub": "GFS 1.0 \u00b7 ECMWF 1.1 \u00b7 ICON 2.1",
        "q": 0.58
       }
      ],
@@ -6364,9 +6459,9 @@
      "launch_ft": 2650,
      "style": "switch",
      "why": [
-      "rain",
-      "aloft",
-      "gusty"
+      "otb",
+      "aloftdir",
+      "lid"
      ],
      "diag": {
       "GFS": {
@@ -6380,13 +6475,13 @@
        ]
       },
       "ECMWF": {
-       "r": 1.0,
-       "top": 2900.0,
-       "w": 1.3,
+       "r": 1.1,
+       "top": 4500.0,
+       "w": 1.8,
        "why": [
-        "rain",
-        "aloft",
-        "gusty"
+        "otb",
+        "aloftdir",
+        "lid"
        ]
       },
       "ICON": {
@@ -6402,44 +6497,44 @@
      }
     },
     "soboba": {
-     "rating": 1.08,
-     "label": "No go",
+     "rating": 3.0,
+     "label": "Thermal",
      "tags": [
       "rain 61%"
      ],
      "xc": false,
-     "note": "rain or storms",
-     "p_fly": 0.26,
-     "p_xc": 0.0,
+     "note": "thermals to 4,400 ft",
+     "p_fly": 1.0,
+     "p_xc": 0.35,
      "agree": "split",
      "models": {
       "GFS": 1.1,
-      "ECMWF": 1.1,
+      "ECMWF": 3.0,
       "ICON": 3.4
      },
      "n_members": 122,
      "lead": "ECMWF",
-     "top_ft": 2700.0,
-     "base_ft": 4300.0,
-     "wstar": 1.3,
+     "top_ft": 4400.0,
+     "base_ft": 4600.0,
+     "wstar": 1.8,
      "sunset": "5:57pm",
      "factors": [
       {
        "k": "Height",
-       "v": "~2,700 ft",
+       "v": "~4,400 ft",
        "sub": "global models",
-       "q": 0.11
+       "q": 0.55
       },
       {
        "k": "Wind 1 pm",
-       "v": "NNW 1",
-       "sub": "later WNW 2g20 \u00b7 gusty",
+       "v": "SSW 4g14",
+       "sub": "later SW 4g16 \u00b7 gusty",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "SE 5 kt",
-       "sub": "at 2,300 ft",
+       "v": "WSW 6 kt",
+       "sub": "at 3,400 ft",
        "q": 1.0
       },
       {
@@ -6451,7 +6546,7 @@
       {
        "k": "Model agreement",
        "v": "split",
-       "sub": "GFS 1.1 \u00b7 ECMWF 1.1 \u00b7 ICON 3.4",
+       "sub": "GFS 1.1 \u00b7 ECMWF 3.0 \u00b7 ICON 3.4",
        "q": 0.07
       }
      ],
@@ -6460,9 +6555,8 @@
      "launch_ft": 2260,
      "style": "thermal",
      "why": [
-      "rain",
       "gusty",
-      "lid"
+      "showers"
      ],
      "diag": {
       "GFS": {
@@ -6476,13 +6570,12 @@
        ]
       },
       "ECMWF": {
-       "r": 1.1,
-       "top": 2700.0,
-       "w": 1.3,
+       "r": 3.0,
+       "top": 4400.0,
+       "w": 1.8,
        "why": [
-        "rain",
         "gusty",
-        "lid"
+        "showers"
        ]
       },
       "ICON": {
@@ -6494,44 +6587,44 @@
      }
     },
     "otay": {
-     "rating": 1.0,
+     "rating": 1.59,
      "label": "No go",
      "tags": [
       "rain 70%"
      ],
      "xc": false,
-     "note": "rain or storms",
-     "p_fly": 0.22,
-     "p_xc": 0.04,
+     "note": "gusty",
+     "p_fly": 0.32,
+     "p_xc": 0.21,
      "agree": "split",
      "models": {
       "GFS": 1.0,
-      "ECMWF": 1.0,
+      "ECMWF": 1.6,
       "ICON": 4.1
      },
      "n_members": 122,
      "lead": "ECMWF",
-     "top_ft": 1000.0,
-     "base_ft": 1600.0,
-     "wstar": 0.8,
+     "top_ft": 2800.0,
+     "base_ft": 2900.0,
+     "wstar": 1.6,
      "sunset": "5:58pm",
      "factors": [
       {
        "k": "Height",
-       "v": "~1,000 ft",
+       "v": "~2,800 ft",
        "sub": "global models",
-       "q": 0.0
+       "q": 0.43
       },
       {
        "k": "Wind 1 pm",
-       "v": "S 15g99",
-       "sub": "later S 15g68 \u00b7 over the back",
-       "q": 0.0
+       "v": "W 5g17",
+       "sub": "later W 6g21 \u00b7 gusty",
+       "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "S 17 kt",
-       "sub": "at 900 ft",
+       "v": "W 5 kt",
+       "sub": "at 2,100 ft",
        "q": 1.0
       },
       {
@@ -6543,7 +6636,7 @@
       {
        "k": "Model agreement",
        "v": "split",
-       "sub": "GFS 1.0 \u00b7 ECMWF 1.0 \u00b7 ICON 4.1",
+       "sub": "GFS 1.0 \u00b7 ECMWF 1.6 \u00b7 ICON 4.1",
        "q": 0.0
       }
      ],
@@ -6552,9 +6645,9 @@
      "launch_ft": 1550,
      "style": "window",
      "why": [
-      "rain",
-      "otb",
-      "aloft"
+      "gusty",
+      "lid",
+      "showers"
      ],
      "diag": {
       "GFS": {
@@ -6568,13 +6661,13 @@
        ]
       },
       "ECMWF": {
-       "r": 1.0,
-       "top": 1000.0,
-       "w": 0.8,
+       "r": 1.6,
+       "top": 2800.0,
+       "w": 1.6,
        "why": [
-        "rain",
-        "otb",
-        "aloft"
+        "gusty",
+        "lid",
+        "showers"
        ]
       },
       "ICON": {
@@ -6594,7 +6687,7 @@
       "rain 65%"
      ],
      "xc": false,
-     "note": "Horse: rain or storms",
+     "note": "Horse: strong wind aloft",
      "p_fly": 0.0,
      "p_xc": 0.0,
      "agree": "agree",
@@ -6605,28 +6698,28 @@
      },
      "n_members": 122,
      "lead": "ECMWF",
-     "top_ft": 4100.0,
-     "base_ft": 4100.0,
-     "wstar": 0.7,
+     "top_ft": 4900.0,
+     "base_ft": 4900.0,
+     "wstar": 1.3,
      "sunset": "5:56pm",
      "factors": [
       {
        "k": "Height",
-       "v": "~4,100 ft",
+       "v": "~4,900 ft",
        "sub": "global models",
-       "q": 0.0
+       "q": 0.07
       },
       {
        "k": "Wind 1 pm",
-       "v": "SSW 18g66",
-       "sub": "later SSW 17g73 \u00b7 strong",
-       "q": 0.0
+       "v": "W 13g29",
+       "sub": "later W 17g36 \u00b7 gusty",
+       "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "SSW 18 kt",
-       "sub": "at 3,500 ft",
-       "q": 0.48
+       "v": "W 14 kt",
+       "sub": "at 4,400 ft",
+       "q": 0.51
       },
       {
        "k": "Rain & storms",
@@ -6638,7 +6731,7 @@
        "k": "Model agreement",
        "v": "agree",
        "sub": "GFS 1.1 \u00b7 ECMWF 1.0 \u00b7 ICON 1.0",
-       "q": 0.95
+       "q": 0.96
       }
      ],
      "alt_source": "models",
@@ -6646,8 +6739,8 @@
      "launch_ft": 4540,
      "style": "convergence",
      "why": [
-      "rain",
       "aloft",
+      "gusty",
       "lid"
      ],
      "diag": {
@@ -6663,11 +6756,11 @@
       },
       "ECMWF": {
        "r": 1.0,
-       "top": 3500.0,
-       "w": 0.7,
+       "top": 4900.0,
+       "w": 1.3,
        "why": [
-        "rain",
         "aloft",
+        "gusty",
         "lid"
        ]
       },
@@ -6685,45 +6778,45 @@
      "launch_name": "Horse"
     },
     "marshall": {
-     "rating": 1.0,
-     "label": "No go",
+     "rating": 2.4,
+     "label": "Glass-off",
      "tags": [
       "rain 57%"
      ],
      "xc": false,
-     "note": "rain or storms",
-     "p_fly": 0.12,
-     "p_xc": 0.0,
+     "note": "",
+     "p_fly": 0.26,
+     "p_xc": 0.25,
      "agree": "mixed",
      "models": {
       "GFS": 1.0,
-      "ECMWF": 1.0,
+      "ECMWF": 2.4,
       "ICON": 2.4
      },
      "n_members": 122,
      "lead": "ECMWF",
-     "top_ft": 2100.0,
+     "top_ft": 3300.0,
      "base_ft": 4100.0,
-     "wstar": 0.9,
+     "wstar": 1.3,
      "sunset": "5:57pm",
      "factors": [
       {
        "k": "Height",
-       "v": "~2,100 ft",
+       "v": "~3,300 ft",
        "sub": "global models",
        "q": 0.0
       },
       {
        "k": "Wind 1 pm",
-       "v": "ENE 5g51",
-       "sub": "later SE 3g30",
+       "v": "SSW 11g32",
+       "sub": "later SSW 9g37 \u00b7 gusty",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "E 4 kt",
-       "sub": "at 2,000 ft",
-       "q": 1.0
+       "v": "SSW 10 kt",
+       "sub": "at 2,700 ft",
+       "q": 0.98
       },
       {
        "k": "Rain & storms",
@@ -6734,7 +6827,7 @@
       {
        "k": "Model agreement",
        "v": "mixed",
-       "sub": "GFS 1.0 \u00b7 ECMWF 1.0 \u00b7 ICON 2.4",
+       "sub": "GFS 1.0 \u00b7 ECMWF 2.4 \u00b7 ICON 2.4",
        "q": 0.44
       }
      ],
@@ -6743,7 +6836,6 @@
      "launch_ft": 4040,
      "style": "thermal",
      "why": [
-      "rain",
       "gusty",
       "lid"
      ],
@@ -6759,11 +6851,10 @@
        ]
       },
       "ECMWF": {
-       "r": 1.0,
-       "top": 2000.0,
-       "w": 0.9,
+       "r": 2.4,
+       "top": 3300.0,
+       "w": 1.3,
        "why": [
-        "rain",
         "gusty",
         "lid"
        ]
@@ -6782,22 +6873,23 @@
      "rating": 3.4,
      "label": "Thermal",
      "tags": [
-      "rain 42%"
+      "rain 42%",
+      "glass-off"
      ],
      "xc": false,
      "note": "thermals to 5,300 ft",
      "p_fly": 1.0,
      "p_xc": 0.37,
-     "agree": "agree",
+     "agree": "split",
      "models": {
       "GFS": 3.7,
-      "ECMWF": 3.4,
+      "ECMWF": 1.6,
       "ICON": 3.4
      },
      "n_members": 122,
-     "lead": "ECMWF",
+     "lead": "GFS",
      "top_ft": 5300.0,
-     "base_ft": 7400.0,
+     "base_ft": 7700.0,
      "wstar": 1.7,
      "sunset": "6:07pm",
      "factors": [
@@ -6809,14 +6901,14 @@
       },
       {
        "k": "Wind 1 pm",
-       "v": "E 1",
-       "sub": "later NW 1",
+       "v": "S 5",
+       "sub": "later SSW 5",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "ENE 6 kt",
-       "sub": "at 4,700 ft",
+       "v": "E 7 kt",
+       "sub": "at 5,000 ft",
        "q": 1.0
       },
       {
@@ -6827,9 +6919,9 @@
       },
       {
        "k": "Model agreement",
-       "v": "agree",
-       "sub": "GFS 3.7 \u00b7 ECMWF 3.4 \u00b7 ICON 3.4",
-       "q": 0.88
+       "v": "split",
+       "sub": "GFS 3.7 \u00b7 ECMWF 1.6 \u00b7 ICON 3.4",
+       "q": 0.14
       }
      ],
      "alt_source": "models",
@@ -6845,10 +6937,14 @@
        "why": []
       },
       "ECMWF": {
-       "r": 3.4,
-       "top": 5200.0,
-       "w": 1.4,
-       "why": []
+       "r": 1.6,
+       "top": 5300.0,
+       "w": 1.6,
+       "why": [
+        "otb",
+        "aloftdir",
+        "aloft"
+       ]
       },
       "ICON": {
        "r": 3.4,
@@ -6876,11 +6972,11 @@
       "rh": 86
      },
      "ECMWF": {
-      "rain_mm": 33.6,
-      "t850": 12.4,
-      "w850": "SSW 19",
-      "w700": "SW 32",
-      "rh": 91
+      "rain_mm": 2.2,
+      "t850": 8.3,
+      "w850": "W 10",
+      "w700": "W 22",
+      "rh": 64
      },
      "ICON": {
       "rain_mm": 0.0,
@@ -6891,11 +6987,11 @@
      }
     }
    },
-   "best": "santabarbara",
-   "best_main": "blossom",
-   "headline": "Poor at home sites: rain or storms",
-   "why": "Rain"
+   "best": "lb",
+   "best_main": "lb",
+   "headline": "XC at Little Black",
+   "why": null
   }
  ],
- "trend_ref": "2026-10-25T13:06+00:00"
+ "trend_ref": "2026-10-25T14:54+00:00"
 }
