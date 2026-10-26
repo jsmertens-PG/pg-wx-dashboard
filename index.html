@@ -64,7 +64,11 @@ header.top h1 .sub { font-weight: 400; font-size: .9rem; color: var(--muted); le
 
 /* weather card: same frame as the days, neutral colour */
 .story .wlist { display: grid; }
-.story .wrow { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 4px 14px; padding: 8px 18px; font-size: .92rem; }
+.story .wsec { background: color-mix(in srgb, var(--ink) 10%, var(--surface)); font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  padding: 7px 18px; border-top: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); border-bottom: 1px solid color-mix(in srgb, var(--ink) 18%, transparent); }
+.story .wsec + .wrow { border-top: 0 !important; }
+.story .wrow.wlink { font-size: .84rem; }
+.story .wrow { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px 14px; padding: 8px 18px; font-size: .92rem; }
 .story .wrow + .wrow { border-top: 1px solid var(--line); }
 .story .wk { color: var(--muted); font-size: .86rem; }
 #story > .hd { grid-template-columns: auto minmax(0, 1fr); }
@@ -73,7 +77,7 @@ header.top h1 .sub { font-weight: 400; font-size: .9rem; color: var(--muted); le
 #story > .hd .flags { justify-self: end; display: flex; flex-wrap: wrap; gap: 4px; justify-content: flex-end; }
 @media (max-width: 640px) { #story > .hd { grid-template-columns: 1fr; } #story > .hd .flags { justify-self: start; justify-content: flex-start; } }
 .daynav a { border-radius: 4px; }
-@media (max-width: 640px) { .story .wrow { grid-template-columns: 1fr; padding-inline: 14px; } .story .wk:empty { display: none; } }
+@media (max-width: 640px) { .story .wrow, .story .wsec { padding-inline: 14px; } }
 .flags { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .tag { font-size: .72rem; border: 1px solid var(--line); border-radius: 3px; padding: 0 6px; color: var(--muted); white-space: nowrap; }
 .tag.ink { border-color: var(--ink); color: var(--ink); }
@@ -500,13 +504,13 @@ function render(data) {
   const sm = n && n.summary && ((n.summary.pattern || []).length || (n.summary.flying || []).length) ? n.summary : null;
   const bl = (n && (n.bullets && n.bullets.length ? n.bullets : [n.synopsis].filter(Boolean))) || [];
   const group = (title, items) => items && items.length ? `<div class="grp"><span class="eyebrow">${title}</span><ul>${items.map((b) => `<li>${esc(b)}</li>`).join("")}</ul></div>` : "";
-  const lines = (title, items) => (items || []).map((b, k) => `<div class="wrow"><span class="wk">${k === 0 ? title : ""}</span><span>${esc(b)}</span></div>`).join("");
+  const lines = (title, items) => (items && items.length ? `<div class="wsec">${esc(title)}</div>` : "") + (items || []).map((b) => `<div class="wrow"><span>${esc(b)}</span></div>`).join("");
   const ov = data.overview ? `<span class="ov">${esc(data.overview)}</span>` : "";
   $("#story").innerHTML = n ? `
     <summary class="hd"><span class="when">Weather <small>NWS San Diego · ${fmtWhen(n.issued)}</small></span>
       <span class="flags">${(n.flags || []).map((f) => `<span class="tag">${esc(f)}</span>`).join("")}</span><span class="exp" aria-hidden="true"><i class="chev"></i></span>${ov}</summary>
     <div class="wlist">${sm ? lines("Pattern", sm.pattern) + lines("For flying", sm.flying) : lines("Outlook", bl)}</div>`
-      + `<div class="wrow"><span class="wk"></span><span><a href="${esc(n.url)}" target="_blank" rel="noopener">Full NWS discussion</a></span></div>`
+      + `<div class="wrow wlink"><span><a href="${esc(n.url)}" target="_blank" rel="noopener">Full NWS discussion</a></span></div>`
     : `<summary class="hd"><span class="when">Weather <small>NWS discussion not available on the last run</small></span>${ov}</summary>`;
 
   /* day cards */
