@@ -221,7 +221,7 @@ details.day > summary { list-style: none; cursor: pointer; }
 /* week grid */
 .wk { display: grid; gap: 6px; border: 2.5px solid var(--ink); border-radius: 12px; padding: 10px; background: var(--surface); }
 .wk-h, .wk-r { display: grid; grid-template-columns: 76px repeat(var(--cols), minmax(0, 1fr)); gap: 6px; align-items: stretch; }
-.wk-h span { font-size: .72rem; font-weight: 600; color: var(--muted); text-align: center; text-transform: uppercase; letter-spacing: .04em; }
+.wk-h span { font-size: .66rem; font-weight: 600; color: var(--muted); text-align: center; text-transform: uppercase; letter-spacing: .04em; }
 .wk-d { display: grid; justify-items: start; align-content: center; gap: 1px; padding: 2px 0; border: 0; background: transparent; text-align: left; min-height: 0; cursor: pointer; }
 .wk-d b { font-size: .92rem; } .wk-d small { font-size: .7rem; color: var(--muted); }
 .wk-d .rx.sm { font-size: .55rem; margin-top: 2px; }
@@ -256,6 +256,8 @@ details.day:not([open]) > summary { border-bottom: 0 !important; }
 .sc { display: inline-flex; align-items: center; gap: 4px; font-size: .78rem; padding: 2px 8px; border-radius: 999px;
   background: color-mix(in srgb, var(--rc) 22%, var(--surface)); border: 1px solid color-mix(in srgb, var(--ink) 55%, transparent); font-variant-numeric: tabular-nums; }
 .sc b { font-weight: 600; }
+@media (max-width: 640px) { .sc { font-size: .72rem; padding: 2px 7px; } }
+.wk-h span { line-height: 1.15; align-self: end; }
 .sc .xcmark { font-size: .55rem; padding: 0 4px; }
 .sx { font-size: .74rem; color: var(--muted); margin-left: 4px; }
 details.day[open] > summary .sum { display: none; }
@@ -326,7 +328,7 @@ details.day[open] .chev { transform: rotate(-135deg) translate(-2px, -1px); }
     <span class="chip"><i style="background:var(--q4)"></i>4 XC</span>
     <span class="chip"><i style="background:var(--q5)"></i>5 outstanding</span>
   </div>
-      <p><b>1–5 scale, by site type.</b> <b>LB, Blossom, Otay</b> are rated on their best hour in the 11 am–1 pm window, when you get up and out before wind and stability kill it; glass-off is rated separately and the better of the two counts. A nice glass-off or a good local day is 3, a real XC window 4, outstanding 5. <b>Elsinore and Laguna/Horse</b> are XC-only convergence sites: without a convergence setup they cap at 2. <b>Torrey</b> is 2–3 for ridge soaring and 4–5 on a thermal day. Marshall, Santa Barbara (11–3) and Soboba (1–4 pm) use their own windows. Heights come from each site's scale in <span class="mono">sites.json</span> (for LB: 2,500 ft OK, 3,000 ft XC, 4,500 ft great).</p>
+      <p><b>1–5 scale, by site type.</b> <b>Little Black, Blossom, Otay</b> are rated on their best hour in the 11 am–1 pm window, when you get up and out before wind and stability kill it; glass-off is rated separately and the better of the two counts. A nice glass-off or a good local day is 3, a real XC window 4, outstanding 5. <b>Elsinore and Laguna/Horse</b> are XC-only convergence sites: without a convergence setup they cap at 2. <b>Torrey</b> is 2–3 for ridge soaring and 4–5 on a thermal day. Marshall, Santa Barbara (11–3) and Soboba (1–4 pm) use their own windows. Heights come from each site's scale in <span class="mono">sites.json</span> (for Little Black: 2,500 ft OK, 3,000 ft XC, 4,500 ft great).</p>
       <p><b>Day type</b> (the coloured pill) comes from the models over the region and runs all 7 days: <b>Front</b> (regional rain, cooling), <b>Post-frontal</b> (the days after, cold air aloft), <b>Pre-frontal</b> (S–SW flow ahead of a front), <b>Santa Ana</b> (NE–E flow at 850 hPa, dry air) and <b>Switch day</b> (the day Santa Ana ends). "maybe" means the models disagree.</p>
       <p><b>Models.</b> The rating is a weighted median: HRRR and RRFS ×3, NAM ×2, GFS, ECMWF, ICON ×1. Height bars show RRFS and HRRR (about 4 and 2 days); after that a rough global-model height. The ensembles give the chance of a flyable or XC day. Lift is the usable top of the mixed layer (the idea behind RASP's Hcrit), never above cloudbase; launch wind, gusts (over 15 mph hurts), wind aloft at the top of lift and rain all count.</p>
       <p>Limits for each site are in <span class="mono">sites.json</span>, to tune against real days.</p>
@@ -462,7 +464,7 @@ function render(data) {
   DATA = data;
   const gcols = big.length;
   $("#grid").style.setProperty("--cols", gcols);
-  $("#grid").innerHTML = `<div class="wk-h"><span></span>${big.map((s) => `<span>${esc(s.id === "lb" ? "LB" : s.short)}</span>`).join("")}</div>` +
+  $("#grid").innerHTML = `<div class="wk-h"><span></span>${big.map((s) => `<span>${esc(siteName(s))}</span>`).join("")}</div>` +
     data.days.map((d, i) => {
       const L = dayLabel(d.date);
       const rg = d.regime && d.regime.type && RX[d.regime.type] ? `<span class="rx rx-${RX[d.regime.type][0]} sm">${esc(RX[d.regime.type][1])}</span>` : "";
@@ -510,15 +512,17 @@ const bar = (r, thin) => `<span class="bar${thin ? " thin" : ""}"><i style="widt
 
 /* in the rows, altitudes wait for a tap: keep XC directions and reasons, drop "thermals to 3,000 ft" */
 const rowNote = (c) => (!c.note || /\d,?\d{3} ft|thermals/i.test(c.note) ? (c.launch_name && c.note && c.note.startsWith(c.launch_name) ? c.launch_name : "") : c.note);
+const siteName = (s) => (s.id === "lb" ? "Little Black" : s.short);
 /* what a closed day shows: the home sites and Torrey with their number, then any other XC site */
 function daySummary(d, big, other) {
-  const chip = (s) => {
-    const c = d.sites[s.id]; if (!c) return "";
-    return `<span class="sc" style="--rc:${qv(c.rating)}"><b>${esc(s.id === "lb" ? "LB" : s.short)}</b> ${r1(c.rating)}${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span>`;
-  };
-  /* the other sites only show up when they are XC days, so a great Marshall or Santa Barbara day stands out */
-  const extra = other.filter((s) => d.sites[s.id]?.xc);
-  return big.map(chip).join("") + (extra.length ? `<span class="sx">also</span>${extra.map(chip).join("")}` : "");
+  /* best to worst, only sites that show 3 or more (3 = at least a proper glass-off) */
+  const good = big.concat(other).filter((s) => d.sites[s.id] && Math.round(d.sites[s.id].rating) >= 3)
+    .sort((a, b) => d.sites[b.id].rating - d.sites[a.id].rating);
+  if (!good.length) return `<span class="sx">no site at 3 or better</span>`;
+  return good.map((s) => {
+    const c = d.sites[s.id];
+    return `<span class="sc" style="--rc:${qv(c.rating)}"><b>${esc(siteName(s))}</b> ${r1(c.rating)}${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span>`;
+  }).join("");
 }
 let openDays = new Set();
 try { openDays = new Set(JSON.parse(sessionStorage.getItem("radar-open") || "[]")); } catch (e) {}
@@ -529,7 +533,7 @@ document.addEventListener("toggle", (e) => {
 }, true);
 function siteRow(d, s, i, kind) {
   const c = d.sites[s.id];
-  const name = s.id === "lb" ? "Little Black" : s.short;
+  const name = siteName(s);
   if (!c) return `<div class="srow ${kind}"><span class="nm">${esc(name)}</span><span class="muted">no data</span></div>`;
   return `<button type="button" class="srow ${kind}" style="--rc:${qv(c.rating)}" data-site="${s.id}" data-day="${i}" aria-expanded="false">
     <span class="nm">${esc(name)}</span>${bar(c.rating, kind === "small")}<span class="rt">${trendHtml(c)}${r1(c.rating)}</span>
@@ -573,7 +577,7 @@ function openDaySheet(d) {
   const rows = DATA.sites.map((s) => {
     const c = d.sites[s.id]; if (!c) return "";
     return `<button type="button" class="ds" data-site="${s.id}" style="--rc:${qv(c.rating)}"><b class="ds-n">${r1(c.rating)}</b>
-      <span class="ds-t"><span class="ds-nm">${esc(s.id === "lb" ? "Little Black" : s.short)}</span>${labelHtml(c)}${rowNote(c) ? `<span class="note">${esc(rowNote(c))}</span>` : ""}</span></button>`;
+      <span class="ds-t"><span class="ds-nm">${esc(siteName(s))}</span>${labelHtml(c)}${rowNote(c) ? `<span class="note">${esc(rowNote(c))}</span>` : ""}</span></button>`;
   }).join("");
   $("#sheet").innerHTML = `<span class="grab" aria-hidden="true"></span>
     <button type="button" class="close" id="sheetClose" aria-label="Close">✕</button>
