@@ -163,7 +163,7 @@ def om_url(base, sites, model, hourly, past_days=0):
     if past_days:
         q["past_days"] = past_days                          # the day type needs the days before
     if all(s.get("lz_ft") is not None for s in sites):    # thermals start from the valley ground
-        q["elevation"] = ",".join(f"{s.get('model_ground_ft', s['lz_ft']) / FT:.0f}" for s in sites)
+        q["elevation"] = ",".join("nan" if s.get("_hpoint") else f"{s.get('model_ground_ft', s['lz_ft']) / FT:.0f}" for s in sites)
     return base + "?" + urllib.parse.urlencode(q)
 
 
@@ -728,6 +728,9 @@ def score_hour(site, hr, i, levels, elev_m):
     base = z0 + 125 * max(0.0, t2 - td) if td is not None else None
     if base is not None:
         usable = min(usable, base)
+    corr = (site.get("_corr") or {}).get(hr["time"][i]) if hr.get("time") else None
+    if corr:                                  # highest top along the site's corridor this hour
+        usable, wstar = corr[0], corr[1]
     usable_show = usable                      # what the model says (and XC Skies shows)
     bias = site.get("_bias_m", 0.0)           # RRFS: its recent gap to HRRR here, for scoring only
     if bias:
@@ -1306,11 +1309,40 @@ def expand_sites(sites):
                 out.append(c)
         else:
             out.append(dict(s, parent=s["id"]))
+        for k, hp in enumerate(s.get("height_points") or []):
+            c = {kk: vv for kk, vv in s.items() if kk not in ("launches", "height_points", "sp", "routes", "blocked")}
+            c.update({"id": f"{s['id']}#h{k}", "parent": s["id"], "_hpoint": True, "lat": hp["lat"], "lon": hp["lon"],
+                      "hp_name": hp.get("name", f"point {k}")})
+            out.append(c)
+    return out
+
+
+def corridor_heights(sites, det):
+    """{model: {site id: {time: (usable_m, wstar, point name)}}}: the highest usable top over a site's
+    height_points each hour (model grid-cell values, as XC Skies shows them). Used instead of the site's own
+    point for height, e.g. Elsinore: over the hills west of the lake and the Inland Empire toward Soboba,
+    never over the lake, where the high-res models run falsely low."""
+    out = {}
+    for name, (mid, data, *_i) in det.items():
+        for s, d in zip(sites, data or []):
+            if not s.get("_hpoint") or not d:
+                continue
+            hr, elev = d.get("hourly", {}), d.get("elevation", 0) or 0
+            dst = out.setdefault(name, {}).setdefault(s["parent"], {})
+            for i, t in enumerate(hr.get("time", [])):
+                if int(t[11:13]) not in HOURS:
+                    continue
+                try:
+                    sc = score_hour(s, hr, i, DET_LEVELS, elev)
+                except Exception:
+                    continue
+                if sc and (t not in dst or sc["usable_show"] > dst[t][0]):
+                    dst[t] = (sc["usable_show"], sc["wstar"], s["hp_name"])
     return out
 
 
 
-def rrfs_bias(sites, det):
+def rrfs_bias(sites, det, corr=None):
     """{site id: metres} RRFS's gap to HRRR in usable top at each site, from the midday hours (11-15)
     where both have data in this run (median, at most +-200 m). Added to RRFS heights for scoring only,
     so RRFS days are judged on the same footing as HRRR days."""
@@ -1318,9 +1350,12 @@ def rrfs_bias(sites, det):
     h, r = det.get("HRRR"), det.get("RRFS")
     if not h or not r or not h[1] or not r[1]:
         return out
+    corr = corr or {}
     for s, dh, dr in zip(sites, h[1], r[1]):
-        if not dh or not dr:
+        if not dh or not dr or s.get("_hpoint"):
             continue
+        sh = dict(s, _corr=corr.get("HRRR", {}).get(s["id"]))
+        sr = dict(s, _corr=corr.get("RRFS", {}).get(s["id"]))
         hh, hr_ = dh.get("hourly", {}), dr.get("hourly", {})
         ih = {t: i for i, t in enumerate(hh.get("time", []))}
         diffs = []
@@ -1328,8 +1363,8 @@ def rrfs_bias(sites, det):
             if t not in ih or int(t[11:13]) not in (11, 12, 13, 14, 15):
                 continue
             try:
-                a = score_hour(s, hh, ih[t], DET_LEVELS, dh.get("elevation", 0) or 0)
-                b = score_hour(s, hr_, j, DET_LEVELS, dr.get("elevation", 0) or 0)
+                a = score_hour(sh, hh, ih[t], DET_LEVELS, dh.get("elevation", 0) or 0)
+                b = score_hour(sr, hr_, j, DET_LEVELS, dr.get("elevation", 0) or 0)
             except Exception:
                 continue
             if a and b:
@@ -1397,15 +1432,22 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                     a["ground_ft"] = ground_ft
                     yield dstr, a
 
-    bias = rrfs_bias(sites, det)
+    corr = corridor_heights(sites, det)
+    bias = rrfs_bias(sites, det, corr)
     for name, (mid, data, *_i) in det.items():
         for s, d in zip(sites, data or []):
+            if s.get("_hpoint"):
+                continue
+            if corr.get(name, {}).get(s["id"]):
+                s = dict(s, _corr=corr[name][s["id"]])
             if name == "RRFS" and bias.get(s["id"]):
                 s = dict(s, _bias_m=bias[s["id"]])
             for dstr, a in run_site(s, d, DET_LEVELS, "det"):
                 days.setdefault(dstr, {}).setdefault(s["id"], {"det": {}, "ens": []})["det"][name] = a
     for name, (mid, data, *_i) in ens.items():
         for s, d in zip(sites, data or []):
+            if s.get("_hpoint"):
+                continue
             for dstr, a in run_site(s, d, ENS_LEVELS, "ens"):
                 days.setdefault(dstr, {}).setdefault(s["id"], {"det": {}, "ens": []})["ens"].append(a)
 
@@ -1585,6 +1627,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                     row["sub"] = "global models"
                     factors.insert(0, row)              # the thermal-height row was already taken out above
                 src = "models"
+            if s.get("height_points") and factors and factors[0]["k"] == "Height":
+                factors[0]["sub"] = (factors[0].get("sub") or "") + " · highest over the hills / toward Soboba"
             if ridge:                                   # Torrey: wind and direction tell it; no height bar
                 factors = [f for f in factors if f["k"] not in ("Height", "Thermal height")]
             lead_view = dict(lead, label=label, top=top if top is not None else lead.get("top"), shower_p=shower_p) if lead else None
