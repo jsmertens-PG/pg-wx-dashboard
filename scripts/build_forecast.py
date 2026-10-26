@@ -61,7 +61,7 @@ HIRES = ("HRRR", "RRFS")
 GLOBAL = ("ECMWF", "GFS", "ICON")
 HIRES_W = {"HRRR": 2, "RRFS": 1}
 RAIN_P = 0.6                       # share of runs with rain at which a day is a no-go
-CALIB_SITES = ("lb", "blossom", "elsinore")
+CALIB_SITES = ("lb", "blossom", "elsinore", "owens")
 
 
 def rating_models(names):
