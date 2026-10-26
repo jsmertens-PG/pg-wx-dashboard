@@ -53,15 +53,16 @@ OPTIONAL_MODELS = {"RRFS"}           # not listed as "failed" while Open-Meteo d
 # trust for lift and rating (local experience: HRRR usually right, then NAM; GFS/ECMWF/ICON for the longer range)
 MODEL_WEIGHT = {"HRRR": 3, "RRFS": 3, "NAM": 2, "ECMWF": 1, "GFS": 1, "ICON": 1}
 # while HRRR covers a day, HRRR (+ RRFS) alone decide it (ECMWF's wind aloft is only shown as a check);
-# once HRRR runs out, RRFS leads but gets help from NAM (while it lasts) and ECMWF (good on wind),
-# as a weighted mean so the helpers actually move the number; GFS and ICON only rate days past RRFS's range
+# once HRRR runs out, RRFS leads with help from NAM while it lasts (weighted mean, so NAM actually moves the
+# number); ECMWF only shows its wind aloft as a check; GFS, ECMWF and ICON only rate days past RRFS's range
 HIRES = ("HRRR", "RRFS")
 CALIB_SITES = ("lb", "blossom", "elsinore")
-RRFS_HELP = {"RRFS": 2, "NAM": 1, "ECMWF": 1}
+RRFS_HELP = {"RRFS": 2, "NAM": 1}
+RAIN_P = 0.6                       # share of runs with rain at which a day is a no-go
 
 
 def rating_models(names):
-    """The models that decide a day: HRRR/RRFS; RRFS + NAM/ECMWF once HRRR runs out; otherwise all."""
+    """The models that decide a day: HRRR/RRFS; RRFS + NAM once HRRR runs out; otherwise all."""
     names = list(names)
     if "HRRR" in names:
         return [n for n in names if n in HIRES]
@@ -728,14 +729,13 @@ def score_hour(site, hr, i, levels, elev_m):
 
     codes, q = [], 1.0
     launch = None
-    # rain: only real rain or storms are a no-go
+    # rain is only noted here; it sets the score per day in build(): a likely (>= RAIN_P) wet day is a no-go,
+    # anything less is just a "rain x%" tag
     if pr >= 1.0 or (cape >= 1000 and pr >= 0.3):
-        q = 0.0; codes.append("rain")
-    elif pr >= 0.3:
-        q *= 0.6; codes.append("showers")
+        codes.append("rain")
     elif pr >= 0.1:
-        q *= 0.85; codes.append("showers")
-    elif cape >= 2000:
+        codes.append("showers")
+    if cape >= 2000:
         q *= 0.75; codes.append("cape")
     # launch wind
     lo, hi = site["wind_mph"]
@@ -797,12 +797,12 @@ def score_hour(site, hr, i, levels, elev_m):
                     and wrap_in(tw_dir, *xb["from"]))
     # a convergence line needs real flow meeting at the site, not near-calm air
     conv_ok = site["kind"] != "convergence" or (lw_mph is not None and lw_mph >= site["wind_mph"][0] and on)
-    if site.get("xc_top_ft") and coast_ok and conv_ok and q >= 0.5 and pr < 0.3 and not bad_dir and wstar >= 1.2:
+    if site.get("xc_top_ft") and coast_ok and conv_ok and q >= 0.5 and not bad_dir and wstar >= 1.2:
         over = (usable if site["kind"] == "ridge" else peak_top) * FT - site["xc_top_ft"]
         if over >= 0:
             wind_f = 1.0 if a_max is None or a_max <= site["aloft_max_kt"] - 3 else 0.8
             xc_s = (0.35 + 0.65 * clamp(over / site.get("xc_span_ft", 1500))) * wind_f * clamp(wstar / 2.0, 0.6, 1.0)
-    glass = (on is True and lw_mph is not None and 3 <= lw_mph <= 13 and pr < 0.05 and cape < 500
+    glass = (on is True and lw_mph is not None and 3 <= lw_mph <= 13 and cape < 500
              and not bad_dir and (a_max is None or a_max <= site["aloft_max_kt"]))
     dbg = {"z0": round(z0 * FT), "t2": round(t2, 1), "td": round(td, 1) if td is not None else None,
            "sw": round(sw), "blh": round(blh * FT) if blh is not None else None,
@@ -906,7 +906,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
                     switch_h = h
                     break
             launchable = [(h, sc) for h, sc in hours if w0 - 1 <= h <= w1 and (switch_h is None or h < switch_h)
-                          and not west(sc) and sc["pr"] < 0.3 and (sc["lw"] or 0) <= site["wind_mph"][1]
+                          and not west(sc) and (sc["lw"] or 0) <= site["wind_mph"][1]
                           and (sc["a_max"] is None or sc["a_max"] <= site["aloft_max_kt"] + 5)]
             if launchable:
                 during = [(h, sc) for h, sc in hours if switch_h is not None and switch_h <= h <= switch_h + 1]
@@ -926,15 +926,20 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
                     best_h, sc = max(win, key=lambda x: x[1]["q"])
                     peak = sc["peak_top"]
         elif win:
-            # best two hours in a row, so a one-hour spike in a model (HRRR's PBL jumps around) can't
-            # make the day; the height shown is the mean of those two hours
-            n = min(2, len(win))
             scored = [(h, hour_r(sc, True), sc) for h, sc in win]
-            best = max(range(len(scored) - n + 1), key=lambda k: sum(x[1] for x in scored[k:k + n]))
-            rating = sum(x[1] for x in scored[best:best + n]) / n
-            best_h, _r, sc = max(scored[best:best + n], key=lambda x: x[1])
-            tops = [x[2]["peak_top"] for x in scored[best:best + n]]
-            peak = sum(tops) / len(tops)
+            if style == "window":
+                # the second-best hour of the window decides, so a one-hour spike in a model (HRRR's PBL
+                # jumps around, e.g. LB 10-26 1 pm: 3,400 ft between 2,000 and 1,600) can't make the day
+                ranked = sorted(scored, key=lambda x: x[1], reverse=True)
+                best_h, rating, sc = ranked[1] if len(ranked) > 1 else ranked[0]
+                peak = sc["peak_top"]
+            else:
+                n = min(2, len(win))
+                best = max(range(len(scored) - n + 1), key=lambda k: sum(x[1] for x in scored[k:k + n]))
+                rating = sum(x[1] for x in scored[best:best + n]) / n
+                best_h, _r, sc = max(scored[best:best + n], key=lambda x: x[1])
+                tops = [x[2]["peak_top"] for x in scored[best:best + n]]
+                peak = sum(tops) / len(tops)
             xc_now = sc["xc_s"] > 0 and rating >= 3.5
         if style not in ("convergence", "switch"):
             gw = [x["lw"] for h, x in gwin if h in glass_hours and x["lw"] is not None]
@@ -1265,6 +1270,45 @@ def expand_sites(sites):
     return out
 
 
+
+DAYNAMES = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+NWS_RAIN = re.compile(r"\b(showers?|rain|rainfall|drizzle|thunderstorms?)\b", re.I)
+
+
+def nws_rain_days(nws, dates):
+    """Dates (from `dates`) that the NWS discussion names in a sentence about showers or rain."""
+    if not nws or not dates:
+        return set()
+    parts = [nws.get("synopsis") or ""] + list((nws.get("summary") or {}).get("flying") or []) + list(nws.get("systems") or [])
+    text = " ".join(x.strip().rstrip(".") + "." for x in parts if x and x.strip())
+    first = date.fromisoformat(dates[0])
+
+    def day_of(word):
+        w = word.lower()
+        if w in ("today", "tonight"):
+            return first
+        if w == "tomorrow":
+            return first + timedelta(days=1)
+        if w in DAYNAMES:
+            return first + timedelta(days=(DAYNAMES.index(w) - first.weekday()) % 7)
+        return None
+    names = r"(today|tonight|tomorrow|" + "|".join(DAYNAMES) + r")"
+    out = set()
+    for sent in re.split(r"(?<=[.!?])\s+", text):
+        if not NWS_RAIN.search(sent):
+            continue
+        for a, b in re.findall(names + r"\s+(?:through|to|into|-)\s+" + names, sent, re.I):
+            d0, d1 = day_of(a), day_of(b)
+            while d0 and d1 and d0 <= d1:
+                out.add(d0.isoformat()); d0 += timedelta(days=1)
+        for w in re.findall(names, sent, re.I):
+            if day_of(w):
+                out.add(day_of(w).isoformat())
+        if re.search(r"\bweekend\b", sent, re.I):
+            sat = first + timedelta(days=(5 - first.weekday()) % 7)
+            out |= {sat.isoformat(), (sat + timedelta(days=1)).isoformat()}
+    return out & set(dates)
+
 def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parents=None):
     sp = sp or {}
     days = {}
@@ -1300,10 +1344,12 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             cell["all"] = cell["det"]
             cell["det"] = {k: cell["det"][k] for k in rating_models(cell["det"])}
     regimes = day_regimes(det, sites)
+    nws_days = nws_rain_days(nws, [d for d in sorted(days) if d >= datetime.now(timezone.utc).astimezone(_tz()).date().isoformat()][:DAYS])
     today = datetime.now(timezone.utc).astimezone(_tz()).date().isoformat()
     out_days = []
     for dstr in [d for d in sorted(days) if d >= today][:DAYS]:
-        drow = {"date": dstr, "sites": {}, "regime": regimes.get(dstr)}
+        drow = {"date": dstr, "sites": {}, "regime": regimes.get(dstr),
+                "nws_rain": dstr in nws_days}
         for s in sites:
             cell = days[dstr].get(s["id"])
             if not cell or (not cell["det"] and not cell["ens"]):
@@ -1319,6 +1365,12 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 rating = blend(det_r)
             else:
                 rating = median(ens_r)
+            # scattered showers rarely hit one grid point, so use the share of runs with rain here
+            runs_all = cell["ens"] or list(D.values())
+            shower_p = sum(1 for a in runs_all if a["pr"] >= 0.2) / len(runs_all)
+            wet = shower_p >= RAIN_P                    # it really rains: rock bottom
+            if wet:
+                rating = 1.0
             if ens_r:
                 shift = rating - median(ens_r)
                 p_fly = sum(r + shift >= 2.5 for r in ens_r) / len(ens_r)
@@ -1354,9 +1406,6 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 tags.append(f"window ~{fmt_h(lead['best_h'])}")
             if lead and lead["glass"] and label in ("Thermal", "Marginal", "XC") and not ridge and lead.get("style") != "convergence":
                 tags.append("glass-off")
-            # scattered showers rarely hit one grid point, so use the share of runs with rain here
-            runs_all = cell["ens"] or list(D.values())
-            shower_p = sum(1 for a in runs_all if a["pr"] >= 0.2) / len(runs_all)
             if shower_p >= 0.1:                       # any real chance of rain shows, also on no-go days
                 tags.insert(0, f"rain {round(shower_p * 100)}%")
             spread = (max(det_r.values()) - min(det_r.values())) if len(det_r) > 1 else 0

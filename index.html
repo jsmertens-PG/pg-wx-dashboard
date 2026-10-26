@@ -279,6 +279,8 @@ details.day > summary.hd .when .rx { flex: 0 1 auto; min-width: 0; overflow: hid
 /* which models fed the day's ratings, bottom right of each card */
 .mods { font-size: .66rem; color: var(--muted); font-weight: 400; letter-spacing: .02em; white-space: nowrap; }
 .day > .hd .sum .mods { margin-left: auto; align-self: flex-end; }
+.nwsr { font-size: .7rem; font-weight: 600; color: var(--ink); border: 1.5px dashed var(--ink); border-radius: 999px; padding: 1px 8px; white-space: nowrap; }
+.nwsrow { font-size: .8rem; font-weight: 600; padding: 6px 14px; border-bottom: 1px dashed color-mix(in srgb, var(--ink) 40%, transparent); }
 .mods-b { display: block; text-align: right; padding: 6px 14px 8px; }
 details.day:not([open]) > .mods-b { display: none; }
 @media (max-width: 640px) {
@@ -477,7 +479,7 @@ details.day:not([open]) > .mods-b { display: none; }
   </div>
       <p><b>1–5 scale, by site type.</b> <b>Little Black, Blossom, Otay</b> are rated on their best hour in the 11 am–1 pm window, when you get up and out before wind and stability kill it; glass-off is rated separately and the better of the two counts. A nice glass-off or a good local day is 3, a real XC window 4, outstanding 5. <b>Elsinore and Laguna/Horse</b> are XC-only convergence sites: without a convergence setup they cap at 2. <b>Torrey</b> is 2–3 for ridge soaring and 4–5 on a thermal day. Marshall, Santa Barbara (11–3) and Soboba (1–4 pm) use their own windows. Heights come from each site's scale in <span class="mono">sites.json</span> (for Little Black: 2,500 ft OK, 3,000 ft XC, 4,500 ft great).</p>
       <p><b>Day type</b> (the coloured pill) comes from the models over the region and runs all 7 days: <b>Front</b> (regional rain, cooling), <b>Post-frontal</b> (the days after, cold air aloft), <b>Pre-frontal</b> (S–SW flow ahead of a front), <b>Santa Ana</b> (NE–E flow at 850 hPa, dry air) and <b>Switch day</b> (the day Santa Ana ends). "maybe" means the models disagree.</p>
-      <p><b>Models.</b> While HRRR covers a day, HRRR and RRFS alone set the rating (ECMWF wind aloft is shown beside theirs as a check). Once HRRR runs out, RRFS leads with help from NAM and ECMWF (weighted mean, RRFS ×2, NAM and ECMWF ×1). Past RRFS it is a weighted median of the global models. The models behind each day are listed at the bottom right of its card. Height bars show RRFS and HRRR (about 4 and 2 days); after that a rough global-model height. The ensembles give the chance of a flyable or XC day. Lift is the usable top of the mixed layer (the idea behind RASP's Hcrit), never above cloudbase; launch wind, gusts (over 15 mph hurts), wind aloft at the top of lift and rain all count.</p>
+      <p><b>Models.</b> While HRRR covers a day, HRRR and RRFS alone set the rating (ECMWF wind aloft is shown beside theirs as a check). Once HRRR runs out, RRFS leads with help from NAM (weighted mean, RRFS ×2, NAM ×1); ECMWF only shows its wind aloft as a check. Past RRFS it is a weighted median of the global models. The models behind each day are listed at the bottom right of its card. Height bars show RRFS and HRRR (about 4 and 2 days); after that a rough global-model height. The ensembles give the chance of a flyable or XC day. Lift is the usable top of the mixed layer (the idea behind RASP's Hcrit), never above cloudbase; launch wind, gusts (over 15 mph hurts), wind aloft at the top of lift all count. <b>Rain</b> only shows as a "rain x%" tag (share of model and ensemble runs with rain); at 60% or more the day is a no-go. Days the NWS discussion names for showers get an "NWS showers" marker, with no effect on the rating.</p>
       <p>Limits for each site are in <span class="mono">sites.json</span>, to tune against real days.</p>
     </div>
   </details>
@@ -608,8 +610,9 @@ function render(data) {
         <span class="when${d.regime && d.regime.type ? " has-rx" : ""}"><span class="dn-l">${esc(L.long)}</span><span class="dn-s">${esc(L.short)}</span><small>${esc(L.date)}</small>${regimeHtml(d.regime)}</span>
         <span class="big" title="Best home site">${trendHtml(bm)}${r1(bm?.rating)}<small>/5</small></span>
         <span class="exp" aria-hidden="true"><i class="chev"></i></span>
-        <span class="sum">${d.why ? `<span class="why">${esc(d.why)}</span>` : ""}${daySummary(d, big, other)}${mods ? `<span class="mods">${mods}</span>` : ""}</span>
+        <span class="sum">${d.why ? `<span class="why">${esc(d.why)}</span>` : ""}${d.nws_rain ? `<span class="nwsr">NWS showers</span>` : ""}${daySummary(d, big, other)}${mods ? `<span class="mods">${mods}</span>` : ""}</span>
       </summary>
+      ${d.nws_rain ? `<div class="nwsrow">NWS: showers possible this day</div>` : ""}
       <div class="list">
         ${big.map((s) => siteRow(d, s, i, "")).join("")}
         <div class="minor">${other.map((s) => siteRow(d, s, i, "small")).join("")}</div>
