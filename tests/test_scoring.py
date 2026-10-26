@@ -45,6 +45,15 @@ class SampleRun(unittest.TestCase):
                 self.assertEqual(c["label"], "Thermal day")
 
 
+    def test_every_site_day_has_height_and_both_winds(self):
+        for d in self.data["days"]:
+            for k, c in d["sites"].items():
+                keys = [f["k"] for f in c["factors"]]
+                self.assertIn("Wind 1 pm", keys, (d["date"], k))
+                if c.get("style") != "ridge" and k != "torrey":
+                    self.assertIn("Wind aloft", keys, (d["date"], k))
+                self.assertEqual(keys[0], "Height", (d["date"], k))
+
     def test_day_types_known(self):
         for d in self.data["days"]:
             r = d.get("regime")

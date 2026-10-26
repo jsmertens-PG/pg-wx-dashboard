@@ -1371,7 +1371,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                     row = height_row("Height", top)
                     row["v"] = "~" + row["v"]
                     row["sub"] = "global models"
-                    factors[0:1] = [row]
+                    factors.insert(0, row)              # the thermal-height row was already taken out above
                 src = "models"
             lead_view = dict(lead, label=label, top=top if top is not None else lead.get("top"), shower_p=shower_p) if lead else None
             drow["sites"][s["id"]] = {
