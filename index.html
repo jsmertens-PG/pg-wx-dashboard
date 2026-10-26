@@ -673,10 +673,15 @@ const bar = (r, thin) => `<span class="bar${thin ? " thin" : ""}"><i style="widt
 const rowNote = (c) => (!c.note || /\d,?\d{3} ft|thermals/i.test(c.note) ? (c.launch_name && c.note && c.note.startsWith(c.launch_name) ? c.launch_name : "") : c.note);
 const siteName = (s) => (s.id === "lb" ? "Little Black" : s.short);
 /* what a closed day shows: the home sites and Torrey with their number, then any other XC site */
+const SD_SITES = new Set(["torrey", "lb", "blossom", "otay", "lagunahorse"]);
 function daySummary(d, big, other) {
   /* best to worst, only sites that show 3 or more (3 = at least a proper glass-off) */
-  const good = big.concat(other).filter((s) => d.sites[s.id] && Math.round(d.sites[s.id].rating) >= 3)
+  let good = big.concat(other).filter((s) => d.sites[s.id] && Math.round(d.sites[s.id].rating) >= 3)
     .sort((a, b) => d.sites[b.id].rating - d.sites[a.id].rating);
+  /* if a San Diego site is at least as good as anything elsewhere (shown whole number), list only the SD sites */
+  const best = (list) => Math.max(-1, ...list.map((s) => Math.round(d.sites[s.id].rating)));
+  const sd = good.filter((s) => SD_SITES.has(s.id));
+  if (sd.length && best(sd) >= best(good.filter((s) => !SD_SITES.has(s.id)))) good = sd;
   if (!good.length) return `<span class="sx">no site at 3 or better</span>`;
   return good.map((s) => {
     const c = d.sites[s.id];
