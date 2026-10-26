@@ -228,7 +228,7 @@ details.day:not([open]) > summary { border-bottom: 0 !important; }
   background: color-mix(in srgb, var(--rc) 22%, var(--surface)); border: 1px solid color-mix(in srgb, var(--ink) 55%, transparent); font-variant-numeric: tabular-nums; }
 .sc b { font-weight: 600; }
 .sc .xcmark { font-size: .55rem; padding: 0 4px; }
-.sx { font-size: .74rem; color: var(--muted); }
+.sx { font-size: .74rem; color: var(--muted); margin-left: 4px; }
 details.day[open] > summary .sum { display: none; }
 .chev { display: inline-block; width: 8px; height: 8px; margin-left: 12px; border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink); transform: rotate(45deg) translateY(-3px); transition: transform .15s ease; }
 details.day[open] .chev { transform: rotate(-135deg) translate(-2px, -1px); }
@@ -462,8 +462,9 @@ function daySummary(d, big, other) {
     const c = d.sites[s.id]; if (!c) return "";
     return `<span class="sc" style="--rc:${qv(c.rating)}"><b>${esc(s.id === "lb" ? "LB" : s.short)}</b> ${r1(c.rating)}${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span>`;
   };
-  const xcOthers = other.filter((s) => d.sites[s.id]?.xc).map((s) => esc(s.short));
-  return big.map(chip).join("") + (xcOthers.length ? `<span class="sx">XC also: ${xcOthers.join(", ")}</span>` : "");
+  /* the other sites only show up when they are XC days, so a great Marshall or Santa Barbara day stands out */
+  const extra = other.filter((s) => d.sites[s.id]?.xc);
+  return big.map(chip).join("") + (extra.length ? `<span class="sx">also</span>${extra.map(chip).join("")}` : "");
 }
 let openDays = new Set();
 try { openDays = new Set(JSON.parse(sessionStorage.getItem("radar-open") || "[]")); } catch (e) {}
