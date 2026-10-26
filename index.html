@@ -367,6 +367,15 @@ details.day > summary.hd .when .rx { flex: 0 1 auto; min-width: 0; overflow: hid
 :root[data-skin="glossy"] #story > .hd { background: linear-gradient(180deg, #cfd5dc, #dde2e8); border-bottom-color: rgba(15,25,40,.18); }
 :root[data-skin="glossy"] #story .wsec { background: #c9d0d8; border-color: rgba(15,25,40,.18); }
 :root[data-skin="glossy"] #story .wrow + .wrow { border-top-color: rgba(15,25,40,.12); }
+
+/* glossy: livelier rating colours */
+:root[data-skin="glossy"], :root[data-skin="glossy"][data-theme="dark"], :root[data-skin="glossy"]:not([data-theme="light"]) {
+  --q0: #ef3b2c; --q1: #ff8c00; --q2: #b5c61a; --q3: #2fb35a; --q4: #0f9d58; --q5: #00795a; }
+:root[data-skin="glossy"] .day > .hd { background: linear-gradient(180deg, color-mix(in srgb, var(--qc) 66%, var(--surface)), color-mix(in srgb, var(--qc) 44%, var(--surface))); }
+:root[data-skin="glossy"] .srow, :root[data-skin="glossy"] .srow.coast { background: linear-gradient(180deg, color-mix(in srgb, var(--rc) 30%, var(--surface)), color-mix(in srgb, var(--rc) 52%, var(--surface))); }
+:root[data-skin="glossy"] .sc { background: linear-gradient(180deg, color-mix(in srgb, var(--rc) 48%, var(--surface)), color-mix(in srgb, var(--rc) 72%, var(--surface))); }
+:root[data-skin="glossy"] .wk-c { background: linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,0) 55%), linear-gradient(180deg, color-mix(in srgb, var(--rc) 62%, var(--surface)), color-mix(in srgb, var(--rc) 88%, var(--surface))); }
+:root[data-skin="glossy"] .ds { background: linear-gradient(180deg, color-mix(in srgb, var(--rc) 30%, var(--surface)), color-mix(in srgb, var(--rc) 52%, var(--surface))); }
 </style>
 </head>
 <body>
@@ -518,11 +527,11 @@ function render(data) {
   const lines = (title, items) => (items && items.length ? `<div class="wsec">${esc(title)}</div>` : "") + (items || []).map((b) => `<div class="wrow"><span>${esc(b)}</span></div>`).join("");
   const ov = data.overview ? `<span class="ov">${esc(data.overview)}</span>` : "";
   $("#story").innerHTML = n ? `
-    <summary class="hd"><span class="when">Weather <small>NWS San Diego · ${fmtWhen(n.issued)}</small></span>
+    <summary class="hd"><span class="when">Weather Overview</span>
       <span class="flags">${(n.flags || []).map((f) => `<span class="tag">${esc(f)}</span>`).join("")}</span><span class="exp" aria-hidden="true"><i class="chev"></i></span>${ov}</summary>
     <div class="wlist">${sm ? lines("Pattern", sm.pattern) + lines("For flying", sm.flying) : lines("Outlook", bl)}</div>`
-      + `<div class="wrow wlink"><span><a href="${esc(n.url)}" target="_blank" rel="noopener">Full NWS discussion</a></span></div>`
-    : `<summary class="hd"><span class="when">Weather <small>NWS discussion not available on the last run</small></span>${ov}</summary>`;
+      + `<div class="wrow wlink"><span><a href="${esc(n.url)}" target="_blank" rel="noopener">Full NWS discussion</a> <span class="muted">· ${fmtWhen(n.issued)}</span></span></div>`
+    : `<summary class="hd"><span class="when">Weather Overview</span>${ov}</summary>`;
 
   /* day cards */
   $("#days").innerHTML = data.days.map((d, i) => {
