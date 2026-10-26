@@ -377,6 +377,19 @@ details.day > summary.hd .when .rx { flex: 0 1 auto; min-width: 0; overflow: hid
 :root[data-skin="glossy"] .sc { background: linear-gradient(180deg, color-mix(in srgb, var(--rc) 48%, var(--surface)), color-mix(in srgb, var(--rc) 72%, var(--surface))); }
 :root[data-skin="glossy"] .wk-c { background: linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,0) 55%), linear-gradient(180deg, color-mix(in srgb, var(--rc) 62%, var(--surface)), color-mix(in srgb, var(--rc) 88%, var(--surface))); }
 :root[data-skin="glossy"] .ds { background: linear-gradient(180deg, color-mix(in srgb, var(--rc) 30%, var(--surface)), color-mix(in srgb, var(--rc) 52%, var(--surface))); }
+
+/* tighter corners everywhere (both looks) */
+.day, :root[data-skin="glossy"] .day, .wk, :root[data-skin="glossy"] .wk { border-radius: 7px; }
+.srow, .srow.coast, :root[data-skin="glossy"] .srow, :root[data-skin="glossy"] .srow.coast,
+.ds, :root[data-skin="glossy"] .ds, .wk-c, :root[data-skin="glossy"] .wk-c { border-radius: 5px; }
+.srow[aria-expanded="true"], :root[data-skin="glossy"] .srow[aria-expanded="true"] { border-radius: 5px 5px 0 0; }
+.det, :root[data-skin="glossy"] .det { border-radius: 0 0 5px 5px; }
+.sc, :root[data-skin="glossy"] .sc, .wk-x, .why, :root[data-skin="glossy"] .why { border-radius: 4px; }
+.rx { border-radius: 4px; }
+.sheet, :root[data-skin="glossy"] .sheet { border-radius: 8px 8px 0 0; }
+:root[data-skin="glossy"] .fresh button, :root[data-skin="glossy"] footer button { border-radius: 5px; }
+.exp { border-radius: 6px; }
+:root[data-skin="glossy"] .bar, :root[data-skin="glossy"] .factor .fbar, :root[data-skin="glossy"] .bar i, :root[data-skin="glossy"] .factor .fbar i { border-radius: 2px; }
 </style>
 </head>
 <body>
