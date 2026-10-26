@@ -1690,7 +1690,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
     return {
         "generated": now_iso(), "sample": sample, "calib": calib,
         "rrfs_bias_ft": {k: round(v * FT) for k, v in bias.items()},
-        "calib_corridor": {k: CORRIDOR_DBG[k] for k in sorted(CORRIDOR_DBG)[:3] if k >= out_days[0]["date"]} if out_days else {},
+        "calib_corridor": {k: CORRIDOR_DBG[k] for k in [x for x in sorted(CORRIDOR_DBG) if x >= out_days[0]["date"]][:3]} if out_days else {},
         "overview": week_overview(parents or sites, out_days, nws),
         "models": {k: v[0] for k, v in det.items() if v[0]},
         "weights": MODEL_WEIGHT,
