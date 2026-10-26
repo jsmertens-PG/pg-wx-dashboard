@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-26T19:36+00:00",
+ "generated": "2026-10-26T20:01+00:00",
  "sample": false,
  "calib": {
   "2026-10-26": {
@@ -7763,7 +7763,8 @@
   "lagunahorse@0": -246,
   "lagunahorse@1": 290,
   "marshall": -296,
-  "santabarbara": 14
+  "santabarbara": 14,
+  "owens": -123
  },
  "overview": "Flying today 4 XC, Tue 4 XC, Wed 4 XC",
  "models": {
@@ -7791,14 +7792,7 @@
   "HRRR: ok (ncep_hrrr_conus)",
   "RRFS: ncep_rrfs_conus surface fields empty, retrying",
   "RRFS: ncep_rrfs_conus surface fields empty, retrying",
-  "RRFS: ncep_rrfs_conus surface fields empty, retrying",
-  "RRFS: ncep_rrfs_conus surface fields empty, retrying",
-  "RRFS: ncep_rrfs_conus failed (surface fields empty)",
-  "RRFS: rrfs_conus rejected (400)",
-  "RRFS: rrfs_conus rejected (400)",
-  "RRFS: ncep_rrfs rejected (400)",
-  "RRFS: ncep_rrfs rejected (400)",
-  "RRFS: using the last good run, fetched 0.2 h ago",
+  "RRFS: ok (ncep_rrfs_conus)",
   "NAM: ok (ncep_nam_conus)",
   "GFS: ok (gfs_global)",
   "ECMWF: ok (ecmwf_ifs025)",
@@ -7816,7 +7810,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-10-26T17:00+00:00",
-   "fetched": "2026-10-26T19:27+00:00",
+   "fetched": "2026-10-26T19:53+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -7826,7 +7820,7 @@
    "id": "ncep_rrfs_conus",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-26T19:29+00:00",
+   "fetched": "2026-10-26T19:54+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -7836,7 +7830,7 @@
    "id": "ncep_nam_conus",
    "status": "ok",
    "run": "2026-10-26T12:00+00:00",
-   "fetched": "2026-10-26T19:29+00:00",
+   "fetched": "2026-10-26T19:54+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -7846,7 +7840,7 @@
    "id": "gfs_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-26T19:29+00:00",
+   "fetched": "2026-10-26T19:54+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -7856,7 +7850,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": "2026-10-26T06:00+00:00",
-   "fetched": "2026-10-26T19:29+00:00",
+   "fetched": "2026-10-26T19:56+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -7866,7 +7860,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-26T19:30+00:00",
+   "fetched": "2026-10-26T19:56+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -7876,7 +7870,7 @@
    "id": "gfs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-26T19:31+00:00",
+   "fetched": "2026-10-26T19:57+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -7886,7 +7880,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-26T19:33+00:00",
+   "fetched": "2026-10-26T20:00+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -7896,7 +7890,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-26T19:35+00:00",
+   "fetched": "2026-10-26T20:01+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -7906,7 +7900,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-10-26T17:45:00+00:00",
-   "fetched": "2026-10-26T19:35+00:00",
+   "fetched": "2026-10-26T20:01+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   }
  ],
@@ -8040,6 +8034,17 @@
    "kind": "thermal",
    "xc_top_ft": 5000,
    "note": "South-facing front range above Santa Barbara; launch sits above the marine layer, so thermals are measured from the slopes at launch height. Sundowners and other real north winds are over the back."
+  },
+  {
+   "id": "owens",
+   "name": "Owens Valley (Walt's Point)",
+   "short": "Owens",
+   "tier": "watch",
+   "launch_ft": 9000,
+   "lz_ft": 4000,
+   "kind": "thermal",
+   "xc_top_ft": 14000,
+   "note": "Watch only: shows when it rates 5. Advanced pilots only. Morning site with very strong thermals, cloudbase 13-20k. Needs light winds; west wind over the Sierra is a no-go. PGs don't fly it June to early September."
   }
  ],
  "days": [
@@ -8764,6 +8769,93 @@
      },
      "was": 2.9,
      "trend": -0.1
+    },
+    "owens": {
+     "rating": 1.27,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "W wind aloft",
+     "p_fly": 0.0,
+     "p_xc": 0.0,
+     "agree": "mixed",
+     "models": {
+      "HRRR": 1.0,
+      "RRFS": 1.8
+     },
+     "n_members": 122,
+     "lead": "HRRR",
+     "top_ft": 4300.0,
+     "base_ft": 11200.0,
+     "wstar": 0.6,
+     "sunset": "6:04pm",
+     "factors": [
+      {
+       "k": "Height",
+       "v": "4,100 ft",
+       "q": 0.0,
+       "qs": [
+        0.0,
+        0.0
+       ],
+       "sub": "RRFS 4,300 \u00b7 HRRR 4,100"
+      },
+      {
+       "k": "Wind 1 pm",
+       "v": "SE 12",
+       "sub": "later SE 15",
+       "q": 1.0
+      },
+      {
+       "k": "Wind aloft",
+       "v": "W 9 kt",
+       "sub": "at 4,800 ft \u00b7 ECMWF WSW 7 kt",
+       "q": 0.64
+      },
+      {
+       "k": "Rain & storms",
+       "v": "dry",
+       "sub": "",
+       "q": 1.0
+      },
+      {
+       "k": "Model agreement",
+       "v": "mixed",
+       "sub": "HRRR 1.0 \u00b7 RRFS 1.8",
+       "q": 0.68
+      }
+     ],
+     "alt_source": "RRFS",
+     "ground_ft": 3999,
+     "launch_ft": 9000,
+     "style": "thermal",
+     "why": [
+      "aloftdir",
+      "aloft",
+      "lid"
+     ],
+     "diag": {
+      "HRRR": {
+       "r": 1.0,
+       "top": 4100.0,
+       "w": 0.6,
+       "why": [
+        "aloftdir",
+        "aloft",
+        "lid"
+       ]
+      },
+      "RRFS": {
+       "r": 1.8,
+       "top": 4300.0,
+       "w": 0.9,
+       "why": [
+        "lid",
+        "aloft",
+        "strong"
+       ]
+      }
+     }
     }
    },
    "regime": {
@@ -9550,6 +9642,93 @@
      },
      "was": 2.4,
      "trend": 0.0
+    },
+    "owens": {
+     "rating": 1.0,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "blown out",
+     "p_fly": 0.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "HRRR": 1.0,
+      "RRFS": 1.0
+     },
+     "n_members": 122,
+     "lead": "HRRR",
+     "top_ft": 4300.0,
+     "base_ft": 12400.0,
+     "wstar": 0.6,
+     "sunset": "6:03pm",
+     "factors": [
+      {
+       "k": "Height",
+       "v": "4,100 ft",
+       "q": 0.0,
+       "qs": [
+        0.0,
+        0.0
+       ],
+       "sub": "RRFS 4,300 \u00b7 HRRR 4,100"
+      },
+      {
+       "k": "Wind 1 pm",
+       "v": "SE 17",
+       "sub": "later SSE 19g25",
+       "q": 0.67
+      },
+      {
+       "k": "Wind aloft",
+       "v": "WSW 13 kt",
+       "sub": "at 4,700 ft \u00b7 ECMWF W 10 kt",
+       "q": 0.48
+      },
+      {
+       "k": "Rain & storms",
+       "v": "dry",
+       "sub": "",
+       "q": 1.0
+      },
+      {
+       "k": "Model agreement",
+       "v": "agree",
+       "sub": "HRRR 1.0 \u00b7 RRFS 1.0",
+       "q": 1.0
+      }
+     ],
+     "alt_source": "RRFS",
+     "ground_ft": 3999,
+     "launch_ft": 9000,
+     "style": "thermal",
+     "why": [
+      "windy",
+      "aloftdir",
+      "aloft"
+     ],
+     "diag": {
+      "HRRR": {
+       "r": 1.0,
+       "top": 4100.0,
+       "w": 0.6,
+       "why": [
+        "windy",
+        "aloftdir",
+        "aloft"
+       ]
+      },
+      "RRFS": {
+       "r": 1.0,
+       "top": 4300.0,
+       "w": 0.8,
+       "why": [
+        "aloftdir",
+        "aloft",
+        "lid"
+       ]
+      }
+     }
     }
    },
    "regime": {
@@ -10085,7 +10264,7 @@
      "trend": 0.2
     },
     "otay": {
-     "rating": 3.0,
+     "rating": 2.8,
      "label": "Glass-off",
      "tags": [],
      "xc": false,
@@ -10182,7 +10361,7 @@
       }
      },
      "was": 2.9,
-     "trend": 0.1
+     "trend": -0.1
     },
     "lagunahorse": {
      "rating": 1.25,
@@ -10482,6 +10661,109 @@
      },
      "was": 2.4,
      "trend": -0.0
+    },
+    "owens": {
+     "rating": 1.53,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "WSW wind aloft",
+     "p_fly": 0.0,
+     "p_xc": 0.0,
+     "agree": "split",
+     "models": {
+      "RRFS": 1.0,
+      "GFS": 3.0,
+      "ECMWF": 2.4,
+      "ICON": 2.4
+     },
+     "n_members": 122,
+     "lead": "RRFS",
+     "top_ft": 4300.0,
+     "base_ft": 11500.0,
+     "wstar": 0.8,
+     "sunset": "6:02pm",
+     "factors": [
+      {
+       "k": "Height",
+       "v": "4,300 ft",
+       "q": 0.0,
+       "qs": [
+        0.0
+       ],
+       "sub": "RRFS"
+      },
+      {
+       "k": "Wind 1 pm",
+       "v": "SE 9",
+       "sub": "later SE 13",
+       "q": 1.0
+      },
+      {
+       "k": "Wind aloft",
+       "v": "SW 11 kt",
+       "sub": "at 5,600 ft",
+       "q": 0.31
+      },
+      {
+       "k": "Rain & storms",
+       "v": "dry",
+       "sub": "",
+       "q": 1.0
+      },
+      {
+       "k": "Model agreement",
+       "v": "split",
+       "sub": "RRFS 1.0 \u00b7 GFS 3.0 \u00b7 ECMWF 2.4 \u00b7 ICON 2.4",
+       "q": 0.2
+      }
+     ],
+     "alt_source": "RRFS",
+     "ground_ft": 3999,
+     "launch_ft": 9000,
+     "style": "thermal",
+     "why": [
+      "aloftdir",
+      "aloft",
+      "lid"
+     ],
+     "diag": {
+      "RRFS": {
+       "r": 1.0,
+       "top": 4300.0,
+       "w": 0.8,
+       "why": [
+        "aloftdir",
+        "aloft",
+        "lid"
+       ]
+      },
+      "GFS": {
+       "r": 3.0,
+       "top": 4200.0,
+       "w": 0.7,
+       "why": [
+        "lid"
+       ]
+      },
+      "ECMWF": {
+       "r": 2.4,
+       "top": 4100.0,
+       "w": 0.5,
+       "why": [
+        "gusty",
+        "lid"
+       ]
+      },
+      "ICON": {
+       "r": 2.4,
+       "top": 4100.0,
+       "w": 0.5,
+       "why": [
+        "lid"
+       ]
+      }
+     }
     }
    },
    "regime": {
@@ -11419,6 +11701,114 @@
      },
      "was": 2.7,
      "trend": 0.2
+    },
+    "owens": {
+     "rating": 1.0,
+     "label": "No go",
+     "tags": [],
+     "xc": false,
+     "note": "strong wind aloft",
+     "p_fly": 0.0,
+     "p_xc": 0.0,
+     "agree": "agree",
+     "models": {
+      "RRFS": 1.0,
+      "GFS": 1.0,
+      "ECMWF": 1.0,
+      "ICON": 1.0
+     },
+     "n_members": 122,
+     "lead": "RRFS",
+     "top_ft": 4300.0,
+     "base_ft": 12000.0,
+     "wstar": 0.8,
+     "sunset": "6:00pm",
+     "factors": [
+      {
+       "k": "Height",
+       "v": "4,300 ft",
+       "q": 0.0,
+       "qs": [
+        0.0
+       ],
+       "sub": "RRFS"
+      },
+      {
+       "k": "Wind 1 pm",
+       "v": "ESE 8",
+       "sub": "later SE 15",
+       "q": 1.0
+      },
+      {
+       "k": "Wind aloft",
+       "v": "S 12 kt",
+       "sub": "at 5,700 ft",
+       "q": 0.72
+      },
+      {
+       "k": "Rain & storms",
+       "v": "dry",
+       "sub": "",
+       "q": 1.0
+      },
+      {
+       "k": "Model agreement",
+       "v": "agree",
+       "sub": "RRFS 1.0 \u00b7 GFS 1.0 \u00b7 ECMWF 1.0 \u00b7 ICON 1.0",
+       "q": 1.0
+      }
+     ],
+     "alt_source": "RRFS",
+     "ground_ft": 3999,
+     "launch_ft": 9000,
+     "style": "thermal",
+     "why": [
+      "aloft",
+      "lid",
+      "strong"
+     ],
+     "diag": {
+      "RRFS": {
+       "r": 1.0,
+       "top": 4300.0,
+       "w": 0.8,
+       "why": [
+        "aloft",
+        "lid",
+        "strong"
+       ]
+      },
+      "GFS": {
+       "r": 1.0,
+       "top": 4200.0,
+       "w": 0.7,
+       "why": [
+        "windy",
+        "lid",
+        "strong"
+       ]
+      },
+      "ECMWF": {
+       "r": 1.0,
+       "top": 4100.0,
+       "w": 0.5,
+       "why": [
+        "aloftdir",
+        "aloft",
+        "gusty"
+       ]
+      },
+      "ICON": {
+       "r": 1.0,
+       "top": 4000.0,
+       "w": 0.4,
+       "why": [
+        "aloftdir",
+        "aloft",
+        "lid"
+       ]
+      }
+     }
     }
    },
    "regime": {
@@ -12290,6 +12680,100 @@
      },
      "was": 3.4,
      "trend": 0.5
+    },
+    "owens": {
+     "rating": 2.4,
+     "label": "Glass-off",
+     "tags": [
+      "rain 12%"
+     ],
+     "xc": false,
+     "note": "",
+     "p_fly": 0.47,
+     "p_xc": 0.0,
+     "agree": "mixed",
+     "models": {
+      "GFS": 2.4,
+      "ECMWF": 3.0,
+      "ICON": 1.8
+     },
+     "n_members": 122,
+     "lead": "ECMWF",
+     "top_ft": 4100.0,
+     "base_ft": 12000.0,
+     "wstar": 0.5,
+     "sunset": "5:59pm",
+     "factors": [
+      {
+       "k": "Height",
+       "v": "~4,100 ft",
+       "sub": "global models",
+       "q": 0.0
+      },
+      {
+       "k": "Wind 1 pm",
+       "v": "ESE 4g15",
+       "sub": "later SE 7g23",
+       "q": 1.0
+      },
+      {
+       "k": "Wind aloft",
+       "v": "SSW 11 kt",
+       "sub": "at 5,700 ft \u00b7 blows over the back",
+       "q": 0.15
+      },
+      {
+       "k": "Rain & storms",
+       "v": "12% of runs",
+       "sub": "",
+       "q": 0.83
+      },
+      {
+       "k": "Model agreement",
+       "v": "mixed",
+       "sub": "GFS 2.4 \u00b7 ECMWF 3.0 \u00b7 ICON 1.8",
+       "q": 0.52
+      }
+     ],
+     "alt_source": "models",
+     "ground_ft": 3999,
+     "launch_ft": 9000,
+     "style": "thermal",
+     "why": [
+      "aloftdir",
+      "aloft",
+      "gusty"
+     ],
+     "diag": {
+      "GFS": {
+       "r": 2.4,
+       "top": 4300.0,
+       "w": 0.8,
+       "why": [
+        "lid"
+       ]
+      },
+      "ECMWF": {
+       "r": 3.0,
+       "top": 4100.0,
+       "w": 0.5,
+       "why": [
+        "aloftdir",
+        "aloft",
+        "gusty"
+       ]
+      },
+      "ICON": {
+       "r": 1.8,
+       "top": 4000.0,
+       "w": 0.5,
+       "why": [
+        "aloftdir",
+        "aloft",
+        "lid"
+       ]
+      }
+     }
     }
    },
    "regime": {
@@ -13157,6 +13641,99 @@
      },
      "was": 2.9,
      "trend": -0.6
+    },
+    "owens": {
+     "rating": 2.4,
+     "label": "Glass-off",
+     "tags": [
+      "rain 24%"
+     ],
+     "xc": false,
+     "note": "",
+     "p_fly": 0.39,
+     "p_xc": 0.0,
+     "agree": "split",
+     "models": {
+      "GFS": 2.4,
+      "ECMWF": 3.0,
+      "ICON": 1.0
+     },
+     "n_members": 122,
+     "lead": "ECMWF",
+     "top_ft": 4100.0,
+     "base_ft": 8900.0,
+     "wstar": 0.5,
+     "sunset": "5:58pm",
+     "factors": [
+      {
+       "k": "Height",
+       "v": "~4,100 ft",
+       "sub": "global models",
+       "q": 0.0
+      },
+      {
+       "k": "Wind 1 pm",
+       "v": "ESE 6g22",
+       "sub": "later SE 9g26",
+       "q": 1.0
+      },
+      {
+       "k": "Wind aloft",
+       "v": "SSW 9 kt",
+       "sub": "at 6,200 ft",
+       "q": 0.71
+      },
+      {
+       "k": "Rain & storms",
+       "v": "24% of runs",
+       "sub": "",
+       "q": 0.67
+      },
+      {
+       "k": "Model agreement",
+       "v": "split",
+       "sub": "GFS 2.4 \u00b7 ECMWF 3.0 \u00b7 ICON 1.0",
+       "q": 0.2
+      }
+     ],
+     "alt_source": "models",
+     "ground_ft": 3999,
+     "launch_ft": 9000,
+     "style": "thermal",
+     "why": [
+      "gusty",
+      "lid"
+     ],
+     "diag": {
+      "GFS": {
+       "r": 2.4,
+       "top": 4200.0,
+       "w": 0.8,
+       "why": [
+        "lid",
+        "strong"
+       ]
+      },
+      "ECMWF": {
+       "r": 3.0,
+       "top": 4100.0,
+       "w": 0.5,
+       "why": [
+        "gusty",
+        "lid"
+       ]
+      },
+      "ICON": {
+       "r": 1.0,
+       "top": 4100.0,
+       "w": 0.5,
+       "why": [
+        "aloftdir",
+        "aloft",
+        "gusty"
+       ]
+      }
+     }
     }
    },
    "regime": {
@@ -14016,6 +14593,101 @@
        "r": 2.1,
        "top": 4600.0,
        "w": 1.7,
+       "why": [
+        "aloftdir",
+        "aloft",
+        "lid"
+       ]
+      }
+     }
+    },
+    "owens": {
+     "rating": 1.0,
+     "label": "No go",
+     "tags": [
+      "rain 39%",
+      "off season"
+     ],
+     "xc": false,
+     "note": "strong wind aloft",
+     "p_fly": 0.0,
+     "p_xc": 0.0,
+     "agree": "mixed",
+     "models": {
+      "GFS": 2.4,
+      "ECMWF": 1.0,
+      "ICON": 1.0
+     },
+     "n_members": 122,
+     "lead": "ECMWF",
+     "top_ft": 4300.0,
+     "base_ft": 9400.0,
+     "wstar": 0.8,
+     "sunset": "5:57pm",
+     "factors": [
+      {
+       "k": "Height",
+       "v": "~4,300 ft",
+       "sub": "global models",
+       "q": 0.0
+      },
+      {
+       "k": "Wind 1 pm",
+       "v": "WNW 3g10",
+       "sub": "later NW 7g20",
+       "q": 1.0
+      },
+      {
+       "k": "Wind aloft",
+       "v": "N 10 kt",
+       "sub": "at 6,600 ft",
+       "q": 1.0
+      },
+      {
+       "k": "Rain & storms",
+       "v": "39% of runs",
+       "sub": "",
+       "q": 0.45
+      },
+      {
+       "k": "Model agreement",
+       "v": "mixed",
+       "sub": "GFS 2.4 \u00b7 ECMWF 1.0 \u00b7 ICON 1.0",
+       "q": 0.44
+      }
+     ],
+     "alt_source": "models",
+     "ground_ft": 3999,
+     "launch_ft": 9000,
+     "style": "thermal",
+     "why": [
+      "aloft",
+      "gusty",
+      "lid"
+     ],
+     "diag": {
+      "GFS": {
+       "r": 2.4,
+       "top": 4300.0,
+       "w": 0.8,
+       "why": [
+        "lid"
+       ]
+      },
+      "ECMWF": {
+       "r": 1.0,
+       "top": 4300.0,
+       "w": 0.8,
+       "why": [
+        "aloft",
+        "gusty",
+        "lid"
+       ]
+      },
+      "ICON": {
+       "r": 1.0,
+       "top": 4100.0,
+       "w": 0.5,
        "why": [
         "aloftdir",
         "aloft",
