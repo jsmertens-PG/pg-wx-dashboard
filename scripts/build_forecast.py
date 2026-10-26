@@ -62,6 +62,7 @@ GLOBAL = ("ECMWF", "GFS", "ICON")
 HIRES_W = {"HRRR": 2, "RRFS": 1}
 RAIN_P = 0.6                       # share of runs with rain at which a day is a no-go
 CALIB_SITES = ("lb", "blossom", "elsinore", "owens")
+CORRIDOR_DBG = {}                  # per corridor point, midday: model ground and usable top (ft), for calibration
 
 
 def rating_models(names):
@@ -1336,6 +1337,9 @@ def corridor_heights(sites, det):
                     sc = score_hour(s, hr, i, DET_LEVELS, elev)
                 except Exception:
                     continue
+                if sc and int(t[11:13]) in (11, 12, 13, 14, 15):
+                    CORRIDOR_DBG.setdefault(t[:10], {}).setdefault(s["hp_name"], {}).setdefault(name, {})[int(t[11:13])] = \
+                        [round(elev * FT), round(sc["usable_show"] * FT)]
                 if sc and (t not in dst or sc["usable_show"] > dst[t][0]):
                     dst[t] = (sc["usable_show"], sc["wstar"], s["hp_name"])
     return out
@@ -1686,6 +1690,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
     return {
         "generated": now_iso(), "sample": sample, "calib": calib,
         "rrfs_bias_ft": {k: round(v * FT) for k, v in bias.items()},
+        "calib_corridor": {k: CORRIDOR_DBG[k] for k in sorted(CORRIDOR_DBG)[:3] if k >= out_days[0]["date"]} if out_days else {},
         "overview": week_overview(parents or sites, out_days, nws),
         "models": {k: v[0] for k, v in det.items() if v[0]},
         "weights": MODEL_WEIGHT,

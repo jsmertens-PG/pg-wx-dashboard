@@ -234,8 +234,8 @@
         230,
         320
       ],
-      "xc_top_ft": 7000,
-      "xc_span_ft": 3000,
+      "xc_top_ft": 5300,
+      "xc_span_ft": 2000,
       "routes": [
         {
           "to": 140,
@@ -261,7 +261,7 @@
         }
       ],
       "lz_ft": 1350,
-      "ok_ft": 5000,
+      "ok_ft": 4300,
       "gust_mph": 15,
       "style": "switch",
       "window": [
