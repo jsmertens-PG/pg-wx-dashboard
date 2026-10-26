@@ -356,6 +356,17 @@ details.day > summary.hd .when .rx { flex: 0 1 auto; min-width: 0; overflow: hid
 :root[data-skin="glossy"] .fresh button, :root[data-skin="glossy"] footer button { border: 0; border-radius: 999px; padding-inline: 14px;
   background: linear-gradient(180deg, var(--surface), color-mix(in srgb, var(--ink) 7%, var(--surface))); box-shadow: inset 0 1px 0 var(--gl-hl), 0 1px 2px var(--gl-sh2), 0 3px 8px -3px var(--gl-sh); }
 :root[data-skin="glossy"] footer button[aria-pressed="true"] { box-shadow: inset 0 0 0 1.5px var(--ink), 0 1px 2px var(--gl-sh2); }
+
+/* glossy: cards stand out (fine ring + deeper shadow), darker weather card */
+:root[data-skin="glossy"] .day { box-shadow: 0 0 0 1px rgba(15,25,40,.16), inset 0 1px 0 var(--gl-hl), 0 2px 4px rgba(15,25,40,.10), 0 18px 40px -16px rgba(15,25,40,.38); }
+:root[data-skin="glossy"] .srow, :root[data-skin="glossy"] .srow.coast { box-shadow: 0 0 0 1px rgba(15,25,40,.14), inset 0 1px 0 var(--gl-hl), inset 5px 0 0 var(--rc), 0 2px 3px rgba(15,25,40,.08), 0 8px 18px -10px rgba(15,25,40,.35); }
+:root[data-skin="glossy"] .wk { box-shadow: 0 0 0 1px rgba(15,25,40,.16), inset 0 1px 0 var(--gl-hl), 0 2px 4px rgba(15,25,40,.10), 0 18px 40px -16px rgba(15,25,40,.38); }
+:root[data-skin="glossy"] .wk-c { box-shadow: 0 0 0 1px rgba(15,25,40,.14), inset 0 1px 0 var(--gl-hl), 0 2px 3px rgba(15,25,40,.08), 0 6px 14px -6px rgba(15,25,40,.35); }
+:root[data-skin="glossy"] .sc { box-shadow: 0 0 0 1px rgba(15,25,40,.14), inset 0 1px 0 var(--gl-hl2), 0 2px 6px -3px rgba(15,25,40,.3); }
+:root[data-skin="glossy"] #story { background: linear-gradient(180deg, #e3e7ec, #eef1f4); }
+:root[data-skin="glossy"] #story > .hd { background: linear-gradient(180deg, #cfd5dc, #dde2e8); border-bottom-color: rgba(15,25,40,.18); }
+:root[data-skin="glossy"] #story .wsec { background: #c9d0d8; border-color: rgba(15,25,40,.18); }
+:root[data-skin="glossy"] #story .wrow + .wrow { border-top-color: rgba(15,25,40,.12); }
 </style>
 </head>
 <body>
