@@ -1473,44 +1473,59 @@ def _runs(idx):
     return out
 
 
-def week_overview(sites, days, nws):
-    """One short line for the folded weather card: how the week looks and where it is heading."""
+OVERVIEW_KEYS = [("santa ana", "Santa Ana"), ("offshore", "offshore"), ("onshore", "onshore"),
+                 ("marine layer", "marine layer"), ("upper level low", "upper low"), ("upper low", "upper low"),
+                 ("trough", "trough"), ("high pressure", "high pressure"), ("ridge", "ridge"), ("front", "front"),
+                 ("thunderstorm", "storms"), ("shower", "showers"), ("rain", "rain"), ("cooler", "cooler"),
+                 ("warmer", "warmer"), ("warming", "warmer")]
+DAY_NAMES = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+
+
+def week_overview(sites, days, nws, today=None):
+    """Folded weather line: the pattern now and over the next 1-2 days, then the flying numbers for those days."""
     if not days:
         return ""
-    wd = lambda dstr: WEEKDAYS[date.fromisoformat(dstr).weekday()]
-    span = lambda a, b: wd(days[a]["date"]) if a == b else f"{wd(days[a]['date'])}–{wd(days[b]['date'])}"
+    today = today or date.fromisoformat(days[0]["date"])
+    sentences = list((nws or {}).get("systems") or []) + re.split(r"(?<=\.)\s+", (nws or {}).get("synopsis") or "")
+    phrases, seen = [], set()
+    for sen in sentences:
+        low = sen.lower()
+        hits = [(low.find(k), name) for k, name in OVERVIEW_KEYS if k in low]
+        if not hits:
+            continue
+        _, name = min(hits)
+        if name in seen:
+            continue
+        when = None
+        if re.search(r"\b(this morning|today|currently|now|this afternoon)\b", low):
+            when = 0
+        elif "tonight" in low:
+            when = 0
+        elif "tomorrow" in low:
+            when = 1
+        else:
+            for k, dn in enumerate(DAY_NAMES):
+                if dn in low:
+                    when = (k - today.weekday()) % 7
+                    break
+        if when is None and phrases:
+            continue                                   # no day and not the opening statement: skip
+        if when is not None and when > 2:
+            continue
+        weak = "weak " if re.search(r"\bweak(ly)?\b", low) and name in ("offshore", "onshore") else ""
+        tag = "now" if not when else WEEKDAYS[(today.weekday() + when) % 7]
+        phrases.append(f"{weak}{name} {tag}")
+        seen.add(name)
+        if len(phrases) == 3:
+            break
     main = [s["id"] for s in sites if s.get("tier") == "main"]
-    short = {s["id"]: ("LB" if s["id"] == "lb" else s["short"]) for s in sites}
-    best = [max((d["sites"][k]["rating"] for k in main if k in d["sites"]), default=1) for d in days]
-    parts = []
-    poor = [i for i, b in enumerate(best) if b < 2.5]
-    if not poor:
-        parts.append("flyable all week")
-    else:
-        for a, b in _runs(poor)[:2]:
-            why = days[a].get("why")
-            parts.append(f"poor {span(a, b)}" + (f" ({why.lower()})" if why else ""))
-    xc = [i for i, d in enumerate(days) if any(d["sites"].get(k, {}).get("xc") for k in main)]
-    for a, b in _runs(xc)[:2]:
-        who = sorted({short[k] for i in range(a, b + 1) for k in main if days[i]["sites"].get(k, {}).get("xc")},
-                     key=lambda n: ["LB", "Blossom", "Elsinore"].index(n) if n in ("LB", "Blossom", "Elsinore") else 9)
-        parts.append(f"{'/'.join(who)} XC {span(a, b)}")
-    for t in ("Santa Ana", "Switch day", "Front"):
-        idx = [i for i, d in enumerate(days) if (d.get("regime") or {}).get("type") == t]
-        for a, b in _runs(idx)[:1]:
-            parts.append(f"{t.lower()} {span(a, b)}")
-    syn = ((nws or {}).get("synopsis") or "").lower()
-    late = bool(re.search(r"(end|middle|late).{0,25}week", syn))
-    words = []
-    if "cooler" in syn or "cooling" in syn:
-        words.append("cooler")
-    elif "warmer" in syn or "warming" in syn:
-        words.append("warmer")
-    if "unsettled" in syn or "precipitation" in syn or "showers" in syn:
-        words.append("unsettled")
-    if words:
-        parts.append(" and ".join(words) + (" late week" if late else ""))
-    line = " · ".join(parts)
+    nums = []
+    for k, d in enumerate(days[:3]):
+        best = max((d["sites"][m]["rating"] for m in main if m in d["sites"]), default=1)
+        lab = "today" if k == 0 else WEEKDAYS[date.fromisoformat(d["date"]).weekday()]
+        xc = any(d["sites"].get(m, {}).get("xc") for m in main)
+        nums.append(f"{lab} {max(1, min(5, int(best + 0.5)))}{' XC' if xc else ''}")
+    line = " · ".join(phrases + ["flying " + ", ".join(nums)])
     return line[:1].upper() + line[1:]
 
 
