@@ -281,7 +281,9 @@ details.day > summary.hd .when .rx { flex: 0 1 auto; min-width: 0; overflow: hid
 .day > .hd .sum .mods { margin-left: auto; align-self: flex-end; }
 .sc.watch { border-width: 2px; border-style: solid; font-weight: 600; }
 .srow.watch { border-top: 2px solid var(--ink); }
-.srow.watch .nm::before { content: "★ "; }
+.srow.watch:not(.shy) .nm::before { content: "★ "; }
+.sc.shy { background: transparent !important; border: 1px dashed color-mix(in srgb, var(--ink) 35%, transparent); color: var(--muted); font-size: .7rem; padding: 1px 7px; }
+.srow.watch.shy { filter: grayscale(1); opacity: .5; border-top: 1px dashed color-mix(in srgb, var(--ink) 30%, transparent); }
 .nwsr { font-size: .7rem; font-weight: 600; color: var(--ink); border: 1.5px dashed var(--ink); border-radius: 999px; padding: 1px 8px; white-space: nowrap; }
 .nwsrow { font-size: .8rem; font-weight: 600; padding: 6px 14px; border-bottom: 1px dashed color-mix(in srgb, var(--ink) 40%, transparent); }
 .mods-b { display: block; text-align: right; padding: 6px 14px 8px; }
@@ -567,7 +569,14 @@ function render(data) {
   const other = SITES.filter((s) => s.tier !== "main" && s.tier !== "coast" && s.tier !== "watch");
   /* watch sites (Owens) stay hidden unless they stand out as fantastic */
   const WATCH_MIN = 4.5;
-  const watchOn = (d) => SITES.filter((s) => s.tier === "watch" && (d.sites[s.id]?.rating ?? 0) >= WATCH_MIN);
+  const watchSites = SITES.filter((s) => s.tier === "watch");
+  const watchOn = (d, s) => (d.sites[s.id]?.rating ?? 0) >= WATCH_MIN;
+  /* collapsed card: a shy grey pill normally, the full-colour starred pill when it stands out */
+  const watchPill = (d) => watchSites.filter((s) => d.sites[s.id]).map((s) => {
+    const c = d.sites[s.id];
+    return watchOn(d, s) ? `<span class="sc watch" style="--rc:${qv(c.rating)}">★ <b>${esc(s.short)}</b> ${r1(c.rating)}</span>`
+                         : `<span class="sc shy" title="watching ${esc(s.name)}">${esc(s.short)} ${r1(c.rating)}</span>`;
+  }).join("");
   const big = SITES.filter((s) => s.tier === "main" || s.tier === "coast");   // in sites.json order: Torrey, LB, Blossom, Elsinore
 
   /* freshness */
@@ -622,13 +631,13 @@ function render(data) {
         <span class="when${d.regime && d.regime.type ? " has-rx" : ""}"><span class="dn-l">${esc(L.long)}</span><span class="dn-s">${esc(L.short)}</span><small>${esc(L.date)}</small>${regimeHtml(d.regime)}</span>
         <span class="big" title="Best home site">${trendHtml(bm)}${r1(bm?.rating)}<small>/5</small></span>
         <span class="exp" aria-hidden="true"><i class="chev"></i></span>
-        <span class="sum">${d.why ? `<span class="why">${esc(d.why)}</span>` : ""}${d.nws_rain ? `<span class="nwsr">NWS showers</span>` : ""}${watchOn(d).map((s) => `<span class="sc watch" style="--rc:${qv(d.sites[s.id].rating)}">★ <b>${esc(s.short)}</b> ${r1(d.sites[s.id].rating)}</span>`).join("")}${daySummary(d, big, other)}${mods ? `<span class="mods">${mods}</span>` : ""}</span>
+        <span class="sum">${d.why ? `<span class="why">${esc(d.why)}</span>` : ""}${d.nws_rain ? `<span class="nwsr">NWS showers</span>` : ""}${daySummary(d, big, other)}${watchPill(d)}${mods ? `<span class="mods">${mods}</span>` : ""}</span>
       </summary>
       ${d.nws_rain ? `<div class="nwsrow">NWS: showers possible this day</div>` : ""}
       <div class="list">
         ${big.map((s) => siteRow(d, s, i, "")).join("")}
         <div class="minor">${other.map((s) => siteRow(d, s, i, "small")).join("")}</div>
-        ${watchOn(d).map((s) => siteRow(d, s, i, "watch")).join("")}
+        ${watchSites.map((s) => siteRow(d, s, i, watchOn(d, s) ? "watch" : "watch shy")).join("")}
       </div>
       <div class="det" id="det-${i}" hidden></div>
       ${mods ? `<span class="mods mods-b">${mods}</span>` : ""}
