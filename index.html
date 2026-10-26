@@ -309,15 +309,17 @@ details.day > summary.hd .when .rx { flex: 0 1 auto; min-width: 0; overflow: hid
 
 /* ---------- optional glossy skin (button next to Light/Dark) ---------- */
 :root[data-skin="glossy"] { --gl-hl: rgba(255,255,255,.95); --gl-hl2: rgba(255,255,255,.55); --gl-sh: rgba(20,32,56,.16); --gl-sh2: rgba(20,32,56,.08); --gl-page: linear-gradient(180deg, #eef1f5, #f8f9fb 40%, #eef1f5); }
-@media (prefers-color-scheme: dark) { :root[data-skin="glossy"]:not([data-theme="light"]) { --gl-hl: rgba(255,255,255,.10); --gl-hl2: rgba(255,255,255,.05); --gl-sh: rgba(0,0,0,.6); --gl-sh2: rgba(0,0,0,.4); --gl-page: linear-gradient(180deg, #0b0d10, #121519 40%, #0b0d10); } }
-:root[data-skin="glossy"][data-theme="dark"] { --gl-hl: rgba(255,255,255,.10); --gl-hl2: rgba(255,255,255,.05); --gl-sh: rgba(0,0,0,.6); --gl-sh2: rgba(0,0,0,.4); --gl-page: linear-gradient(180deg, #0b0d10, #121519 40%, #0b0d10); }
+/* glossy is always light, with the rating colours at full strength */
+:root[data-skin="glossy"], :root[data-skin="glossy"][data-theme="dark"], :root[data-skin="glossy"]:not([data-theme="light"]) {
+  --bg: #f4f6f8; --surface: #ffffff; --sunk: #eceff2; --ink: #0b0b0b; --muted: #5f6670; --line: #e1e5ea; color-scheme: light;
+  --q0: #d9412b; --q1: #ef8a12; --q2: #a7b52a; --q3: #3a9d57; --q4: #16864a; --q5: #0b6b4c; }
 :root[data-skin="glossy"] body { background: var(--gl-page); background-attachment: fixed; }
 :root[data-skin="glossy"] body::before { background: transparent; }
 :root[data-skin="glossy"] .day { border: 0; border-radius: 22px; overflow: hidden;
   background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 96%, transparent), color-mix(in srgb, var(--surface) 88%, transparent));
   box-shadow: inset 0 1px 0 var(--gl-hl), 0 1px 2px var(--gl-sh2), 0 14px 34px -14px var(--gl-sh); }
 :root[data-skin="glossy"] .day > .hd { border-bottom: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
-  background: linear-gradient(180deg, color-mix(in srgb, var(--qc) 34%, var(--surface)), color-mix(in srgb, var(--qc) 16%, var(--surface))); }
+  background: linear-gradient(180deg, color-mix(in srgb, var(--qc) 55%, var(--surface)), color-mix(in srgb, var(--qc) 34%, var(--surface))); }
 :root[data-skin="glossy"] #story > .hd { background: linear-gradient(180deg, color-mix(in srgb, var(--ink) 8%, var(--surface)), var(--surface)); }
 :root[data-skin="glossy"] .day > .hd .when { letter-spacing: -.01em; }
 :root[data-skin="glossy"] .exp { border: 0; background: linear-gradient(180deg, var(--surface), color-mix(in srgb, var(--ink) 7%, var(--surface)));
@@ -325,12 +327,12 @@ details.day > summary.hd .when .rx { flex: 0 1 auto; min-width: 0; overflow: hid
 :root[data-skin="glossy"] .rx { background: linear-gradient(180deg, color-mix(in srgb, var(--rxc) 80%, #fff), var(--rxc)); box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 2px 6px -2px var(--gl-sh); }
 :root[data-skin="glossy"] .why { border: 0; background: linear-gradient(180deg, var(--surface), color-mix(in srgb, var(--ink) 8%, var(--surface))); box-shadow: inset 0 1px 0 var(--gl-hl), 0 1px 3px var(--gl-sh2); }
 :root[data-skin="glossy"] .sc { border: 0; padding: 3px 10px;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--rc) 18%, var(--surface)), color-mix(in srgb, var(--rc) 36%, var(--surface)));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--rc) 38%, var(--surface)), color-mix(in srgb, var(--rc) 60%, var(--surface)));
   box-shadow: inset 0 1px 0 var(--gl-hl2), 0 1px 2px var(--gl-sh2), 0 3px 8px -4px var(--gl-sh); }
 :root[data-skin="glossy"] .list { gap: 8px; padding: 12px; }
 :root[data-skin="glossy"] .srow, :root[data-skin="glossy"] .srow.coast { border: 0 !important; border-radius: 16px;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--rc) 10%, var(--surface)), color-mix(in srgb, var(--rc) 22%, var(--surface)));
-  box-shadow: inset 0 1px 0 var(--gl-hl), inset 4px 0 0 var(--rc), 0 1px 2px var(--gl-sh2), 0 6px 16px -8px var(--gl-sh); }
+  background: linear-gradient(180deg, color-mix(in srgb, var(--rc) 22%, var(--surface)), color-mix(in srgb, var(--rc) 40%, var(--surface)));
+  box-shadow: inset 0 1px 0 var(--gl-hl), inset 5px 0 0 var(--rc), 0 1px 2px var(--gl-sh2), 0 6px 16px -8px var(--gl-sh); }
 :root[data-skin="glossy"] .srow:active { transform: scale(.99); }
 :root[data-skin="glossy"] .srow[aria-expanded="true"] { border-radius: 16px 16px 0 0; box-shadow: inset 0 1px 0 var(--gl-hl), inset 4px 0 0 var(--rc); }
 :root[data-skin="glossy"] .det { border: 0; border-radius: 0 0 16px 16px; margin-top: -8px;
@@ -340,12 +342,12 @@ details.day > summary.hd .when .rx { flex: 0 1 auto; min-width: 0; overflow: hid
 :root[data-skin="glossy"] .bar::before, :root[data-skin="glossy"] .bar::after { opacity: .25; }
 :root[data-skin="glossy"] .wk { border: 0; border-radius: 22px; padding: 12px; box-shadow: inset 0 1px 0 var(--gl-hl), 0 1px 2px var(--gl-sh2), 0 14px 34px -14px var(--gl-sh); }
 :root[data-skin="glossy"] .wk-c { border: 0; border-radius: 14px;
-  background: linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,0) 55%), linear-gradient(180deg, color-mix(in srgb, var(--rc) 26%, var(--surface)), color-mix(in srgb, var(--rc) 44%, var(--surface)));
+  background: linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,0) 55%), linear-gradient(180deg, color-mix(in srgb, var(--rc) 50%, var(--surface)), color-mix(in srgb, var(--rc) 75%, var(--surface)));
   box-shadow: inset 0 1px 0 var(--gl-hl), 0 1px 2px var(--gl-sh2), 0 5px 12px -5px var(--gl-sh); }
 :root[data-skin="glossy"] .wk-c:active { transform: scale(.97); }
 :root[data-skin="glossy"] .sheet { border: 0; border-radius: 22px 22px 0 0; box-shadow: 0 -12px 40px -8px var(--gl-sh);
   background: linear-gradient(180deg, var(--surface), color-mix(in srgb, var(--ink) 3%, var(--surface))); }
-:root[data-skin="glossy"] .ds { border: 0; border-radius: 14px; box-shadow: inset 0 1px 0 var(--gl-hl), inset 4px 0 0 var(--rc), 0 1px 2px var(--gl-sh2), 0 4px 10px -6px var(--gl-sh); }
+:root[data-skin="glossy"] .ds { background: linear-gradient(180deg, color-mix(in srgb, var(--rc) 22%, var(--surface)), color-mix(in srgb, var(--rc) 40%, var(--surface))); border: 0; border-radius: 14px; box-shadow: inset 0 1px 0 var(--gl-hl), inset 4px 0 0 var(--rc), 0 1px 2px var(--gl-sh2), 0 4px 10px -6px var(--gl-sh); }
 :root[data-skin="glossy"] .xcmark { border-radius: 5px; background: linear-gradient(180deg, color-mix(in srgb, var(--ink) 75%, #888), var(--ink)); }
 :root[data-skin="glossy"] .fresh button, :root[data-skin="glossy"] footer button { border: 0; border-radius: 999px; padding-inline: 14px;
   background: linear-gradient(180deg, var(--surface), color-mix(in srgb, var(--ink) 7%, var(--surface))); box-shadow: inset 0 1px 0 var(--gl-hl), 0 1px 2px var(--gl-sh2), 0 3px 8px -3px var(--gl-sh); }
@@ -449,7 +451,7 @@ const regimeHtml = (rg, small) => {
 const setTheme = (t) => {
   try { localStorage.setItem("radar-theme", t); } catch (e) {}
   if (t === "auto") document.documentElement.removeAttribute("data-theme"); else document.documentElement.setAttribute("data-theme", t);
-  document.querySelectorAll("#theme button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.t === t)));
+  document.querySelectorAll("#theme button[data-t]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.t === t)));
 };
 const setSkin = (on) => {
   try { localStorage.setItem("radar-skin", on ? "glossy" : "flat"); } catch (e) {}
