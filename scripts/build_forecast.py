@@ -52,42 +52,52 @@ ENS_MODELS = {
 OPTIONAL_MODELS = {"RRFS"}           # not listed as "failed" while Open-Meteo doesn't offer it yet
 # trust for lift and rating (local experience: HRRR usually right, then NAM; GFS/ECMWF/ICON for the longer range)
 MODEL_WEIGHT = {"HRRR": 3, "RRFS": 3, "NAM": 2, "ECMWF": 1, "GFS": 1, "ICON": 1}
-# while HRRR covers a day, HRRR (+ RRFS) alone decide it (ECMWF's wind aloft is only shown as a check);
-# once HRRR runs out, RRFS leads with help from NAM while it lasts (weighted mean, so NAM actually moves the
-# number); ECMWF only shows its wind aloft as a check; GFS, ECMWF and ICON only rate days past RRFS's range
+# HRRR days: HRRR x2, RRFS x1 (weighted mean; HRRR is what XC Skies readers calibrate on).
+# RRFS days (HRRR out of range): RRFS x2 plus the global models together counting once, so RRFS isn't alone.
+# Past RRFS: weighted median of the global models. NAM is not used for the rating.
+# RRFS heights are corrected by their recent gap to HRRR at each site before scoring (rrfs_bias).
+# ECMWF's wind aloft is shown beside HRRR/RRFS as a check.
 HIRES = ("HRRR", "RRFS")
-CALIB_SITES = ("lb", "blossom", "elsinore")
-RRFS_HELP = {"RRFS": 2, "NAM": 1}
+GLOBAL = ("ECMWF", "GFS", "ICON")
+HIRES_W = {"HRRR": 2, "RRFS": 1}
 RAIN_P = 0.6                       # share of runs with rain at which a day is a no-go
+CALIB_SITES = ("lb", "blossom", "elsinore")
 
 
 def rating_models(names):
-    """The models that decide a day: HRRR/RRFS; RRFS + NAM once HRRR runs out; otherwise all."""
+    """The models that decide a day: HRRR+RRFS; RRFS + globals once HRRR runs out; otherwise the globals."""
     names = list(names)
     if "HRRR" in names:
         return [n for n in names if n in HIRES]
     if "RRFS" in names:
-        return [n for n in names if n in RRFS_HELP]
-    return names
+        return [n for n in names if n == "RRFS" or n in GLOBAL]
+    g = [n for n in names if n in GLOBAL]
+    return g or names
 
 
 def rrfs_led(names):
     names = set(names)
-    return "RRFS" in names and "HRRR" not in names and names <= set(RRFS_HELP)
+    return "RRFS" in names and "HRRR" not in names
 
 
 def model_weight(name, names):
     """Weight of a model within the set that rates the day."""
-    return RRFS_HELP.get(name, 1) if rrfs_led(names) else MODEL_WEIGHT.get(name, 1)
+    names = list(names)
+    if "HRRR" in names:
+        return HIRES_W.get(name, 1)
+    if rrfs_led(names):
+        n_glob = sum(1 for n in names if n in GLOBAL)
+        return 2.0 if name == "RRFS" else 1.0 / max(1, n_glob)
+    return MODEL_WEIGHT.get(name, 1)
 
 
 def blend(ratings):
-    """{model: value} -> the day's value: weighted mean on RRFS-led days, weighted median otherwise."""
+    """{model: value} -> the day's value: weighted mean on HRRR/RRFS days, weighted median otherwise."""
     ratings = {k: v for k, v in ratings.items() if v is not None}
     if not ratings:
         return None
     w = {k: model_weight(k, ratings) for k in ratings}
-    if rrfs_led(ratings):
+    if "HRRR" in ratings or rrfs_led(ratings):
         return sum(v * w[k] for k, v in ratings.items()) / sum(w.values())
     return wmedian((v, w[k]) for k, v in ratings.items())
 DET_LEVELS = [1000, 975, 950, 925, 900, 850, 800, 700, 600, 500]
@@ -708,15 +718,21 @@ def score_hour(site, hr, i, levels, elev_m):
     # the height used for rating and shown is this usable top, with no best-thermal bonus: it matches
     # XC Skies' "top of usable lift" (LB 2026-10-26 12:00: HRRR 1,978 vs 1,968 ft, RRFS 1,649 vs 1,640 ft).
     # An earlier +25%/+10% best-thermal bonus overshot (Blossom 10-25: 6,200 shown, 4,900 flown).
-    peak_top = usable
     base = z0 + 125 * max(0.0, t2 - td) if td is not None else None
     if base is not None:
         usable = min(usable, base)
-        peak_top = min(peak_top, base)
+    usable_show = usable                      # what the model says (and XC Skies shows)
+    bias = site.get("_bias_m", 0.0)           # RRFS: its recent gap to HRRR here, for scoring only
+    if bias:
+        usable = usable + bias
+        if base is not None:
+            usable = min(usable, base + max(0.0, bias))
+    peak_top = usable
     agl = usable - launch_m
 
-    # launch wind: 10 m wind for low sites, profile wind for high launches
-    if launch_m - elev_m > 250:
+    # launch wind: 10 m wind for low sites, profile wind for high launches (unless the site says the
+    # surface wind tells more, e.g. Elsinore: the lake-side flow, not the free air at launch height)
+    if launch_m - elev_m > 250 and site.get("launch_wind") != "surface":
         lw, ld = interp_wind(pts, launch_m)
     else:
         lw, ld = _at(hr, "wind_speed_10m", i), _at(hr, "wind_direction_10m", i)
@@ -724,8 +740,8 @@ def score_hour(site, hr, i, levels, elev_m):
     w10, g10 = _at(hr, "wind_speed_10m", i), _at(hr, "wind_gusts_10m", i)
     gust_f = max(1.0, g10 / w10) if (w10 and g10 and w10 > 1) else 1.0
     lg_mph = lw_mph * gust_f if lw_mph is not None else None
-    a_max, a_spd, a_dir = layer_wind(pts, launch_m + 150, max(launch_m + 600, usable))
-    tw_spd, tw_dir = interp_wind(pts, max(usable, launch_m + 150))
+    a_max, a_spd, a_dir = layer_wind(pts, launch_m + 150, max(launch_m + 600, usable_show))
+    tw_spd, tw_dir = interp_wind(pts, max(usable_show, launch_m + 150))
 
     codes, q = [], 1.0
     launch = None
@@ -764,7 +780,7 @@ def score_hour(site, hr, i, levels, elev_m):
         q *= clamp(1 - (a_max - site["aloft_max_kt"]) / 10)
         codes.append("aloft")
     # convergence sites are killed by even light synoptic flow from the wrong side
-    bad_min = 3 if site["kind"] == "convergence" else 6
+    bad_min = site.get("aloft_bad_min_kt") or (3 if site["kind"] == "convergence" else 6)
     bad_dir = (a_spd is not None and a_dir is not None and site.get("aloft_bad")
                and wrap_in(a_dir, *site["aloft_bad"]) and a_spd >= bad_min)
     if bad_dir:
@@ -807,11 +823,14 @@ def score_hour(site, hr, i, levels, elev_m):
     dbg = {"z0": round(z0 * FT), "t2": round(t2, 1), "td": round(td, 1) if td is not None else None,
            "sw": round(sw), "blh": round(blh * FT) if blh is not None else None,
            "parcel": round(top_parcel * FT) if top_parcel is not None else None, "zi": round(zi * FT),
-           "wstar": round(wstar, 2), "k": round(k, 2), "usable": round(usable * FT), "peak": round(peak_top * FT),
+           "wstar": round(wstar, 2), "k": round(k, 2), "usable": round(usable_show * FT), "scored": round(usable * FT),
+           "lw": round(lw_mph, 1) if lw_mph is not None else None, "ld": round(ld) if ld is not None else None,
+           "tw": [round(tw_dir), round(tw_spd, 1)] if tw_spd is not None and tw_dir is not None else None,
+           "q": round(q, 2), "codes": list(codes),
            "base": round(base * FT) if base is not None else None,
            "prof": [[round(z * FT), round(t, 1)] for z, t, *_ in pts[:9]]}
     return {"q": q, "xc_s": xc_s, "xc_block": xc_block, "dbg": dbg, "glass": glass, "cold": cold_aloft, "good_launch": bool(good_launch), "launch": launch,
-            "usable": usable, "peak_top": peak_top, "base": base, "agl": agl, "wstar": wstar, "climb": max(0.0, wstar - SINK + 0.3),
+            "usable": usable, "usable_show": usable_show, "peak_top": peak_top, "base": base, "agl": agl, "wstar": wstar, "climb": max(0.0, wstar - SINK + 0.3),
             "lw": lw_mph, "ld": ld, "lg": lg_mph, "a_max": a_max, "tw": (tw_dir, tw_spd) if tw_spd is not None else None, "a_spd": a_spd, "a_dir": a_dir,
             "pr": pr, "cape": cape, "codes": codes}
 
@@ -907,8 +926,16 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
                 if h >= 11 and west(sc) and (k2 + 1 >= len(hours) or west(hours[k2 + 1][1])):
                     switch_h = h
                     break
+            # launchable before the switch: an easterly (the site's launch directions) or light wind of any
+            # direction (under light_mph); a west wind all morning means no launch, so the day is a 1
+            def can_launch(sc):
+                if sc["lw"] is None:
+                    return False
+                if sc["lw"] <= site.get("light_mph", 5):
+                    return True
+                return sc["ld"] is not None and dir_ok(site, sc["ld"]) and sc["lw"] <= site["wind_mph"][1]
             launchable = [(h, sc) for h, sc in hours if w0 - 1 <= h <= w1 and (switch_h is None or h < switch_h)
-                          and not west(sc) and (sc["lw"] or 0) <= site["wind_mph"][1]
+                          and not west(sc) and can_launch(sc)
                           and (sc["a_max"] is None or sc["a_max"] <= site["aloft_max_kt"] + 5)]
             if launchable:
                 during = [(h, sc) for h, sc in hours if switch_h is not None and switch_h <= h <= switch_h + 1]
@@ -923,7 +950,8 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
                     switch_tag = f"switch ~{fmt_h(switch_h)}"
                 xc_now = rating >= 3.5
             else:
-                rating = min(2.0, 1.0 + local)
+                rating = 1.0
+                switch_tag = "no launch window"
                 if win:
                     best_h, sc = max(win, key=lambda x: x[1]["q"])
                     peak = sc["peak_top"]
@@ -990,18 +1018,20 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     wind_now = wind_at([mid, mid - 1, mid + 1])
     later_h = [h for h in (16, 15, 17) if h >= mid + 2 and h + 0.5 <= sunset_h]
     wind_later = wind_at(later_h) if later_h else None
+    bias = site.get("_bias_m", 0.0)
+    peak_show = (peak - bias) if peak is not None else None      # heights shown are the model's own
     h13 = next((s for h, s in hours if h == 13), None) or next((s for h, s in hours if h in (12, 14)), None)
     wind_1pm = wind_at([13, 12, 14])
     return {
-        "top13": h13["usable"] if h13 else None,
-        "peak": peak, "best_h": best_h, "style": style, "switch_h": switch_h, "switch_tag": switch_tag,
-        "hrs": [(h, x["peak_top"]) for h, x in hours],
+        "top13": h13["usable_show"] if h13 else None,
+        "peak": peak_show, "best_h": best_h, "style": style, "switch_h": switch_h, "switch_tag": switch_tag,
+        "hrs": [(h, x["usable_show"]) for h, x in hours],
         "tw13": h13["tw"] if h13 else None,
         "wind_1pm": wind_1pm,
         "wind_now": wind_now, "wind_later": wind_later,
         "rating": rating, "local": local, "xc_day": xc_day, "label": label, "codes": codes,
         "postfrontal": postfrontal, "glass": glass_ok, "glass_hours": glass_hours, "sunset": sunset_h,
-        "start": hours[k][0], "top": peak if peak is not None else med("usable", xblk), "base": med("base"), "wstar": med("wstar", xblk),
+        "start": hours[k][0], "top": peak_show if peak_show is not None else med("usable_show", xblk), "base": med("base"), "wstar": med("wstar", xblk),
         "climb": med("climb", xblk), "lw": med("lw"), "ld": med("ld"),
         "launch_q": sum(1 for s in blk if s["good_launch"]) / len(blk),
         "launch": max(set(x["launch"] for x in blk if x["launch"]) or {None}, key=lambda v: sum(1 for x in blk if x["launch"] == v)),
@@ -1273,6 +1303,35 @@ def expand_sites(sites):
 
 
 
+def rrfs_bias(sites, det):
+    """{site id: metres} RRFS's gap to HRRR in usable top at each site, from the midday hours (11-15)
+    where both have data in this run (median, at most +-200 m). Added to RRFS heights for scoring only,
+    so RRFS days are judged on the same footing as HRRR days."""
+    out = {}
+    h, r = det.get("HRRR"), det.get("RRFS")
+    if not h or not r or not h[1] or not r[1]:
+        return out
+    for s, dh, dr in zip(sites, h[1], r[1]):
+        if not dh or not dr:
+            continue
+        hh, hr_ = dh.get("hourly", {}), dr.get("hourly", {})
+        ih = {t: i for i, t in enumerate(hh.get("time", []))}
+        diffs = []
+        for j, t in enumerate(hr_.get("time", [])):
+            if t not in ih or int(t[11:13]) not in (11, 12, 13, 14, 15):
+                continue
+            try:
+                a = score_hour(s, hh, ih[t], DET_LEVELS, dh.get("elevation", 0) or 0)
+                b = score_hour(s, hr_, j, DET_LEVELS, dr.get("elevation", 0) or 0)
+            except Exception:
+                continue
+            if a and b:
+                diffs.append(a["usable_show"] - b["usable_show"])
+        if len(diffs) >= 6:
+            out[s["id"]] = max(-200.0, min(200.0, median(diffs)))
+    return out
+
+
 DAYNAMES = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
 NWS_RAIN = re.compile(r"\b(showers?|rain|rainfall|drizzle|thunderstorms?)\b", re.I)
 
@@ -1331,8 +1390,11 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                     a["ground_ft"] = ground_ft
                     yield dstr, a
 
+    bias = rrfs_bias(sites, det)
     for name, (mid, data, *_i) in det.items():
         for s, d in zip(sites, data or []):
+            if name == "RRFS" and bias.get(s["id"]):
+                s = dict(s, _bias_m=bias[s["id"]])
             for dstr, a in run_site(s, d, DET_LEVELS, "det"):
                 days.setdefault(dstr, {}).setdefault(s["id"], {"det": {}, "ens": []})["det"][name] = a
     for name, (mid, data, *_i) in ens.items():
@@ -1377,6 +1439,13 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             wet = shower_p >= RAIN_P                    # it really rains: rock bottom
             if wet:
                 rating = 1.0
+            # awkward drift at the top of lift (most of the rating weight agrees): a tag, and at some
+            # sites a small nick (Blossom: NW or clearly WNW pushes XC toward the Rock Pile)
+            xb = s.get("xc_bad_aloft") or {}
+            tot_w = sum(model_weight(k, D) for k in D) or 1
+            drift = bool(D) and sum(model_weight(k, D) for k, a in D.items() if a.get("xc_block")) / tot_w >= 0.5
+            if drift and not wet and xb.get("nick"):
+                rating = max(1.0, rating - xb["nick"])
             if ens_r:
                 shift = rating - median(ens_r)
                 p_fly = sum(r + shift >= 2.5 for r in ens_r) / len(ens_r)
@@ -1404,9 +1473,9 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             elif label in ("Marginal", "No go") and rating >= 2.5:
                 label = "Ridge soaring" if ridge else ("Glass-off" if lead and lead["glass"] else "Thermal")
             tags = []
-            if lead and lead.get("xc_block") and rating >= 2.5 and s.get("xc_bad_aloft"):
+            if drift and rating >= 2.5 and xb:
                 tags.append(s["xc_bad_aloft"].get("tag", "awkward drift"))
-            if lead and lead.get("switch_tag") and rating >= 2.5:
+            if lead and lead.get("switch_tag") and (rating >= 2.5 or lead["switch_tag"] == "no launch window"):
                 tags.append(lead["switch_tag"])
             if xc and lead and lead.get("style") == "window" and lead.get("best_h") is not None:
                 tags.append(f"window ~{fmt_h(lead['best_h'])}")
@@ -1550,6 +1619,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
 
     return {
         "generated": now_iso(), "sample": sample, "calib": calib,
+        "rrfs_bias_ft": {k: round(v * FT) for k, v in bias.items()},
         "overview": week_overview(parents or sites, out_days, nws),
         "models": {k: v[0] for k, v in det.items() if v[0]},
         "weights": MODEL_WEIGHT,

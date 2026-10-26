@@ -1,5 +1,5 @@
 {
-  "_note": "Starting values to check against the SDHGPA guide and your own tracks. Directions are where the wind blows FROM (degrees). Launch wind in mph, wind aloft in knots. 'aloft_bad' is the range of wind-aloft directions that kills the site (offshore, over the back). 'routes' are XC directions (degrees you fly TOWARD) with a short description; 'blocked' are directions where drift takes you into airspace, sea or the border. Positions, launch and LZ heights come from the soaringpredictor.info site pages. Models are asked for the forecast at the LZ height (lz_ft), so thermals start from the valley ground. A site with 'launches' is scored per launch and shows the better one. 'ok_ft' / 'xc_top_ft' / 'xc_top_ft'+'xc_span_ft' are the ceilings (MSL) for an OK local day, the start of XC, and a great XC day; they scale the height bars. 'gust_mph' is where gusts start to hurt (fully bad 5 mph above). 'style' sets how a day is rated (1-5): 'window' = the best single hour inside 'window' (local hours) decides, plus glass-off; 'thermal' = best two hours inside 'window'; 'convergence' = XC only, local flying caps at 2; 'ridge' = ridge soaring up to 3, thermal day 4-5. 'model_ground_ft' (optional) is the height the models are asked for instead of the LZ, for launches above a marine layer. 'otb_mph' (default 5) is the wind from behind launch that counts as over the back. 'switch' style (Elsinore): needs a launchable hour before the west wind arrives; the height over the range during the switch is capped by the height at the 'inland' site in the 3 hours after it; no switch or a switch after 4 pm caps at 3. 'xc_bad_aloft' (optional): wind-aloft directions FROM ('from', degrees) that make an XC harder at 'min_kt' or more (drift into airspace or bad terrain); shown as 'tag' only, the rating is unchanged.",
+  "_note": "Starting values to check against the SDHGPA guide and your own tracks. Directions are where the wind blows FROM (degrees). Launch wind in mph, wind aloft in knots. 'aloft_bad' is the range of wind-aloft directions that kills the site (offshore, over the back). 'routes' are XC directions (degrees you fly TOWARD) with a short description; 'blocked' are directions where drift takes you into airspace, sea or the border. Positions, launch and LZ heights come from the soaringpredictor.info site pages. Models are asked for the forecast at the LZ height (lz_ft), so thermals start from the valley ground. A site with 'launches' is scored per launch and shows the better one. 'ok_ft' / 'xc_top_ft' / 'xc_top_ft'+'xc_span_ft' are the ceilings (MSL) for an OK local day, the start of XC, and a great XC day; they scale the height bars. 'gust_mph' is where gusts start to hurt (fully bad 5 mph above). 'style' sets how a day is rated (1-5): 'window' = the best single hour inside 'window' (local hours) decides, plus glass-off; 'thermal' = best two hours inside 'window'; 'convergence' = XC only, local flying caps at 2; 'ridge' = ridge soaring up to 3, thermal day 4-5. 'model_ground_ft' (optional) is the height the models are asked for instead of the LZ, for launches above a marine layer. 'otb_mph' (default 5) is the wind from behind launch that counts as over the back. 'switch' style (Elsinore): needs a launchable hour before the west wind arrives; the height over the range during the switch is capped by the height at the 'inland' site in the 3 hours after it; no switch or a switch after 4 pm caps at 3. 'xc_bad_aloft' (optional): wind-aloft directions FROM ('from', degrees) that make an XC harder at 'min_kt' or more (drift into airspace or bad terrain); shown as 'tag', and 'nick' (optional) takes that much off the rating. Heights (ok_ft, xc_top_ft, xc_span_ft) are on the 'top of usable lift' scale XC Skies shows (no best-thermal bonus): LB, Blossom and Elsinore set from Jerome's calls (Oct 2026), the others converted from earlier values (0.65 x height above model ground) and still to be checked. 'launch_wind': 'surface' judges launch on the 10 m wind at the site's grid point instead of the free-air wind at launch height; 'light_mph' (switch style): wind under this from any direction is launchable; 'aloft_bad_min_kt': wind speed at which 'aloft_bad' starts to hurt.",
   "sites": [
     {
       "id": "torrey",
@@ -165,8 +165,8 @@
         10,
         130
       ],
-      "xc_top_ft": 5000,
-      "xc_span_ft": 1500,
+      "xc_top_ft": 3500,
+      "xc_span_ft": 1000,
       "routes": [
         {
           "to": 45,
@@ -194,21 +194,22 @@
         }
       ],
       "lz_ft": 700,
-      "ok_ft": 3000,
+      "ok_ft": 2500,
       "gust_mph": 15,
       "style": "window",
       "window": [
-        11,
-        13
+        12,
+        15
       ],
       "xc_bad_aloft": {
         "from": [
-          305,
+          290,
           60
         ],
         "min_kt": 4,
-        "tag": "north drift",
-        "why": "a north component pushes an XC toward the Rock Pile"
+        "nick": 0.3,
+        "tag": "NW drift",
+        "why": "NW or clearly WNW drift pushes an XC toward the Rock Pile"
       }
     },
     {
@@ -233,8 +234,8 @@
         230,
         320
       ],
-      "xc_top_ft": 7000,
-      "xc_span_ft": 3000,
+      "xc_top_ft": 4500,
+      "xc_span_ft": 1500,
       "routes": [
         {
           "to": 140,
@@ -260,14 +261,17 @@
         }
       ],
       "lz_ft": 1350,
-      "ok_ft": 5000,
+      "ok_ft": 3300,
       "gust_mph": 15,
       "style": "switch",
       "window": [
         11,
         16
       ],
-      "inland": "soboba"
+      "inland": "soboba",
+      "launch_wind": "surface",
+      "light_mph": 5,
+      "aloft_bad_min_kt": 10
     },
     {
       "id": "soboba",
@@ -291,8 +295,8 @@
         320,
         120
       ],
-      "xc_top_ft": 6000,
-      "xc_span_ft": 2000,
+      "xc_top_ft": 4400,
+      "xc_span_ft": 1300,
       "routes": [
         {
           "to": 120,
@@ -314,7 +318,7 @@
         }
       ],
       "lz_ft": 1520,
-      "ok_ft": 4000,
+      "ok_ft": 3100,
       "gust_mph": 15,
       "style": "thermal",
       "window": [
@@ -344,8 +348,8 @@
         10,
         130
       ],
-      "xc_top_ft": 4500,
-      "xc_span_ft": 1500,
+      "xc_top_ft": 3100,
+      "xc_span_ft": 1000,
       "routes": [
         {
           "to": 40,
@@ -369,7 +373,7 @@
         }
       ],
       "lz_ft": 600,
-      "ok_ft": 3000,
+      "ok_ft": 2200,
       "gust_mph": 15,
       "style": "window",
       "window": [
@@ -389,8 +393,8 @@
         15
       ],
       "aloft_max_kt": 15,
-      "xc_top_ft": 10000,
-      "xc_span_ft": 2000,
+      "xc_top_ft": 7700,
+      "xc_span_ft": 1300,
       "routes": [
         {
           "to": 330,
@@ -438,7 +442,7 @@
             330,
             120
           ],
-          "xc_top_ft": 10000
+          "xc_top_ft": 7700
         },
         {
           "name": "Laguna",
@@ -454,10 +458,10 @@
             220,
             320
           ],
-          "xc_top_ft": 10000
+          "xc_top_ft": 7700
         }
       ],
-      "ok_ft": 7000,
+      "ok_ft": 5700,
       "gust_mph": 15,
       "style": "convergence",
       "window": [
@@ -487,8 +491,8 @@
         320,
         110
       ],
-      "xc_top_ft": 7000,
-      "xc_span_ft": 1000,
+      "xc_top_ft": 5100,
+      "xc_span_ft": 700,
       "routes": [
         {
           "to": 100,
@@ -516,7 +520,7 @@
         }
       ],
       "lz_ft": 1700,
-      "ok_ft": 5500,
+      "ok_ft": 4300,
       "gust_mph": 15,
       "style": "thermal",
       "window": [
@@ -546,8 +550,8 @@
         330,
         70
       ],
-      "xc_top_ft": 6000,
-      "xc_span_ft": 1500,
+      "xc_top_ft": 5000,
+      "xc_span_ft": 1000,
       "routes": [
         {
           "to": 100,
@@ -575,7 +579,7 @@
         }
       ],
       "lz_ft": 1000,
-      "ok_ft": 4500,
+      "ok_ft": 4000,
       "gust_mph": 15,
       "style": "thermal",
       "window": [
