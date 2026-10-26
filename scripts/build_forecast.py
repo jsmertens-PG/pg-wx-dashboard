@@ -883,8 +883,10 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     else:
         def hour_r(sc, allow_xc):
             lv = ceil_level(site, sc["peak_top"] * FT)
-            if not (allow_xc and sc["xc_s"] > 0):
-                lv = min(lv, 3.4)          # without XC conditions an hour shows 3 at most
+            # lift above the XC height but no XC conditions (wind, weak, ...) shows 3 at most; below the XC
+            # height the level already climbs smoothly from 3 to 4, so no cap there
+            if not (allow_xc and sc["xc_s"] > 0) and sc["peak_top"] * FT >= (site.get("xc_top_ft") or 1e9):
+                lv = min(lv, 3.4)
             return 1.0 + (lv - 1.0) * clamp(sc["q"] / 0.6)
         if style == "convergence":
             conv = [(h, sc) for h, sc in win if sc["xc_s"] > 0]
@@ -1341,6 +1343,10 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
     # HRRR/RRFS alone decide the days they cover; keep the full set only for the ECMWF wind check
     for cells in days.values():
         for cell in cells.values():
+            # a run with no thermals at all on a dry day has broken or missing fields (e.g. NAM at the end of
+            # its range: top at the ground, W* 0), so it doesn't get a say
+            cell["det"] = {k: a for k, a in cell["det"].items()
+                           if (a.get("wstar") or 0) > 0.05 or a.get("pr", 0) >= 1.0}
             cell["all"] = cell["det"]
             cell["det"] = {k: cell["det"][k] for k in rating_models(cell["det"])}
     regimes = day_regimes(det, sites)
@@ -1539,7 +1545,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
     for dstr in [x["date"] for x in out_days][:3]:
         for sid in CALIB_SITES:
             for name, a in (days.get(dstr, {}).get(sid, {}).get("all") or {}).items():
-                if a.get("dbg") and name in HIRES:
+                if a.get("dbg") and name in HIRES + ("NAM",):
                     calib.setdefault(dstr, {}).setdefault(sid, {})[name] = a["dbg"]
 
     return {
