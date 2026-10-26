@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>SoCal Flying Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<script>try { if (localStorage.getItem("radar-skin") === "glossy") document.documentElement.setAttribute("data-skin", "glossy"); } catch (e) {}</script>
+<script>try { if (localStorage.getItem("radar-skin") !== "flat") document.documentElement.setAttribute("data-skin", "glossy"); } catch (e) { document.documentElement.setAttribute("data-skin", "glossy"); }</script>
 <script>try { var t = localStorage.getItem("radar-theme") || "light"; if (t !== "auto") document.documentElement.setAttribute("data-theme", t); } catch (e) { document.documentElement.setAttribute("data-theme", "light"); }</script>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
