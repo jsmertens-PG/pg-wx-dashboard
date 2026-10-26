@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-26T19:08+00:00",
+ "generated": "2026-10-26T19:16+00:00",
  "sample": false,
  "calib": {
   "2026-10-26": {
@@ -6700,8 +6700,8 @@
    "provider": "Open-Meteo",
    "id": "ncep_hrrr_conus",
    "status": "ok",
-   "run": "2026-10-26T16:00+00:00",
-   "fetched": "2026-10-26T19:00+00:00",
+   "run": "2026-10-26T17:00+00:00",
+   "fetched": "2026-10-26T19:09+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -6711,7 +6711,7 @@
    "id": "ncep_rrfs_conus",
    "status": "ok",
    "run": "2026-10-26T12:00+00:00",
-   "fetched": "2026-10-26T19:01+00:00",
+   "fetched": "2026-10-26T19:09+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -6721,7 +6721,7 @@
    "id": "ncep_nam_conus",
    "status": "ok",
    "run": "2026-10-26T12:00+00:00",
-   "fetched": "2026-10-26T19:01+00:00",
+   "fetched": "2026-10-26T19:09+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -6731,7 +6731,7 @@
    "id": "gfs_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-26T19:01+00:00",
+   "fetched": "2026-10-26T19:09+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -6740,8 +6740,8 @@
    "provider": "Open-Meteo",
    "id": "ecmwf_ifs025",
    "status": "ok",
-   "run": null,
-   "fetched": "2026-10-26T19:03+00:00",
+   "run": "2026-10-26T06:00+00:00",
+   "fetched": "2026-10-26T19:10+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -6751,7 +6751,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-26T19:03+00:00",
+   "fetched": "2026-10-26T19:10+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -6761,7 +6761,7 @@
    "id": "gfs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-26T19:04+00:00",
+   "fetched": "2026-10-26T19:12+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -6771,7 +6771,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-26T19:07+00:00",
+   "fetched": "2026-10-26T19:14+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -6781,7 +6781,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-26T19:08+00:00",
+   "fetched": "2026-10-26T19:16+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -6791,7 +6791,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-10-26T17:45:00+00:00",
-   "fetched": "2026-10-26T19:08+00:00",
+   "fetched": "2026-10-26T19:16+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   }
  ],
@@ -10604,7 +10604,7 @@
      "n_members": 122,
      "lead": "GFS",
      "top_ft": 3000.0,
-     "base_ft": 4700.0,
+     "base_ft": 4600.0,
      "wstar": 1.4,
      "sunset": "5:59pm",
      "factors": [
@@ -10616,15 +10616,15 @@
       },
       {
        "k": "Wind 1 pm",
-       "v": "S 8",
-       "sub": "later SSW 10g16",
+       "v": "S 8g14",
+       "sub": "later SSW 10g19",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
        "v": "SSW 8 kt",
        "sub": "at 3,500 ft",
-       "q": 0.9
+       "q": 0.95
       },
       {
        "k": "Rain & storms",
@@ -11514,7 +11514,8 @@
        "top": 2200.0,
        "w": 1.0,
        "why": [
-        "lid"
+        "lid",
+        "gusty"
        ]
       },
       "ECMWF": {
@@ -11791,7 +11792,7 @@
       {
        "k": "Wind 1 pm",
        "v": "NNW 1",
-       "sub": "later ENE 2g11",
+       "sub": "later ENE 2",
        "q": 1.0
       },
       {
@@ -12133,7 +12134,7 @@
       "rain 66%"
      ],
      "xc": false,
-     "note": "gusty",
+     "note": "low lid, 2,100 ft",
      "p_fly": 0.0,
      "p_xc": 0.0,
      "agree": "split",
@@ -12157,8 +12158,8 @@
       },
       {
        "k": "Wind 1 pm",
-       "v": "NNE 4g19",
-       "sub": "later NE 4g34 \u00b7 gusty",
+       "v": "NNE 4",
+       "sub": "later NE 4",
        "q": 1.0
       },
       {
@@ -12185,9 +12186,9 @@
      "launch_ft": 1550,
      "style": "window",
      "why": [
-      "gusty",
       "lid",
-      "showers"
+      "showers",
+      "otb"
      ],
      "diag": {
       "GFS": {
@@ -12195,9 +12196,9 @@
        "top": 1200.0,
        "w": 0.9,
        "why": [
-        "gusty",
         "lid",
-        "showers"
+        "showers",
+        "otb"
        ]
       },
       "ECMWF": {
@@ -12232,22 +12233,22 @@
      "p_xc": 0.0,
      "agree": "agree",
      "models": {
-      "GFS": 1.1,
+      "GFS": 1.2,
       "ECMWF": 1.0,
       "ICON": 1.0
      },
      "n_members": 122,
      "lead": "ECMWF",
-     "top_ft": 4300.0,
-     "base_ft": 5100.0,
-     "wstar": 1.3,
+     "top_ft": 4900.0,
+     "base_ft": 5200.0,
+     "wstar": 1.5,
      "sunset": "5:56pm",
      "factors": [
       {
        "k": "Height",
-       "v": "~4,300 ft",
+       "v": "~4,900 ft",
        "sub": "global models",
-       "q": 0.0
+       "q": 0.08
       },
       {
        "k": "Wind 1 pm",
@@ -12270,8 +12271,8 @@
       {
        "k": "Model agreement",
        "v": "agree",
-       "sub": "GFS 1.1 \u00b7 ECMWF 1.0 \u00b7 ICON 1.0",
-       "q": 0.94
+       "sub": "GFS 1.2 \u00b7 ECMWF 1.0 \u00b7 ICON 1.0",
+       "q": 0.93
       }
      ],
      "alt_source": "models",
@@ -12285,13 +12286,13 @@
      ],
      "diag": {
       "GFS": {
-       "r": 1.1,
-       "top": 3800.0,
-       "w": 0.8,
+       "r": 1.2,
+       "top": 5000.0,
+       "w": 1.5,
        "why": [
-        "gusty",
         "lid",
-        "showers"
+        "showers",
+        "otb"
        ]
       },
       "ECMWF": {
