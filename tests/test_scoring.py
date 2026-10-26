@@ -52,7 +52,9 @@ class SampleRun(unittest.TestCase):
                 self.assertIn("Wind 1 pm", keys, (d["date"], k))
                 if c.get("style") != "ridge" and k != "torrey":
                     self.assertIn("Wind aloft", keys, (d["date"], k))
-                self.assertEqual(keys[0], "Height", (d["date"], k))
+                    self.assertEqual(keys[0], "Height", (d["date"], k))
+                else:                       # Torrey: wind and direction only, no height bar
+                    self.assertNotIn("Height", keys, (d["date"], k))
 
     def test_day_types_known(self):
         for d in self.data["days"]:

@@ -277,7 +277,12 @@ def _fetch_model(kind, name, ids, sites, log):
 SP_PAGES = {
     "scal": "https://www.soaringpredictor.info/scal/SouthCalPredictor.htm",
     "santabarb": "https://www.soaringpredictor.info/santabarb/SantaBarbPredictor.htm",
+    "esierra": "https://www.soaringpredictor.info/E-Sierra/E-SierraPredictor.htm",
 }
+SP_LABEL = {"scal": "South Cal", "santabarb": "Santa Barbara", "esierra": "Eastern Sierra"}
+# the SoCal tables run far too high (a sounding estimate), so only the Eastern Sierra table is read, and only
+# as a veto for Owens (sp_veto_ft): no launch there with that much above launch -> it can't light up
+SP_ACTIVE = ("esierra",)
 WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 
@@ -327,6 +332,8 @@ def fetch_sp(sites, log):
     """Soaring Predictor ceilings (public summary tables), shown next to the radar's own heights."""
     out, info = {}, []
     for key, url in SP_PAGES.items():
+        if key not in SP_ACTIVE:
+            continue
         if not any(sp["page"] == key for s in sites for sp in s.get("sp", [])):
             continue
         try:
@@ -343,7 +350,7 @@ def fetch_sp(sites, log):
                                 {"name": sp["name"], "ceiling_ft": sp["launch_ft"] + above, "above_ft": above, "wind": wind})
                             found += 1
             log.append(f"Soaring Predictor {key}: ok ({found} site-days)")
-            info.append({"name": f"Soaring Predictor ({'South Cal' if key == 'scal' else 'Santa Barbara'})", "kind": "reference",
+            info.append({"name": f"Soaring Predictor ({SP_LABEL.get(key, key)})", "kind": "reference",
                          "provider": "soaringpredictor.info", "id": key, "status": "ok" if found else "failed",
                          "run": parsed["run"], "fetched": now_iso(), "url": url})
         except Exception as e:
@@ -1442,6 +1449,11 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             off_season = bool(s.get("season_months")) and int(dstr[5:7]) not in s["season_months"]
             if off_season:
                 rating = min(rating, 2.0)
+            # Soaring Predictor veto (Owens): if no listed launch gets above sp_veto_ft (MSL), it can't be a 5
+            sp_cells = sp.get((s["id"], dstr)) or []
+            sp_weak = bool(s.get("sp_veto_ft") and sp_cells) and max(x["ceiling_ft"] for x in sp_cells) < s["sp_veto_ft"]
+            if sp_weak:
+                rating = min(rating, 4.0)
             # awkward drift at the top of lift (most of the rating weight agrees): a tag, and at some
             # sites a small nick (Blossom: NW or clearly WNW pushes XC toward the Rock Pile)
             xb = s.get("xc_bad_aloft") or {}
@@ -1486,6 +1498,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 tags.append("glass-off")
             if off_season:
                 tags.insert(0, "off season")
+            if sp_weak:
+                tags.append(f"Soaring Predictor max {max(x['ceiling_ft'] for x in sp_cells):,} ft")
             if shower_p >= 0.1:                       # any real chance of rain shows, also on no-go days
                 tags.insert(0, f"rain {round(shower_p * 100)}%")
             spread = (max(det_r.values()) - min(det_r.values())) if len(det_r) > 1 else 0
@@ -1571,6 +1585,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                     row["sub"] = "global models"
                     factors.insert(0, row)              # the thermal-height row was already taken out above
                 src = "models"
+            if ridge:                                   # Torrey: wind and direction tell it; no height bar
+                factors = [f for f in factors if f["k"] not in ("Height", "Thermal height")]
             lead_view = dict(lead, label=label, top=top if top is not None else lead.get("top"), shower_p=shower_p) if lead else None
             drow["sites"][s["id"]] = {
                 "rating": round(rating, 2), "label": label, "tags": tags, "xc": xc,
@@ -1951,7 +1967,7 @@ def main(argv=None):
         det = {n: fetch_model("det", n, ids, sites, log) for n, ids in DET_MODELS.items()}
         ens = {n: fetch_model("ens", n, ids, sites, log) for n, ids in ENS_MODELS.items()}
         nws = fetch_nws(log)
-        sp, sp_info = {}, []   # the public Soaring Predictor table is a sounding estimate that runs far too high
+        sp, sp_info = fetch_sp(sites, log)   # Eastern Sierra only, as a veto for Owens (see SP_ACTIVE)
         sources = [v[2] for k, v in det.items() if not (k in OPTIONAL_MODELS and v[2]["status"] == "failed")]
         sources += [v[2] for v in ens.values()] + sp_info
         sources.append({"name": "NWS San Diego forecast discussion", "kind": "text", "provider": "NWS",

@@ -280,10 +280,10 @@ details.day > summary.hd .when .rx { flex: 0 1 auto; min-width: 0; overflow: hid
 .mods { font-size: .66rem; color: var(--muted); font-weight: 400; letter-spacing: .02em; white-space: nowrap; }
 .day > .hd .sum .mods { margin-left: auto; align-self: flex-end; }
 .sc.watch { border-width: 2px; border-style: solid; font-weight: 600; }
-.srow.watch { border-top: 2px solid var(--ink); }
+
 .srow.watch:not(.shy) .nm::before { content: "★ "; }
 .sc.shy { background: transparent !important; border: 1px dashed color-mix(in srgb, var(--ink) 35%, transparent); color: var(--muted); font-size: .7rem; padding: 1px 7px; }
-.srow.watch.shy { filter: grayscale(1); opacity: .5; border-top: 1px dashed color-mix(in srgb, var(--ink) 30%, transparent); }
+.srow.watch.shy { filter: grayscale(1); opacity: .5; }
 .nwsr { font-size: .7rem; font-weight: 600; color: var(--ink); border: 1.5px dashed var(--ink); border-radius: 999px; padding: 1px 8px; white-space: nowrap; }
 .nwsrow { font-size: .8rem; font-weight: 600; padding: 6px 14px; border-bottom: 1px dashed color-mix(in srgb, var(--ink) 40%, transparent); }
 .mods-b { display: block; text-align: right; padding: 6px 14px 8px; }
@@ -637,8 +637,7 @@ function render(data) {
       ${d.nws_rain ? `<div class="nwsrow">NWS: showers possible this day</div>` : ""}
       <div class="list">
         ${big.map((s) => siteRow(d, s, i, "")).join("")}
-        <div class="minor">${other.map((s) => siteRow(d, s, i, "small")).join("")}</div>
-        ${watchSites.map((s) => siteRow(d, s, i, watchOn(d, s) ? "watch" : "watch shy")).join("")}
+        <div class="minor">${other.map((s) => siteRow(d, s, i, "small")).join("")}${watchSites.map((s) => siteRow(d, s, i, watchOn(d, s) ? "small watch" : "small watch shy")).join("")}</div>
       </div>
       <div class="det" id="det-${i}" hidden></div>
       ${mods ? `<span class="mods mods-b">${mods}</span>` : ""}

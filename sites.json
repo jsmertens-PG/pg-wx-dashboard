@@ -1,5 +1,5 @@
 {
-  "_note": "Starting values to check against the SDHGPA guide and your own tracks. Directions are where the wind blows FROM (degrees). Launch wind in mph, wind aloft in knots. 'aloft_bad' is the range of wind-aloft directions that kills the site (offshore, over the back). 'routes' are XC directions (degrees you fly TOWARD) with a short description; 'blocked' are directions where drift takes you into airspace, sea or the border. Positions, launch and LZ heights come from the soaringpredictor.info site pages. Models are asked for the forecast at the LZ height (lz_ft), so thermals start from the valley ground. A site with 'launches' is scored per launch and shows the better one. 'ok_ft' / 'xc_top_ft' / 'xc_top_ft'+'xc_span_ft' are the ceilings (MSL) for an OK local day, the start of XC, and a great XC day; they scale the height bars. 'gust_mph' is where gusts start to hurt (fully bad 5 mph above). 'style' sets how a day is rated (1-5): 'window' = the best single hour inside 'window' (local hours) decides, plus glass-off; 'thermal' = best two hours inside 'window'; 'convergence' = XC only, local flying caps at 2; 'ridge' = ridge soaring up to 3, thermal day 4-5. 'model_ground_ft' (optional) is the height the models are asked for instead of the LZ, for launches above a marine layer. 'otb_mph' (default 5) is the wind from behind launch that counts as over the back. 'switch' style (Elsinore): needs a launchable hour before the west wind arrives; the height over the range during the switch is capped by the height at the 'inland' site in the 3 hours after it; no switch or a switch after 4 pm caps at 3. 'xc_bad_aloft' (optional): wind-aloft directions FROM ('from', degrees) that make an XC harder at 'min_kt' or more (drift into airspace or bad terrain); shown as 'tag', and 'nick' (optional) takes that much off the rating. Heights (ok_ft, xc_top_ft, xc_span_ft) are on the 'top of usable lift' scale XC Skies shows (no best-thermal bonus): LB, Blossom and Elsinore set from Jerome's calls (Oct 2026), the others converted from earlier values (0.65 x height above model ground) and still to be checked. 'launch_wind': 'surface' judges launch on the 10 m wind at the site's grid point instead of the free-air wind at launch height; 'light_mph' (switch style): wind under this from any direction is launchable; 'aloft_bad_min_kt': wind speed at which 'aloft_bad' starts to hurt. tier 'watch': rated but hidden (no row, not in card colour or best site) unless it reaches 4.5; 'season_months': outside these months the rating is capped at 2.",
+  "_note": "Starting values to check against the SDHGPA guide and your own tracks. Directions are where the wind blows FROM (degrees). Launch wind in mph, wind aloft in knots. 'aloft_bad' is the range of wind-aloft directions that kills the site (offshore, over the back). 'routes' are XC directions (degrees you fly TOWARD) with a short description; 'blocked' are directions where drift takes you into airspace, sea or the border. Positions, launch and LZ heights come from the soaringpredictor.info site pages. Models are asked for the forecast at the LZ height (lz_ft), so thermals start from the valley ground. A site with 'launches' is scored per launch and shows the better one. 'ok_ft' / 'xc_top_ft' / 'xc_top_ft'+'xc_span_ft' are the ceilings (MSL) for an OK local day, the start of XC, and a great XC day; they scale the height bars. 'gust_mph' is where gusts start to hurt (fully bad 5 mph above). 'style' sets how a day is rated (1-5): 'window' = the best single hour inside 'window' (local hours) decides, plus glass-off; 'thermal' = best two hours inside 'window'; 'convergence' = XC only, local flying caps at 2; 'ridge' = ridge soaring up to 3, thermal day 4-5. 'model_ground_ft' (optional) is the height the models are asked for instead of the LZ, for launches above a marine layer. 'otb_mph' (default 5) is the wind from behind launch that counts as over the back. 'switch' style (Elsinore): needs a launchable hour before the west wind arrives; the height over the range during the switch is capped by the height at the 'inland' site in the 3 hours after it; no switch or a switch after 4 pm caps at 3. 'xc_bad_aloft' (optional): wind-aloft directions FROM ('from', degrees) that make an XC harder at 'min_kt' or more (drift into airspace or bad terrain); shown as 'tag', and 'nick' (optional) takes that much off the rating. Heights (ok_ft, xc_top_ft, xc_span_ft) are on the 'top of usable lift' scale XC Skies shows (no best-thermal bonus): LB, Blossom and Elsinore set from Jerome's calls (Oct 2026), the others converted from earlier values (0.65 x height above model ground) and still to be checked. 'launch_wind': 'surface' judges launch on the 10 m wind at the site's grid point instead of the free-air wind at launch height; 'light_mph' (switch style): wind under this from any direction is launchable; 'aloft_bad_min_kt': wind speed at which 'aloft_bad' starts to hurt. tier 'watch': rated but hidden (no row, not in card colour or best site) unless it reaches 4.5; 'season_months': outside these months the rating is capped at 2. 'sp_veto_ft' (Owens): if Soaring Predictor's ceiling (launch + above launch) stays below this MSL height at all of the site's 'sp' launches, the rating is capped at 4 (it can't light up).",
   "sites": [
     {
       "id": "torrey",
@@ -630,7 +630,30 @@
         9,
         10
       ],
-      "note": "Watch only: shows when it rates 5. Advanced pilots only. Morning site with very strong thermals, cloudbase 13-20k. Needs light winds; west wind over the Sierra is a no-go. PGs don't fly it June to early September."
+      "note": "Watch only: shows when it rates 5. Advanced pilots only. Morning site with very strong thermals, cloudbase 13-20k. Needs light winds; west wind over the Sierra is a no-go. PGs don't fly it June to early September.",
+      "sp": [
+        {
+          "page": "esierra",
+          "name": "Walts",
+          "launch_ft": 9000
+        },
+        {
+          "page": "esierra",
+          "name": "Gunter",
+          "launch_ft": 7900
+        },
+        {
+          "page": "esierra",
+          "name": "Paiute",
+          "launch_ft": 7900
+        },
+        {
+          "page": "esierra",
+          "name": "Flynns",
+          "launch_ft": 4900
+        }
+      ],
+      "sp_veto_ft": 12000
     }
   ]
 }
