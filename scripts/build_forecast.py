@@ -1292,8 +1292,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             # scattered showers rarely hit one grid point, so use the share of runs with rain here
             runs_all = cell["ens"] or list(D.values())
             shower_p = sum(1 for a in runs_all if a["pr"] >= 0.2) / len(runs_all)
-            if shower_p >= 0.2 and label != "No go":
-                tags.append(f"showers around {round(shower_p * 100)}%")
+            if shower_p >= 0.1:                       # any real chance of rain shows, also on no-go days
+                tags.insert(0, f"rain {round(shower_p * 100)}%")
             spread = (max(det_r.values()) - min(det_r.values())) if len(det_r) > 1 else 0
 
             # key values: median across the regular models (directions from the lead model)
@@ -1543,7 +1543,7 @@ def headline(sites, d):
         return f"XC at {by[k]['short']}" + (f" · also {', '.join(others)}" if others else "") + tail
     good = [k for k in main if cells[k]["rating"] >= 2.5]
     if good:
-        showers = any(t.startswith("showers") for k in main for t in cells[k]["tags"])
+        showers = any(t.startswith("rain") for k in main for t in cells[k]["tags"])
         return (" · ".join(f"{by[k]['short']} {cells[k]['label'].lower()}" for k in good)
                 + (" · showers around" if showers else "") + tail)
     if main:

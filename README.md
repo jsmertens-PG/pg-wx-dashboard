@@ -2,7 +2,7 @@
 
 A one-page, 7-day outlook for the main Southern California paragliding launches: Little Black, Blossom, Elsinore, Torrey, Laguna/Horse, Marshall/Crestline, Otay, Soboba and Santa Barbara.
 
-The top of the page has the weather story from the NWS San Diego discussion. Below it, each day gets a card led by its day type (Front, Pre-frontal, Post-frontal, Santa Ana, Switch day). The home sites (Little Black, Blossom, Elsinore) come first, then Torrey, then Laguna/Horse, Marshall, Otay, Soboba and Santa Barbara. Each site shows a 1–5 rating with a coloured bar, a label (XC, Thermal day, Thermal, Glass-off, Ridge soaring, Marginal, No go), tags (XC window, glass-off, showers around) and, when the day doesn't work, the reason. Tap a site for the height (RRFS and HRRR in one bar), winds, rain and model agreement. XC routes are left to Skysight / XC Skies.
+The top of the page has the weather story from the NWS San Diego discussion. Below it, each day gets a card led by its day type (Front, Pre-frontal, Post-frontal, Santa Ana, Switch day). The home sites (Little Black, Blossom, Elsinore) come first, then Torrey, then Laguna/Horse, Marshall, Otay, Soboba and Santa Barbara. Each site shows a 1–5 rating with a coloured bar, a label (XC, Thermal day, Thermal, Glass-off, Ridge soaring, Marginal, No go), tags (rain chance, XC window, glass-off) and, when the day doesn't work, the reason. Tap a site for the height (RRFS and HRRR in one bar), winds, rain and model agreement. XC routes are left to Skysight / XC Skies.
 
 A GitHub Action rebuilds the data every two hours. The page shows every source used, when each model run was made, when it was fetched, and when the data was processed.
 
