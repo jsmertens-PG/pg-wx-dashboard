@@ -477,7 +477,7 @@ details.day:not([open]) > .mods-b { display: none; }
   </div>
       <p><b>1–5 scale, by site type.</b> <b>Little Black, Blossom, Otay</b> are rated on their best hour in the 11 am–1 pm window, when you get up and out before wind and stability kill it; glass-off is rated separately and the better of the two counts. A nice glass-off or a good local day is 3, a real XC window 4, outstanding 5. <b>Elsinore and Laguna/Horse</b> are XC-only convergence sites: without a convergence setup they cap at 2. <b>Torrey</b> is 2–3 for ridge soaring and 4–5 on a thermal day. Marshall, Santa Barbara (11–3) and Soboba (1–4 pm) use their own windows. Heights come from each site's scale in <span class="mono">sites.json</span> (for Little Black: 2,500 ft OK, 3,000 ft XC, 4,500 ft great).</p>
       <p><b>Day type</b> (the coloured pill) comes from the models over the region and runs all 7 days: <b>Front</b> (regional rain, cooling), <b>Post-frontal</b> (the days after, cold air aloft), <b>Pre-frontal</b> (S–SW flow ahead of a front), <b>Santa Ana</b> (NE–E flow at 850 hPa, dry air) and <b>Switch day</b> (the day Santa Ana ends). "maybe" means the models disagree.</p>
-      <p><b>Models.</b> The rating is a weighted median: HRRR and RRFS ×3, NAM ×2, GFS, ECMWF, ICON ×1. Height bars show RRFS and HRRR (about 4 and 2 days); after that a rough global-model height. The ensembles give the chance of a flyable or XC day. Lift is the usable top of the mixed layer (the idea behind RASP's Hcrit), never above cloudbase; launch wind, gusts (over 15 mph hurts), wind aloft at the top of lift and rain all count.</p>
+      <p><b>Models.</b> When HRRR or RRFS covers a day, they alone set the rating (ECMWF wind aloft is shown beside theirs as a check). Past their range it is a weighted median of NAM ×2 and GFS, ECMWF, ICON ×1. The models behind each day are listed at the bottom right of its card. Height bars show RRFS and HRRR (about 4 and 2 days); after that a rough global-model height. The ensembles give the chance of a flyable or XC day. Lift is the usable top of the mixed layer (the idea behind RASP's Hcrit), never above cloudbase; launch wind, gusts (over 15 mph hurts), wind aloft at the top of lift and rain all count.</p>
       <p>Limits for each site are in <span class="mono">sites.json</span>, to tune against real days.</p>
     </div>
   </details>
@@ -588,7 +588,7 @@ function render(data) {
       + `<div class="wrow wlink"><span><a href="${esc(n.url)}" target="_blank" rel="noopener">Full NWS discussion</a> <span class="muted">· ${fmtWhen(n.issued)}</span></span></div>`
     : `<summary class="hd"><span class="when">Weather Overview</span>${ov}</summary>`;
 
-  /* models that rated this day (HRRR ~2 days, RRFS/NAM a bit longer, then global only) */
+  /* models that rated this day (HRRR/RRFS alone while they reach, then global only) */
   const MODEL_ORDER = ["HRRR", "RRFS", "NAM", "ECMWF", "GFS", "ICON"];
   const dayModels = (d) => {
     const seen = new Set();

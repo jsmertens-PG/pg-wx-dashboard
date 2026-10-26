@@ -52,6 +52,16 @@ ENS_MODELS = {
 OPTIONAL_MODELS = {"RRFS"}           # not listed as "failed" while Open-Meteo doesn't offer it yet
 # trust for lift and rating (local experience: HRRR usually right, then NAM; GFS/ECMWF/ICON for the longer range)
 MODEL_WEIGHT = {"HRRR": 3, "RRFS": 3, "NAM": 2, "ECMWF": 1, "GFS": 1, "ICON": 1}
+# when HRRR or RRFS covers a day they alone decide it: NAM, GFS, ICON and ECMWF are left out
+# (ECMWF's wind aloft is still shown next to theirs as a check); the rest only rate the days past their range
+HIRES = ("HRRR", "RRFS")
+
+
+def rating_models(names):
+    """The models that decide a day: HRRR/RRFS when either is there, otherwise all of them."""
+    names = list(names)
+    hi = [n for n in names if n in HIRES]
+    return hi or names
 DET_LEVELS = [1000, 975, 950, 925, 900, 850, 800, 700, 600, 500]
 ENS_LEVELS = [925, 850, 700]
 # the ensembles only feed the flyable/XC chances, so they get a slim set of fields
@@ -1138,6 +1148,8 @@ def day_regimes(det, sites):
                 "rh": round(f["rh"]) if f.get("rh") is not None else None}
     out = {}
     for dstr, vs in votes.items():
+        keep = set(rating_models(n for n, _ in vs))
+        vs = [(n, t) for n, t in vs if n in keep]
         tot = sum(MODEL_WEIGHT.get(n, 1) for n, _ in vs)
         w = {}
         for n, t in vs:
@@ -1236,6 +1248,11 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             for dstr, a in run_site(s, d, ENS_LEVELS, "ens"):
                 days.setdefault(dstr, {}).setdefault(s["id"], {"det": {}, "ens": []})["ens"].append(a)
 
+    # HRRR/RRFS alone decide the days they cover; keep the full set only for the ECMWF wind check
+    for cells in days.values():
+        for cell in cells.values():
+            cell["all"] = cell["det"]
+            cell["det"] = {k: cell["det"][k] for k in rating_models(cell["det"])}
     regimes = day_regimes(det, sites)
     today = datetime.now(timezone.utc).astimezone(_tz()).date().isoformat()
     out_days = []
@@ -1320,6 +1337,9 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                         return qa + (qb - qa) * (ft - a) / max(1, b - a)
                 return 1.0
             agl_ft = (top * FT - launch_ft) if top is not None else None
+            ec = cell["all"].get("ECMWF") if "ECMWF" not in D else None
+            ecmwf_wind = (f"ECMWF {compass(ec['tw13'][0])} {round(ec['tw13'][1])} kt" if ec and ec.get("tw13")
+                          else f"ECMWF {compass(ec['a_dir'])} {round(ec['a_spd'])} kt" if ec and ec.get("a_spd") is not None else "")
             factors = [
                 {"k": "Thermal height", "v": f"{round(top * FT, -2):,.0f} ft" if top else "–",
                  "sub": f"{round(agl_ft, -2):,.0f} ft over launch" if agl_ft is not None else "",
@@ -1333,7 +1353,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                        else f"{compass(lead['a_dir'])} {round(lead['a_spd'])} kt" if lead and lead.get("a_spd") is not None else "–"),
                  "sub": " · ".join(x for x in (
                      f"at {round(lead['top13'] * FT, -2):,.0f} ft" if lead and lead.get("top13") else "",
-                     "blows over the back" if aloftdir else "") if x),
+                     "blows over the back" if aloftdir else "",
+                     ecmwf_wind) if x),
                  "q": round(0.15 if aloftdir else 1 - clamp(((a_max or 0) - 0.6 * s["aloft_max_kt"]) / (0.8 * s["aloft_max_kt"])), 2)},
                 {"k": "Rain & storms", "v": f"{round(shower_p * 100)}% of runs" if shower_p >= 0.05 else "dry",
                  "sub": "storm risk" if (cape or 0) >= 1000 else "",
