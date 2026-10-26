@@ -112,9 +112,11 @@ class WindowRating(unittest.TestCase):
     def test_lb_rated_on_best_midday_hour(self):
         lb = next(x for x in json.loads((ROOT / "sites.json").read_text())["sites"] if x["id"] == "lb")
         self.assertEqual(lb["style"], "window")
-        # one strong hour at noon to 3,200 ft: a 3-4 day, whatever the rest of the afternoon does
-        self.assertGreaterEqual(bf.ceil_level(lb, 3200), 4.0)
-        self.assertLess(bf.ceil_level(lb, 2200), 3.0)
+        # heights are top of usable lift (XC Skies style). Jerome's calls: 10-26 (~2,000 ft at noon) a 3-4,
+        # 10-27 (~2,400 ft) a 4; 1,500 ft is a sled ride
+        self.assertGreaterEqual(bf.ceil_level(lb, 2000), 3.0)
+        self.assertGreaterEqual(bf.ceil_level(lb, 2400), 4.0)
+        self.assertLess(bf.ceil_level(lb, 1500), 3.0)
 
 
 class Routes(unittest.TestCase):
