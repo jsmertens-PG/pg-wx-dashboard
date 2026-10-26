@@ -704,10 +704,10 @@ def score_hour(site, hr, i, levels, elev_m):
     # (the idea behind RASP's Hcrit): weak days use about half of it, strong days most of it
     k = clamp(0.4 + 0.2 * (wstar - 1.0), 0.3, 0.8)
     usable = z0 + zi * k
-    # the best thermal of the hour gets a bit higher than the average usable top. Checked against
-    # flights: LB 2026-10-24 (2,200 typical, one thermal to 3,200; HRRR peak was 3,000 with +0.25) and
-    # Blossom 2026-10-25 (4,900 at the Cap; HRRR peak was 6,200 with +0.25), so +0.10 capped at 0.75
-    peak_top = z0 + zi * clamp(k + 0.10, 0.5, 0.75)
+    # the height used for rating and shown is this usable top, with no best-thermal bonus: it matches
+    # XC Skies' "top of usable lift" (LB 2026-10-26 12:00: HRRR 1,978 vs 1,968 ft, RRFS 1,649 vs 1,640 ft).
+    # An earlier +25%/+10% best-thermal bonus overshot (Blossom 10-25: 6,200 shown, 4,900 flown).
+    peak_top = usable
     base = z0 + 125 * max(0.0, t2 - td) if td is not None else None
     if base is not None:
         usable = min(usable, base)
@@ -926,12 +926,15 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
                     best_h, sc = max(win, key=lambda x: x[1]["q"])
                     peak = sc["peak_top"]
         elif win:
-            n = min(1 if style == "window" else 2, len(win))
+            # best two hours in a row, so a one-hour spike in a model (HRRR's PBL jumps around) can't
+            # make the day; the height shown is the mean of those two hours
+            n = min(2, len(win))
             scored = [(h, hour_r(sc, True), sc) for h, sc in win]
             best = max(range(len(scored) - n + 1), key=lambda k: sum(x[1] for x in scored[k:k + n]))
             rating = sum(x[1] for x in scored[best:best + n]) / n
             best_h, _r, sc = max(scored[best:best + n], key=lambda x: x[1])
-            peak = sc["peak_top"]
+            tops = [x[2]["peak_top"] for x in scored[best:best + n]]
+            peak = sum(tops) / len(tops)
             xc_now = sc["xc_s"] > 0 and rating >= 3.5
         if style not in ("convergence", "switch"):
             gw = [x["lw"] for h, x in gwin if h in glass_hours and x["lw"] is not None]
