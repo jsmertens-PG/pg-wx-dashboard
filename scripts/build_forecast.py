@@ -1439,6 +1439,9 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             wet = shower_p >= RAIN_P                    # it really rains: rock bottom
             if wet:
                 rating = 1.0
+            off_season = bool(s.get("season_months")) and int(dstr[5:7]) not in s["season_months"]
+            if off_season:
+                rating = min(rating, 2.0)
             # awkward drift at the top of lift (most of the rating weight agrees): a tag, and at some
             # sites a small nick (Blossom: NW or clearly WNW pushes XC toward the Rock Pile)
             xb = s.get("xc_bad_aloft") or {}
@@ -1481,6 +1484,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 tags.append(f"window ~{fmt_h(lead['best_h'])}")
             if lead and lead["glass"] and label in ("Thermal", "Marginal", "XC") and not ridge and lead.get("style") != "convergence":
                 tags.append("glass-off")
+            if off_season:
+                tags.insert(0, "off season")
             if shower_p >= 0.1:                       # any real chance of rain shows, also on no-go days
                 tags.insert(0, f"rain {round(shower_p * 100)}%")
             spread = (max(det_r.values()) - min(det_r.values())) if len(det_r) > 1 else 0
@@ -1603,7 +1608,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
         drow["sites"] = merged
         if drow["sites"]:
             main = [k for k in drow["sites"] if next(x for x in (parents or sites) if x["id"] == k).get("tier") == "main"] or list(drow["sites"])
-            drow["best"] = max(drow["sites"], key=lambda k: drow["sites"][k]["rating"])
+            watch = {x["id"] for x in (parents or sites) if x.get("tier") == "watch"}
+            drow["best"] = max([k for k in drow["sites"] if k not in watch] or list(drow["sites"]), key=lambda k: drow["sites"][k]["rating"])
             drow["best_main"] = max(main, key=lambda k: drow["sites"][k]["rating"])
             drow["headline"] = headline(parents or sites, drow)
             drow["why"] = day_reason(parents or sites, drow)
