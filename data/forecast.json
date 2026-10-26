@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-26T21:01+00:00",
+ "generated": "2026-10-26T21:13+00:00",
  "sample": false,
  "calib": {
   "2026-10-26": {
@@ -12656,6 +12656,8 @@
  },
  "log": [
   "HRRR: ok (ncep_hrrr_conus)",
+  "RRFS: ncep_rrfs_conus surface fields empty, retrying",
+  "RRFS: ncep_rrfs_conus surface fields empty, retrying",
   "RRFS: ok (ncep_rrfs_conus)",
   "NAM: ok (ncep_nam_conus)",
   "GFS: ok (gfs_global)",
@@ -12675,7 +12677,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-10-26T19:00+00:00",
-   "fetched": "2026-10-26T20:49+00:00",
+   "fetched": "2026-10-26T21:01+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -12684,8 +12686,8 @@
    "provider": "Open-Meteo",
    "id": "ncep_rrfs_conus",
    "status": "ok",
-   "run": "2026-10-26T12:00+00:00",
-   "fetched": "2026-10-26T20:49+00:00",
+   "run": null,
+   "fetched": "2026-10-26T21:03+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -12695,7 +12697,7 @@
    "id": "ncep_nam_conus",
    "status": "ok",
    "run": "2026-10-26T18:00+00:00",
-   "fetched": "2026-10-26T20:49+00:00",
+   "fetched": "2026-10-26T21:03+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -12705,7 +12707,7 @@
    "id": "gfs_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-26T20:49+00:00",
+   "fetched": "2026-10-26T21:03+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -12715,7 +12717,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": "2026-10-26T06:00+00:00",
-   "fetched": "2026-10-26T20:51+00:00",
+   "fetched": "2026-10-26T21:04+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -12725,7 +12727,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-26T20:51+00:00",
+   "fetched": "2026-10-26T21:04+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -12735,7 +12737,7 @@
    "id": "gfs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-26T20:53+00:00",
+   "fetched": "2026-10-26T21:07+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -12745,7 +12747,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-26T20:57+00:00",
+   "fetched": "2026-10-26T21:10+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -12755,7 +12757,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-26T21:00+00:00",
+   "fetched": "2026-10-26T21:13+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -12765,7 +12767,7 @@
    "id": "esierra",
    "status": "ok",
    "run": "2026-10-26T12:00+00:00",
-   "fetched": "2026-10-26T21:00+00:00",
+   "fetched": "2026-10-26T21:13+00:00",
    "url": "https://www.soaringpredictor.info/E-Sierra/E-SierraPredictor.htm"
   },
   {
@@ -12775,7 +12777,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-10-26T20:19:00+00:00",
-   "fetched": "2026-10-26T21:00+00:00",
+   "fetched": "2026-10-26T21:13+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   }
  ],
