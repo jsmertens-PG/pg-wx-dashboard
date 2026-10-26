@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-26T05:42+00:00",
+ "generated": "2026-10-26T05:50+00:00",
  "sample": false,
  "overview": "Weak offshore now \u00b7 onshore Mon \u00b7 marine layer Mon \u00b7 flying today 4 XC, Mon 3, Tue 3",
  "models": {
@@ -51,8 +51,8 @@
    "provider": "Open-Meteo",
    "id": "ncep_hrrr_conus",
    "status": "ok",
-   "run": "2026-10-26T03:00+00:00",
-   "fetched": "2026-10-26T05:31+00:00",
+   "run": "2026-10-26T04:00+00:00",
+   "fetched": "2026-10-26T05:42+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -62,9 +62,8 @@
    "id": "ncep_rrfs_conus",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-26T04:55+00:00",
-   "url": "https://open-meteo.com/en/docs",
-   "note": "cached, fetched 1 h ago"
+   "fetched": "2026-10-26T05:42+00:00",
+   "url": "https://open-meteo.com/en/docs"
   },
   {
    "name": "NAM",
@@ -72,8 +71,8 @@
    "provider": "Open-Meteo",
    "id": "ncep_nam_conus",
    "status": "ok",
-   "run": "2026-10-26T00:00+00:00",
-   "fetched": "2026-10-26T05:34+00:00",
+   "run": null,
+   "fetched": "2026-10-26T05:44+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -83,7 +82,7 @@
    "id": "gfs_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-26T05:34+00:00",
+   "fetched": "2026-10-26T05:44+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -93,7 +92,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": "2026-10-25T18:00+00:00",
-   "fetched": "2026-10-26T05:36+00:00",
+   "fetched": "2026-10-26T05:44+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -103,7 +102,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-26T05:36+00:00",
+   "fetched": "2026-10-26T05:44+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -113,7 +112,7 @@
    "id": "gfs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-26T05:37+00:00",
+   "fetched": "2026-10-26T05:45+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -123,7 +122,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-26T05:39+00:00",
+   "fetched": "2026-10-26T05:48+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -133,7 +132,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-26T05:42+00:00",
+   "fetched": "2026-10-26T05:50+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -143,7 +142,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-10-26T04:49:00+00:00",
-   "fetched": "2026-10-26T05:42+00:00",
+   "fetched": "2026-10-26T05:50+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   }
  ],
@@ -196,7 +195,7 @@
   {
    "id": "lb",
    "name": "Little Black",
-   "short": "LB",
+   "short": "Little Black",
    "tier": "main",
    "launch_ft": 1050,
    "lz_ft": 750,
@@ -1491,7 +1490,7 @@
      "n_members": 122,
      "lead": "RRFS",
      "top_ft": 2400.0,
-     "base_ft": 5900.0,
+     "base_ft": 5800.0,
      "wstar": 1.6,
      "sunset": "6:04pm",
      "factors": [
@@ -1709,7 +1708,7 @@
      "p_xc": 0.35,
      "agree": "split",
      "models": {
-      "HRRR": 3.3,
+      "HRRR": 2.3,
       "RRFS": 1.7,
       "NAM": 1.0,
       "GFS": 2.1,
@@ -1717,7 +1716,7 @@
       "ICON": 3.1
      },
      "n_members": 122,
-     "lead": "RRFS",
+     "lead": "HRRR",
      "top_ft": 6600.0,
      "base_ft": 8700.0,
      "wstar": 2.1,
@@ -1729,21 +1728,21 @@
        "q": 0.7,
        "qs": [
         0.7,
-        0.68
+        0.69
        ],
        "sub": "RRFS 6,600 \u00b7 HRRR 6,500"
       },
       {
        "k": "Wind 1 pm",
-       "v": "WSW 5",
-       "sub": "later WSW 11",
+       "v": "WNW 4",
+       "sub": "later W 8",
        "q": 1.0
       },
       {
        "k": "Wind aloft",
-       "v": "WNW 4 kt",
-       "sub": "at 5,100 ft",
-       "q": 1.0
+       "v": "WNW 3 kt",
+       "sub": "at 4,800 ft \u00b7 blows over the back",
+       "q": 0.15
       },
       {
        "k": "Rain & storms",
@@ -1754,8 +1753,8 @@
       {
        "k": "Model agreement",
        "v": "split",
-       "sub": "HRRR 3.3 \u00b7 RRFS 1.7 \u00b7 NAM 1.0 \u00b7 GFS 2.1 \u00b7 ECMWF 3.0 \u00b7 ICON 3.1",
-       "q": 0.08
+       "sub": "HRRR 2.3 \u00b7 RRFS 1.7 \u00b7 NAM 1.0 \u00b7 GFS 2.1 \u00b7 ECMWF 3.0 \u00b7 ICON 3.1",
+       "q": 0.15
       }
      ],
      "alt_source": "RRFS",
@@ -1769,10 +1768,11 @@
      ],
      "diag": {
       "HRRR": {
-       "r": 3.3,
+       "r": 2.3,
        "top": 6500.0,
        "w": 2.1,
        "why": [
+        "otb",
         "aloftdir",
         "lid"
        ]
@@ -2052,7 +2052,7 @@
      "trend": 1.0
     },
     "lagunahorse": {
-     "rating": 1.49,
+     "rating": 1.5,
      "label": "No go",
      "tags": [],
      "xc": false,
@@ -2071,7 +2071,7 @@
      "n_members": 122,
      "lead": "HRRR",
      "top_ft": 7200.0,
-     "base_ft": 11300.0,
+     "base_ft": 10900.0,
      "wstar": 2.0,
      "sunset": "6:02pm",
      "factors": [
@@ -2088,7 +2088,7 @@
       {
        "k": "Wind 1 pm",
        "v": "W 3",
-       "sub": "later WNW 9",
+       "sub": "later WNW 11",
        "q": 1.0
       },
       {
@@ -2207,7 +2207,7 @@
       },
       {
        "k": "Wind aloft",
-       "v": "SW 5 kt",
+       "v": "SW 4 kt",
        "sub": "at 4,400 ft",
        "q": 1.0
       },
@@ -2325,8 +2325,8 @@
       },
       {
        "k": "Wind aloft",
-       "v": "SW 2 kt",
-       "sub": "at 4,100 ft",
+       "v": "WSW 2 kt",
+       "sub": "at 4,200 ft",
        "q": 1.0
       },
       {
@@ -2445,7 +2445,7 @@
    },
    "best": "blossom",
    "best_main": "blossom",
-   "headline": "LB glass-off \u00b7 Blossom thermal",
+   "headline": "Little Black glass-off \u00b7 Blossom thermal",
    "why": null
   },
   {
@@ -3550,7 +3550,7 @@
    },
    "best": "lb",
    "best_main": "lb",
-   "headline": "LB thermal \u00b7 Blossom thermal",
+   "headline": "Little Black thermal \u00b7 Blossom thermal",
    "why": null
   },
   {
@@ -4489,7 +4489,7 @@
    },
    "best": "lb",
    "best_main": "lb",
-   "headline": "XC at LB",
+   "headline": "XC at Little Black",
    "why": null
   },
   {
@@ -5269,7 +5269,7 @@
    },
    "best": "lb",
    "best_main": "lb",
-   "headline": "XC at LB",
+   "headline": "XC at Little Black",
    "why": null
   },
   {
@@ -6087,7 +6087,7 @@
    },
    "best": "lb",
    "best_main": "lb",
-   "headline": "XC at LB",
+   "headline": "XC at Little Black",
    "why": null
   },
   {
@@ -6877,7 +6877,7 @@
    },
    "best": "lb",
    "best_main": "lb",
-   "headline": "XC at LB",
+   "headline": "XC at Little Black",
    "why": null
   }
  ],
