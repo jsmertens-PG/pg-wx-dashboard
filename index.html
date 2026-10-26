@@ -276,6 +276,11 @@ details.day > summary.hd .when .rx { flex: 0 1 auto; min-width: 0; overflow: hid
 .dn-s { display: none; }
 @media (max-width: 430px) { details.day > summary.hd .when.has-rx .dn-l { display: none; } details.day > summary.hd .when.has-rx .dn-s { display: inline; } }
 .day > .hd .sum .why { margin: 0 4px 0 0; font-size: .66rem; }
+/* which models fed the day's ratings, bottom right of each card */
+.mods { font-size: .66rem; color: var(--muted); font-weight: 400; letter-spacing: .02em; white-space: nowrap; }
+.day > .hd .sum .mods { margin-left: auto; align-self: flex-end; }
+.mods-b { display: block; text-align: right; padding: 6px 14px 8px; }
+details.day:not([open]) > .mods-b { display: none; }
 @media (max-width: 640px) {
   details.day > summary.hd { gap: 4px 10px; }
   details.day > summary.hd .when { font-size: 1.1rem; }
@@ -583,24 +588,34 @@ function render(data) {
       + `<div class="wrow wlink"><span><a href="${esc(n.url)}" target="_blank" rel="noopener">Full NWS discussion</a> <span class="muted">· ${fmtWhen(n.issued)}</span></span></div>`
     : `<summary class="hd"><span class="when">Weather Overview</span>${ov}</summary>`;
 
+  /* models that rated this day (HRRR ~2 days, RRFS/NAM a bit longer, then global only) */
+  const MODEL_ORDER = ["HRRR", "RRFS", "NAM", "ECMWF", "GFS", "ICON"];
+  const dayModels = (d) => {
+    const seen = new Set();
+    Object.values(d.sites || {}).forEach((c) => Object.keys((c && c.models) || {}).forEach((m) => seen.add(m)));
+    const list = [...MODEL_ORDER.filter((m) => seen.has(m)), ...[...seen].filter((m) => !MODEL_ORDER.includes(m)).sort()];
+    return list.map(esc).join(" · ");
+  };
   /* day cards */
   $("#days").innerHTML = data.days.map((d, i) => {
     const L = dayLabel(d.date);
     const bm = d.sites[d.best_main] || d.sites[d.best];
     const tint = Math.max(...main.map((s) => d.sites[s.id]?.rating ?? 0));
     const open = openDays.has(d.date);
+    const mods = dayModels(d);
     return `<details class="day" id="day-${i}" data-date="${esc(d.date)}" style="--qc:${qv(tint)}"${open ? " open" : ""}>
       <summary class="hd">
         <span class="when${d.regime && d.regime.type ? " has-rx" : ""}"><span class="dn-l">${esc(L.long)}</span><span class="dn-s">${esc(L.short)}</span><small>${esc(L.date)}</small>${regimeHtml(d.regime)}</span>
         <span class="big" title="Best home site">${trendHtml(bm)}${r1(bm?.rating)}<small>/5</small></span>
         <span class="exp" aria-hidden="true"><i class="chev"></i></span>
-        <span class="sum">${d.why ? `<span class="why">${esc(d.why)}</span>` : ""}${daySummary(d, big, other)}</span>
+        <span class="sum">${d.why ? `<span class="why">${esc(d.why)}</span>` : ""}${daySummary(d, big, other)}${mods ? `<span class="mods">${mods}</span>` : ""}</span>
       </summary>
       <div class="list">
         ${big.map((s) => siteRow(d, s, i, "")).join("")}
         <div class="minor">${other.map((s) => siteRow(d, s, i, "small")).join("")}</div>
       </div>
       <div class="det" id="det-${i}" hidden></div>
+      ${mods ? `<span class="mods mods-b">${mods}</span>` : ""}
     </details>`;
   }).join("") || '<div class="empty">No forecast days in the data.</div>';
 
