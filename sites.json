@@ -93,8 +93,8 @@
         10,
         130
       ],
-      "xc_top_ft": 3000,
-      "xc_span_ft": 1000,
+      "xc_top_ft": 2300,
+      "xc_span_ft": 1200,
       "routes": [
         {
           "to": 30,
@@ -126,7 +126,7 @@
         }
       ],
       "lz_ft": 750,
-      "ok_ft": 2500,
+      "ok_ft": 1800,
       "gust_mph": 15,
       "style": "window",
       "window": [
