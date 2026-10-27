@@ -60,6 +60,7 @@ MODEL_WEIGHT = {"HRRR": 3, "RRFS": 3, "NAM": 2, "ECMWF": 1, "GFS": 1, "ICON": 1}
 HIRES = ("HRRR", "RRFS")
 GLOBAL = ("ECMWF", "GFS", "ICON")
 HIRES_W = {"HRRR": 2, "RRFS": 1}
+SD_SITES = ("torrey", "lb", "blossom", "elsinore")   # the home sites the day's rain pill is judged on
 RAIN_P = 0.6                       # share of runs with rain at which a day is a no-go
 RAIN_STEP = [(0.3, 0.5), (0.45, 1.0)][::-1]  # below RAIN_P: 45%+ of runs wet costs a full step, 30%+ half a step
 CALIB_SITES = ("lb", "blossom", "elsinore", "owens")
@@ -1654,7 +1655,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 factors = [f for f in factors if f["k"] not in ("Height", "Thermal height")]
             lead_view = dict(lead, label=label, top=top if top is not None else lead.get("top"), shower_p=shower_p) if lead else None
             drow["sites"][s["id"]] = {
-                "rating": round(rating, 2), "label": label, "tags": tags, "xc": xc,
+                "rating": round(rating, 2), "label": label, "tags": tags, "xc": xc, "rain_p": round(shower_p, 2),
                 "note": note_for(s, lead_view, xc),
                 "p_fly": round(p_fly, 2), "p_xc": round(p_xc, 2),
                 "agree": factors[-1]["v"], "models": {k: round(v, 1) for k, v in det_r.items()},
@@ -1694,6 +1695,9 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             drow["best_main"] = max(main, key=lambda k: drow["sites"][k]["rating"])
             drow["headline"] = headline(parents or sites, drow)
             drow["why"] = day_reason(parents or sites, drow)
+            # a wet day across the San Diego sites gets its own pill on the day
+            sd = [drow["sites"][k]["rain_p"] for k in SD_SITES if k in drow["sites"] and drow["sites"][k].get("rain_p") is not None]
+            drow["rain_p"] = round(sum(sd) / len(sd), 2) if sd else None
             out_days.append(drow)
 
     # raw ingredients of the height calculation for a few sites, to calibrate against XC Skies / flights

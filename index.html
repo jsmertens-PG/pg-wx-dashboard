@@ -219,7 +219,9 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .rx .rq { font-weight: 500; text-transform: none; letter-spacing: 0; opacity: .85; }
 .rx.sm { font-size: .6rem; padding: 0 5px; letter-spacing: .04em; }
 .rx-front { --rxc: #34508f; } .rx-pre { --rxc: #6b7899; } .rx-post { --rxc: #11827f; }
-.rx-sa { --rxc: #d2691e; } .rx-switch { --rxc: #b8860b; }
+.rx-sa { --rxc: #d2691e; } .rx-rain { --rxc: #2f6fb3; }
+.day > .hd .when .rx + .rx { margin-left: 5px; }
+.wk-d .rx.sm + .rx.sm { margin-top: 2px; } .rx-switch { --rxc: #b8860b; }
 .day .when .rx { margin-left: 10px; }
 details.day > summary { list-style: none; cursor: pointer; }
 /* week grid */
@@ -535,6 +537,9 @@ const trendHtml = (c) => {
   const up = now > was;
   return `<span class="trend ${up ? "up" : "down"}" title="was ${was} in the forecast ${up ? "earlier" : "earlier"}">${up ? "▲" : "▼"}<small>${was}</small></span>`;
 };
+/* rain across the San Diego sites: a pill on the day from 50% of runs wet */
+const rainPill = (d, small) => (d.rain_p != null && d.rain_p >= 0.5
+  ? `<span class="rx rx-rain${small ? " sm" : ""}" title="share of model runs with rain at Torrey, Little Black, Blossom and Elsinore">Rain ${Math.round(d.rain_p * 100)}%</span>` : "");
 const regimeHtml = (rg, small) => {
   if (!rg || !rg.type || !RX[rg.type]) return "";
   const pctTxt = rg.agree != null && rg.agree < 0.995 ? `${Math.round(rg.agree * 100)}%` : "";   // share of models that agree
@@ -628,7 +633,7 @@ function render(data) {
     const mods = dayModels(d);
     return `<details class="day" id="day-${i}" data-date="${esc(d.date)}" style="--qc:${cardCol}"${open ? " open" : ""}>
       <summary class="hd">
-        <span class="when${d.regime && d.regime.type ? " has-rx" : ""}"><span class="dn-l">${esc(L.long)}</span><span class="dn-s">${esc(L.short)}</span><small>${esc(L.date)}</small>${regimeHtml(d.regime)}</span>
+        <span class="when${d.regime && d.regime.type ? " has-rx" : ""}"><span class="dn-l">${esc(L.long)}</span><span class="dn-s">${esc(L.short)}</span><small>${esc(L.date)}</small>${regimeHtml(d.regime)}${rainPill(d)}</span>
         <span class="big" title="Best home site">${trendHtml(bm)}${r1(bm?.rating)}<small>/5</small></span>
         <span class="exp" aria-hidden="true"><i class="chev"></i></span>
         <span class="sum">${d.why ? `<span class="why">${esc(d.why)}</span>` : ""}${d.nws_rain ? `<span class="nwsr">NWS showers</span>` : ""}${daySummary(d, big, other)}${watchPill(d)}${mods ? `<span class="mods">${mods}</span>` : ""}</span>
@@ -650,7 +655,7 @@ function render(data) {
   $("#grid").innerHTML = `<div class="wk-h"><span></span>${big.map((s) => `<span>${esc(siteName(s))}</span>`).join("")}</div>` +
     data.days.map((d, i) => {
       const L = dayLabel(d.date);
-      const rg = d.regime && d.regime.type && RX[d.regime.type] ? `<span class="rx rx-${RX[d.regime.type][0]} sm">${esc(RX[d.regime.type][1])}</span>` : "";
+      const rg = (d.regime && d.regime.type && RX[d.regime.type] ? `<span class="rx rx-${RX[d.regime.type][0]} sm">${esc(RX[d.regime.type][1])}</span>` : "") + rainPill(d, true);
       const extra = other.filter((s) => d.sites[s.id]?.xc);
       const sub = [extra.length ? `also ${extra.map((s) => `<button type="button" class="wk-x" data-day="${i}" data-site="${s.id}">${esc(s.short)} ${r1(d.sites[s.id].rating)} <span class="xcmark">XC</span></button>`).join(" ")}` : "",
                    d.why ? `<span class="wk-why">${esc(d.why.toLowerCase())}</span>` : ""].filter(Boolean).join(" · ");
