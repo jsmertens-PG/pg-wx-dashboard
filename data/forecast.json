@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-27T03:06+00:00",
+ "generated": "2026-10-27T03:19+00:00",
  "sample": false,
  "calib": {
   "2026-10-26": {
@@ -13957,6 +13957,8 @@
  },
  "log": [
   "HRRR: ok (ncep_hrrr_conus)",
+  "RRFS: ncep_rrfs_conus surface fields empty, retrying",
+  "RRFS: ncep_rrfs_conus surface fields empty, retrying",
   "RRFS: ok (ncep_rrfs_conus)",
   "NAM: ok (ncep_nam_conus)",
   "GFS: ok (gfs_global)",
@@ -13976,7 +13978,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-10-27T01:00+00:00",
-   "fetched": "2026-10-27T02:53+00:00",
+   "fetched": "2026-10-27T03:06+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -13985,8 +13987,8 @@
    "provider": "Open-Meteo",
    "id": "ncep_rrfs_conus",
    "status": "ok",
-   "run": "2026-10-26T18:00+00:00",
-   "fetched": "2026-10-27T02:53+00:00",
+   "run": null,
+   "fetched": "2026-10-27T03:08+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -13996,7 +13998,7 @@
    "id": "ncep_nam_conus",
    "status": "ok",
    "run": "2026-10-27T00:00+00:00",
-   "fetched": "2026-10-27T02:53+00:00",
+   "fetched": "2026-10-27T03:08+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -14006,7 +14008,7 @@
    "id": "gfs_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-27T02:55+00:00",
+   "fetched": "2026-10-27T03:08+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -14016,7 +14018,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": "2026-10-26T18:00+00:00",
-   "fetched": "2026-10-27T02:55+00:00",
+   "fetched": "2026-10-27T03:10+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -14026,7 +14028,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-27T02:56+00:00",
+   "fetched": "2026-10-27T03:10+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -14036,7 +14038,7 @@
    "id": "gfs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-27T02:59+00:00",
+   "fetched": "2026-10-27T03:12+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -14046,7 +14048,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-27T03:02+00:00",
+   "fetched": "2026-10-27T03:16+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -14056,7 +14058,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-27T03:06+00:00",
+   "fetched": "2026-10-27T03:18+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -14066,7 +14068,7 @@
    "id": "esierra",
    "status": "ok",
    "run": "2026-10-26T12:00+00:00",
-   "fetched": "2026-10-27T03:06+00:00",
+   "fetched": "2026-10-27T03:18+00:00",
    "url": "https://www.soaringpredictor.info/E-Sierra/E-SierraPredictor.htm"
   },
   {
@@ -14076,7 +14078,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-10-27T00:09:00+00:00",
-   "fetched": "2026-10-27T03:06+00:00",
+   "fetched": "2026-10-27T03:18+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   }
  ],
@@ -17037,7 +17039,7 @@
      "xc": false,
      "rain_p": 0.05,
      "note": "thermals to 2,700 ft",
-     "p_fly": 0.97,
+     "p_fly": 0.98,
      "p_xc": 0.11,
      "agree": "agree",
      "models": {
@@ -18062,8 +18064,8 @@
      "xc": false,
      "rain_p": 0.5,
      "note": "gusty",
-     "p_fly": 0.11,
-     "p_xc": 0.0,
+     "p_fly": 0.14,
+     "p_xc": 0.01,
      "agree": "mixed",
      "models": {
       "GFS": 4.3,
@@ -18328,7 +18330,7 @@
      "xc": false,
      "rain_p": 0.58,
      "note": "gusty",
-     "p_fly": 0.07,
+     "p_fly": 0.09,
      "p_xc": 0.0,
      "agree": "mixed",
      "models": {
@@ -18839,7 +18841,7 @@
      "xc": false,
      "rain_p": 0.61,
      "note": "too light to soar",
-     "p_fly": 0.06,
+     "p_fly": 0.07,
      "p_xc": 0.02,
      "agree": "mixed",
      "models": {
@@ -18922,7 +18924,7 @@
      "rain_p": 0.54,
      "note": "thermals to 2,600 ft",
      "p_fly": 0.83,
-     "p_xc": 0.13,
+     "p_xc": 0.16,
      "agree": "split",
      "models": {
       "GFS": 4.3,
@@ -19006,8 +19008,8 @@
      "xc": false,
      "rain_p": 0.54,
      "note": "",
-     "p_fly": 0.43,
-     "p_xc": 0.0,
+     "p_fly": 0.48,
+     "p_xc": 0.01,
      "agree": "mixed",
      "models": {
       "GFS": 3.0,
@@ -19096,8 +19098,8 @@
      "xc": false,
      "rain_p": 0.55,
      "note": "low lid, 3,800 ft",
-     "p_fly": 0.07,
-     "p_xc": 0.01,
+     "p_fly": 0.1,
+     "p_xc": 0.02,
      "agree": "agree",
      "models": {
       "GFS": 2.5,
@@ -19190,8 +19192,8 @@
      "xc": false,
      "rain_p": 0.47,
      "note": "not flyable",
-     "p_fly": 0.41,
-     "p_xc": 0.0,
+     "p_fly": 0.43,
+     "p_xc": 0.01,
      "agree": "split",
      "models": {
       "GFS": 3.1,
@@ -20062,7 +20064,7 @@
      "xc": false,
      "rain_p": 0.45,
      "note": "not flyable",
-     "p_fly": 0.16,
+     "p_fly": 0.18,
      "p_xc": 0.02,
      "agree": "agree",
      "models": {
