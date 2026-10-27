@@ -61,6 +61,7 @@ HIRES = ("HRRR", "RRFS")
 GLOBAL = ("ECMWF", "GFS", "ICON")
 HIRES_W = {"HRRR": 2, "RRFS": 1}
 RAIN_P = 0.6                       # share of runs with rain at which a day is a no-go
+RAIN_STEP = [(0.3, 0.5), (0.45, 1.0)][::-1]  # below RAIN_P: 45%+ of runs wet costs a full step, 30%+ half a step
 CALIB_SITES = ("lb", "blossom", "elsinore", "owens")
 CORRIDOR_DBG = {}                  # per corridor point, midday: model ground and usable top (ft), for calibration
 
@@ -1504,6 +1505,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             wet = shower_p >= RAIN_P                    # it really rains: rock bottom
             if wet:
                 rating = 1.0
+            elif shower_p >= RAIN_STEP[-1][0]:          # a moist, showery day: a step down before the no-go
+                rating = max(1.0, rating - next(step for p0, step in RAIN_STEP if shower_p >= p0))
             off_season = bool(s.get("season_months")) and int(dstr[5:7]) not in s["season_months"]
             if off_season:
                 rating = min(rating, 2.0)
