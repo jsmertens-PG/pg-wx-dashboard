@@ -904,11 +904,23 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     rating, best_h, peak = 1.0, None, None
     xc_now = False
     switch_h, switch_tag = None, None
+    ridge_great = False
     if style == "ridge":
+        # Torrey: ridge soaring 2-3; a 4 is a great ridge day: a stronger, straight west wind that holds into
+        # dusk (but not a storm); a thermal day is a 5
         rating = 1.0 + 2.0 * clamp(local / 0.7)
+        lo_g, hi_g = site.get("great_ridge_mph", [11, site["wind_mph"][1]])
+        d0, d1 = site.get("great_ridge_dir", [255, 290])
+        def strong_w(sc):
+            return (sc["ld"] is not None and sc["lw"] is not None and wrap_in(sc["ld"], d0, d1)
+                    and lo_g <= sc["lw"] <= hi_g and (sc["lg"] is None or sc["lg"] <= site.get("gust_mph", 24))
+                    and sc["pr"] < 0.3 and sc["cape"] < 1000)
+        eve = [(h, sc) for h, sc in hours if h >= math.floor(sunset_h) - 3]
+        if rating >= 2.5 and len(eve) >= 2 and sum(1 for _, sc in eve if strong_w(sc)) >= 0.75 * len(eve) and strong_w(eve[-1][1]):
+            rating, ridge_great = 4.0, True
         if xc_day > 0:
             top_ft = (med("usable", blk) or 0) * FT
-            rating = 4.0 + clamp((top_ft - 1200) / 1300)
+            rating = 4.5 + 0.5 * clamp((top_ft - 1200) / 1300)
             xc_now = True
     else:
         def hour_r(sc, allow_xc):
@@ -1035,7 +1047,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     wind_1pm = wind_at([13, 12, 14])
     return {
         "top13": h13["usable_show"] if h13 else None,
-        "peak": peak_show, "best_h": best_h, "style": style, "switch_h": switch_h, "switch_tag": switch_tag,
+        "peak": peak_show, "ridge_great": ridge_great, "best_h": best_h, "style": style, "switch_h": switch_h, "switch_tag": switch_tag,
         "hrs": [(h, x["usable_show"]) for h, x in hours],
         "tw13": h13["tw"] if h13 else None,
         "wind_1pm": wind_1pm,
@@ -1534,6 +1546,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             elif label in ("Marginal", "No go") and rating >= 2.5:
                 label = "Ridge soaring" if ridge else ("Glass-off" if lead and lead["glass"] else "Thermal")
             tags = []
+            if ridge and lead and lead.get("ridge_great") and not xc:
+                tags.append("strong W into dusk")
             if drift and rating >= 2.5 and xb:
                 tags.append(s["xc_bad_aloft"].get("tag", "awkward drift"))
             if lead and lead.get("switch_tag") and (rating >= 2.5 or lead["switch_tag"] == "no launch window"):

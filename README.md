@@ -35,7 +35,7 @@ Ratings run **1–5**: 1 no go, 2 marginal, 3 a good local day or a nice glass-o
 
 - **window** (Little Black, Blossom, Otay): the best single hour inside the site's `window` (11 am–1 pm) decides. That is the short slot to get up and out before wind and stability kill it; the rest of the afternoon doesn't count against the day. Glass-off is rated on its own (3 for a good one) and the better of the two counts.
 - **convergence** (Elsinore, Laguna/Horse): XC only. Without convergence (real on-launch flow, nothing bad aloft, lift above `xc_top_ft`) the rating caps at 2.
-- **ridge** (Torrey): 2–3 for ridge soaring, 4–5 on a thermal day (cold air aloft, lift to 1,200 ft and more).
+- **ridge** (Torrey): 2–3 for ridge soaring, 4 on a great ridge day (a stronger, straight west wind, about 11–20 mph from 255–290°, holding into dusk, no storm or big gusts; `great_ridge_mph`, `great_ridge_dir`), 5 on a thermal day (cold air aloft, lift to 1,200 ft and more).
 - **thermal** (Marshall, Santa Barbara, Soboba): the best two hours inside the site's window (Soboba 1–4 pm).
 
 Heights map onto the scale through each site's ceilings: `ok_ft` is 3, `xc_top_ft` is 4, `xc_top_ft + xc_span_ft` is 5. An hour also needs a usable launch wind (gusts over `gust_mph` hurt), no rain, and acceptable wind aloft; without real XC conditions an hour can't score above 3.5.
@@ -46,7 +46,7 @@ While HRRR covers a day, HRRR ×2 and RRFS ×1 set the rating (weighted mean, `H
 
 ## Tuning
 
-`sites.json` holds every launch's coordinates, elevation, wind window, limits and three ceilings (MSL) that scale the height bars: `ok_ft` (a decent local day, half bar), `xc_top_ft` (XC starts, three-quarter bar) and `xc_top_ft + xc_span_ft` (a great XC day, full bar). For example Little Black 2,500 / 3,000 / 4,500 ft, Elsinore 5,000 / 7,000 / 10,000 ft, Laguna/Horse 7,000 / 10,000 / 12,000 ft. `gust_mph` (15 inland, 24 at Torrey) is where gusts start to cost; 5 mph above it is close to a no-go. **The values are starting estimates. Check the coordinates and elevations against the SDHGPA guide and your tracks.** The quickest improvement after that is comparing the radar with days you actually flew, then adjusting the limits.
+`sites.json` holds every launch's coordinates, elevation, wind window, limits and three ceilings (MSL) that scale the height bars: `ok_ft` (a decent local day, half bar), `xc_top_ft` (XC starts, three-quarter bar) and `xc_top_ft + xc_span_ft` (a great XC day, full bar). They are on the top-of-usable-lift scale XC Skies shows, e.g. Little Black 1,800 / 2,300 / 3,500 ft and Blossom 2,500 / 3,500 / 4,500 ft. `gust_mph` (15 inland, 24 at Torrey) is where gusts start to cost; 5 mph above it is close to a no-go. **The values are starting estimates. Check the coordinates and elevations against the SDHGPA guide and your tracks.** The quickest improvement after that is comparing the radar with days you actually flew, then adjusting the limits.
 
 Run locally:
 
