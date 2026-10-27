@@ -210,7 +210,19 @@
         "nick": 0.3,
         "tag": "NW drift",
         "why": "NW or clearly WNW drift pushes an XC toward the Rock Pile"
-      }
+      },
+      "height_points": [
+        {
+          "name": "Blossom launch",
+          "lat": 32.87661,
+          "lon": -116.84838
+        },
+        {
+          "name": "El Cajon Mountain peak",
+          "lat": 32.914825,
+          "lon": -116.820044
+        }
+      ]
     },
     {
       "id": "elsinore",
