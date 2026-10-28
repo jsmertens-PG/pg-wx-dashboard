@@ -23,7 +23,7 @@
    Same paper/ink look as the PG logbook; colour is reserved for day quality (1-5) and the day type. */
 :root {
   --bg: #ffffff; --surface: #ffffff; --sunk: #f3f4f3; --ink: #0b0b0b; --muted: #676d69; --line: #e2e4e2;
-  --q0: #c8412f; --q1: #f2c40f; --q2: #9ccf3f; --q3: #3a9d57; --q4: #1a7a45; --q5: #0d5a44;
+  --q0: #c8412f; --q1: #df8a17; --q2: #9ccf3f; --q3: #3a9d57; --q4: #1a7a45; --q5: #0d5a44;
   --font-display: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
   --font-body: "Work Sans", "Helvetica Neue", Arial, sans-serif;
   --font-data: "JetBrains Mono", ui-monospace, Menlo, monospace;
@@ -31,10 +31,10 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) { --bg: #000; --surface: #080908; --sunk: #121412; --ink: #f1f2f1; --muted: #8e958f; --line: #252826;
-    --q0: #ec5f4c; --q1: #ffd23f; --q2: #a8e04e; --q3: #4fc072; --q4: #2fa864; --q5: #2bd19a; color-scheme: dark; }
+    --q0: #ec5f4c; --q1: #f2a33a; --q2: #a8e04e; --q3: #4fc072; --q4: #2fa864; --q5: #2bd19a; color-scheme: dark; }
 }
 :root[data-theme="dark"] { --bg: #000; --surface: #080908; --sunk: #121412; --ink: #f1f2f1; --muted: #8e958f; --line: #252826;
-  --q0: #ec5f4c; --q1: #ffd23f; --q2: #a8e04e; --q3: #4fc072; --q4: #2fa864; --q5: #2bd19a; color-scheme: dark; }
+  --q0: #ec5f4c; --q1: #f2a33a; --q2: #a8e04e; --q3: #4fc072; --q4: #2fa864; --q5: #2bd19a; color-scheme: dark; }
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -341,7 +341,7 @@ details.day:not([open]) > .mods-b { display: none; }
 /* glossy is always light, with the rating colours at full strength */
 :root[data-skin="glossy"], :root[data-skin="glossy"][data-theme="dark"], :root[data-skin="glossy"]:not([data-theme="light"]) {
   --bg: #f4f6f8; --surface: #ffffff; --sunk: #eceff2; --ink: #0b0b0b; --muted: #5f6670; --line: #e1e5ea; color-scheme: light;
-  --q0: #d9412b; --q1: #f2c40f; --q2: #9ccf3f; --q3: #3a9d57; --q4: #16864a; --q5: #0b6b4c; }
+  --q0: #d9412b; --q1: #ef8a12; --q2: #9ccf3f; --q3: #3a9d57; --q4: #16864a; --q5: #0b6b4c; }
 :root[data-skin="glossy"] body { background: var(--gl-page); background-attachment: fixed; }
 :root[data-skin="glossy"] body::before { background: transparent; }
 :root[data-skin="glossy"] .day { border: 0; border-radius: 22px; overflow: hidden;
@@ -395,7 +395,7 @@ details.day:not([open]) > .mods-b { display: none; }
 
 /* glossy: livelier rating colours */
 :root[data-skin="glossy"], :root[data-skin="glossy"][data-theme="dark"], :root[data-skin="glossy"]:not([data-theme="light"]) {
-  --q0: #ef3b2c; --q1: #f2c40f; --q2: #9ccf3f; --q3: #2fb35a; --q4: #0f9d58; --q5: #00795a; }
+  --q0: #ef3b2c; --q1: #ff8c00; --q2: #9ccf3f; --q3: #2fb35a; --q4: #0f9d58; --q5: #00795a; }
 :root[data-skin="glossy"] .day > .hd { background: linear-gradient(180deg, color-mix(in srgb, var(--qc) 66%, var(--surface)), color-mix(in srgb, var(--qc) 44%, var(--surface))); }
 :root[data-skin="glossy"] .srow, :root[data-skin="glossy"] .srow.coast { background: linear-gradient(180deg, color-mix(in srgb, var(--rc) 30%, var(--surface)), color-mix(in srgb, var(--rc) 52%, var(--surface))); }
 :root[data-skin="glossy"] .sc { background: linear-gradient(180deg, color-mix(in srgb, var(--rc) 48%, var(--surface)), color-mix(in srgb, var(--rc) 72%, var(--surface))); }
@@ -417,7 +417,7 @@ details.day:not([open]) > .mods-b { display: none; }
 
 /* ---------- glossy, dark ---------- */
 :root[data-skin="glossy"][data-theme="dark"] { --bg: #0d1013; --surface: #171b20; --sunk: #20252b; --ink: #eef1f4; --muted: #9aa3ad; --line: #2b3139; color-scheme: dark;
-  --q0: #ff5a4a; --q1: #ffd23f; --q2: #a8e04e; --q3: #3fcf73; --q4: #22b86a; --q5: #18a57c;
+  --q0: #ff5a4a; --q1: #ffa024; --q2: #a8e04e; --q3: #3fcf73; --q4: #22b86a; --q5: #18a57c;
   --gl-hl: rgba(255,255,255,.08); --gl-hl2: rgba(255,255,255,.05); --gl-sh: rgba(0,0,0,.7); --gl-sh2: rgba(0,0,0,.5);
   --gl-page: linear-gradient(180deg, #0b0e11, #12161a 40%, #0b0e11); }
 :root[data-skin="glossy"][data-theme="dark"] .day, :root[data-skin="glossy"][data-theme="dark"] .wk { box-shadow: 0 0 0 1px rgba(255,255,255,.09), inset 0 1px 0 var(--gl-hl), 0 18px 40px -16px rgba(0,0,0,.8); }
@@ -438,7 +438,7 @@ details.day:not([open]) > .mods-b { display: none; }
 :root[data-skin="glossy"][data-theme="dark"] .bar, :root[data-skin="glossy"][data-theme="dark"] .factor .fbar { background: #2a3038; }
 @media (prefers-color-scheme: dark) {
 :root[data-skin="glossy"]:not([data-theme="light"]) { --bg: #0d1013; --surface: #171b20; --sunk: #20252b; --ink: #eef1f4; --muted: #9aa3ad; --line: #2b3139; color-scheme: dark;
-  --q0: #ff5a4a; --q1: #ffd23f; --q2: #a8e04e; --q3: #3fcf73; --q4: #22b86a; --q5: #18a57c;
+  --q0: #ff5a4a; --q1: #ffa024; --q2: #a8e04e; --q3: #3fcf73; --q4: #22b86a; --q5: #18a57c;
   --gl-hl: rgba(255,255,255,.08); --gl-hl2: rgba(255,255,255,.05); --gl-sh: rgba(0,0,0,.7); --gl-sh2: rgba(0,0,0,.5);
   --gl-page: linear-gradient(180deg, #0b0e11, #12161a 40%, #0b0e11); }
 :root[data-skin="glossy"]:not([data-theme="light"]) .day, :root[data-skin="glossy"]:not([data-theme="light"]) .wk { box-shadow: 0 0 0 1px rgba(255,255,255,.09), inset 0 1px 0 var(--gl-hl), 0 18px 40px -16px rgba(0,0,0,.8); }
@@ -560,7 +560,12 @@ const qgrad = (r) => {
   if (r == null) return "var(--q0)";
   const x = Math.max(1, Math.min(5, r)), lo = Math.floor(x), hi = Math.ceil(x);
   if (lo === hi) return `var(${QSTOP[lo]})`;
-  return `color-mix(in srgb, var(${QSTOP[lo]}) ${Math.round((hi - x) * 100)}%, var(${QSTOP[hi]}))`;
+  // the colour follows the number shown: it holds a level's colour and blends into the next one
+  // just before the number rounds up (x.2-x.5), so anything shown as a 3 is clearly yellow-green
+  const t = Math.max(0, Math.min(1, (x - lo - 0.2) / 0.3));
+  if (t === 0) return `var(${QSTOP[lo]})`;
+  if (t === 1) return `var(${QSTOP[hi]})`;
+  return `color-mix(in srgb, var(${QSTOP[lo]}) ${Math.round((1 - t) * 100)}%, var(${QSTOP[hi]}))`;
 };
 const qv = (r) => qgrad(r);                      // one colour scheme everywhere: blended by the exact rating
 const ft = (v) => (v == null ? "–" : (Math.round(v / 100) * 100).toLocaleString());
