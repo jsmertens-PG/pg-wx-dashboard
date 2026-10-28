@@ -465,6 +465,9 @@ details.day:not([open]) > .mods-b { display: none; }
 .sc-bar { display: block; height: 4px; border-radius: 2px; background: color-mix(in srgb, var(--ink) 16%, var(--surface)); overflow: hidden; box-shadow: inset 0 0 0 .5px color-mix(in srgb, var(--ink) 25%, transparent); }
 .sc-bar i { display: block; height: 100%; border-radius: 2px; background: color-mix(in srgb, var(--rc) 80%, #000); }
 :root[data-skin="glossy"] .sc-bar i { background-image: linear-gradient(180deg, rgba(255,255,255,.4), rgba(255,255,255,0) 70%); }
+
+footer .btnlink { font-size: .8rem; min-height: 30px; padding: 3px 10px; border: 1px solid var(--line); border-radius: 5px; background: var(--surface); color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; }
+:root[data-skin="glossy"] footer .btnlink { border: 0; background: linear-gradient(180deg, var(--surface), color-mix(in srgb, var(--ink) 7%, var(--surface))); box-shadow: inset 0 1px 0 var(--gl-hl), 0 1px 2px var(--gl-sh2), 0 3px 8px -3px var(--gl-sh); }
 </style>
 </head>
 <body>
@@ -522,6 +525,7 @@ details.day:not([open]) > .mods-b { display: none; }
   <footer>
     <span id="foot"></span>
     <button type="button" id="archBtn" title="Every past day as the radar forecast it that day">Archive</button>
+    <a id="runNow" class="btnlink" href="#" target="_blank" rel="noopener" hidden title="Opens GitHub, where you press Run workflow">Update forecast</a>
     <span class="presets" id="theme">
       <button type="button" data-t="auto">Auto</button>
       <button type="button" data-t="light">Light</button>
@@ -874,6 +878,11 @@ let y0 = null;
 $("#sheet").addEventListener("touchstart", (e) => { y0 = $("#sheet").scrollTop <= 0 ? e.touches[0].clientY : null; }, { passive: true });
 $("#sheet").addEventListener("touchend", (e) => { if (y0 != null && e.changedTouches[0].clientY - y0 > 70) closeSheet(); y0 = null; }, { passive: true });
 
+/* "Update forecast" opens the workflow page of this repo (works on <user>.github.io/<repo>/) */
+if (location.hostname.endsWith(".github.io")) {
+  const user = location.hostname.split(".")[0], repo = location.pathname.split("/").filter(Boolean)[0];
+  if (user && repo) { const a = $("#runNow"); a.href = `https://github.com/${user}/${repo}/actions/workflows/forecast.yml`; a.hidden = false; }
+}
 let lastGen = null;
 function load() {
   const btn = $("#reload");
