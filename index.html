@@ -539,6 +539,14 @@ const ago = (iso) => {
   return m < 60 ? `${m} min ago` : m < 2880 ? `${Math.round(m / 60)} h ago` : `${Math.round(m / 1440)} days ago`;
 };
 const q = (r) => [0, 0, 1, 2, 4, 5][Math.max(1, Math.min(5, Math.round(r)))];   // same colour as the number shown
+/* continuous colour for a rating: blends between the 1-5 colours, so a 3.4 sits between 3 and 4 */
+const QSTOP = { 1: "--q0", 2: "--q1", 3: "--q2", 4: "--q4", 5: "--q5" };
+const qgrad = (r) => {
+  if (r == null) return "var(--q0)";
+  const x = Math.max(1, Math.min(5, r)), lo = Math.floor(x), hi = Math.ceil(x);
+  if (lo === hi) return `var(${QSTOP[lo]})`;
+  return `color-mix(in srgb, var(${QSTOP[lo]}) ${Math.round((hi - x) * 100)}%, var(${QSTOP[hi]}))`;
+};
 const qv = (r) => `var(--q${q(r)})`;
 const ft = (v) => (v == null ? "–" : (Math.round(v / 100) * 100).toLocaleString());
 const pct = (p) => (p == null ? "–" : `${Math.round(p * 100)}%`);
@@ -735,7 +743,7 @@ function daySummary(d, big, other) {
   if (!good.length) return `<span class="sx">no site at 3 or better</span>`;
   return good.map((s) => {
     const c = d.sites[s.id];
-    return `<span class="sc" style="--rc:${qv(c.rating)}"><span class="sc-t"><b>${esc(siteName(s))}</b> ${r1(c.rating)}${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span><span class="sc-bar"><i style="width:${Math.max(6, Math.min(100, c.rating * 20))}%"></i></span></span>`;
+    return `<span class="sc" style="--rc:${qgrad(c.rating)}"><span class="sc-t"><b>${esc(siteName(s))}</b> ${r1(c.rating)}${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span><span class="sc-bar"><i style="width:${Math.max(6, Math.min(100, c.rating * 20))}%"></i></span></span>`;
   }).join("");
 }
 let openDays = new Set();
