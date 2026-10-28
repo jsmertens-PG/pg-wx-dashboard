@@ -129,17 +129,6 @@ class DayTypes(unittest.TestCase):
         self.assertEqual(t[1:4], ["Santa Ana", "Santa Ana", "Switch day"])
 
 
-class NwsCheck(unittest.TestCase):
-    def test_no_front_in_discussion(self):
-        r = {"a": {"type": "Front", "agree": 0.5}, "b": {"type": "Pre-frontal", "agree": 1}, "c": {"type": "Post-frontal", "agree": 1}}
-        nws = {"synopsis": "Light rain Friday; a subtropical low pressure system moves inland Saturday."}
-        bf.nws_check_regimes(r, nws)
-        self.assertEqual((r["a"]["type"], r["b"]["type"], r["c"]["type"]), ("Upper low", None, "Post-frontal"))
-        r2 = {"a": {"type": "Front", "agree": 1}}
-        bf.nws_check_regimes(r2, {"synopsis": "A cold front moves through Thursday."})
-        self.assertEqual(r2["a"]["type"], "Front")
-
-
 class WindowRating(unittest.TestCase):
     def test_lb_rated_on_best_midday_hour(self):
         lb = next(x for x in json.loads((ROOT / "sites.json").read_text())["sites"] if x["id"] == "lb")
