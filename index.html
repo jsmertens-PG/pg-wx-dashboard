@@ -220,6 +220,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .rx.sm { font-size: .6rem; padding: 0 5px; letter-spacing: .04em; }
 .rx-front { --rxc: #34508f; } .rx-pre { --rxc: #6b7899; } .rx-post { --rxc: #11827f; }
 .rx-sa { --rxc: #d2691e; } .rx-rain { --rxc: #2f6fb3; }
+.rx.rx-soft { background: transparent !important; color: #2f6fb3; box-shadow: inset 0 0 0 1.5px #2f6fb3 !important; }
 .day > .hd .when .rx + .rx { margin-left: 5px; }
 .wk-d .rx.sm + .rx.sm { margin-top: 2px; } .rx-switch { --rxc: #b8860b; }
 .day .when .rx { margin-left: 10px; }
@@ -562,8 +563,14 @@ const trendHtml = (c) => {
   return `<span class="trend ${up ? "up" : "down"}" title="was ${was} in the forecast ${up ? "earlier" : "earlier"}">${up ? "▲" : "▼"}<small>${was}</small></span>`;
 };
 /* rain across the San Diego sites: a pill on the day from 50% of runs wet */
-const rainPill = (d, small) => (d.rain_p != null && d.rain_p >= 0.5
-  ? `<span class="rx rx-rain${small ? " sm" : ""}" title="share of model runs with rain at Torrey, Little Black, Blossom and Elsinore">Rain ${Math.round(d.rain_p * 100)}%</span>` : "");
+/* one rain pill per day: the models' share of wet runs (50%+ across the SD sites) and/or the NWS naming showers */
+const rainPill = (d, small) => {
+  const wet = d.rain_p != null && d.rain_p >= 0.5;
+  if (!wet && !d.nws_rain) return "";
+  const txt = wet ? `Rain ${Math.round(d.rain_p * 100)}%${d.nws_rain ? " · NWS" : ""}` : "Showers · NWS";
+  const tip = [wet && "share of model runs with rain at Torrey, Little Black, Blossom and Elsinore", d.nws_rain && "the NWS discussion mentions showers this day"].filter(Boolean).join("; ");
+  return `<span class="rx rx-rain${small ? " sm" : ""}${wet ? "" : " rx-soft"}" title="${esc(tip)}">${esc(txt)}</span>`;
+};
 const regimeHtml = (rg, small) => {
   if (!rg || !rg.type || !RX[rg.type]) return "";
   const pctTxt = rg.agree != null && rg.agree < 0.995 ? `${Math.round(rg.agree * 100)}%` : "";   // share of models that agree
@@ -662,9 +669,8 @@ function render(data) {
         <span class="when${d.regime && d.regime.type ? " has-rx" : ""}"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small>${regimeHtml(d.regime)}${rainPill(d)}</span>
         <span class="big" title="Best home site">${trendHtml(bm)}${r1(bm?.rating)}<small>/5</small></span>
         <span class="exp" aria-hidden="true"><i class="chev"></i></span>
-        <span class="sum">${d.why ? `<span class="why">${esc(d.why)}</span>` : ""}${d.nws_rain ? `<span class="nwsr">NWS showers</span>` : ""}${daySummary(d, big, other)}${watchPill(d)}${mods ? `<span class="mods">${mods}</span>` : ""}</span>
+        <span class="sum">${d.why ? `<span class="why">${esc(d.why)}</span>` : ""}${daySummary(d, big, other)}${watchPill(d)}${mods ? `<span class="mods">${mods}</span>` : ""}</span>
       </summary>
-      ${d.nws_rain ? `<div class="nwsrow">NWS: showers possible this day</div>` : ""}
       ${d._flown && d._flown.length ? `<div class="flown"><b>Flown:</b> ${d._flown.map((f) => esc(f)).join(" · ")}</div>` : ""}
       <div class="list">
         ${big.map((s) => siteRow(d, s, i, "")).join("")}
