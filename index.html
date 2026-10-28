@@ -811,6 +811,7 @@ let ARCH = false;
 const showArchive = (on) => {
   ARCH = on;
   $("#arch").hidden = !on;
+  $("#story").hidden = on;                       // the weather overview is about the days ahead
   $("#days").hidden = on || VIEW === "grid"; $("#grid").hidden = on || VIEW !== "grid";
   $("#archBtn").textContent = on ? "Forecast" : "Archive";
   $("#viewBtn").hidden = on;
