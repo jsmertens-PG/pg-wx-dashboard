@@ -455,6 +455,13 @@ details.day:not([open]) > .mods-b { display: none; }
 :root[data-skin="glossy"]:not([data-theme="light"]) .xcmark { background: #eef1f4; color: #0d1013; }
 :root[data-skin="glossy"]:not([data-theme="light"]) .bar, :root[data-skin="glossy"]:not([data-theme="light"]) .factor .fbar { background: #2a3038; }
 }
+
+/* chip with a small rating bar under the name */
+.sc { flex-direction: column; align-items: stretch; gap: 3px; padding-bottom: 4px; }
+.sc-t { display: inline-flex; align-items: center; gap: 4px; }
+.sc-bar { display: block; height: 4px; border-radius: 2px; background: color-mix(in srgb, var(--ink) 16%, var(--surface)); overflow: hidden; box-shadow: inset 0 0 0 .5px color-mix(in srgb, var(--ink) 25%, transparent); }
+.sc-bar i { display: block; height: 100%; border-radius: 2px; background: color-mix(in srgb, var(--rc) 80%, #000); }
+:root[data-skin="glossy"] .sc-bar i { background-image: linear-gradient(180deg, rgba(255,255,255,.4), rgba(255,255,255,0) 70%); }
 </style>
 </head>
 <body>
@@ -728,7 +735,7 @@ function daySummary(d, big, other) {
   if (!good.length) return `<span class="sx">no site at 3 or better</span>`;
   return good.map((s) => {
     const c = d.sites[s.id];
-    return `<span class="sc" style="--rc:${qv(c.rating)}"><b>${esc(siteName(s))}</b> ${r1(c.rating)}${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span>`;
+    return `<span class="sc" style="--rc:${qv(c.rating)}"><span class="sc-t"><b>${esc(siteName(s))}</b> ${r1(c.rating)}${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span><span class="sc-bar"><i style="width:${Math.max(6, Math.min(100, c.rating * 20))}%"></i></span></span>`;
   }).join("");
 }
 let openDays = new Set();
