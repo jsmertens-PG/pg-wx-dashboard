@@ -276,10 +276,10 @@ details.day > summary.hd .when .rx { flex: 0 1 auto; min-width: 0; overflow: hid
 .rx-s { display: none; }
 @media (max-width: 640px) { details.day > summary.hd .rx { letter-spacing: .02em; font-size: .56rem; padding: 2px 6px; } }
 .dn-s { display: none; }
-.day > .hd .when small.rel { font-size: .68rem; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-left: 6px; }
+.day > .hd .when small.rel { font-size: .8rem; font-weight: 500; color: var(--ink); margin-left: 5px; }
 .day > .hd .when small.rel + small { margin-left: 5px; }
 @media (max-width: 430px) { details.day > summary.hd .when.has-rx small.rel + small { display: none; } }
-.wk-d small.rel { font-size: .56rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); display: block; }
+.wk-d small.rel { font-size: .7rem; font-weight: 500; color: var(--ink); }
 @media (max-width: 430px) { details.day > summary.hd .when.has-rx .dn-l { display: none; } details.day > summary.hd .when.has-rx .dn-s { display: inline; } }
 .day > .hd .sum .why { margin: 0 4px 0 0; font-size: .66rem; }
 /* which models fed the day's ratings, bottom right of each card */
@@ -565,7 +565,7 @@ function dayLabel(dstr) {
   const now = new Date(new Date().toLocaleString("en-US", { timeZone: TZ }));
   const diff = Math.round((new Date(dstr + "T00:00:00") - new Date(now.toDateString())) / 86400000);
   /* always the weekday; "today" / "tomorrow" ride along small */
-  const rel = diff === 0 ? "today" : diff === 1 ? "tomorrow" : "";
+  const rel = diff === 0 ? "today" : "";
   return { long: d.toLocaleDateString("en-US", { weekday: "long" }), short: d.toLocaleDateString("en-US", { weekday: "short" }), rel,
            date: d.toLocaleDateString("en-US", { month: "short", day: "numeric" }) };
 }
@@ -638,7 +638,7 @@ function render(data) {
     const mods = dayModels(d);
     return `<details class="day" id="day-${i}" data-date="${esc(d.date)}" style="--qc:${cardCol}"${open ? " open" : ""}>
       <summary class="hd">
-        <span class="when${d.regime && d.regime.type ? " has-rx" : ""}"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">${esc(L.rel)}</small>` : ""}<small>${esc(L.date)}</small>${regimeHtml(d.regime)}${rainPill(d)}</span>
+        <span class="when${d.regime && d.regime.type ? " has-rx" : ""}"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small>${regimeHtml(d.regime)}${rainPill(d)}</span>
         <span class="big" title="Best home site">${trendHtml(bm)}${r1(bm?.rating)}<small>/5</small></span>
         <span class="exp" aria-hidden="true"><i class="chev"></i></span>
         <span class="sum">${d.why ? `<span class="why">${esc(d.why)}</span>` : ""}${d.nws_rain ? `<span class="nwsr">NWS showers</span>` : ""}${daySummary(d, big, other)}${watchPill(d)}${mods ? `<span class="mods">${mods}</span>` : ""}</span>
@@ -665,7 +665,7 @@ function render(data) {
       const sub = [extra.length ? `also ${extra.map((s) => `<button type="button" class="wk-x" data-day="${i}" data-site="${s.id}">${esc(s.short)} ${r1(d.sites[s.id].rating)} <span class="xcmark">XC</span></button>`).join(" ")}` : "",
                    d.why ? `<span class="wk-why">${esc(d.why.toLowerCase())}</span>` : ""].filter(Boolean).join(" · ");
       return `<div class="wk-r">
-        <button type="button" class="wk-d" data-day="${i}"><b>${esc(L.short)}${L.rel ? ` <small class="rel">${esc(L.rel)}</small>` : ""}</b><small>${esc(L.date)}</small>${rg}</button>
+        <button type="button" class="wk-d" data-day="${i}"><b>${esc(L.short)}${L.rel ? ` <small class="rel">(${esc(L.rel)})</small>` : ""}</b><small>${esc(L.date)}</small>${rg}</button>
         ${big.map((s) => {
           const c = d.sites[s.id];
           if (!c) return `<span class="wk-c empty">–</span>`;
