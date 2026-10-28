@@ -1764,12 +1764,13 @@ OVERVIEW_KEYS = [("santa ana", "Santa Ana"), ("offshore", "offshore"), ("onshore
                  ("marine layer", "marine layer"), ("upper level low", "upper low"), ("upper low", "upper low"),
                  ("trough", "trough"), ("high pressure", "high pressure"), ("ridge", "ridge"), ("front", "front"),
                  ("thunderstorm", "storms"), ("shower", "showers"), ("rain", "rain"), ("cooler", "cooler"),
-                 ("warmer", "warmer"), ("warming", "warmer")]
+                 ("warmer", "warmer"), ("warming", "warming"), ("cooling", "cooling"), ("zonal flow", "zonal flow"),
+                 ("low pressure", "low pressure"), ("clouds", "clouds"), ("fog", "fog"), ("gusty", "gusty winds")]
 DAY_NAMES = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
 
 
 def week_overview(sites, days, nws, today=None):
-    """Folded weather line: the pattern now and over the next 1-2 days, then the flying numbers for those days."""
+    """Folded weather line: the weather pattern now and over the next 1-2 days, no scores."""
     if not days:
         return ""
     today = today or date.fromisoformat(days[0]["date"])
@@ -1787,7 +1788,7 @@ def week_overview(sites, days, nws, today=None):
         if re.search(r"\b(this morning|today|currently|now|this afternoon)\b", low):
             when = 0
         elif "tonight" in low:
-            when = 0
+            when = -1                                  # tonight: shown as "tonight"
         elif "tomorrow" in low:
             when = 1
         else:
@@ -1799,20 +1800,24 @@ def week_overview(sites, days, nws, today=None):
             continue                                   # no day and not the opening statement: skip
         if when is not None and when > 2:
             continue
+        through = when is not None and when > 0 and re.search(r"\b(through|until|into)\s+" + DAY_NAMES[(today.weekday() + when) % 7], low)
         weak = "weak " if re.search(r"\bweak(ly)?\b", low) and name in ("offshore", "onshore") else ""
-        tag = "now" if not when else WEEKDAYS[(today.weekday() + when) % 7]
+        tag = ("tonight" if when == -1 else "now" if not when
+               else ("through " if through else "") + WEEKDAYS[(today.weekday() + when) % 7])
         phrases.append(f"{weak}{name} {tag}")
         seen.add(name)
         if len(phrases) == 3:
             break
-    main = [s["id"] for s in sites if s.get("tier") == "main"]
-    nums = []
+    # the radar's own day types for today and the next two days fill in the pattern trend
     for k, d in enumerate(days[:3]):
-        best = max((d["sites"][m]["rating"] for m in main if m in d["sites"]), default=1)
-        lab = "today" if k == 0 else WEEKDAYS[date.fromisoformat(d["date"]).weekday()]
-        xc = any(d["sites"].get(m, {}).get("xc") for m in main)
-        nums.append(f"{lab} {max(1, min(5, int(best + 0.5)))}{' XC' if xc else ''}")
-    line = " · ".join(phrases + ["flying " + ", ".join(nums)])
+        t = (d.get("regime") or {}).get("type")
+        if t and t.lower() not in seen and len(phrases) < 4:
+            phrases.append(f"{t.lower()} {'now' if k == 0 else WEEKDAYS[date.fromisoformat(d['date']).weekday()]}")
+            seen.add(t.lower())
+    if not phrases:                                # nothing keyword-worthy: the NWS pattern's first line
+        first = (((nws or {}).get("summary") or {}).get("pattern") or [""])[0]
+        phrases = [first] if first else []
+    line = " · ".join(phrases)
     return line[:1].upper() + line[1:]
 
 
