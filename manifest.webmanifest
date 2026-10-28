@@ -1,6 +1,6 @@
 {
   "name": "SoCal Flying Radar",
-  "short_name": "Flying Radar",
+  "short_name": "SoCal Radar",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
