@@ -472,7 +472,6 @@ details.day:not([open]) > .mods-b { display: none; }
     <div class="fresh">
       <span id="fresh"></span>
       <button type="button" id="archBtn" title="Past days as they were forecast">Archive</button>
-      <button type="button" id="viewBtn" title="Switch between the week grid and the day cards">Grid</button>
       <button type="button" id="reload">Reload</button>
       <a id="runNow" href="#" target="_blank" rel="noopener" hidden title="Opens GitHub, where you press Run workflow">Update</a>
     </div>
@@ -483,7 +482,6 @@ details.day:not([open]) > .mods-b { display: none; }
 
 
   <div class="days" id="days"><div class="empty">Loading forecast…</div></div>
-  <section class="wk" id="grid" aria-label="Week grid" hidden></section>
   <section class="days" id="arch" aria-label="Archive" hidden></section>
 
   <details class="fold" id="sources">
@@ -683,28 +681,7 @@ function render(data) {
   CARD = cardFor;
   $("#days").innerHTML = data.days.map((d, i) => cardFor(d, i)).join("") || '<div class="empty">No forecast days in the data.</div>';
 
-  /* week grid: one row per day, one tile per site, details in a sheet */
   DATA = data;
-  const gcols = big.length;
-  $("#grid").style.setProperty("--cols", gcols);
-  $("#grid").innerHTML = `<div class="wk-h"><span></span>${big.map((s) => `<span>${esc(siteName(s))}</span>`).join("")}</div>` +
-    data.days.map((d, i) => {
-      const L = dayLabel(d.date);
-      const rg = (d.regime && d.regime.type && RX[d.regime.type] ? `<span class="rx rx-${RX[d.regime.type][0]} sm">${esc(RX[d.regime.type][1])}</span>` : "") + rainPill(d, true);
-      const extra = other.filter((s) => d.sites[s.id]?.xc);
-      const sub = [extra.length ? `also ${extra.map((s) => `<button type="button" class="wk-x" data-day="${i}" data-site="${s.id}">${esc(s.short)} ${r1(d.sites[s.id].rating)} <span class="xcmark">XC</span></button>`).join(" ")}` : "",
-                   d.why ? `<span class="wk-why">${esc(d.why.toLowerCase())}</span>` : ""].filter(Boolean).join(" · ");
-      return `<div class="wk-r">
-        <button type="button" class="wk-d" data-day="${i}"><b>${esc(L.short)}${L.rel ? ` <small class="rel">(${esc(L.rel)})</small>` : ""}</b><small>${esc(L.date)}</small>${rg}</button>
-        ${big.map((s) => {
-          const c = d.sites[s.id];
-          if (!c) return `<span class="wk-c empty">–</span>`;
-          return `<button type="button" class="wk-c" style="--rc:${qv(c.rating)}" data-day="${i}" data-site="${s.id}" aria-label="${esc(s.name)} ${r1(c.rating)} ${esc(c.label)}">
-            <b>${r1(c.rating)}</b>${c.xc ? '<span class="xcmark">XC</span>' : ""}${trendHtml(c).replace(/<small>.*?<\/small>/, "")}</button>`;
-        }).join("")}
-        ${sub ? `<div class="wk-s">${sub}</div>` : ""}
-      </div>`;
-    }).join("");
 
   $("#days").onclick = $("#arch").onclick = (e) => {
     const b = e.target.closest("[data-site]"); if (!b) return;
@@ -833,21 +810,13 @@ const showArchive = (on) => {
   ARCH = on;
   $("#arch").hidden = !on;
   $("#story").hidden = on;                       // the weather overview is about the days ahead
-  $("#days").hidden = on || VIEW === "grid"; $("#grid").hidden = on || VIEW !== "grid";
+  $("#days").hidden = on;
   $("#archBtn").textContent = on ? "Forecast" : "Archive";
-  $("#viewBtn").hidden = on;
   if (on) loadArchive();
 };
 $("#archBtn").addEventListener("click", () => showArchive(!ARCH));
 
-/* week grid interactions */
 let DATA = null;
-$("#grid").addEventListener("click", (e) => {
-  const c = e.target.closest("[data-site]");
-  if (c) { openSheet(DATA.days[c.dataset.day], BY[c.dataset.site]); return; }
-  const d = e.target.closest(".wk-d");
-  if (d) openDaySheet(DATA.days[d.dataset.day]);
-});
 function openDaySheet(d) {
   const L = dayLabel(d.date);
   sheetFrom = document.activeElement;
@@ -866,14 +835,7 @@ function openDaySheet(d) {
   };
   $("#scrim").hidden = false; $("#sheet").hidden = false; $("#sheet").scrollTop = 0;
 }
-const setView = (v) => {
-  try { localStorage.setItem("radar-view", v); } catch (e) {}
-  $("#grid").hidden = v !== "grid"; $("#days").hidden = v === "grid";
-  $("#viewBtn").textContent = v === "grid" ? "Cards" : "Grid";
-};
-let VIEW = "cards"; try { VIEW = localStorage.getItem("radar-view") || "cards"; } catch (e) {}
-$("#viewBtn").addEventListener("click", () => { VIEW = VIEW === "grid" ? "cards" : "grid"; setView(VIEW); });
-setView(VIEW);
+const VIEW = "cards";
 
 /* bottom sheet (phones) */
 let sheetFrom = null;
