@@ -540,6 +540,7 @@ def parse_afd(text, issued):
     return {"issued": issued, "synopsis": synopsis, "systems": systems, "bullets": bullets, "summary": summary_rules(text),
             "aviation": aviation[:900],
             "advisories": advisories, "flags": flags,
+            "mentions_front": bool(FRONT_WORDS.search(text or "")), "mentions_low": bool(LOW_WORDS.search(text or "")),
             "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"}
 
 
@@ -1124,7 +1125,7 @@ def fmt_h(h):
 
 
 # ---------------------------------------------------------------- day type (synoptic regime)
-REGIMES = ["Front", "Switch day", "Santa Ana", "Post-frontal", "Pre-frontal"]
+REGIMES = ["Front", "Switch day", "Santa Ana", "Post-frontal", "Pre-frontal", "Upper low"]
 REGIME_SITES = ("lb", "blossom", "elsinore")
 
 
@@ -1225,6 +1226,29 @@ def classify_days(F):
     return out
 
 
+REGIME_W = {"HRRR": 2, "RRFS": 1, "ECMWF": 1, "GFS": 1, "ICON": 1}
+FRONT_WORDS = re.compile(r"\b(cold |warm )?fronts?\b|\bfrontal\b", re.I)
+LOW_WORDS = re.compile(r"\b(upper[- ]level low|upper low|cut-?off low|closed low|subtropical low|low pressure)\b", re.I)
+
+
+def nws_check_regimes(regimes, nws):
+    """The NWS discussion as a check: if it never mentions a front, the models' 'Front' is a low or a
+    trough bringing rain (shown as Upper low when the discussion names one), and 'Pre-frontal' is dropped."""
+    if not nws:
+        return regimes
+    text = " ".join([nws.get("synopsis") or "", " ".join(nws.get("systems") or []),
+                     " ".join(((nws.get("summary") or {}).get("pattern") or [])), nws.get("text") or ""])
+    if nws.get("mentions_front") or not text.strip() or FRONT_WORDS.search(text):
+        return regimes
+    low = bool(nws.get("mentions_low") or LOW_WORDS.search(text))
+    for r in regimes.values():
+        if r.get("type") == "Front":
+            r["type"], r["nws_note"] = ("Upper low" if low else None), "NWS discussion names no front"
+        elif r.get("type") == "Pre-frontal":
+            r["type"], r["nws_note"] = None, "NWS discussion names no front"
+    return regimes
+
+
 def day_regimes(det, sites):
     """Weighted vote of the regular models: {date: {"type", "agree", "models"}}."""
     idx = {s["id"]: k for k, s in enumerate(sites)}
@@ -1248,14 +1272,15 @@ def day_regimes(det, sites):
                 "rh": round(f["rh"]) if f.get("rh") is not None else None}
     out = {}
     for dstr, vs in votes.items():
-        keep = set(rating_models(n for n, _ in vs))
-        vs = [(n, t) for n, t in vs if n in keep]
+        # the pattern is a synoptic call: every regular model votes (HRRR x2), NAM sits out;
+        # a tie means no pill rather than an alarm
+        vs = [(n, t) for n, t in vs if n != "NAM"]
         names = [n for n, _ in vs]
-        tot = sum(model_weight(n, names) for n in names)
+        tot = sum(REGIME_W.get(n, 1) for n in names) or 1
         w = {}
         for n, t in vs:
-            w[t] = w.get(t, 0) + model_weight(n, names)
-        t, wt = max(w.items(), key=lambda x: (x[1], x[0] is not None))
+            w[t] = w.get(t, 0) + REGIME_W.get(n, 1)
+        t, wt = max(w.items(), key=lambda x: (x[1], x[0] is None))
         out[dstr] = {"type": t, "agree": round(wt / tot, 2), "models": {n: t2 for n, t2 in vs},
                      "features": feats.get(dstr, {})}
     return out
@@ -1471,7 +1496,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                            if (a.get("wstar") or 0) > 0.05 or a.get("pr", 0) >= 1.0}
             cell["all"] = cell["det"]
             cell["det"] = {k: cell["det"][k] for k in rating_models(cell["det"])}
-    regimes = day_regimes(det, sites)
+    regimes = nws_check_regimes(day_regimes(det, sites), nws)
     nws_days = nws_rain_days(nws, [d for d in sorted(days) if d >= datetime.now(timezone.utc).astimezone(_tz()).date().isoformat()][:DAYS])
     today = datetime.now(timezone.utc).astimezone(_tz()).date().isoformat()
     out_days = []
