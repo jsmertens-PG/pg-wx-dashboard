@@ -641,13 +641,13 @@ function render(data) {
     const share = homeR.length > 1 ? (atTop - 1) / (homeR.length - 1) : 1;
     const cardCol = below === undefined ? qv(tint) : `color-mix(in srgb, ${qv(tint)} ${Math.round(50 + 50 * share)}%, ${qv(below)})`;
     const open = openDays.has(d.date);
-    const mods = dayModels(d);
+    const mods = [dayModels(d), d.frozen_at ? `(final ${esc(fmtTime(d.frozen_at).toLowerCase())})` : ""].filter(Boolean).join(" ");
     return `<details class="day" id="day-${i}" data-date="${esc(d.date)}" style="--qc:${cardCol}"${open ? " open" : ""}>
       <summary class="hd">
         <span class="when${d.regime && d.regime.type ? " has-rx" : ""}"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small>${regimeHtml(d.regime)}${rainPill(d)}</span>
         <span class="big" title="Best home site">${trendHtml(bm)}${r1(bm?.rating)}<small>/5</small></span>
         <span class="exp" aria-hidden="true"><i class="chev"></i></span>
-        <span class="sum">${d.frozen_at ? `<span class="frz" title="today stopped updating at 2 pm">final ${esc(fmtTime(d.frozen_at))}</span>` : ""}${d.why ? `<span class="why">${esc(d.why)}</span>` : ""}${d.nws_rain ? `<span class="nwsr">NWS showers</span>` : ""}${daySummary(d, big, other)}${watchPill(d)}${mods ? `<span class="mods">${mods}</span>` : ""}</span>
+        <span class="sum">${d.why ? `<span class="why">${esc(d.why)}</span>` : ""}${d.nws_rain ? `<span class="nwsr">NWS showers</span>` : ""}${daySummary(d, big, other)}${watchPill(d)}${mods ? `<span class="mods">${mods}</span>` : ""}</span>
       </summary>
       ${d.nws_rain ? `<div class="nwsrow">NWS: showers possible this day</div>` : ""}
       ${d._flown && d._flown.length ? `<div class="flown"><b>Flown:</b> ${d._flown.map((f) => esc(f)).join(" · ")}</div>` : ""}
