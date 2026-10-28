@@ -982,19 +982,12 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
                     peak = sc["peak_top"]
         elif win:
             scored = [(h, hour_r(sc, True), sc) for h, sc in win]
-            if style == "window":
-                # the second-best hour of the window decides, so a one-hour spike in a model (HRRR's PBL
-                # jumps around, e.g. LB 10-26 1 pm: 3,400 ft between 2,000 and 1,600) can't make the day
-                ranked = sorted(scored, key=lambda x: x[1], reverse=True)
-                best_h, rating, sc = ranked[1] if len(ranked) > 1 else ranked[0]
-                peak = sc["peak_top"]
-            else:
-                n = min(2, len(win))
-                best = max(range(len(scored) - n + 1), key=lambda k: sum(x[1] for x in scored[k:k + n]))
-                rating = sum(x[1] for x in scored[best:best + n]) / n
-                best_h, _r, sc = max(scored[best:best + n], key=lambda x: x[1])
-                tops = [x[2]["peak_top"] for x in scored[best:best + n]]
-                peak = sum(tops) / len(tops)
+            # the two best hours of the window, averaged (rating and height): a peak hour counts, but one
+            # spiky model hour (HRRR's PBL jumps around) only gets half the say
+            ranked = sorted(scored, key=lambda x: x[1], reverse=True)[:2]
+            rating = sum(x[1] for x in ranked) / len(ranked)
+            best_h, _r, sc = ranked[0]
+            peak = sum(x[2]["peak_top"] for x in ranked) / len(ranked)
             xc_now = sc["xc_s"] > 0 and rating >= 3.5
         if style not in ("convergence", "switch"):
             gw = [x["lw"] for h, x in gwin if h in glass_hours and x["lw"] is not None]
