@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-28T14:34+00:00",
+ "generated": "2026-10-28T14:48+00:00",
  "sample": false,
  "calib": {
   "2026-10-28": {
@@ -12480,7 +12480,7 @@
    }
   }
  },
- "overview": "Cooling now \u00b7 rain Thu",
+ "overview": "Cooling now \u00b7 rain Thu \u00b7 pre-frontal now \u00b7 front Thu",
  "models": {
   "HRRR": "ncep_hrrr_conus",
   "RRFS": "ncep_rrfs_conus",
@@ -12532,7 +12532,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-10-28T12:00+00:00",
-   "fetched": "2026-10-28T14:21+00:00",
+   "fetched": "2026-10-28T14:34+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -12542,9 +12542,8 @@
    "id": "ncep_rrfs_conus",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-28T14:10+00:00",
-   "url": "https://open-meteo.com/en/docs",
-   "note": "cached, fetched 0 h ago"
+   "fetched": "2026-10-28T14:34+00:00",
+   "url": "https://open-meteo.com/en/docs"
   },
   {
    "name": "NAM",
@@ -12553,7 +12552,7 @@
    "id": "ncep_nam_conus",
    "status": "ok",
    "run": "2026-10-28T06:00+00:00",
-   "fetched": "2026-10-28T14:25+00:00",
+   "fetched": "2026-10-28T14:34+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -12563,7 +12562,7 @@
    "id": "gfs_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-28T14:25+00:00",
+   "fetched": "2026-10-28T14:36+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -12573,7 +12572,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": "2026-10-28T06:00+00:00",
-   "fetched": "2026-10-28T14:26+00:00",
+   "fetched": "2026-10-28T14:36+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -12583,7 +12582,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-28T14:26+00:00",
+   "fetched": "2026-10-28T14:37+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -12593,7 +12592,7 @@
    "id": "gfs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-28T14:28+00:00",
+   "fetched": "2026-10-28T14:41+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -12603,7 +12602,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-28T14:31+00:00",
+   "fetched": "2026-10-28T14:45+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -12613,7 +12612,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-28T14:33+00:00",
+   "fetched": "2026-10-28T14:48+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -12623,7 +12622,7 @@
    "id": "esierra",
    "status": "failed",
    "run": null,
-   "fetched": "2026-10-28T14:33+00:00",
+   "fetched": "2026-10-28T14:48+00:00",
    "url": "https://www.soaringpredictor.info/E-Sierra/E-SierraPredictor.htm"
   },
   {
@@ -12633,7 +12632,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-10-28T11:34:00+00:00",
-   "fetched": "2026-10-28T14:33+00:00",
+   "fetched": "2026-10-28T14:48+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   }
  ],
@@ -12664,8 +12663,6 @@
   "aviation": "281130Z...SCT-BKN high clouds above 20 kft today and tonight. Patchy and intermittent low clouds based around 1500-2000 feet MSL most likely around KSNA through 16Z. A greater chance of cigs based at 1800-2000 feet MSL, but still random and intermittent, after 04Z tonight, extending inland overnight into Thursday.",
   "advisories": "CA...Coastal Flood Warning until 1 PM PDT Thursday for Orange County Coastal Areas-San Diego County Coastal Areas. PZ...None. &&",
   "flags": [],
-  "mentions_front": false,
-  "mentions_low": true,
   "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
  },
  "sites": [
@@ -13605,14 +13602,12 @@
     }
    },
    "regime": {
-    "type": null,
+    "type": "Pre-frontal",
     "agree": 0.67,
+    "weak": true,
     "models": {
      "HRRR": "Pre-frontal",
-     "RRFS": null,
-     "GFS": null,
-     "ECMWF": null,
-     "ICON": null
+     "RRFS": null
     },
     "features": {
      "HRRR": {
@@ -14497,14 +14492,12 @@
     }
    },
    "regime": {
-    "type": null,
-    "agree": 0.5,
+    "type": "Front",
+    "agree": 0.67,
+    "weak": true,
     "models": {
      "HRRR": "Front",
-     "RRFS": null,
-     "GFS": null,
-     "ECMWF": "Pre-frontal",
-     "ICON": null
+     "RRFS": null
     },
     "features": {
      "HRRR": {
@@ -15032,7 +15025,7 @@
       }
      },
      "was": 3.2,
-     "trend": 0.7
+     "trend": 0.6
     },
     "otay": {
      "rating": 1.68,
@@ -15562,6 +15555,7 @@
    "regime": {
     "type": null,
     "agree": 0.67,
+    "weak": false,
     "models": {
      "RRFS": null,
      "GFS": "Pre-frontal",
@@ -15597,8 +15591,7 @@
       "w700": "SW 18",
       "rh": 60
      }
-    },
-    "nws_note": "NWS discussion names no front"
+    }
    },
    "nws_rain": true,
    "best": "lb",
@@ -16663,6 +16656,7 @@
    "regime": {
     "type": "Pre-frontal",
     "agree": 0.67,
+    "weak": true,
     "models": {
      "GFS": "Pre-frontal",
      "ECMWF": "Post-frontal",
@@ -16690,8 +16684,7 @@
       "w700": "S 26",
       "rh": 65
      }
-    },
-    "nws_note": "NWS discussion names no front"
+    }
    },
    "nws_rain": true,
    "best": "lb",
@@ -17672,8 +17665,9 @@
     }
    },
    "regime": {
-    "type": "Upper low",
+    "type": "Front",
     "agree": 1.0,
+    "weak": false,
     "models": {
      "GFS": "Front",
      "ECMWF": "Front",
@@ -17701,8 +17695,7 @@
       "w700": "S 25",
       "rh": 78
      }
-    },
-    "nws_note": "NWS discussion names no front"
+    }
    },
    "nws_rain": true,
    "best": "santabarbara",
@@ -18618,6 +18611,7 @@
    "regime": {
     "type": "Post-frontal",
     "agree": 0.67,
+    "weak": true,
     "models": {
      "GFS": "Post-frontal",
      "ECMWF": "Post-frontal",
@@ -19531,6 +19525,7 @@
    "regime": {
     "type": "Santa Ana",
     "agree": 0.67,
+    "weak": true,
     "models": {
      "GFS": "Switch day",
      "ECMWF": "Santa Ana",
