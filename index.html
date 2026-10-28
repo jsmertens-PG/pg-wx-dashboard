@@ -282,7 +282,10 @@ details.day > summary.hd .when .rx { flex: 0 1 auto; min-width: 0; overflow: hid
 @media (max-width: 430px) { details.day > summary.hd .when.has-rx small.rel + small { display: none; } }
 .wk-d small.rel { font-size: .7rem; font-weight: 500; color: var(--ink); }
 @media (max-width: 430px) { details.day > summary.hd .when.has-rx .dn-l { display: none; } details.day > summary.hd .when.has-rx .dn-s { display: inline; } }
-.day > .hd .sum .rx-rain { font-size: .62rem; padding: 2px 7px; margin-right: 2px; }
+/* day-type and rain pills travel together: next to the date when there is room, else on the next line */
+.day > .hd .when .pills { display: inline-flex; gap: 5px; align-items: center; margin-left: 8px; white-space: nowrap; }
+.day > .hd .when .pills .rx { margin: 0; }
+details.day > summary.hd .when { flex-wrap: wrap; row-gap: 4px; }
 .day > .hd .sum .why { margin: 0 4px 0 0; font-size: .66rem; }
 /* which models fed the day's ratings, bottom right of each card */
 .mods { font-size: .66rem; color: var(--muted); font-weight: 400; letter-spacing: .02em; white-space: nowrap; }
@@ -672,10 +675,10 @@ function render(data) {
     const mods = [dayModels(d), d.frozen_at ? `(final ${esc(fmtTime(d.frozen_at).toLowerCase())})` : ""].filter(Boolean).join(" ");
     return `<details class="day" id="day-${i}" data-date="${esc(d.date)}" style="--qc:${cardCol}"${open ? " open" : ""}>
       <summary class="hd">
-        <span class="when${d.regime && d.regime.type ? " has-rx" : ""}"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small>${regimeHtml(d.regime)}</span>
+        <span class="when${d.regime && d.regime.type ? " has-rx" : ""}"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small>${regimeHtml(d.regime) || rainPill(d) ? `<span class="pills">${regimeHtml(d.regime)}${rainPill(d)}</span>` : ""}</span>
         <span class="big" title="Best home site">${trendHtml(bm)}${r1(bm?.rating)}<small>/5</small></span>
         <span class="exp" aria-hidden="true"><i class="chev"></i></span>
-        <span class="sum">${rainPill(d)}${d.why ? `<span class="why">${esc(d.why)}</span>` : ""}${daySummary(d, big, other)}${watchPill(d)}${mods ? `<span class="mods">${mods}</span>` : ""}</span>
+        <span class="sum">${d.why ? `<span class="why">${esc(d.why)}</span>` : ""}${daySummary(d, big, other)}${watchPill(d)}${mods ? `<span class="mods">${mods}</span>` : ""}</span>
       </summary>
       ${d._flown && d._flown.length ? `<div class="flown"><b>Flown:</b> ${d._flown.map((f) => esc(f)).join(" · ")}</div>` : ""}
       <div class="list">
