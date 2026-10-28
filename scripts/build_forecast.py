@@ -1972,6 +1972,52 @@ def add_trend(result, path, now=None):
     return ref
 
 
+# ---------------------------------------------------------------- today's final forecast, and the archive
+FREEZE_HOUR = 14           # from 2 pm on, today keeps the last forecast made before 2 pm
+
+
+def _local(iso):
+    return datetime.fromisoformat(iso).astimezone(_tz())
+
+
+def freeze_today(result, prev_path, now=None):
+    """After FREEZE_HOUR, today's day is no longer re-forecast: keep the last one made before it."""
+    now = (now or datetime.now(timezone.utc)).astimezone(_tz())
+    days = result.get("days") or []
+    today = now.date().isoformat()
+    if not days or days[0]["date"] != today or now.hour < FREEZE_HOUR:
+        return None
+    try:
+        prev = json.loads(Path(prev_path).read_text())
+    except Exception:
+        prev = {}
+    pd = next((d for d in prev.get("days", []) if d.get("date") == today), None)
+    if pd and pd.get("frozen_at"):
+        days[0] = pd
+    elif pd and prev.get("generated") and _local(prev["generated"]).date().isoformat() == today \
+            and _local(prev["generated"]).hour < FREEZE_HOUR:
+        days[0] = dict(pd, frozen_at=prev["generated"])
+    else:                                    # first run of the day already after 2 pm: freeze this one
+        days[0]["frozen_at"] = result.get("generated")
+    return days[0]["frozen_at"]
+
+
+def archive_today(result, folder):
+    """Keep today's final (frozen) forecast as data/archive/<date>.json, with an index of all dates."""
+    days = result.get("days") or []
+    if not days or not days[0].get("frozen_at"):
+        return None
+    d = days[0]
+    folder.mkdir(parents=True, exist_ok=True)
+    path = folder / f"{d['date']}.json"
+    rec = {"date": d["date"], "frozen_at": d["frozen_at"], "day": d}
+    if not path.exists() or json.loads(path.read_text()).get("frozen_at") != d["frozen_at"]:
+        path.write_text(json.dumps(rec, separators=(",", ":")))
+    dates = sorted(p.stem for p in folder.glob("????-??-??.json"))
+    (folder / "index.json").write_text(json.dumps({"dates": dates}))
+    return path
+
+
 # ---------------------------------------------------------------- daily snapshots (for checking against real flights)
 SNAPSHOT_HOUR = 7          # keep the first run of each day from 7 am on: the morning forecast
 
@@ -2043,7 +2089,9 @@ def main(argv=None):
     result = build(sites, det, ens, nws, log, sample=args.sample, sources=sources, sp=sp, parents=parents)
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     if not args.sample:
+        freeze_today(result, Path(args.out))
         add_trend(result, ROOT / "data" / "trend.json")
+        archive_today(result, ROOT / "data" / "archive")
     Path(args.out).write_text(json.dumps(result, indent=1))
     if not args.sample:
         save_snapshot(result, ROOT / "data" / "history")
