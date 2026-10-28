@@ -468,6 +468,13 @@ details.day:not([open]) > .mods-b { display: none; }
 
 footer .btnlink { font-size: .8rem; min-height: 30px; padding: 3px 10px; border: 1px solid var(--line); border-radius: 5px; background: var(--surface); color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; }
 :root[data-skin="glossy"] footer .btnlink { border: 0; background: linear-gradient(180deg, var(--surface), color-mix(in srgb, var(--ink) 7%, var(--surface))); box-shadow: inset 0 1px 0 var(--gl-hl), 0 1px 2px var(--gl-sh2), 0 3px 8px -3px var(--gl-sh); }
+
+/* tiny colour legend above the footer */
+.qlegend { display: grid; gap: 3px; max-width: 420px; }
+.qbar { height: 6px; border-radius: 3px; box-shadow: inset 0 0 0 .5px color-mix(in srgb, var(--ink) 25%, transparent);
+  background: linear-gradient(90deg, var(--q0) 0 14%, var(--q1) 26% 34%, var(--q2) 46% 54%, var(--q4) 66% 74%, var(--q5) 86% 100%); }
+.qlab { display: flex; justify-content: space-between; font-size: .62rem; color: var(--muted); }
+.qlab span { flex: 1; text-align: center; } .qlab span:first-child { text-align: left; } .qlab span:last-child { text-align: right; }
 </style>
 </head>
 <body>
@@ -522,6 +529,10 @@ footer .btnlink { font-size: .8rem; min-height: 30px; padding: 3px 10px; border:
     <div class="tablewrap"><table class="src" id="tSrc"></table></div>
   </details>
 
+  <div class="qlegend" aria-label="Rating colours">
+    <span class="qbar"></span>
+    <span class="qlab"><span>1 no go</span><span>2 marginal</span><span>3 local / glass-off</span><span>4 XC</span><span>5 great</span></span>
+  </div>
   <footer>
     <span id="foot"></span>
     <button type="button" id="archBtn" title="Every past day as the radar forecast it that day">Archive</button>
