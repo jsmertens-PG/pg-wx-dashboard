@@ -216,6 +216,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .rx.sm { font-size: .6rem; padding: 0 5px; letter-spacing: .04em; }
 .rx-front { --rxc: #34508f; } .rx-pre { --rxc: #6b7899; } .rx-post { --rxc: #11827f; }
 .rx-sa { --rxc: #d2691e; } .rx-rain { --rxc: #2f6fb3; }
+.rx.rx-weak { background: transparent !important; color: var(--rxc); box-shadow: inset 0 0 0 1.5px var(--rxc) !important; }
 .rx.rx-soft { background: transparent !important; color: #2f6fb3; box-shadow: inset 0 0 0 1.5px #2f6fb3 !important; }
 .day > .hd .when .rx + .rx { margin-left: 5px; }
 .wk-d .rx.sm + .rx.sm { margin-top: 2px; } .rx-switch { --rxc: #b8860b; }
@@ -583,8 +584,9 @@ const rainPill = (d, small) => {
 const regimeHtml = (rg, small) => {
   if (!rg || !rg.type || !RX[rg.type]) return "";
   const pctTxt = rg.agree != null && rg.agree < 0.995 ? `${Math.round(rg.agree * 100)}%` : "";   // share of models that agree
-  const name = small ? esc(RX[rg.type][1]) : `<span class="rx-l">${esc(rg.type)}</span><span class="rx-s">${esc(RX[rg.type][1])}</span>`;
-  return `<span class="rx rx-${RX[rg.type][0]}${small ? " sm" : ""}" title="${esc(Object.entries(rg.models || {}).map(([m, t]) => `${m}: ${t || "–"}`).join(" · "))}">${name}${pctTxt && !small ? ` <span class="rq">${pctTxt}</span>` : ""}</span>`;
+  const label = rg.weak && rg.type === "Front" ? "Weak front" : rg.type;       // a pointer worth checking, not a big rainy front
+  const name = small ? esc(rg.weak && rg.type === "Front" ? "Weak front" : RX[rg.type][1]) : `<span class="rx-l">${esc(label)}</span><span class="rx-s">${esc(label)}</span>`;
+  return `<span class="rx rx-${RX[rg.type][0]}${small ? " sm" : ""}${rg.weak ? " rx-weak" : ""}" title="${esc(Object.entries(rg.models || {}).map(([m, t]) => `${m}: ${t || "–"}`).join(" · "))}">${name}${pctTxt && !small ? ` <span class="rq">${pctTxt}</span>` : ""}</span>`;
 };
 
 const setTheme = (t) => {

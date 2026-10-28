@@ -1256,7 +1256,11 @@ def day_regimes(det, sites):
         for n, t in vs:
             w[t] = w.get(t, 0) + model_weight(n, names)
         t, wt = max(w.items(), key=lambda x: (x[1], x[0] is not None))
-        out[dstr] = {"type": t, "agree": round(wt / tot, 2), "models": {n: t2 for n, t2 in vs},
+        # a weak call: the deciding models split, or a "front" that brings only light rain (< 2 mm)
+        rains = [feats.get(dstr, {}).get(n, {}).get("rain_mm") for n, t2 in vs if t2 == t]
+        rains = [r for r in rains if r is not None]
+        weak = bool(t) and (wt / tot < 0.75 or (t == "Front" and rains and median(rains) < 2.0))
+        out[dstr] = {"type": t, "agree": round(wt / tot, 2), "weak": weak, "models": {n: t2 for n, t2 in vs},
                      "features": feats.get(dstr, {})}
     return out
 
