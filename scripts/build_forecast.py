@@ -2152,7 +2152,7 @@ def freeze_today(result, prev_path, now=None):
     pg = _local(prev["generated"]) if prev.get("generated") else None
     if pd and pd.get("frozen_at") and _local(pd["frozen_at"]).hour >= FREEZE_FROM:
         days[0] = pd
-    elif pd and pg and pg.date().isoformat() == today and FREEZE_FROM <= pg.hour < FREEZE_HOUR:
+    elif pd and not pd.get("frozen_at") and pg and pg.date().isoformat() == today and FREEZE_FROM <= pg.hour < FREEZE_HOUR:
         days[0] = dict(pd, frozen_at=prev["generated"])
     else:                                    # nothing made between noon and 3 pm: freeze this run
         days[0]["frozen_at"] = result.get("generated")
