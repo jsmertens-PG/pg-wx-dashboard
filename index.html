@@ -58,6 +58,7 @@ header.top h1 .logo { width: 44px; height: 44px; flex: 0 0 auto; }
 header.top h1 .sub { font-weight: 400; font-size: .9rem; color: var(--muted); letter-spacing: 0; }
 .fresh { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; font-size: .84rem; color: var(--muted); }
 .fresh button { font-size: .8rem; min-height: 30px; padding: 3px 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; }
+.srcnote { font-size: .72rem; color: var(--muted); margin: 10px 2px 0; }
 .banner { border: 1px solid var(--line); border-left: 3px solid var(--q0); padding: 9px 14px; font-size: .88rem; display: grid; gap: 4px; }
 
 /* weather card: same frame as the days, neutral colour */
@@ -542,6 +543,7 @@ footer .btnlink { font-size: .8rem; min-height: 30px; padding: 3px 10px; border:
     <span class="qbar"></span>
     <span class="qlab"><span>1 no go</span><span>2 marginal</span><span>3 local / glass-off</span><span>4 XC</span><span>5 great</span></span>
   </div>
+  <div id="notes"></div>
   <footer>
     <span id="foot"></span>
     <button type="button" id="archBtn" title="Every past day as the radar forecast it that day">Archive</button>
@@ -672,8 +674,9 @@ function render(data) {
   if (data.sample) warn.push("This page shows <b>sample data</b> to demonstrate the layout. Real forecasts appear after the GitHub Action runs.");
   if (ageH > 8) warn.push(`The forecast is <b>${Math.round(ageH)} hours old</b>. The scheduled update may have failed: check the Actions tab on GitHub.`);
   const failed = src.filter((s) => s.status === "failed");
-  if (failed.length) warn.push(`Missing on the last run: ${failed.map((s) => esc(s.name)).join(", ")}.`);
   $("#warn").innerHTML = warn.length ? `<div class="banner">${warn.map((w) => `<span>${w}</span>`).join("")}</div>` : "";
+  /* minor source hiccups go to the bottom of the page, not the top */
+  $("#notes").innerHTML = failed.length ? `<p class="srcnote">Missing on the last run: ${failed.map((s) => esc(s.name)).join(", ")}.</p>` : "";
 
   /* weather story from the NWS discussion */
   const n = data.nws;
