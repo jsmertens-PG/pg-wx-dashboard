@@ -129,6 +129,25 @@ class DayTypes(unittest.TestCase):
         self.assertEqual(t[1:4], ["Santa Ana", "Santa Ana", "Switch day"])
 
 
+class Clouds(unittest.TestCase):
+    @staticmethod
+    def ring(m, h, sw):
+        times = [f"2026-10-29T{k:02d}:00" for k in range(24)]
+        return [{"time": times, "cloud_cover_mid": [m] * 24, "cloud_cover_high": [h] * 24,
+                 "shortwave_radiation": [sw if 9 <= k <= 16 else 0 for k in range(24)], "_utc_offset_h": -7} for _ in range(5)]
+
+    def test_shade_needs_cover_and_lost_sun(self):
+        site = {"id": "lb", "lat": 32.98796, "lon": -117.12232}
+        thick = bf.cloud_day(site, self.ring(60, 70, 250), "2026-10-29")
+        thin = bf.cloud_day(site, self.ring(10, 80, 650), "2026-10-29")
+        self.assertTrue(thick[0] >= bf.SHADE_COVER and thick[1] >= bf.SHADE_SUNLOSS)
+        self.assertTrue(thin[0] >= bf.SHADE_COVER and thin[1] < bf.SHADE_SUNLOSS)   # thin cirrus: no shade
+        res = {"days": [{"date": "2026-10-29", "sites": {k: {} for k in bf.SD_SITES}}]}
+        parents = [{"id": k, "lat": 32.9, "lon": -117.0} for k in bf.SD_SITES]
+        bf.add_clouds(res, parents, {"HRRR": {k: self.ring(60, 70, 250) for k in bf.SD_SITES}, "GFS": {}})
+        self.assertEqual(res["days"][0]["cloud"]["level"], "shade")
+
+
 class WindowRating(unittest.TestCase):
     def test_lb_rated_on_best_midday_hour(self):
         lb = next(x for x in json.loads((ROOT / "sites.json").read_text())["sites"] if x["id"] == "lb")

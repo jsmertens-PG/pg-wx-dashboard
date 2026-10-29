@@ -215,7 +215,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .rx .rq { font-weight: 500; text-transform: none; letter-spacing: 0; opacity: .85; }
 .rx.sm { font-size: .6rem; padding: 0 5px; letter-spacing: .04em; }
 .rx-front { --rxc: #34508f; } .rx-pre { --rxc: #6b7899; } .rx-post { --rxc: #11827f; }
-.rx-sa { --rxc: #d2691e; } .rx-rain { --rxc: #2f6fb3; }
+.rx-sa { --rxc: #d2691e; } .rx-rain { --rxc: #2f6fb3; } .rx-cloud { --rxc: #5d6b7a; }
 .rx.rx-weak { background: transparent !important; color: var(--rxc); box-shadow: inset 0 0 0 1.5px var(--rxc) !important; }
 .rx.rx-soft { background: transparent !important; color: #2f6fb3; box-shadow: inset 0 0 0 1.5px #2f6fb3 !important; }
 .day > .hd .when .rx + .rx { margin-left: 5px; }
@@ -520,6 +520,7 @@ footer .btnlink { font-size: .8rem; min-height: 30px; padding: 3px 10px; border:
       <p><b>Site rules.</b> <b>Little Black and Otay</b> are rated in the 11 am–1 pm window and <b>Blossom</b> 11 am–2 pm, on the average of the two best hours (a strong hour counts, a one-hour model spike only half); glass-off is rated separately and the better of the two counts. Blossom's height is the best of its launch and the El Cajon Mountain peak. <b>Elsinore</b> needs an easterly or light morning launch wind, then the west switch inside the window (west all morning is a 1); its height is the best top of lift along the ridge and the Inland Empire toward Soboba, never over the lake. <b>Torrey</b> is 2–3 for ridge soaring, 4 on a great ridge day (a straight west wind, about 11–20 mph from 255–290°, holding into dusk) and 5 on a thermal day. <b>Laguna/Horse</b> is XC-only (2 at most without a convergence setup). Marshall, Santa Barbara and Soboba use their own windows; Santa Barbara's lift is worked out from launch height, above the marine layer.</p>
       <p><b>Models.</b> While HRRR covers a day, HRRR ×2 and RRFS ×1 decide; then RRFS ×2 plus the global models (GFS, ECMWF, ICON together counting once); after that the global models alone. RRFS runs low, so its heights are raised by its recent gap to HRRR before scoring (the heights shown are the model's own). The ensembles give the chance of a flyable or XC day. The models behind each day are listed at the bottom right of its card.</p>
       <p><b>Rain and day type.</b> "rain x%" is the share of model and ensemble runs with rain at a site: 30% costs half a step, 45% a full step, 60% or more makes it a no-go. The rain pill on a day appears when half the runs are wet across the San Diego sites, and says "NWS" when the forecast discussion also mentions showers. The day type comes from the models over the region (rain, cooling and the 850/700 hPa winds); a percentage on it means the models disagree.</p>
+      <p><b>High cloud.</b> A grey "High cloud 6/8" pill warns of cirrus and altostratus/altocumulus shade over the San Diego sites from 10 am to about sunset: mid and high cloud (cumulus and the marine layer are left out) averaged over each site and four points about 20 km around it, from HRRR and RRFS (ECMWF and ICON further out; not GFS). It shows when 5/8 or more of the sky is covered and the sunshine at the ground is cut by a quarter or more; it is outlined when the models split or the cover is 4/8, or thin. Inside a site it reads e.g. "mid/high cloud 6/8 · sun −35%". It never changes a rating (the lift model already uses each model's sunshine).</p>
       <p><b>How it's tuned.</b> Every morning the radar keeps a copy of its forecast, and today's 2 pm forecast goes to the archive. Reported flights and day calls are set against those, and the site scales and rules in <span class="mono">sites.json</span> are adjusted when a site keeps reading high or low. Changes so far: Elsinore's corridor heights, Blossom's El Cajon Mountain point and 11–2 window, Santa Barbara from launch height, Torrey's ridge rules, the rain steps.</p>
     </div>
   </details>
@@ -600,6 +601,12 @@ const rainPill = (d, small) => {
   const txt = wet ? `Rain ${Math.round(d.rain_p * 100)}%${d.nws_rain ? " · NWS" : ""}` : "Showers · NWS";
   const tip = [wet && "share of model runs with rain at Torrey, Little Black, Blossom and Elsinore", d.nws_rain && "the NWS discussion mentions showers this day"].filter(Boolean).join("; ");
   return `<span class="rx rx-rain${small ? " sm" : ""}${wet ? "" : " rx-soft"}" title="${esc(tip)}">${esc(txt)}</span>`;
+};
+/* mid/high cloud (cirrus, alto-) over the SD sites from 10 am to sunset: a heads-up, never part of the rating */
+const cloudPill = (d) => {
+  const c = d.cloud; if (!c || !c.level) return "";
+  const tip = `mid/high cloud ${c.okta}/8 over Torrey, Little Black, Blossom and Elsinore, 10 am to sunset; sun at the ground ${Math.round(c.sun_loss * 100)}% below clear sky`;
+  return `<span class="rx rx-cloud${c.weak ? " rx-weak" : ""}" title="${esc(tip)}">High cloud ${c.okta}/8</span>`;
 };
 const regimeHtml = (rg, small) => {
   if (!rg || !rg.type || !RX[rg.type]) return "";
@@ -697,7 +704,7 @@ function render(data) {
     const mods = [dayModels(d), d.frozen_at ? `(final ${esc(fmtTime(d.frozen_at).toLowerCase())})` : ""].filter(Boolean).join(" ");
     return `<details class="day" id="day-${i}" data-date="${esc(d.date)}" style="--qc:${cardCol}"${open ? " open" : ""}>
       <summary class="hd">
-        <span class="when${d.regime && d.regime.type ? " has-rx" : ""}"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small>${regimeHtml(d.regime) || rainPill(d) ? `<span class="pills">${regimeHtml(d.regime)}${rainPill(d)}</span>` : ""}</span>
+        <span class="when${d.regime && d.regime.type ? " has-rx" : ""}"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small>${regimeHtml(d.regime) || rainPill(d) || cloudPill(d) ? `<span class="pills">${regimeHtml(d.regime)}${rainPill(d)}${cloudPill(d)}</span>` : ""}</span>
         <span class="big" title="Best home site">${trendHtml(bm)}${r1(bm?.rating)}<small>/5</small></span>
         <span class="exp" aria-hidden="true"><i class="chev"></i></span>
         <span class="sum">${d.why ? `<span class="why">${esc(d.why)}</span>` : ""}${daySummary(d, big, other)}${watchPill(d)}${mods ? `<span class="mods">${mods}</span>` : ""}</span>
@@ -786,7 +793,8 @@ function detail(d, s, inline) {
   const isFlag = (f) => f.k === "Rain & storms" || f.k === "Model agreement";
   const flagCol = (f) => (f.q >= 0.7 ? "var(--q3)" : f.q >= 0.4 ? "var(--q1)" : "var(--q0)");
   const flags = (c.factors || []).filter((f) => isFlag(f) && !(f.k === "Rain & storms" && f.v === "dry"))
-    .map((f) => `<span class="ind" title="${esc(f.sub || "")}"><i style="background:${flagCol(f)}"></i>${f.k === "Rain & storms" ? `rain ${esc(f.v)}${f.sub ? " · " + esc(f.sub) : ""}` : `models ${esc(f.v)}`}</span>`).join("");
+    .map((f) => `<span class="ind" title="${esc(f.sub || "")}"><i style="background:${flagCol(f)}"></i>${f.k === "Rain & storms" ? `rain ${esc(f.v)}${f.sub ? " · " + esc(f.sub) : ""}` : `models ${esc(f.v)}`}</span>`).join("")
+    + (c.cloud && c.cloud.okta >= 4 ? `<span class="ind" title="${esc(Object.entries(c.cloud.models || {}).map(([m, v]) => `${m} ${Math.round(v[0] * 8)}/8, sun -${Math.round(v[1] * 100)}%`).join(" · "))}"><i style="background:${c.cloud.okta >= 5 && c.cloud.sun_loss >= 0.25 ? "#5d6b7a" : "#aab3bd"}"></i>mid/high cloud ${c.cloud.okta}/8 · sun −${Math.round(c.cloud.sun_loss * 100)}%</span>` : "");
   const rows = (c.factors || []).filter((f) => !isFlag(f)).map((f) => `<div class="factor">
       <span class="fk">${esc(f.k)}</span>
       <span class="fbar">${(f.qs || [f.q]).map((x) => `<i style="width:${Math.max(3, Math.round(x * 100))}%;background:${fq(x)}${f.qs && f.qs.length > 1 ? ";opacity:.5" : ""}"></i>`).join("")}</span>

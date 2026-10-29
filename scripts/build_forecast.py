@@ -1981,6 +1981,118 @@ def add_trend(result, path, now=None):
     return ref
 
 
+
+# ---------------------------------------------------------------- mid/high cloud shade (cirrus, alto-) heads-up
+CLOUD_MODELS = {"HRRR": "ncep_hrrr_conus", "RRFS": "ncep_rrfs_conus", "ECMWF": "ecmwf_ifs025", "ICON": "icon_global"}  # no GFS, no NAM
+CLOUD_RING_KM = 20                 # site + 4 points this far out N/E/S/W: the 10-30 km around a site
+CLOUD_FROM_H = 10                  # from 10 am to about sunset
+SHADE_COVER = 5 / 8                # 5/8 of the sky in mid/high cloud...
+SHADE_SUNLOSS = 0.25               # ...and the sun at the ground cut by a quarter or more: real shade
+WATCH_COVER = 4 / 8
+
+
+def cloud_points(s):
+    """The site's point and four points CLOUD_RING_KM away (Laguna/Horse: between its two launches)."""
+    if "lat" in s:
+        lat, lon = s["lat"], s["lon"]
+    else:
+        ls = s.get("launches") or []
+        lat, lon = sum(l["lat"] for l in ls) / len(ls), sum(l["lon"] for l in ls) / len(ls)
+    dlat = CLOUD_RING_KM / 111.0
+    dlon = dlat / max(0.2, math.cos(math.radians(lat)))
+    return [(lat, lon), (lat + dlat, lon), (lat - dlat, lon), (lat, lon + dlon), (lat, lon - dlon)]
+
+
+def fetch_clouds(parents, log):
+    """{model: {site id: [hourly dict per ring point]}} of mid/high cloud cover and sunshine."""
+    pts, owner = [], []
+    for s in parents:
+        for la, lo in cloud_points(s):
+            pts.append({"lat": round(la, 4), "lon": round(lo, 4)})
+            owner.append(s["id"])
+    out = {}
+    for name, mid in CLOUD_MODELS.items():
+        try:
+            data = http_json(om_url("https://api.open-meteo.com/v1/forecast", pts, mid,
+                                    ["cloud_cover_mid", "cloud_cover_high", "shortwave_radiation"]))
+            data = data if isinstance(data, list) else [data]
+            per = {}
+            for sid, d in zip(owner, data):
+                hr = d.get("hourly", {})
+                hr["_utc_offset_h"] = (d.get("utc_offset_seconds") or -7 * 3600) / 3600
+                per.setdefault(sid, []).append(hr)
+            out[name] = per
+            log.append(f"clouds {name}: ok ({mid})")
+        except Exception as e:
+            log.append(f"clouds {name}: failed ({e})")
+    return out
+
+
+def cloud_day(site, ring, dstr):
+    """(cover 0-1, sun loss 0-1) from 10 am to about sunset, averaged over the ring; None without data."""
+    if not ring:
+        return None
+    off = ring[0].get("_utc_offset_h", -7)
+    end = int(sunset_hour(date.fromisoformat(dstr), cloud_points(site)[0][0], cloud_points(site)[0][1], off))
+    covs, sw_sum, clear_sum = [], 0.0, 0.0
+    for i, ts in enumerate(ring[0].get("time", [])):
+        if ts[:10] != dstr or not (CLOUD_FROM_H <= int(ts[11:13]) < end):
+            continue
+        hc = []
+        for hr in ring:
+            m, h, sw = _at(hr, "cloud_cover_mid", i), _at(hr, "cloud_cover_high", i), _at(hr, "shortwave_radiation", i)
+            if m is None or h is None:
+                continue
+            hc.append(1 - (1 - m / 100) * (1 - h / 100))          # the two layers, overlapping at random
+            clear = clear_sky_sw({"time": [ts], "_utc_offset_h": off}, 0, {"lat": site.get("lat", cloud_points(site)[0][0]),
+                                                                       "lon": site.get("lon", cloud_points(site)[0][1])})
+            if sw is not None and clear:
+                sw_sum += sw
+                clear_sum += clear
+        if hc:
+            covs.append(sum(hc) / len(hc))
+    if not covs:
+        return None
+    loss = clamp(1 - sw_sum / clear_sum) if clear_sum > 0 else 0.0
+    return sum(covs) / len(covs), loss
+
+
+def cloud_weights(names):
+    names = set(names)
+    if "HRRR" in names:
+        return {"HRRR": 2, "RRFS": 1}
+    if "RRFS" in names:
+        return {"RRFS": 2, "ECMWF": 0.5, "ICON": 0.5}
+    return {"ECMWF": 1, "ICON": 1}
+
+
+def add_clouds(result, parents, cdata):
+    """Attach a mid/high cloud heads-up to each site and day; it never changes a rating."""
+    by = {s["id"]: s for s in parents}
+    for d in result.get("days", []):
+        for sid, c in d["sites"].items():
+            per = {m: cloud_day(by[sid], cdata.get(m, {}).get(sid), d["date"]) for m in CLOUD_MODELS}
+            per = {m: v for m, v in per.items() if v}
+            if not per:
+                continue
+            w = cloud_weights(per)
+            per = {m: v for m, v in per.items() if m in w}
+            tot = sum(w[m] for m in per) or 1
+            cover = sum(w[m] * v[0] for m, v in per.items()) / tot
+            loss = sum(w[m] * v[1] for m, v in per.items()) / tot
+            shade_share = sum(w[m] for m, v in per.items() if v[0] >= SHADE_COVER and v[1] >= SHADE_SUNLOSS) / tot
+            c["cloud"] = {"okta": int(round(cover * 8)), "cover": round(cover, 2), "sun_loss": round(loss, 2),
+                          "agree": round(shade_share, 2), "models": {m: [round(v[0], 2), round(v[1], 2)] for m, v in per.items()}}
+        sd = [d["sites"][k]["cloud"] for k in SD_SITES if k in d["sites"] and d["sites"][k].get("cloud")]
+        if not sd:
+            continue
+        cover = sum(x["cover"] for x in sd) / len(sd)
+        loss = sum(x["sun_loss"] for x in sd) / len(sd)
+        agree = sum(x["agree"] for x in sd) / len(sd)
+        level = "shade" if cover >= SHADE_COVER and loss >= SHADE_SUNLOSS else ("watch" if cover >= WATCH_COVER else None)
+        d["cloud"] = {"okta": int(round(cover * 8)), "sun_loss": round(loss, 2), "agree": round(agree, 2), "level": level,
+                      "weak": level == "watch" or agree < 0.75}
+
 # ---------------------------------------------------------------- today's final forecast, and the archive
 FREEZE_HOUR = 14           # from 2 pm on, today keeps the last forecast made before 2 pm
 
@@ -2096,6 +2208,14 @@ def main(argv=None):
             print("\n".join(log), file=sys.stderr)
             sys.exit("No model data retrieved; keeping the previous forecast.json")
     result = build(sites, det, ens, nws, log, sample=args.sample, sources=sources, sp=sp, parents=parents)
+    if not args.sample:
+        try:
+            add_clouds(result, parents, fetch_clouds(parents, log))
+            result["sources"].append({"name": "Mid/high cloud (HRRR, RRFS, ECMWF, ICON)", "kind": "model", "provider": "Open-Meteo",
+                                      "id": "cloud_cover_mid/high", "status": "ok", "run": None, "fetched": now_iso(),
+                                      "url": "https://open-meteo.com/en/docs"})
+        except Exception as e:
+            log.append(f"clouds: failed ({e})")
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     if not args.sample:
         freeze_today(result, Path(args.out))
