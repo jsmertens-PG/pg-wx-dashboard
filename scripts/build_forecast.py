@@ -949,7 +949,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         # digits that holds through the afternoon (the models tend to run light on the sea breeze here, so
         # 8+ mph holding counts); not a storm. A thermal day is a 5.
         rating = 1.0 + 2.0 * clamp(local / 0.7)
-        hold_mph, peak_mph = site.get("great_ridge_mph", [8, 10])
+        hold_mph, peak_mph = site.get("great_ridge_mph", [7, 10])
         d0, d1 = site.get("great_ridge_dir", [240, 300])  # WSW and WNW equally good
         def strong_w(sc):
             return (sc["ld"] is not None and sc["lw"] is not None and wrap_in(sc["ld"], d0, d1)

@@ -421,6 +421,49 @@
       ]
     },
     {
+      "id": "whalesv",
+      "name": "Whale's V",
+      "short": "Whale's V",
+      "tier": "other",
+      "lat": 32.6454,
+      "lon": -116.8867,
+      "launch_ft": 1600,
+      "lz_ft": 600,
+      "kind": "thermal",
+      "style": "thermal",
+      "window": [
+        10,
+        17
+      ],
+      "dir": [
+        190,
+        270
+      ],
+      "wind_mph": [
+        1,
+        15
+      ],
+      "gust_mph": 18,
+      "otb_mph": 3,
+      "cross": [
+        [
+          160,
+          190,
+          "cross-S"
+        ],
+        [
+          270,
+          300,
+          "cross-WNW"
+        ]
+      ],
+      "aloft_max_kt": 15,
+      "ok_ft": 2000,
+      "xc_top_ft": 3000,
+      "xc_span_ft": 1000,
+      "note": "SW-facing bowl across Otay Lakes Rd from Skydive San Diego. Non-permitted, not an SDHGPA site: coordinate with the DZ, never land at the DZ, no north wind at all. Ridge plus thermal site flying; a few hundred feet over launch is a good day, XC on great days. Under the SAN approach (3,500 ft), not part of the rating. Launch and LZ heights are estimates."
+    },
+    {
       "id": "lagunahorse",
       "name": "Laguna / Horse / Fuzz",
       "short": "Laguna/Horse/Fuzz",
