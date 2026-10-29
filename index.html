@@ -287,6 +287,12 @@ details.day > summary.hd .when .rx { flex: 0 1 auto; min-width: 0; overflow: hid
 .day > .hd .when .pills { display: inline-flex; gap: 5px; align-items: center; margin-left: 8px; white-space: nowrap; }
 .day > .hd .when .pills .rx { margin: 0; }
 details.day > summary.hd .when { flex-wrap: wrap; row-gap: 4px; }
+/* phones: the pills get their own line under the day and wrap instead of being cut off; labels shorten */
+@media (max-width: 640px) {
+  details.day > summary.hd .when .pills { flex: 1 0 100%; margin-left: 0; flex-wrap: wrap; white-space: normal; row-gap: 4px; }
+  details.day > summary.hd .when .pills .rx { overflow: visible; flex: 0 0 auto; }
+  .rx .lg { display: none; }
+}
 .day > .hd .sum .why { margin: 0 4px 0 0; font-size: .66rem; }
 /* which models fed the day's ratings, bottom right of each card */
 .mods { font-size: .66rem; color: var(--muted); font-weight: 400; letter-spacing: .02em; white-space: nowrap; }
@@ -598,15 +604,16 @@ const trendHtml = (c) => {
 const rainPill = (d, small) => {
   const wet = d.rain_p != null && d.rain_p >= 0.5;
   if (!wet && !d.nws_rain) return "";
-  const txt = wet ? `Rain ${Math.round(d.rain_p * 100)}%${d.nws_rain ? " · NWS" : ""}` : "Showers · NWS";
+  const nws = d.nws_rain ? '<span class="lg"> · NWS</span>' : "";
+  const txt = wet ? `Rain ${Math.round(d.rain_p * 100)}%${nws}` : `Showers${nws}`;
   const tip = [wet && "share of model runs with rain at Torrey, Little Black, Blossom and Elsinore", d.nws_rain && "the NWS discussion mentions showers this day"].filter(Boolean).join("; ");
-  return `<span class="rx rx-rain${small ? " sm" : ""}${wet ? "" : " rx-soft"}" title="${esc(tip)}">${esc(txt)}</span>`;
+  return `<span class="rx rx-rain${small ? " sm" : ""}${wet ? "" : " rx-soft"}" title="${esc(tip)}">${txt}</span>`;
 };
 /* mid/high cloud (cirrus, alto-) over the SD sites from 10 am to sunset: a heads-up, never part of the rating */
 const cloudPill = (d) => {
   const c = d.cloud; if (!c || !c.level) return "";
   const tip = `mid/high cloud ${c.okta}/8 over Torrey, Little Black, Blossom and Elsinore, 10 am to sunset; sun at the ground ${Math.round(c.sun_loss * 100)}% below clear sky`;
-  return `<span class="rx rx-cloud${c.weak ? " rx-weak" : ""}" title="${esc(tip)}">High cloud ${c.okta}/8</span>`;
+  return `<span class="rx rx-cloud${c.weak ? " rx-weak" : ""}" title="${esc(tip)}"><span class="lg">High </span>cloud ${c.okta}/8</span>`;
 };
 const regimeHtml = (rg, small) => {
   if (!rg || !rg.type || !RX[rg.type]) return "";
