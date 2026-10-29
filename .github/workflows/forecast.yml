@@ -3,6 +3,7 @@ name: Update forecast
 on:
   schedule:
     - cron: "17 */2 * * *"   # every 2 hours (UTC); new HRRR runs arrive hourly
+    - cron: "47 20 * * *"    # an extra midday run (12:47 pm PST / 1:47 pm PDT) for today's final forecast
   workflow_dispatch: {}       # "Run workflow" button on the Actions tab
 
 permissions:

@@ -82,22 +82,33 @@ class Snapshots(unittest.TestCase):
 
 
 class FreezeToday(unittest.TestCase):
-    def test_today_freezes_at_2pm(self):
+    def test_today_freezes_after_noon(self):
         import tempfile
         tz = bf._tz()
         with tempfile.TemporaryDirectory() as tmp:
             prev = Path(tmp) / "f.json"
-            morning = {"generated": "2026-10-27T19:30+00:00", "days": [{"date": "2026-10-27", "sites": {}, "x": "morning"}]}
-            prev.write_text(json.dumps(morning))
+            midday = {"generated": "2026-10-27T20:30+00:00", "days": [{"date": "2026-10-27", "sites": {}, "x": "1:30pm"}]}
+            prev.write_text(json.dumps(midday))
             late = {"generated": "2026-10-27T23:30+00:00", "days": [{"date": "2026-10-27", "sites": {}, "x": "evening"}]}
             bf.freeze_today(late, prev, now=bf.datetime(2026, 10, 27, 16, 30, tzinfo=tz))
-            self.assertEqual(late["days"][0]["x"], "morning")
-            self.assertEqual(late["days"][0]["frozen_at"], "2026-10-27T19:30+00:00")
-            early = {"generated": "2026-10-27T18:00+00:00", "days": [{"date": "2026-10-27", "sites": {}, "x": "new"}]}
-            bf.freeze_today(early, prev, now=bf.datetime(2026, 10, 27, 11, 0, tzinfo=tz))
-            self.assertEqual(early["days"][0]["x"], "new")          # before 2 pm: still updating
+            self.assertEqual(late["days"][0]["x"], "1:30pm")
+            self.assertEqual(late["days"][0]["frozen_at"], "2026-10-27T20:30+00:00")
+            early = {"generated": "2026-10-27T21:00+00:00", "days": [{"date": "2026-10-27", "sites": {}, "x": "new"}]}
+            bf.freeze_today(early, prev, now=bf.datetime(2026, 10, 27, 14, 0, tzinfo=tz))
+            self.assertEqual(early["days"][0]["x"], "new")          # before 3 pm: still updating
             self.assertTrue(bf.archive_today(late, Path(tmp) / "archive"))
             self.assertEqual(json.loads((Path(tmp) / "archive" / "index.json").read_text())["dates"], ["2026-10-27"])
+
+    def test_morning_final_is_replaced(self):
+        import tempfile
+        tz = bf._tz()
+        with tempfile.TemporaryDirectory() as tmp:
+            prev = Path(tmp) / "f.json"
+            prev.write_text(json.dumps({"generated": "2026-10-27T22:00+00:00", "days": [
+                {"date": "2026-10-27", "sites": {}, "x": "10am", "frozen_at": "2026-10-27T17:00+00:00"}]}))
+            cur = {"generated": "2026-10-27T22:30+00:00", "days": [{"date": "2026-10-27", "sites": {}, "x": "3:30pm"}]}
+            bf.freeze_today(cur, prev, now=bf.datetime(2026, 10, 27, 15, 30, tzinfo=tz))
+            self.assertEqual(cur["days"][0]["x"], "3:30pm")
 
 
 class DayTypes(unittest.TestCase):

@@ -2127,7 +2127,8 @@ def add_clouds(result, parents, cdata):
                       "weak": level == "watch" or agree < 0.75}
 
 # ---------------------------------------------------------------- today's final forecast, and the archive
-FREEZE_HOUR = 14           # from 2 pm on, today keeps the last forecast made before 2 pm
+FREEZE_FROM = 12           # today's final forecast is the last one made from noon on ...
+FREEZE_HOUR = 15           # ... and before 3 pm (usually the 1-2 pm run); from 3 pm on today stops updating
 
 
 def _local(iso):
@@ -2135,7 +2136,9 @@ def _local(iso):
 
 
 def freeze_today(result, prev_path, now=None):
-    """After FREEZE_HOUR, today's day is no longer re-forecast: keep the last one made before it."""
+    """From FREEZE_HOUR on, today's day is no longer re-forecast: keep the last one made between
+    FREEZE_FROM and FREEZE_HOUR. If no run landed in that window (GitHub skips scheduled runs at
+    times), the first run after it is the final one. A final from before noon is never kept."""
     now = (now or datetime.now(timezone.utc)).astimezone(_tz())
     days = result.get("days") or []
     today = now.date().isoformat()
@@ -2146,12 +2149,12 @@ def freeze_today(result, prev_path, now=None):
     except Exception:
         prev = {}
     pd = next((d for d in prev.get("days", []) if d.get("date") == today), None)
-    if pd and pd.get("frozen_at"):
+    pg = _local(prev["generated"]) if prev.get("generated") else None
+    if pd and pd.get("frozen_at") and _local(pd["frozen_at"]).hour >= FREEZE_FROM:
         days[0] = pd
-    elif pd and prev.get("generated") and _local(prev["generated"]).date().isoformat() == today \
-            and _local(prev["generated"]).hour < FREEZE_HOUR:
+    elif pd and pg and pg.date().isoformat() == today and FREEZE_FROM <= pg.hour < FREEZE_HOUR:
         days[0] = dict(pd, frozen_at=prev["generated"])
-    else:                                    # first run of the day already after 2 pm: freeze this one
+    else:                                    # nothing made between noon and 3 pm: freeze this run
         days[0]["frozen_at"] = result.get("generated")
     return days[0]["frozen_at"]
 

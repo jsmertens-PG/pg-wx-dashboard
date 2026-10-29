@@ -506,7 +506,7 @@ footer .btnlink { font-size: .8rem; min-height: 30px; padding: 3px 10px; border:
     <summary><h2>What this radar is</h2></summary>
     <div class="how">
       <p><b>A quick overview, not a forecast of its own.</b> Flying Radar is built to read the models the way an experienced pilot reads their own tools (XC Skies, Skysight, the NWS discussion and the rest) and boil that daily routine down to one page. Instead of clicking through everything for 5–10 minutes every day, you get a glance at which day and which site are worth keeping an eye on. It is not trying to be better than XC Skies, Skysight or any other prediction; it is designed to be faster to read. It does not replace your own weather research before a flight, a look at the sky, the wind on launch or your own judgement: <b>a guide, not a launch decision.</b></p>
-      <p><b>What you see.</b> The <b>Weather Overview</b> sums up the pattern for the next day or two (tap for the NWS discussion in short). Each <b>day card</b> shows the day type (Front, Pre-frontal, Post-frontal, Santa Ana, Switch day), a rain pill when it's likely wet, and the sites rated 3 or better, best first. Open a day for all sites; open a site for height, winds and rain. Small ▲/▼ arrows show where the forecast changed in the last day. Today stops updating at 2 pm and keeps its final forecast, and every past day is kept in the <b>Archive</b> (bottom of the page) with any flights logged for it.</p>
+      <p><b>What you see.</b> The <b>Weather Overview</b> sums up the pattern for the next day or two (tap for the NWS discussion in short). Each <b>day card</b> shows the day type (Front, Pre-frontal, Post-frontal, Santa Ana, Switch day), a rain pill when it's likely wet, and the sites rated 3 or better, best first. Open a day for all sites; open a site for height, winds and rain. Small ▲/▼ arrows show where the forecast changed in the last day. Today stops updating at 3 pm and keeps its final forecast (the last one made from noon on, usually the 1–2 pm run), and every past day is kept in the <b>Archive</b> (bottom of the page) with any flights logged for it.</p>
       <p><b>How it's tuned.</b> The rating rules were tuned by hand against real days: what the models forecast, what an experienced local pilot called the day, and what was actually flown. The aim is to mimic a careful daily weather check for the next week, not to out-forecast anyone. Little Black, Blossom, Elsinore and Torrey are calibrated this way; Otay, Soboba, Marshall, Santa Barbara and Laguna/Horse are still educated guesses, so read them as pointers. The models smooth terrain, so sea-breeze timing and convergence lines are the weakest part, and scattered showers are hit-or-miss at a single point. Flight reports are the best way to make it better.</p>
     </div>
   </details>
@@ -527,7 +527,7 @@ footer .btnlink { font-size: .8rem; min-height: 30px; padding: 3px 10px; border:
       <p><b>Models.</b> While HRRR covers a day, HRRR ×2 and RRFS ×1 decide; then RRFS ×2 plus the global models (GFS, ECMWF, ICON together counting once); after that the global models alone. RRFS runs low, so its heights are raised by its recent gap to HRRR before scoring (the heights shown are the model's own). The ensembles give the chance of a flyable or XC day. The models behind each day are listed at the bottom right of its card.</p>
       <p><b>Rain and day type.</b> "rain x%" is the share of model and ensemble runs with rain at a site: 30% costs half a step, 45% a full step, 60% or more makes it a no-go. The rain pill on a day appears when half the runs are wet across the San Diego sites, and says "NWS" when the forecast discussion also mentions showers. The day type comes from the models over the region (rain, cooling and the 850/700 hPa winds); a percentage on it means the models disagree.</p>
       <p><b>High cloud.</b> A grey "High cloud 6/8" pill warns of cirrus and altostratus/altocumulus shade over the San Diego sites from 10 am to about sunset: mid and high cloud (cumulus and the marine layer are left out) averaged over each site and four points about 20 km around it, from HRRR and RRFS (ECMWF and ICON further out; not GFS). It shows when 5/8 or more of the sky is covered and the sunshine at the ground is cut by a quarter or more; it is outlined when the models split or the cover is 4/8, or thin. Inside a site it reads e.g. "mid/high cloud 6/8 · sun −35%". It never changes a rating (the lift model already uses each model's sunshine).</p>
-      <p><b>How it's tuned.</b> Every morning the radar keeps a copy of its forecast, and today's 2 pm forecast goes to the archive. Reported flights and day calls are set against those, and the site scales and rules in <span class="mono">sites.json</span> are adjusted when a site keeps reading high or low. Changes so far: Elsinore's corridor heights, Blossom's El Cajon Mountain point and 11–2 window, Santa Barbara from launch height, Torrey's ridge rules, the rain steps.</p>
+      <p><b>How it's tuned.</b> Every morning the radar keeps a copy of its forecast, and today's final midday forecast goes to the archive. Reported flights and day calls are set against those, and the site scales and rules in <span class="mono">sites.json</span> are adjusted when a site keeps reading high or low. Changes so far: Elsinore's corridor heights, Blossom's El Cajon Mountain point and 11–2 window, Santa Barbara from launch height, Torrey's ridge rules, the rain steps.</p>
     </div>
   </details>
 
@@ -816,7 +816,7 @@ function detail(d, s, inline) {
     <div class="inds">${flags}<span class="muted">flyable ${pct(c.p_fly)} · XC ${pct(c.p_xc)}${c.sunset ? ` · sunset ${esc(c.sunset)}` : ""}</span></div>`;
 }
 
-/* ---------- archive: every past day as it was forecast that day (frozen at 2 pm) ---------- */
+/* ---------- archive: every past day as it was forecast that day (frozen after noon) ---------- */
 const DAYKEY = {};
 let CARD = null, ARCH_LOADED = false;
 const fmtTime = (iso) => new Date(iso).toLocaleTimeString("en-US", { timeZone: TZ, hour: "numeric", minute: "2-digit" });
@@ -850,7 +850,7 @@ async function loadArchive() {
       });
       return CARD(d, "a" + k);
     }).join("");
-    $("#arch").innerHTML = `<button type="button" class="arch-back" onclick="document.getElementById('archBtn').click()">← Back to forecast</button><p class="arch-h">Each past day as the radar forecast it that day (frozen at 2 pm), newest first, with any flights logged for it.</p>${html || '<div class="empty">No archived days yet.</div>'}`;
+    $("#arch").innerHTML = `<button type="button" class="arch-back" onclick="document.getElementById('archBtn').click()">← Back to forecast</button><p class="arch-h">Each past day as the radar forecast it that day (its final midday forecast), newest first, with any flights logged for it.</p>${html || '<div class="empty">No archived days yet.</div>'}`;
   } catch (e) { $("#arch").innerHTML = '<div class="empty">The archive could not be loaded.</div>'; ARCH_LOADED = false; }
 }
 let ARCH = false;
