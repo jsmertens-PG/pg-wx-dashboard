@@ -1554,6 +1554,12 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             sp_weak = bool(s.get("sp_veto_ft") and sp_cells) and max(x["ceiling_ft"] for x in sp_cells) < s["sp_veto_ft"]
             if sp_weak:
                 rating = min(rating, 4.0)
+            # a 5 needs the site's "great" height (xc_top_ft + xc_span_ft, e.g. Little Black 3,500 ft) in at
+            # least the best model; short of it the day shows 4 at most (Torrey's ridge scale is its own)
+            great_ft = (s.get("xc_top_ft") or 0) + (s.get("xc_span_ft") or 1000)
+            tops = [v["top"] * FT for v in D.values() if v.get("top")] if D else []
+            if s.get("style") != "ridge" and s.get("xc_top_ft") and tops and max(tops) < great_ft:
+                rating = min(rating, 4.49)
             # awkward drift at the top of lift (most of the rating weight agrees): a tag, and at some
             # sites a small nick (Blossom: NW or clearly WNW pushes XC toward the Rock Pile)
             xb = s.get("xc_bad_aloft") or {}
