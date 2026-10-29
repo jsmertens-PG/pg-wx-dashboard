@@ -595,6 +595,19 @@ def profile(hr, i, levels, elev_m):
     return sorted(pts)
 
 
+def capped_near(pts, launch_m, depth_m, top_m=None):
+    """True when a stable layer (temperature not falling with height) or the thermal top sits
+    within depth_m above launch: the lid that squeezes onshore flow over a tall ridge."""
+    if top_m is not None and launch_m - 100 <= top_m <= launch_m + depth_m:
+        return True
+    for (z1, t1, *_), (z2, t2_, *_) in zip(pts, pts[1:]):
+        if z2 <= launch_m or z1 >= launch_m + depth_m or z2 - z1 < 50:
+            continue
+        if (t2_ - t1) / (z2 - z1) * 1000 >= -1.0:      # weaker than 1 C/km: an inversion or near-isothermal
+            return True
+    return False
+
+
 def thermal_top_m(pts, t2, excess=1.0):
     """Height where a dry-adiabatic surface parcel (t2+excess) meets the environment."""
     if not pts or t2 is None:
@@ -753,6 +766,14 @@ def score_hour(site, hr, i, levels, elev_m):
     w10, g10 = _at(hr, "wind_speed_10m", i), _at(hr, "wind_gusts_10m", i)
     gust_f = max(1.0, g10 / w10) if (w10 and g10 and w10 > 1) else 1.0
     lg_mph = lw_mph * gust_f if lw_mph is not None else None
+    # venturi (Santa Barbara): an onshore flow under a capping inversion near ridge height is squeezed
+    # over the range and blows harder at the ridgeline than the coarse models show
+    vt = site.get("venturi")
+    venturi = bool(vt and lw_mph is not None and ld is not None and wrap_in(ld, *vt["from"])
+                   and capped_near(pts, launch_m, vt.get("cap_ft", 2500) / FT, top_parcel))
+    if venturi:
+        lw_mph *= vt.get("factor", 1.3)
+        lg_mph = lw_mph * max(gust_f, vt.get("gust", 1.3))
     a_max, a_spd, a_dir = layer_wind(pts, launch_m + 150, max(launch_m + 600, usable_show))
     tw_spd, tw_dir = interp_wind(pts, max(usable_show, launch_m + 150))
 
@@ -796,6 +817,12 @@ def score_hour(site, hr, i, levels, elev_m):
     bad_min = site.get("aloft_bad_min_kt") or (3 if site["kind"] == "convergence" else 6)
     bad_dir = (a_spd is not None and a_dir is not None and site.get("aloft_bad")
                and wrap_in(a_dir, *site["aloft_bad"]) and a_spd >= bad_min)
+    # some ranges block a north wind aloft when the lapse rate is strong or a lid sits over the ridge
+    # (Santa Barbara): then only a stronger flow from the back really reaches the launch
+    nb = site.get("aloft_block")
+    if (bad_dir and nb and a_spd < nb.get("kt", 12)
+            and (wstar >= nb.get("wstar", 1.4) or capped_near(pts, launch_m, 2500 / FT))):
+        bad_dir = False
     if bad_dir:
         q *= clamp(1 - (a_spd - bad_min + 2) / 8) * 0.5
         codes.append("aloftdir")
@@ -845,7 +872,7 @@ def score_hour(site, hr, i, levels, elev_m):
     return {"q": q, "xc_s": xc_s, "xc_block": xc_block, "dbg": dbg, "glass": glass, "cold": cold_aloft, "good_launch": bool(good_launch), "launch": launch,
             "usable": usable, "usable_show": usable_show, "peak_top": peak_top, "base": base, "agl": agl, "wstar": wstar, "climb": max(0.0, wstar - SINK + 0.3),
             "lw": lw_mph, "ld": ld, "lg": lg_mph, "a_max": a_max, "tw": (tw_dir, tw_spd) if tw_spd is not None else None, "a_spd": a_spd, "a_dir": a_dir,
-            "pr": pr, "cape": cape, "codes": codes}
+            "pr": pr, "cape": cape, "codes": codes + (["venturi"] if venturi else [])}
 
 
 def ceil_level(site, ft):
@@ -1055,6 +1082,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "launch": max(set(x["launch"] for x in blk if x["launch"]) or {None}, key=lambda v: sum(1 for x in blk if x["launch"] == v)),
         "a_max": med("a_max"), "a_spd": a_spd, "a_dir": a_dir,
         "aloftdir": sum(1 for s in blk if "aloftdir" in s["codes"]) >= 2,
+        "venturi": sum(1 for s in blk if "venturi" in s["codes"]) >= 2,
         "dbg": [[h, x["dbg"]] for h, x in hours if 9 <= h <= 16],
         "xc_block": sum(1 for h, s in win if s["xc_block"]) >= max(1, len(win) // 2) if win else False,
         "pr": sum(s["pr"] for _, s in hours), "pr_win": window_rain, "cape": max(s["cape"] for _, s in hours),
@@ -1500,7 +1528,11 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             # scattered showers rarely hit one grid point, so use the share of runs with rain here
             runs_all = cell["ens"] or list(D.values())
             shower_p = sum(1 for a in runs_all if a["pr"] >= 0.2) / len(runs_all)
-            wet = shower_p >= RAIN_P                    # it really rains: rock bottom
+            # the coarse ensembles drizzle over the coast and mountains; when HRRR and RRFS both run this
+            # day and both stay dry here, rain can cost a step but not make it a no-go
+            hires = [D[m] for m in ("HRRR", "RRFS") if m in D]
+            hires_dry = len(hires) == 2 and all(a["pr"] < 0.2 for a in hires)
+            wet = shower_p >= RAIN_P and not hires_dry  # it really rains: rock bottom
             if wet:
                 rating = 1.0
             elif shower_p >= RAIN_STEP[-1][0]:          # a moist, showery day: a step down before the no-go
@@ -1599,6 +1631,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 {"k": "Wind 1 pm", "v": wind_txt(lead.get("wind_1pm") or lead.get("wind_now")) if lead else "–",
                  "sub": " · ".join(x for x in (
                      f"later {wind_txt(lead['wind_later'])}" if lead and lead.get("wind_later") else "",
+                     "venturi on the ridge" if lead and lead.get("venturi") else "",
                      lead.get("launch") if lead and (lead.get("launch") in ("over the back", "blown out", "strong", "gusty") or str(lead.get("launch")).startswith("cross")) else "") if x),
                  "q": round(lead["launch_q"] if lead else 0, 2)},
                 {"k": "Wind aloft", "v": (f"{compass(lead['tw13'][0])} {round(lead['tw13'][1])} kt" if lead and lead.get("tw13")

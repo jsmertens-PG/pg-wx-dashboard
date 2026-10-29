@@ -263,3 +263,14 @@ class NwsText(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class Venturi(unittest.TestCase):
+    def test_capped_near(self):
+        from build_forecast import capped_near
+        launch = 945
+        inv = [(10, 20, 5, 180), (900, 14, 8, 160), (1400, 15, 10, 160), (2000, 11, 10, 160)]
+        free = [(10, 20, 5, 180), (900, 14, 8, 160), (1400, 9, 10, 160), (2000, 3, 10, 160)]
+        self.assertTrue(capped_near(inv, launch, 760))
+        self.assertFalse(capped_near(free, launch, 760))
+        self.assertTrue(capped_near(free, launch, 760, top_m=1300))

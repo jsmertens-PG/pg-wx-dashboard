@@ -608,7 +608,7 @@
           "why": "the channel"
         }
       ],
-      "note": "South-facing front range above Santa Barbara; launch sits above the marine layer, so thermals are measured from the slopes at launch height. Sundowners and other real north winds are over the back.",
+      "note": "South-facing front range above Santa Barbara; launch sits above the marine layer, so thermals are measured from the slopes at launch height. Sundowners and other real north winds are over the back. The range and a capping inversion near ridge height squeeze onshore S-SE flow (venturi: stronger and gustier at the ridgeline than the models show) but block a north wind aloft when the lapse rate is strong.",
       "sp": [
         {
           "page": "santabarb",
@@ -626,7 +626,32 @@
         15
       ],
       "otb_mph": 6,
-      "model_ground_ft": 3100
+      "model_ground_ft": 3100,
+      "cross": [
+        [
+          80,
+          140,
+          "cross from the east"
+        ],
+        [
+          285,
+          305,
+          "cross from the west"
+        ]
+      ],
+      "venturi": {
+        "from": [
+          120,
+          220
+        ],
+        "factor": 1.3,
+        "gust": 1.35,
+        "cap_ft": 2500
+      },
+      "aloft_block": {
+        "kt": 14,
+        "wstar": 1.4
+      }
     },
     {
       "id": "owens",
