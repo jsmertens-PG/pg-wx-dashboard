@@ -274,7 +274,7 @@ details.day[open] > summary .chev { transform: translateY(2px) rotate(-135deg); 
 .exp.sm { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; }
 .exp.sm .chev { width: 6px; height: 6px; border-width: 0 2px 2px 0; }
 .srow[aria-expanded="true"] .exp.sm .chev { transform: translateY(1px) rotate(-135deg); }
-details.day > summary.hd { grid-template-columns: minmax(0, 1fr) auto 34px; align-items: center; }
+details.day > summary.hd { grid-template-columns: minmax(0, 1fr) 34px; align-items: center; }
 details.day > summary.hd .when { flex-wrap: nowrap; overflow: hidden; }
 details.day > summary.hd .when .rx { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .rx-s { display: none; }
@@ -721,7 +721,7 @@ function render(data) {
     return `<details class="day" id="day-${i}" data-date="${esc(d.date)}" style="--qc:${cardCol}"${open ? " open" : ""}>
       <summary class="hd">
         <span class="when${d.regime && d.regime.type ? " has-rx" : ""}"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small>${regimeHtml(d.regime) || rainPill(d) || cloudPill(d) ? `<span class="pills">${regimeHtml(d.regime)}${rainPill(d)}${cloudPill(d)}</span>` : ""}</span>
-        <span class="big" title="Best home site">${trendHtml(bm)}${r1(bm?.rating)}<small>/5</small></span>
+        <!-- the day's own score (best home site) is still worked out and sets the card colour, but isn't shown -->
         <span class="exp" aria-hidden="true"><i class="chev"></i></span>
         <span class="sum">${d.why ? `<span class="why">${esc(d.why)}</span>` : ""}${daySummary(d, big, other)}${watchPill(d)}${mods ? `<span class="mods">${mods}</span>` : ""}</span>
       </summary>
