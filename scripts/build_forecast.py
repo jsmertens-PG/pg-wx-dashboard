@@ -61,8 +61,12 @@ HIRES = ("HRRR", "RRFS")
 GLOBAL = ("ECMWF", "GFS", "ICON")
 HIRES_W = {"HRRR": 2, "RRFS": 1}
 SD_SITES = ("torrey", "lb", "blossom", "elsinore")   # the home sites the day's rain pill is judged on
-RAIN_P = 0.6                       # share of runs with rain at which a day is a no-go
-RAIN_STEP = [(0.3, 0.5), (0.45, 1.0)][::-1]  # below RAIN_P: 45%+ of runs wet costs a full step, 30%+ half a step
+# rain in the rating: only rain through the flying window counts. Cells and short showers are left to the
+# pilot (watch them, land if one comes) and only show as a tag. WET_FRAC is the share of the site's window
+# hours with >= WET_MM of rain, averaged over the models with the rating's own weights.
+WET_MM = 0.3
+WET_FRAC = (0.6, 0.35)             # 60%+ of the window wet: no-go; 35%+: wet much of the window, a step down
+RAIN_P = 0.6                       # (display) share of runs with any rain, for the tag and the day pill
 CALIB_SITES = ("lb", "blossom", "elsinore", "owens")
 CORRIDOR_DBG = {}                  # per corridor point, midday: model ground and usable top (ft), for calibration
 
@@ -1094,7 +1098,8 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "venturi": sum(1 for s in blk if "venturi" in s["codes"]) >= 2,
         "dbg": [[h, x["dbg"]] for h, x in hours if 9 <= h <= 16],
         "xc_block": sum(1 for h, s in win if s["xc_block"]) >= max(1, len(win) // 2) if win else False,
-        "pr": sum(s["pr"] for _, s in hours), "pr_win": window_rain, "cape": max(s["cape"] for _, s in hours),
+        "pr": sum(s["pr"] for _, s in hours), "pr_win": window_rain,
+        "wet_f": (sum(1 for _, s in win if s["pr"] >= WET_MM) / len(win)) if win else 0.0, "cape": max(s["cape"] for _, s in hours),
     }
 
 
@@ -1537,15 +1542,14 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             # scattered showers rarely hit one grid point, so use the share of runs with rain here
             runs_all = cell["ens"] or list(D.values())
             shower_p = sum(1 for a in runs_all if a["pr"] >= 0.2) / len(runs_all)
-            # the coarse ensembles drizzle over the coast and mountains; when HRRR and RRFS both run this
-            # day and both stay dry here, rain can cost a step but not make it a no-go
-            hires = [D[m] for m in ("HRRR", "RRFS") if m in D]
-            hires_dry = len(hires) == 2 and all(a["pr"] < 0.2 for a in hires)
-            wet = shower_p >= RAIN_P and not hires_dry  # it really rains: rock bottom
+            # the rating only counts rain that lasts through the flying window, weighted like the rating
+            wet_by = {k: v.get("wet_f", 0.0) for k, v in D.items()}
+            wet_f = blend(wet_by) if wet_by else (median([a.get("wet_f", 0.0) for a in cell["ens"]]) if cell["ens"] else 0.0)
+            wet = wet_f >= WET_FRAC[0]                   # a wet day: rock bottom
             if wet:
                 rating = 1.0
-            elif shower_p >= RAIN_STEP[-1][0]:          # a moist, showery day: a step down before the no-go
-                rating = max(1.0, rating - next(step for p0, step in RAIN_STEP if shower_p >= p0))
+            elif wet_f >= WET_FRAC[1]:                   # wet much of the window: a step down
+                rating = max(1.0, rating - 1.0)
             off_season = bool(s.get("season_months")) and int(dstr[5:7]) not in s["season_months"]
             if off_season:
                 rating = min(rating, 2.0)
