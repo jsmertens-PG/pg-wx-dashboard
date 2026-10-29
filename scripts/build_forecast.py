@@ -823,9 +823,15 @@ def score_hour(site, hr, i, levels, elev_m):
     if (bad_dir and nb and a_spd < nb.get("kt", 12)
             and (wstar >= nb.get("wstar", 1.4) or capped_near(pts, launch_m, 2500 / FT))):
         bad_dir = False
-    if bad_dir:
+    # the direction of the wind aloft is for planning an XC (drift, which way to go): it is shown on the
+    # card but stays out of the rating. Only a convergence site needs it, since the wrong synoptic
+    # flow stops the convergence from setting up at all.
+    if bad_dir and site["kind"] == "convergence":
         q *= clamp(1 - (a_spd - bad_min + 2) / 8) * 0.5
         codes.append("aloftdir")
+    elif bad_dir:
+        codes.append("drift")
+        bad_dir = False
     if site["kind"] == "convergence" and a_spd is not None and a_spd > 10:
         q *= clamp(1 - (a_spd - 10) / 10)
         codes.append("aloft")
@@ -1081,7 +1087,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "launch_q": sum(1 for s in blk if s["good_launch"]) / len(blk),
         "launch": max(set(x["launch"] for x in blk if x["launch"]) or {None}, key=lambda v: sum(1 for x in blk if x["launch"] == v)),
         "a_max": med("a_max"), "a_spd": a_spd, "a_dir": a_dir,
-        "aloftdir": sum(1 for s in blk if "aloftdir" in s["codes"]) >= 2,
+        "aloftdir": sum(1 for s in blk if {"aloftdir", "drift"} & set(s["codes"])) >= 2,
         "venturi": sum(1 for s in blk if "venturi" in s["codes"]) >= 2,
         "dbg": [[h, x["dbg"]] for h, x in hours if 9 <= h <= 16],
         "xc_block": sum(1 for h, s in win if s["xc_block"]) >= max(1, len(win) // 2) if win else False,
