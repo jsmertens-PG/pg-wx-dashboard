@@ -268,7 +268,12 @@ details.day:not([open]) > summary { border-bottom: 0 !important; }
 details.day[open] > summary .sum { display: none; }
 .exp { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--ink); background: var(--surface); display: inline-flex; align-items: center; justify-content: center; align-self: center; flex: 0 0 auto; }
 .chev { display: block; width: 9px; height: 9px; border-right: 2.5px solid var(--ink); border-bottom: 2.5px solid var(--ink); transform: translateY(-2px) rotate(45deg); transition: transform .15s ease; }
-details.day[open] .chev { transform: translateY(2px) rotate(-135deg); }
+details.day[open] > summary .chev { transform: translateY(2px) rotate(-135deg); }
+/* a smaller open button on each site row (second layer), so it's clear a site opens too */
+.srow { position: relative; padding-right: 46px !important; }
+.exp.sm { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; }
+.exp.sm .chev { width: 6px; height: 6px; border-width: 0 2px 2px 0; }
+.srow[aria-expanded="true"] .exp.sm .chev { transform: translateY(1px) rotate(-135deg); }
 details.day > summary.hd { grid-template-columns: minmax(0, 1fr) auto 34px; align-items: center; }
 details.day > summary.hd .when { flex-wrap: nowrap; overflow: hidden; }
 details.day > summary.hd .when .rx { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
@@ -794,6 +799,7 @@ function siteRow(d, s, i, kind) {
   return `<button type="button" class="srow ${kind}" style="--rc:${qv(c.rating)}" data-site="${s.id}" data-day="${i}" aria-expanded="false">
     <span class="nm">${esc(name)}</span>${bar(c.rating, kind === "small")}<span class="rt">${trendHtml(c)}${r1(c.rating)}</span>
     <span class="tx">${c.label === "XC" ? "" : `<span class="lab" style="color:${qv(c.rating)}">${esc(c.label)}</span>`}${c.xc ? '<span class="xcmark">XC</span>' : ""}${(c.tags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join("")}${rowNote(c) ? `<span class="note">${esc(rowNote(c))}</span>` : ""}</span>
+    <span class="exp sm" aria-hidden="true"><span class="chev"></span></span>
   </button>`;
 }
 
