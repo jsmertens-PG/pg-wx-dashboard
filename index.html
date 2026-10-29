@@ -705,14 +705,16 @@ function render(data) {
     return list.map(esc).join(" · ");
   };
   /* day cards */
+  const TRIPS = new Set(["soboba", "marshall", "santabarbara", "owens"]);
   const cardFor = (d, i) => {
     DAYKEY[i] = d;
     const L = dayLabel(d.date);
-    /* the day's score is the best site of the day, whatever its tier (the same number as its best chip) */
-    const bm = Object.values(d.sites || {}).filter((c) => c && c.rating != null).sort((a, b) => b.rating - a.rating)[0];
+    /* the day's score is the best San Diego site; the trips (Soboba, Marshall, Santa Barbara, Owens) never set it */
+    const sdCells = Object.entries(d.sites || {}).filter(([k, c]) => !TRIPS.has(k) && c && c.rating != null).map(([, c]) => c);
+    const bm = sdCells.slice().sort((a, b) => b.rating - a.rating)[0];
     /* card colour: the best home site's colour, mixed toward the next level down by how many home sites
        reach it (all three: full colour; two: 75%; one standing out: 50%), so a standout site's pill pops */
-    const homeR = Object.values(d.sites || {}).map((c) => c?.rating ?? 0).sort((x, y) => y - x).slice(0, 3);
+    const homeR = sdCells.map((c) => c.rating).sort((x, y) => y - x).slice(0, 3);
     const tint = homeR[0] ?? 0;
     const atTop = homeR.filter((r) => q(r) === q(tint)).length, below = homeR.find((r) => q(r) !== q(tint));
     const share = homeR.length > 1 ? (atTop - 1) / (homeR.length - 1) : 1;
@@ -722,7 +724,7 @@ function render(data) {
     return `<details class="day" id="day-${i}" data-date="${esc(d.date)}" style="--qc:${cardCol}"${open ? " open" : ""}>
       <summary class="hd">
         <span class="when${d.regime && d.regime.type ? " has-rx" : ""}"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small>${regimeHtml(d.regime) || rainPill(d) || cloudPill(d) ? `<span class="pills">${regimeHtml(d.regime)}${rainPill(d)}${cloudPill(d)}</span>` : ""}</span>
-        <span class="big" title="Best site of the day">${trendHtml(bm)}${r1(bm?.rating)}<small>/5</small></span>
+        <span class="big" title="Best San Diego site of the day">${trendHtml(bm)}${r1(bm?.rating)}<small>/5</small></span>
         <span class="exp" aria-hidden="true"><i class="chev"></i></span>
         <span class="sum">${d.why ? `<span class="why">${esc(d.why)}</span>` : ""}${daySummary(d, big, other)}${watchPill(d)}${mods ? `<span class="mods">${mods}</span>` : ""}</span>
       </summary>
