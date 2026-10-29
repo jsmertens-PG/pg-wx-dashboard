@@ -422,8 +422,8 @@
     },
     {
       "id": "lagunahorse",
-      "name": "Laguna / Horse",
-      "short": "Laguna/Horse",
+      "name": "Laguna / Horse / Fuzz",
+      "short": "Laguna/Horse/Fuzz",
       "tier": "other",
       "launch_ft": 4540,
       "kind": "convergence",
@@ -451,7 +451,7 @@
           "why": "the border"
         }
       ],
-      "note": "Two launches: Horse faces west, Laguna faces east over the desert. Each is scored on its own and the better one is shown.",
+      "note": "Convergence sites: Horse faces west, Laguna faces east over the desert, Fuzz is flown on the same convergence. Horse and Laguna are scored on their own and the better one is shown. The rating only says whether the setup is there; where and when the convergence sits, and the morning winds, are for you to check.",
       "sp": [
         {
           "page": "scal",
