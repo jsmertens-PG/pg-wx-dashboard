@@ -273,19 +273,24 @@ class NwsText(unittest.TestCase):
 
 
 
-class SunlessDays(unittest.TestCase):
-    """The radar stays optimistic; only a day with virtually no sun loses some (thermal sites only)."""
-    def test_rain_steps_unchanged(self):
-        self.assertAlmostEqual(bf.weather_steps(4.0, 0.45, False, None)[0], 4.0)
-        self.assertAlmostEqual(bf.weather_steps(4.0, 0.55, False, None)[0], 3.5)
-        self.assertAlmostEqual(bf.weather_steps(4.0, 0.75, True, None)[0], 2.5)
+class RainAndSun(unittest.TestCase):
+    """Wet, grey days (Fri Oct 30, Sat Oct 31 2026) should not show 3s inland."""
+    def test_rain_steps(self):
+        self.assertAlmostEqual(bf.weather_steps(4.0, 0.32, False, None)[0], 3.5)
+        self.assertAlmostEqual(bf.weather_steps(4.0, 0.50, False, None)[0], 3.0)
+        self.assertAlmostEqual(bf.weather_steps(4.0, 0.65, True, None)[0], 2.0)
 
-    def test_cloudy_but_sunny_enough_costs_nothing(self):
-        self.assertEqual(bf.weather_steps(3.8, 0.45, False, (1.0, 0.41))[0], 3.8)   # 8/8 but 60% of the sun gets through
+    def test_grey_wet_saturday_below_3(self):
+        self.assertLess(bf.weather_steps(3.83, 0.45, True, (1.0, 0.41))[0], 2.5)   # Little Black
+        self.assertLess(bf.weather_steps(3.97, 0.40, True, (1.0, 0.38))[0], 3.0)   # Blossom
 
-    def test_virtually_no_sun_costs(self):
-        self.assertAlmostEqual(bf.weather_steps(4.0, 0.0, False, (1.0, 0.60))[0], 3.5)
-        self.assertAlmostEqual(bf.weather_steps(4.0, 0.0, False, (1.0, 0.80))[0], 3.0)
+    def test_thin_cirrus_costs_nothing(self):
+        self.assertEqual(bf.weather_steps(4.0, 0.0, False, (0.9, 0.2))[0], 4.0)
+
+    def test_sun_steps(self):
+        self.assertAlmostEqual(bf.weather_steps(4.0, 0.0, False, (1.0, 0.40))[0], 3.5)
+        self.assertAlmostEqual(bf.weather_steps(4.0, 0.0, False, (1.0, 0.60))[0], 3.0)
+        self.assertAlmostEqual(bf.weather_steps(4.0, 0.0, False, (1.0, 0.80))[0], 2.5)
 
     def test_ridge_and_rain_ok_sites_untouched(self):
         self.assertEqual(bf.weather_steps(3.3, 0.70, True, (1.0, 0.9), rain_ok=True)[0], 3.3)

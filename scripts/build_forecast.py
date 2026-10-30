@@ -69,12 +69,12 @@ WET_FRAC = (0.6, 0.35)             # 60%+ of the window wet: no-go; 35%+: wet mu
 RAIN_P = 0.6                       # (display) share of runs with any rain, for the tag and the day pill
 # on top of that, at every site but those with "rain": "true" (Torrey: cells are fine there, you land when
 # one comes): the chance of rain and the NWS each cost a bit, together never more than RAIN_MAX_STEP
-RAIN_PROB_STEP = [(0.7, 1.0), (0.5, 0.5)]   # share of runs with rain at the site
+RAIN_PROB_STEP = [(0.6, 1.5), (0.45, 1.0), (0.3, 0.5)]   # share of runs with rain at the site
 NWS_STEP, NWS_MIN_P = 0.5, 0.3              # NWS names showers/rain that day, and the models show 30%+
-RAIN_MAX_STEP = 1.5
-# the radar stays optimistic about cloud: only a day with virtually no sun (10 am to sunset, see cloud_day)
-# loses some, at thermal sites; the ridge (Torrey) is left alone
-CLOUD_STEP = [(0.70, 1.0), (0.55, 0.5)]     # (share of the sunshine lost at the ground, step)
+RAIN_MAX_STEP = 2.0
+# a grey day (10 am to sunset, see cloud_day) costs at thermal sites by how much sunshine is lost at the
+# ground, not by cloud cover alone (thin cirrus lets most of it through); the ridge (Torrey) is left alone
+CLOUD_STEP = [(0.70, 1.5), (0.55, 1.0), (0.35, 0.5)]   # (share of the sunshine lost, step)
 WEATHER_MAX_STEP = 2.0                      # rain and cloud together never cost more than this
 CALIB_SITES = ("lb", "blossom", "elsinore", "owens")
 CORRIDOR_DBG = {}                  # per corridor point, midday: model ground and usable top (ft), for calibration
