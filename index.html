@@ -567,7 +567,7 @@ footer .btnlink { font-size: .8rem; min-height: 30px; padding: 3px 10px; border:
   <footer>
     <span id="foot"></span>
     <button type="button" id="archBtn" title="Every past day as the radar forecast it that day">Archive</button>
-    <a id="runNow" class="btnlink" href="#" target="_blank" rel="noopener" hidden title="Opens GitHub, where you press Run workflow">Update forecast</a>
+    <a id="runNow" class="btnlink" href="#" target="_blank" rel="noopener" hidden title="Opens GitHub, where you press Run workflow">Start new forecast run</a>
     <span class="presets" id="theme">
       <button type="button" data-t="auto">Auto</button>
       <button type="button" data-t="light">Light</button>
@@ -938,7 +938,7 @@ let y0 = null;
 $("#sheet").addEventListener("touchstart", (e) => { y0 = $("#sheet").scrollTop <= 0 ? e.touches[0].clientY : null; }, { passive: true });
 $("#sheet").addEventListener("touchend", (e) => { if (y0 != null && e.changedTouches[0].clientY - y0 > 70) closeSheet(); y0 = null; }, { passive: true });
 
-/* "Update forecast" opens the workflow page of this repo (works on <user>.github.io/<repo>/) */
+/* "Start new forecast run" opens the workflow page of this repo (works on <user>.github.io/<repo>/) */
 if (location.hostname.endsWith(".github.io")) {
   const user = location.hostname.split(".")[0], repo = location.pathname.split("/").filter(Boolean)[0];
   if (user && repo) { const a = $("#runNow"); a.href = `https://github.com/${user}/${repo}/actions/workflows/forecast.yml`; a.hidden = false; }
