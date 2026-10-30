@@ -69,13 +69,12 @@ WET_FRAC = (0.6, 0.35)             # 60%+ of the window wet: no-go; 35%+: wet mu
 RAIN_P = 0.6                       # (display) share of runs with any rain, for the tag and the day pill
 # on top of that, at every site but those with "rain": "true" (Torrey: cells are fine there, you land when
 # one comes): the chance of rain and the NWS each cost a bit, together never more than RAIN_MAX_STEP
-RAIN_PROB_STEP = [(0.45, 1.0), (0.3, 0.5)]  # share of runs with rain at the site: 45%+ a full step, 30%+ half
-RAIN_NOGO_P = 0.6                           # 60%+ of runs wet: a no-go (as the page's rules say)
+RAIN_PROB_STEP = [(0.7, 1.0), (0.5, 0.5)]   # share of runs with rain at the site
 NWS_STEP, NWS_MIN_P = 0.5, 0.3              # NWS names showers/rain that day, and the models show 30%+
 RAIN_MAX_STEP = 1.5
-# thick mid/high overcast (10 am to sunset, see cloud_day) costs at thermal sites; the ridge (Torrey) is left alone
-CLOUD_STEP = [(7 / 8, 0.40, 1.0), (6 / 8, 0.30, 0.5)]   # (cover, sun lost at the ground, step)
-GREY_WET_CAP = 2.4                          # overcast 6/8+ together with a 30%+ rain chance: marginal at best
+# the radar stays optimistic about cloud: only a day with virtually no sun (10 am to sunset, see cloud_day)
+# loses some, at thermal sites; the ridge (Torrey) is left alone
+CLOUD_STEP = [(0.70, 1.0), (0.55, 0.5)]     # (share of the sunshine lost at the ground, step)
 WEATHER_MAX_STEP = 2.0                      # rain and cloud together never cost more than this
 CALIB_SITES = ("lb", "blossom", "elsinore", "owens")
 CORRIDOR_DBG = {}                  # per corridor point, midday: model ground and usable top (ft), for calibration
@@ -1480,25 +1479,17 @@ def nws_rain_days(nws, dates):
     return out & set(dates)
 
 def weather_steps(rating, shower_p, nws_rain, cloud, rain_ok=False, ridge=False):
-    """The rating after the rain chance, the NWS and thick overcast have had their say.
+    """The rating after the rain chance, the NWS and a sunless sky have had their say.
     shower_p: share of runs with rain at the site; cloud: (cover 0-1, sun lost 0-1) or None.
     rain_ok sites (Torrey: you land when a cell comes) and ridge sites skip all of this."""
     if rain_ok or ridge:
         return rating, 0.0
-    if shower_p >= RAIN_NOGO_P:
-        return 1.0, 0.0
     step = next((st for p0, st in RAIN_PROB_STEP if shower_p >= p0), 0.0)
     if nws_rain and shower_p >= NWS_MIN_P:
         step += NWS_STEP
     step = min(step, RAIN_MAX_STEP)
-    cstep = 0.0
-    if cloud:
-        cover, loss = cloud
-        cstep = next((st for c0, l0, st in CLOUD_STEP if cover >= c0 and loss >= l0), 0.0)
-    out = max(1.0, rating - min(step + cstep, WEATHER_MAX_STEP))
-    if cloud and cloud[0] >= 6 / 8 and shower_p >= 0.3:
-        out = min(out, GREY_WET_CAP)
-    return out, cstep
+    cstep = next((st for l0, st in CLOUD_STEP if cloud[1] >= l0), 0.0) if cloud else 0.0
+    return max(1.0, rating - min(step + cstep, WEATHER_MAX_STEP)), cstep
 
 
 def cloud_mix(site, cdata, dstr):
@@ -1663,7 +1654,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             if off_season:
                 tags.insert(0, "off season")
             if cstep and cl:
-                tags.append(f"overcast {int(round(cl[0] * 8))}/8")
+                tags.append(f"little sun (−{int(round(cl[1] * 100))}%)")
             if sp_weak:
                 tags.append(f"Soaring Predictor max {max(x['ceiling_ft'] for x in sp_cells):,} ft")
             if shower_p >= 0.1:                       # any real chance of rain shows, also on no-go days

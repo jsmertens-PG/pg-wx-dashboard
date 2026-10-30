@@ -273,33 +273,23 @@ class NwsText(unittest.TestCase):
 
 
 
-class RainAndOvercast(unittest.TestCase):
-    """Rain chance, NWS showers and thick mid/high overcast (Oct 30-31 2026: 3s on wet, grey days)."""
-    def test_sixty_percent_rain_is_no_go(self):
-        self.assertEqual(bf.weather_steps(3.6, 0.70, True, (0.6, 0.55))[0], 1.0)
+class SunlessDays(unittest.TestCase):
+    """The radar stays optimistic; only a day with virtually no sun loses some (thermal sites only)."""
+    def test_rain_steps_unchanged(self):
+        self.assertAlmostEqual(bf.weather_steps(4.0, 0.45, False, None)[0], 4.0)
+        self.assertAlmostEqual(bf.weather_steps(4.0, 0.55, False, None)[0], 3.5)
+        self.assertAlmostEqual(bf.weather_steps(4.0, 0.75, True, None)[0], 2.5)
 
-    def test_grey_wet_day_is_marginal_at_best(self):
-        r, cstep = bf.weather_steps(3.83, 0.45, True, (1.0, 0.41))     # Little Black, Sat Oct 31
-        self.assertLess(r, 2.5)
-        self.assertEqual(cstep, 1.0)
-        r2, _ = bf.weather_steps(3.97, 0.40, True, (1.0, 0.38))        # Blossom, Sat Oct 31
-        self.assertLessEqual(r2, bf.GREY_WET_CAP)
+    def test_cloudy_but_sunny_enough_costs_nothing(self):
+        self.assertEqual(bf.weather_steps(3.8, 0.45, False, (1.0, 0.41))[0], 3.8)   # 8/8 but 60% of the sun gets through
 
-    def test_overcast_alone_costs_a_step(self):
-        self.assertAlmostEqual(bf.weather_steps(4.0, 0.0, False, (1.0, 0.45))[0], 3.0)
-        self.assertAlmostEqual(bf.weather_steps(4.0, 0.0, False, (0.8, 0.32))[0], 3.5)
-
-    def test_thin_cirrus_costs_nothing(self):
-        self.assertEqual(bf.weather_steps(4.0, 0.0, False, (0.9, 0.15))[0], 4.0)
+    def test_virtually_no_sun_costs(self):
+        self.assertAlmostEqual(bf.weather_steps(4.0, 0.0, False, (1.0, 0.60))[0], 3.5)
+        self.assertAlmostEqual(bf.weather_steps(4.0, 0.0, False, (1.0, 0.80))[0], 3.0)
 
     def test_ridge_and_rain_ok_sites_untouched(self):
-        self.assertEqual(bf.weather_steps(3.3, 0.70, True, (1.0, 0.6), rain_ok=True)[0], 3.3)
-        self.assertEqual(bf.weather_steps(3.3, 0.70, True, (1.0, 0.6), ridge=True)[0], 3.3)
-
-    def test_rain_steps(self):
-        self.assertAlmostEqual(bf.weather_steps(4.0, 0.32, False, None)[0], 3.5)
-        self.assertAlmostEqual(bf.weather_steps(4.0, 0.50, False, None)[0], 3.0)
-        self.assertAlmostEqual(bf.weather_steps(4.0, 0.50, True, None)[0], 2.5)
+        self.assertEqual(bf.weather_steps(3.3, 0.70, True, (1.0, 0.9), rain_ok=True)[0], 3.3)
+        self.assertEqual(bf.weather_steps(3.3, 0.70, True, (1.0, 0.9), ridge=True)[0], 3.3)
 
 if __name__ == "__main__":
     unittest.main()
