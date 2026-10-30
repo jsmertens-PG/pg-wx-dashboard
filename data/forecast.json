@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-30T21:06+00:00",
+ "generated": "2026-10-30T21:30+00:00",
  "sample": false,
  "calib": {
   "2026-10-30": {
@@ -27042,7 +27042,15 @@
  "log": [
   "HRRR: ok (ncep_hrrr_conus)",
   "RRFS: ncep_rrfs_conus surface fields empty, retrying",
-  "RRFS: ok (ncep_rrfs_conus)",
+  "RRFS: ncep_rrfs_conus surface fields empty, retrying",
+  "RRFS: ncep_rrfs_conus surface fields empty, retrying",
+  "RRFS: ncep_rrfs_conus surface fields empty, retrying",
+  "RRFS: ncep_rrfs_conus failed (surface fields empty)",
+  "RRFS: rrfs_conus rejected (400)",
+  "RRFS: rrfs_conus rejected (400)",
+  "RRFS: ncep_rrfs rejected (400)",
+  "RRFS: ncep_rrfs rejected (400)",
+  "RRFS: using the last good run, fetched 0.4 h ago",
   "NAM: ok (ncep_nam_conus)",
   "GFS: ok (gfs_global)",
   "ECMWF: ok (ecmwf_ifs025)",
@@ -27065,7 +27073,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-10-30T19:00+00:00",
-   "fetched": "2026-10-30T20:57+00:00",
+   "fetched": "2026-10-30T21:17+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -27076,7 +27084,8 @@
    "status": "ok",
    "run": null,
    "fetched": "2026-10-30T20:58+00:00",
-   "url": "https://open-meteo.com/en/docs"
+   "url": "https://open-meteo.com/en/docs",
+   "note": "cached, fetched 0 h ago"
   },
   {
    "name": "NAM",
@@ -27085,7 +27094,7 @@
    "id": "ncep_nam_conus",
    "status": "ok",
    "run": "2026-10-30T18:00+00:00",
-   "fetched": "2026-10-30T20:58+00:00",
+   "fetched": "2026-10-30T21:21+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -27095,7 +27104,7 @@
    "id": "gfs_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-30T20:58+00:00",
+   "fetched": "2026-10-30T21:22+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -27104,8 +27113,8 @@
    "provider": "Open-Meteo",
    "id": "ecmwf_ifs025",
    "status": "ok",
-   "run": null,
-   "fetched": "2026-10-30T21:00+00:00",
+   "run": "2026-10-30T12:00+00:00",
+   "fetched": "2026-10-30T21:23+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -27115,7 +27124,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-30T21:00+00:00",
+   "fetched": "2026-10-30T21:23+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -27125,7 +27134,7 @@
    "id": "gfs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-30T21:02+00:00",
+   "fetched": "2026-10-30T21:24+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -27135,7 +27144,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-30T21:04+00:00",
+   "fetched": "2026-10-30T21:27+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -27145,7 +27154,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-30T21:06+00:00",
+   "fetched": "2026-10-30T21:30+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -27155,7 +27164,7 @@
    "id": "esierra",
    "status": "failed",
    "run": null,
-   "fetched": "2026-10-30T21:06+00:00",
+   "fetched": "2026-10-30T21:30+00:00",
    "url": "https://www.soaringpredictor.info/E-Sierra/E-SierraPredictor.htm"
   },
   {
@@ -27165,7 +27174,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-10-30T20:41:00+00:00",
-   "fetched": "2026-10-30T21:06+00:00",
+   "fetched": "2026-10-30T21:30+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   },
   {
@@ -27175,7 +27184,7 @@
    "id": "cloud_cover_mid/high",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-30T21:06+00:00",
+   "fetched": "2026-10-30T21:30+00:00",
    "url": "https://open-meteo.com/en/docs"
   }
  ],
@@ -32439,7 +32448,7 @@
       {
        "k": "Wind 1 pm",
        "v": "WNW 1",
-       "sub": "later NNW 5g16",
+       "sub": "later NNW 5g16 \u00b7 gusty",
        "q": 1.0
       },
       {
@@ -34726,7 +34735,7 @@
       {
        "k": "Wind 1 pm",
        "v": "SW 3g15",
-       "sub": "later W 4g18",
+       "sub": "later W 4g18 \u00b7 gusty",
        "q": 1.0
       },
       {
