@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-30T19:13+00:00",
+ "generated": "2026-10-30T19:22+00:00",
  "sample": false,
  "calib": {
   "2026-10-30": {
@@ -25763,7 +25763,7 @@
    }
   }
  },
- "overview": "Showers now \u00b7 front Sun",
+ "overview": "Showers now \u00b7 post-frontal now \u00b7 pre/post-frontal Sat \u00b7 front Sun",
  "models": {
   "HRRR": "ncep_hrrr_conus",
   "RRFS": "ncep_rrfs_conus",
@@ -25791,6 +25791,7 @@
   "NAM: ok (ncep_nam_conus)",
   "GFS: ok (gfs_global)",
   "ECMWF: ok (ecmwf_ifs025)",
+  "ICON: icon_global rejected (429)",
   "ICON: ok (icon_global)",
   "GFS ens: ok (gfs025)",
   "ECMWF ens: ok (ecmwf_ifs025)",
@@ -25810,7 +25811,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-10-30T17:00+00:00",
-   "fetched": "2026-10-30T19:03+00:00",
+   "fetched": "2026-10-30T19:14+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -25820,7 +25821,7 @@
    "id": "ncep_rrfs_conus",
    "status": "ok",
    "run": "2026-10-30T12:00+00:00",
-   "fetched": "2026-10-30T19:03+00:00",
+   "fetched": "2026-10-30T19:14+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -25830,7 +25831,7 @@
    "id": "ncep_nam_conus",
    "status": "ok",
    "run": "2026-10-30T12:00+00:00",
-   "fetched": "2026-10-30T19:03+00:00",
+   "fetched": "2026-10-30T19:14+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -25840,7 +25841,7 @@
    "id": "gfs_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-30T19:05+00:00",
+   "fetched": "2026-10-30T19:14+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -25850,7 +25851,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": "2026-10-30T06:00+00:00",
-   "fetched": "2026-10-30T19:05+00:00",
+   "fetched": "2026-10-30T19:14+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -25860,7 +25861,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-30T19:05+00:00",
+   "fetched": "2026-10-30T19:14+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -25870,7 +25871,7 @@
    "id": "gfs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-30T19:06+00:00",
+   "fetched": "2026-10-30T19:15+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -25880,7 +25881,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-30T19:10+00:00",
+   "fetched": "2026-10-30T19:18+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -25890,7 +25891,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-30T19:13+00:00",
+   "fetched": "2026-10-30T19:22+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -25900,7 +25901,7 @@
    "id": "esierra",
    "status": "failed",
    "run": null,
-   "fetched": "2026-10-30T19:13+00:00",
+   "fetched": "2026-10-30T19:22+00:00",
    "url": "https://www.soaringpredictor.info/E-Sierra/E-SierraPredictor.htm"
   },
   {
@@ -25910,7 +25911,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-10-30T17:51:00+00:00",
-   "fetched": "2026-10-30T19:13+00:00",
+   "fetched": "2026-10-30T19:22+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   },
   {
@@ -25920,7 +25921,7 @@
    "id": "cloud_cover_mid/high",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-30T19:13+00:00",
+   "fetched": "2026-10-30T19:22+00:00",
    "url": "https://open-meteo.com/en/docs"
   }
  ],
@@ -26476,7 +26477,7 @@
      "label": "No go",
      "tags": [
       "rain 82%",
-      "little sun (\u221271%)"
+      "little sun (\u221268%)"
      ],
      "xc": false,
      "rain_p": 0.82,
@@ -26580,7 +26581,7 @@
      "tags": [
       "rain 78%",
       "glass-off",
-      "little sun (\u221243%)"
+      "little sun (\u221248%)"
      ],
      "xc": false,
      "rain_p": 0.78,
@@ -27203,12 +27204,12 @@
     }
    },
    "regime": {
-    "type": null,
+    "type": "Post-frontal",
     "agree": 0.67,
-    "weak": false,
+    "weak": true,
     "models": {
-     "HRRR": null,
-     "RRFS": "Pre-frontal"
+     "HRRR": "Post-frontal",
+     "RRFS": "Pre/post-frontal"
     },
     "features": {
      "HRRR": {
@@ -28149,7 +28150,7 @@
       }
      },
      "was": 1.5,
-     "trend": -0.4
+     "trend": -0.5
     },
     "santabarbara": {
      "rating": 1.0,
@@ -28371,8 +28372,8 @@
     }
    },
    "regime": {
-    "type": null,
-    "agree": 0.67,
+    "type": "Pre/post-frontal",
+    "agree": 1.0,
     "weak": false,
     "models": {
      "HRRR": null,
@@ -34783,12 +34784,12 @@
     }
    },
    "regime": {
-    "type": null,
-    "agree": 0.67,
-    "weak": false,
+    "type": "Post-frontal",
+    "agree": 0.33,
+    "weak": true,
     "models": {
-     "GFS": null,
-     "ECMWF": "Pre-frontal",
+     "GFS": "Post-frontal",
+     "ECMWF": "Pre/post-frontal",
      "ICON": null
     },
     "features": {
