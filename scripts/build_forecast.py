@@ -972,7 +972,11 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         if (rating >= 2.5 and len(aft) >= 3 and sum(1 for _, sc in aft if strong_w(sc)) >= 0.75 * len(aft)
                 and max(sc["lw"] or 0 for _, sc in aft) >= peak_mph):
             rating, ridge_great = 4.0, True
-        if xc_day > 0:
+        # a thermal day at Torrey also needs a clean launch: most of the thermal hours soarable on the face,
+        # not cross (a SW cross wind with lift above the cliffs is not a 5)
+        xhrs = hours[xk:xk + 4]
+        clean = sum(1 for _, sc in xhrs if sc["good_launch"] and "cross" not in sc["codes"]) >= 3
+        if xc_day > 0 and clean:
             top_ft = (med("usable", blk) or 0) * FT
             rating = 4.5 + 0.5 * clamp((top_ft - 1200) / 1300)
             xc_now = True
@@ -1594,8 +1598,13 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                     rating = max(1.0, rating - 1.0)
                 psite = next((x for x in (parents or []) if x["id"] == s.get("parent", s["id"])), s)
                 cl = cloud_mix(psite, cdata, dstr)
-                rating, cstep = weather_steps(rating, shower_p, dstr in nws_days, cl, rain_ok=s.get("rain") == "true",
-                                              ridge=s.get("kind") == "ridge" or s.get("style") == "ridge")
+                # ridge soaring shrugs off showers and cloud (land when a cell comes), but a thermal day at a
+                # ridge site needs sun and dry air like anywhere else, so then the full weather steps apply
+                ridge_site = s.get("kind") == "ridge" or s.get("style") == "ridge"
+                thermal_day = ridge_site and rating >= 4.5
+                rating, cstep = weather_steps(rating, shower_p, dstr in nws_days, cl,
+                                              rain_ok=s.get("rain") == "true" and not thermal_day,
+                                              ridge=ridge_site and not thermal_day)
             off_season = bool(s.get("season_months")) and int(dstr[5:7]) not in s["season_months"]
             if off_season:
                 rating = min(rating, 2.0)
