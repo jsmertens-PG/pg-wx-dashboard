@@ -185,8 +185,19 @@ details.fold > :not(summary) { margin-top: 10px; }
 .mini .note { font-size: .74rem; color: var(--muted); }
 
 .det { grid-column: 1 / -1; border-bottom: 1px solid var(--line); border-top: 1px solid var(--ink); padding: 12px 16px 14px; display: grid; gap: 10px; font-size: .84rem; background: var(--surface); }
-.factors { display: grid; gap: 8px; max-width: 720px; }
-.factor { display: grid; grid-template-columns: 130px minmax(0, 1fr) 110px; gap: 4px 14px; align-items: center; }
+.factors { display: grid; gap: 6px; max-width: 720px; }
+/* opened site: two compact sections, what makes the number and what is only good to know */
+.dsec { display: grid; gap: 6px; max-width: 720px; }
+.dsec + .dsec { margin-top: 10px; }
+.dh { font-size: .62rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.steps { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; font-size: .74rem; }
+.steps .st { padding: 2px 7px; border-radius: 4px; background: rgba(255,255,255,.75); box-shadow: 0 0 0 1px rgba(20,30,40,.12); font-variant-numeric: tabular-nums; }
+.steps .st.neg { color: #8a2c1d; }
+.steps .st.fin { font-weight: 700; background: color-mix(in srgb, var(--rc) 55%, #fff); }
+.steps .arr { color: var(--muted); font-size: .7rem; }
+.gks { display: flex; flex-wrap: wrap; gap: 5px; }
+.gk { font-size: .72rem; padding: 2px 8px; border-radius: 4px; background: rgba(255,255,255,.6); box-shadow: 0 0 0 1px rgba(20,30,40,.1); color: #33404c; }
+.factor { display: grid; grid-template-columns: 110px minmax(0, 1fr) 96px; gap: 2px 12px; align-items: center; }
 .factor .fk { font-size: .8rem; }
 .factor .fv { font-variant-numeric: tabular-nums; font-weight: 500; font-size: .86rem; text-align: right; white-space: nowrap; }
 .factor .fs { grid-column: 2 / -1; font-size: .72rem; color: var(--muted); margin-top: -2px; }
@@ -810,25 +821,38 @@ function siteRow(d, s, i, kind) {
 
 function detail(d, s, inline) {
   const c = d.sites[s.id];
-  const fq = (x) => (x >= 0.7 ? "var(--q3)" : x >= 0.4 ? "var(--q1)" : "var(--q0)");
-  /* rain and model agreement are flags, not bars: rain only shows when it isn't dry */
+  /* bars use the same continuous colour scale as the ratings (0 = red ... 1 = blue) */
+  const barCol = (x) => qgrad(1 + 4 * Math.max(0, Math.min(1, x)));
   const isFlag = (f) => f.k === "Rain & storms" || f.k === "Model agreement";
-  const flagCol = (f) => (f.q >= 0.7 ? "var(--q3)" : f.q >= 0.4 ? "var(--q1)" : "var(--q0)");
-  const flags = (c.factors || []).filter((f) => isFlag(f) && !(f.k === "Rain & storms" && f.v === "dry"))
-    .map((f) => `<span class="ind" title="${esc(f.sub || "")}"><i style="background:${flagCol(f)}"></i>${f.k === "Rain & storms" ? `rain ${esc(f.v)}${f.sub ? " · " + esc(f.sub) : ""}` : `models ${esc(f.v)}`}</span>`).join("")
-    + (c.cloud && c.cloud.okta >= 4 ? `<span class="ind" title="${esc(Object.entries(c.cloud.models || {}).map(([m, v]) => `${m} ${Math.round(v[0] * 8)}/8, sun -${Math.round(v[1] * 100)}%`).join(" · "))}"><i style="background:${c.cloud.okta >= 5 && c.cloud.sun_loss >= 0.25 ? "#5d6b7a" : "#aab3bd"}"></i>mid/high cloud ${c.cloud.okta}/8 · sun −${Math.round(c.cloud.sun_loss * 100)}%</span>` : "");
-  const rows = (c.factors || []).filter((f) => !isFlag(f)).map((f) => `<div class="factor">
-      <span class="fk">${esc(f.k)}</span>
-      <span class="fbar">${(f.qs || [f.q]).map((x) => `<i style="width:${Math.max(3, Math.round(x * 100))}%;background:${fq(x)}${f.qs && f.qs.length > 1 ? ";opacity:.5" : ""}"></i>`).join("")}</span>
+  const fac = (c.factors || []);
+  const rows = fac.filter((f) => !isFlag(f)).map((f) => `<div class="factor">
+      <span class="fk">${esc(f.k === "Wind 1 pm" ? "Launch wind" : f.k)}</span>
+      <span class="fbar">${(f.qs || [f.q]).map((x) => `<i style="width:${Math.max(3, Math.round(x * 100))}%;background:${barCol(x)}${f.qs && f.qs.length > 1 ? ";opacity:.55" : ""}"></i>`).join("")}</span>
       <span class="fv">${esc(f.v)}</span>
       ${f.sub ? `<span class="fs">${esc(f.sub)}</span>` : ""}
     </div>`).join("");
+  /* how the number came about: the models' value, then each step that changed it */
+  const steps = (c.base != null ? [`<span class="st">models ${Number(c.base).toFixed(1)}</span>`] : [])
+    .concat((c.adj || []).map(([t, v]) => `<span class="st neg">${esc(t)} ${v > 0 ? "+" : "−"}${Math.abs(v).toFixed(1)}</span>`))
+    .concat([`<span class="st fin" style="--rc:${qgrad(c.rating)}">${r1(c.rating)}/5</span>`]).join('<span class="arr">→</span>');
+  /* good to know: shown, but not part of the number */
+  const rain = fac.find((f) => f.k === "Rain & storms"), agree = fac.find((f) => f.k === "Model agreement");
+  const info = [
+    ...(c.tags || []).filter((t) => !/^rain /.test(t)).map((t) => `<span class="gk">${esc(t)}</span>`),
+    rain && rain.v !== "dry" ? `<span class="gk">rain ${esc(rain.v)}${rain.sub ? " · " + esc(rain.sub) : ""}</span>` : "",
+    c.cloud && c.cloud.okta >= 4 ? `<span class="gk">mid/high cloud ${c.cloud.okta}/8 · sun −${Math.round(c.cloud.sun_loss * 100)}%</span>` : "",
+    agree ? `<span class="gk" title="${esc(agree.sub || "")}">models ${esc(agree.v)}${agree.sub ? ": " + esc(agree.sub) : ""}</span>` : "",
+    `<span class="gk">flyable ${pct(c.p_fly)} · XC ${pct(c.p_xc)}</span>`,
+    c.sunset ? `<span class="gk">sunset ${esc(c.sunset)}</span>` : "",
+  ].filter(Boolean).join("");
   const head = inline ? "" : `<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline">
       <h3 style="font-size:1.1rem;font-family:var(--font-body);font-weight:600">${esc(s.name)} <span class="muted" style="font-size:.9rem;font-weight:500">${r1(c.rating)}/5</span></h3>${labelHtml(c)}</div>
     ${c.note && !/thermals/i.test(c.note) ? `<p class="note">${esc(c.note)}</p>` : ""}`;
   return `${head}
-    <div class="factors">${rows}</div>
-    <div class="inds">${flags}<span class="muted">flyable ${pct(c.p_fly)} · XC ${pct(c.p_xc)}${c.sunset ? ` · sunset ${esc(c.sunset)}` : ""}</span></div>`;
+    <div class="dsec"><span class="dh">In the score</span>
+      <div class="factors">${rows}</div>
+      <div class="steps">${steps}</div></div>
+    <div class="dsec"><span class="dh">Good to know · not in the score</span><div class="gks">${info}</div></div>`;
 }
 
 /* ---------- archive: every past day as it was forecast that day (frozen after noon) ---------- */

@@ -1633,6 +1633,11 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 rating = blend(det_r)
             else:
                 rating = median(ens_r)
+            base_r = rating
+            adj = []                                   # what changed the models' number, for the site card
+            def note_adj(label, before):
+                if abs(rating - before) >= 0.05:
+                    adj.append([label, round(rating - before, 1)])
             # scattered showers rarely hit one grid point, so use the share of runs with rain here
             runs_all = cell["ens"] or list(D.values())
             shower_p = sum(1 for a in runs_all if a["pr"] >= 0.2) / len(runs_all)
@@ -1642,40 +1647,45 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             wet = wet_f >= WET_FRAC[0]                   # a wet day: rock bottom
             cstep, cl = 0.0, None
             if wet:
-                rating = 1.0
+                r0 = rating; rating = 1.0; note_adj("rain through the window: no-go", r0)
             else:
                 if wet_f >= WET_FRAC[1]:                 # wet much of the window
-                    rating = max(1.0, rating - 1.0)
+                    r0 = rating; rating = max(1.0, rating - 1.0); note_adj("rain much of the window", r0)
                 psite = next((x for x in (parents or []) if x["id"] == s.get("parent", s["id"])), s)
                 cl = cloud_mix(psite, cdata, dstr)
                 # ridge soaring shrugs off showers and cloud (land when a cell comes), but a thermal day at a
                 # ridge site needs sun and dry air like anywhere else, so then the full weather steps apply
                 ridge_site = s.get("kind") == "ridge" or s.get("style") == "ridge"
                 thermal_day = ridge_site and rating >= 4.5
+                r0 = rating
                 rating, cstep = weather_steps(rating, shower_p, dstr in nws_days, cl,
                                               rain_ok=s.get("rain") == "true" and not thermal_day,
                                               ridge=ridge_site and not thermal_day)
+                if abs(r0 - rating - cstep) >= 0.05:
+                    adj.append(["chance of rain" + (" + NWS" if dstr in nws_days else ""), round(rating + cstep - r0, 1)])
+                if cstep >= 0.05:
+                    adj.append(["little sun (mid/high cloud)", round(-cstep, 1)])
             off_season = bool(s.get("season_months")) and int(dstr[5:7]) not in s["season_months"]
             if off_season:
-                rating = min(rating, 2.0)
+                r0 = rating; rating = min(rating, 2.0); note_adj("off season: 2 at most", r0)
             # Soaring Predictor veto (Owens): if no listed launch gets above sp_veto_ft (MSL), it can't be a 5
             sp_cells = sp.get((s["id"], dstr)) or []
             sp_weak = bool(s.get("sp_veto_ft") and sp_cells) and max(x["ceiling_ft"] for x in sp_cells) < s["sp_veto_ft"]
             if sp_weak:
-                rating = min(rating, 4.0)
+                r0 = rating; rating = min(rating, 4.0); note_adj("Soaring Predictor: 4 at most", r0)
             # a 5 needs the site's "great" height (xc_top_ft + xc_span_ft, e.g. Little Black 3,500 ft) in at
             # least the best model; short of it the day shows 4 at most (Torrey's ridge scale is its own)
             great_ft = (s.get("xc_top_ft") or 0) + (s.get("xc_span_ft") or 1000)
             tops = [v["top"] * FT for v in D.values() if v.get("top")] if D else []
             if s.get("style") != "ridge" and s.get("xc_top_ft") and tops and max(tops) < great_ft:
-                rating = min(rating, 4.49)
+                r0 = rating; rating = min(rating, 4.49); note_adj(f"below {great_ft:,.0f} ft: 4 at most", r0)
             # awkward drift at the top of lift (most of the rating weight agrees): a tag, and at some
             # sites a small nick (Blossom: NW or clearly WNW pushes XC toward the Rock Pile)
             xb = s.get("xc_bad_aloft") or {}
             tot_w = sum(model_weight(k, D) for k in D) or 1
             drift = bool(D) and sum(model_weight(k, D) for k, a in D.items() if a.get("xc_block")) / tot_w >= 0.5
             if drift and not wet and xb.get("nick"):
-                rating = max(1.0, rating - xb["nick"])
+                r0 = rating; rating = max(1.0, rating - xb["nick"]); note_adj("awkward drift", r0)
             if ens_r:
                 shift = rating - median(ens_r)
                 p_fly = sum(r + shift >= 2.5 for r in ens_r) / len(ens_r)
@@ -1812,6 +1822,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             lead_view = dict(lead, label=label, top=top if top is not None else lead.get("top"), shower_p=shower_p) if lead else None
             drow["sites"][s["id"]] = {
                 "rating": round(rating, 2), "label": label, "tags": tags, "xc": xc, "rain_p": round(shower_p, 2),
+                "base": round(base_r, 2), "adj": adj,
                 "note": note_for(s, lead_view, xc),
                 "p_fly": round(p_fly, 2), "p_xc": round(p_xc, 2),
                 "agree": factors[-1]["v"], "models": {k: round(v, 1) for k, v in det_r.items()},
