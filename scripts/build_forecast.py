@@ -69,9 +69,14 @@ WET_FRAC = (0.6, 0.35)             # 60%+ of the window wet: no-go; 35%+: wet mu
 RAIN_P = 0.6                       # (display) share of runs with any rain, for the tag and the day pill
 # on top of that, at every site but those with "rain": "true" (Torrey: cells are fine there, you land when
 # one comes): the chance of rain and the NWS each cost a bit, together never more than RAIN_MAX_STEP
-RAIN_PROB_STEP = [(0.7, 1.0), (0.5, 0.5)]   # share of runs with rain at the site
+RAIN_PROB_STEP = [(0.45, 1.0), (0.3, 0.5)]  # share of runs with rain at the site: 45%+ a full step, 30%+ half
+RAIN_NOGO_P = 0.6                           # 60%+ of runs wet: a no-go (as the page's rules say)
 NWS_STEP, NWS_MIN_P = 0.5, 0.3              # NWS names showers/rain that day, and the models show 30%+
 RAIN_MAX_STEP = 1.5
+# thick mid/high overcast (10 am to sunset, see cloud_day) costs at thermal sites; the ridge (Torrey) is left alone
+CLOUD_STEP = [(7 / 8, 0.40, 1.0), (6 / 8, 0.30, 0.5)]   # (cover, sun lost at the ground, step)
+GREY_WET_CAP = 2.4                          # overcast 6/8+ together with a 30%+ rain chance: marginal at best
+WEATHER_MAX_STEP = 2.0                      # rain and cloud together never cost more than this
 CALIB_SITES = ("lb", "blossom", "elsinore", "owens")
 CORRIDOR_DBG = {}                  # per corridor point, midday: model ground and usable top (ft), for calibration
 
@@ -1474,7 +1479,43 @@ def nws_rain_days(nws, dates):
             out |= {sat.isoformat(), (sat + timedelta(days=1)).isoformat()}
     return out & set(dates)
 
-def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parents=None):
+def weather_steps(rating, shower_p, nws_rain, cloud, rain_ok=False, ridge=False):
+    """The rating after the rain chance, the NWS and thick overcast have had their say.
+    shower_p: share of runs with rain at the site; cloud: (cover 0-1, sun lost 0-1) or None.
+    rain_ok sites (Torrey: you land when a cell comes) and ridge sites skip all of this."""
+    if rain_ok or ridge:
+        return rating, 0.0
+    if shower_p >= RAIN_NOGO_P:
+        return 1.0, 0.0
+    step = next((st for p0, st in RAIN_PROB_STEP if shower_p >= p0), 0.0)
+    if nws_rain and shower_p >= NWS_MIN_P:
+        step += NWS_STEP
+    step = min(step, RAIN_MAX_STEP)
+    cstep = 0.0
+    if cloud:
+        cover, loss = cloud
+        cstep = next((st for c0, l0, st in CLOUD_STEP if cover >= c0 and loss >= l0), 0.0)
+    out = max(1.0, rating - min(step + cstep, WEATHER_MAX_STEP))
+    if cloud and cloud[0] >= 6 / 8 and shower_p >= 0.3:
+        out = min(out, GREY_WET_CAP)
+    return out, cstep
+
+
+def cloud_mix(site, cdata, dstr):
+    """Mid/high cover and sun lost at a site and day, weighted like the cloud pill (None without data)."""
+    if not cdata:
+        return None
+    per = {m: cloud_day(site, cdata.get(m, {}).get(site["id"]), dstr) for m in CLOUD_MODELS}
+    per = {m: v for m, v in per.items() if v}
+    if not per:
+        return None
+    w = cloud_weights(per)
+    per = {m: v for m, v in per.items() if m in w}
+    tot = sum(w[m] for m in per) or 1
+    return (sum(w[m] * v[0] for m, v in per.items()) / tot, sum(w[m] * v[1] for m, v in per.items()) / tot)
+
+
+def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parents=None, cdata=None):
     sp = sp or {}
     days = {}
 
@@ -1551,16 +1592,16 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             wet_by = {k: v.get("wet_f", 0.0) for k, v in D.items()}
             wet_f = blend(wet_by) if wet_by else (median([a.get("wet_f", 0.0) for a in cell["ens"]]) if cell["ens"] else 0.0)
             wet = wet_f >= WET_FRAC[0]                   # a wet day: rock bottom
+            cstep, cl = 0.0, None
             if wet:
                 rating = 1.0
             else:
-                step = 1.0 if wet_f >= WET_FRAC[1] else 0.0   # wet much of the window
-                if s.get("rain") != "true":
-                    step += next((st for p0, st in RAIN_PROB_STEP if shower_p >= p0), 0.0)
-                    if dstr in nws_days and shower_p >= NWS_MIN_P:
-                        step += NWS_STEP
-                    step = min(step, RAIN_MAX_STEP)
-                rating = max(1.0, rating - step)
+                if wet_f >= WET_FRAC[1]:                 # wet much of the window
+                    rating = max(1.0, rating - 1.0)
+                psite = next((x for x in (parents or []) if x["id"] == s.get("parent", s["id"])), s)
+                cl = cloud_mix(psite, cdata, dstr)
+                rating, cstep = weather_steps(rating, shower_p, dstr in nws_days, cl, rain_ok=s.get("rain") == "true",
+                                              ridge=s.get("kind") == "ridge" or s.get("style") == "ridge")
             off_season = bool(s.get("season_months")) and int(dstr[5:7]) not in s["season_months"]
             if off_season:
                 rating = min(rating, 2.0)
@@ -1621,6 +1662,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 tags.append("glass-off")
             if off_season:
                 tags.insert(0, "off season")
+            if cstep and cl:
+                tags.append(f"overcast {int(round(cl[0] * 8))}/8")
             if sp_weak:
                 tags.append(f"Soaring Predictor max {max(x['ceiling_ft'] for x in sp_cells):,} ft")
             if shower_p >= 0.1:                       # any real chance of rain shows, also on no-go days
@@ -2130,7 +2173,7 @@ def cloud_weights(names):
 
 
 def add_clouds(result, parents, cdata):
-    """Attach a mid/high cloud heads-up to each site and day; it never changes a rating."""
+    """Attach the mid/high cloud pill to each site and day (the rating's cloud step is applied in build)."""
     by = {s["id"]: s for s in parents}
     for d in result.get("days", []):
         for sid, c in d["sites"].items():
@@ -2273,10 +2316,16 @@ def main(argv=None):
         if not any(v[1] for v in det.values()):
             print("\n".join(log), file=sys.stderr)
             sys.exit("No model data retrieved; keeping the previous forecast.json")
-    result = build(sites, det, ens, nws, log, sample=args.sample, sources=sources, sp=sp, parents=parents)
+    cdata = None
     if not args.sample:
         try:
-            add_clouds(result, parents, fetch_clouds(parents, log))
+            cdata = fetch_clouds(parents, log)
+        except Exception as e:
+            log.append(f"clouds: failed ({e})")
+    result = build(sites, det, ens, nws, log, sample=args.sample, sources=sources, sp=sp, parents=parents, cdata=cdata)
+    if not args.sample and cdata is not None:
+        try:
+            add_clouds(result, parents, cdata)
             result["sources"].append({"name": "Mid/high cloud (HRRR, RRFS, ECMWF, ICON)", "kind": "model", "provider": "Open-Meteo",
                                       "id": "cloud_cover_mid/high", "status": "ok", "run": None, "fetched": now_iso(),
                                       "url": "https://open-meteo.com/en/docs"})
