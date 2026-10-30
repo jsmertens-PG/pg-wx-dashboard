@@ -519,7 +519,7 @@ footer .btnlink { font-size: .8rem; min-height: 30px; padding: 3px 10px; border:
     <summary><h2>What this radar is</h2></summary>
     <div class="how">
       <p><b>A quick overview, not a forecast of its own.</b> Flying Radar is built to read the models the way an experienced pilot reads their own tools (XC Skies, Skysight, the NWS discussion and the rest) and boil that daily routine down to one page. Instead of clicking through everything multiple times every day, you get a glance at which day and which site are worth keeping an eye on. It is not trying to be better than XC Skies, Skysight or any other prediction; it is designed to be faster to read. It does not replace your own weather research before a flight, a look at the sky, the wind on launch or your own judgement: <b>a guide, not a launch decision.</b></p>
-      <p><b>What you see.</b> The <b>Weather Overview</b> sums up the pattern for the next day or two (tap for the NWS discussion in short). Each <b>day card</b> shows the day type (Front, Pre-frontal, Post-frontal, Santa Ana, Switch day), a rain pill when it's likely wet, and the sites rated 3 or better, best first. Open a day for all sites; open a site for height, winds and rain. Small ▲/▼ arrows show where the forecast changed in the last day. Today stops updating at 3 pm and keeps its final forecast (the last one made from noon on, usually the 1–2 pm run), and every past day is kept in the <b>Archive</b> (bottom of the page) with any flights logged for it.</p>
+      <p><b>What you see.</b> The <b>Weather Overview</b> sums up the pattern for the next day or two (tap for the NWS discussion in short). Each <b>day card</b> shows the day type (Front, Pre-frontal, Post-frontal, Santa Ana, Switch day), a rain pill when it's likely wet, and the sites rated 3 or better, best first. Open a day for all sites; open a site for height, winds and rain. Today stops updating at 3 pm and keeps its final forecast (the last one made from noon on, usually the 1–2 pm run), and every past day is kept in the <b>Archive</b> (bottom of the page) with any flights logged for it.</p>
       <p><b>How it's tuned.</b> By hand, against the other tools rather than against flights: the rules are adjusted until the radar reads a day the way XC Skies, Skysight, the NWS discussion and experienced local pilots read the same forecast. Little Black, Blossom, Elsinore and Torrey are calibrated this way; Otay, Soboba, Marshall, Santa Barbara and Laguna/Horse/Fuzz are still educated guesses. Weakest spots: sea-breeze timing, convergence lines and scattered showers.</p>
     </div>
   </details>
@@ -609,7 +609,8 @@ const ICON = { "Front": "≋", "Pre-frontal": "↗", "Post-frontal": "★", "San
 const DROP = '<svg class="ic-svg" viewBox="0 0 12 16" aria-hidden="true"><path d="M6 1 C6 1 1.2 7 1.2 10.2 A4.8 4.8 0 0 0 10.8 10.2 C10.8 7 6 1 6 1 Z" fill="currentColor"/></svg>';
 const ico = (k) => (k === "rain" ? DROP : `<i class="ic" aria-hidden="true">${ICON[k]}\uFE0E</i>`);
 /* trend since about a day ago: an arrow when the shown number changed */
-const trendHtml = (c) => {
+const trendHtml = (c) => "";   // trend arrows switched off
+const trendHtmlOld = (c) => {
   if (!c || c.was == null) return "";
   const now = Math.max(1, Math.min(5, Math.round(c.rating))), was = Math.max(1, Math.min(5, Math.round(c.was)));
   if (now === was) return "";
@@ -775,20 +776,16 @@ const siteName = (s) => (s.id === "lb" ? "Little Black" : s.short);
 const SD_SITES = new Set(["torrey", "lb", "blossom", "otay", "lagunahorse", "elsinore"]);   // San Diego sites + Elsinore (a home site): always listed
 const TRIP_IDS = new Set(["soboba", "marshall", "santabarbara", "owens"]);
 function daySummary(d, big, other) {
-  /* best to worst, only sites that show 3 or more (3 = at least a proper glass-off) */
-  let good = big.concat(other).filter((s) => d.sites[s.id] && Math.round(d.sites[s.id].rating) >= 3)
-    .sort((a, b) => d.sites[b.id].rating - d.sites[a.id].rating);
-  /* if a San Diego site (or Elsinore) is at least as good as anything elsewhere (whole number), list only those */
-  const best = (list) => Math.max(-1, ...list.map((s) => Math.round(d.sites[s.id].rating)));
-  const sd = good.filter((s) => SD_SITES.has(s.id));
-  if (sd.length && best(sd) >= best(good.filter((s) => !SD_SITES.has(s.id)))) good = sd;
-  if (!good.length) return `<span class="sx">no site looks good</span>`;
-  /* on a good day only the best level shows (a 4 day lists the 4s, not the 3s); open the day for the rest */
-  /* the level is set by the San Diego sites; a trip that beats them still shows next to them */
-  const sdGood = good.filter((s) => !TRIP_IDS.has(s.id));
-  const top = Math.max(...(sdGood.length ? sdGood : good).map((s) => Math.round(d.sites[s.id].rating)));
-  good = good.filter((s) => Math.round(d.sites[s.id].rating) >= top);
-  return good.map((s) => {
+  /* the best level of the day (set by the San Diego sites; a trip shows only when it matches it),
+     topped up with the next best San Diego sites so there are always at least three */
+  const all = big.concat(other).filter((s) => d.sites[s.id]).sort((a, b) => d.sites[b.id].rating - d.sites[a.id].rating);
+  const lvl = (s) => Math.round(d.sites[s.id].rating);
+  const sd = all.filter((s) => !TRIP_IDS.has(s.id));
+  if (!sd.length) return `<span class="sx">no data</span>`;
+  const top = lvl(sd[0]);
+  let shown = all.filter((s) => lvl(s) >= top);
+  for (const s of sd) { if (shown.length >= 3) break; if (!shown.includes(s)) shown.push(s); }
+  return shown.map((s) => {
     const c = d.sites[s.id];
     return `<span class="sc" style="--rc:${qgrad(c.rating)}"><span class="sc-t"><b>${esc(siteName(s))}</b>${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span><span class="sc-bar"><i style="width:${Math.max(6, Math.min(100, c.rating * 20))}%"></i></span></span>`;
   }).join("");
