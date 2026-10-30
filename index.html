@@ -768,6 +768,7 @@ const rowNote = (c) => (!c.note || /\d,?\d{3} ft|thermals/i.test(c.note) ? (c.la
 const siteName = (s) => (s.id === "lb" ? "Little Black" : s.short);
 /* what a closed day shows: the home sites and Torrey with their number, then any other XC site */
 const SD_SITES = new Set(["torrey", "lb", "blossom", "otay", "lagunahorse", "elsinore"]);   // San Diego sites + Elsinore (a home site): always listed
+const TRIP_IDS = new Set(["soboba", "marshall", "santabarbara", "owens"]);
 function daySummary(d, big, other) {
   /* best to worst, only sites that show 3 or more (3 = at least a proper glass-off) */
   let good = big.concat(other).filter((s) => d.sites[s.id] && Math.round(d.sites[s.id].rating) >= 3)
@@ -777,6 +778,11 @@ function daySummary(d, big, other) {
   const sd = good.filter((s) => SD_SITES.has(s.id));
   if (sd.length && best(sd) >= best(good.filter((s) => !SD_SITES.has(s.id)))) good = sd;
   if (!good.length) return `<span class="sx">no site looks good</span>`;
+  /* on a good day only the best level shows (a 4 day lists the 4s, not the 3s); open the day for the rest */
+  /* the level is set by the San Diego sites; a trip that beats them still shows next to them */
+  const sdGood = good.filter((s) => !TRIP_IDS.has(s.id));
+  const top = Math.max(...(sdGood.length ? sdGood : good).map((s) => Math.round(d.sites[s.id].rating)));
+  good = good.filter((s) => Math.round(d.sites[s.id].rating) >= top);
   return good.map((s) => {
     const c = d.sites[s.id];
     return `<span class="sc" style="--rc:${qgrad(c.rating)}"><span class="sc-t"><b>${esc(siteName(s))}</b>${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span><span class="sc-bar"><i style="width:${Math.max(6, Math.min(100, c.rating * 20))}%"></i></span></span>`;
