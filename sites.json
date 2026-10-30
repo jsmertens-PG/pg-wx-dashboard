@@ -142,7 +142,19 @@
         "min_kt": 4,
         "tag": "north drift",
         "why": "a north component pushes an XC into the Miramar airspace"
-      }
+      },
+      "cross": [
+        [
+          160,
+          200,
+          "cross-S"
+        ],
+        [
+          320,
+          15,
+          "cross-N"
+        ]
+      ]
     },
     {
       "id": "blossom",
@@ -223,6 +235,18 @@
           "lat": 32.914825,
           "lon": -116.820044
         }
+      ],
+      "cross": [
+        [
+          160,
+          200,
+          "cross-S"
+        ],
+        [
+          315,
+          15,
+          "cross-N"
+        ]
       ]
     },
     {
