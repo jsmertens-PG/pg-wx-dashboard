@@ -335,10 +335,10 @@ class BestFour(unittest.TestCase):
 
 class PostFrontalFlow(unittest.TestCase):
     def test_sw_flow_with_showers_is_not_post_frontal(self):
-        F = DayTypes.feats([{}, {"rain": 6, "t850": 8}, {"rain": 1.0, "t850": 8, "d700": 230, "s700": 18},
+        F = DayTypes.feats([{"t850": 8}, {"rain": 6, "t850": 8}, {"rain": 1.0, "t850": 8, "d700": 230, "s700": 18},
                             {"rain": 1.0, "t850": 8, "d700": 230, "s700": 16}, {"rain": 12, "t850": 7}])
         t = list(bf.classify_days(F).values())
         self.assertEqual(t[1], "Front")
-        self.assertEqual(t[2], "Pre-frontal")      # the next front is already moving in on a SW flow
+        self.assertEqual(t[2], "Pre/post-frontal")  # after one front, the next already moving in on a SW flow
         self.assertEqual(t[3], "Pre-frontal")
         self.assertEqual(t[4], "Front")

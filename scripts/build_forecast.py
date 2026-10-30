@@ -1305,12 +1305,17 @@ def classify_days(F):
             # showers is the next system moving in), and no new front the next day
             behind = d700 is None or wrap_in(d700, 250, 30)
             next_front = shift(d, 1) in F and front_day(shift(d, 1))
-            if behind and not next_front and (front_day(shift(d, -1)) and shift(d, -1) in F or cold_surge or (
-                    front_day(shift(d, -2)) and shift(d, -2) in F and tm3 is not None and t0 is not None and t0 <= tm3 - 2)):
+            after = (front_day(shift(d, -1)) and shift(d, -1) in F) or cold_surge or (
+                front_day(shift(d, -2)) and shift(d, -2) in F and tm3 is not None and t0 is not None and t0 <= tm3 - 2)
+            pre = (shift(d, 1) in F and (front_day(shift(d, 1)) or front(d))) or (
+                shift(d, 2) in F and front_day(shift(d, 2)) and d700 is not None and wrap_in(d700, 160, 260) and (g(d, "s700") or 0) >= 15)
+            if after and behind and not next_front:
                 t = "Post-frontal"
-            elif shift(d, 1) in F and (front_day(shift(d, 1)) or front(d)):
-                t = "Pre-frontal"
-            elif shift(d, 2) in F and front_day(shift(d, 2)) and g(d, "d700") is not None and wrap_in(g(d, "d700"), 160, 260) and (g(d, "s700") or 0) >= 15:
+            elif after and pre:
+                t = "Pre/post-frontal"           # between two fronts: both are true, so say so
+            elif after:
+                t = "Post-frontal?"              # a front yesterday but no clear flow behind it yet: a light post-frontal
+            elif pre:
                 t = "Pre-frontal"
         out[d] = t
     return out
@@ -1343,14 +1348,21 @@ def day_regimes(det, sites):
         vs = [(n, t) for n, t in vs if n in keep]
         names = [n for n, _ in vs]
         tot = sum(model_weight(n, names) for n in names)
+        light = any(t2 == "Post-frontal?" for _, t2 in vs)
+        vs = [(n, "Post-frontal" if t2 == "Post-frontal?" else t2) for n, t2 in vs]
         w = {}
         for n, t in vs:
             w[t] = w.get(t, 0) + model_weight(n, names)
         t, wt = max(w.items(), key=lambda x: (x[1], x[0] is not None))
+        # undecided between before and after a front: one "pre/post-frontal" call instead of picking a side
+        pp = sum(w.get(k, 0) for k in ("Pre-frontal", "Post-frontal", "Pre/post-frontal"))
+        if t in ("Pre-frontal", "Post-frontal") and wt / tot < 0.75 and pp / tot >= 0.75 and w.get("Pre-frontal") and w.get("Post-frontal"):
+            t, wt = "Pre/post-frontal", pp
         # a weak call: the deciding models split, or a "front" that brings only light rain (< 2 mm)
         rains = [feats.get(dstr, {}).get(n, {}).get("rain_mm") for n, t2 in vs if t2 == t]
         rains = [r for r in rains if r is not None]
-        weak = bool(t) and (wt / tot < 0.75 or (t == "Front" and rains and median(rains) < 2.0))
+        weak = bool(t) and (wt / tot < 0.75 or (t == "Front" and rains and median(rains) < 2.0)
+                            or (t == "Post-frontal" and light))
         out[dstr] = {"type": t, "agree": round(wt / tot, 2), "weak": weak, "models": {n: t2 for n, t2 in vs},
                      "features": feats.get(dstr, {})}
     return out
