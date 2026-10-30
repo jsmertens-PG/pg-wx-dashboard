@@ -199,7 +199,7 @@ class Physics(unittest.TestCase):
 
     def _launches(self):
         parents = json.loads((ROOT / "sites.json").read_text())["sites"]
-        kids = [x for x in bf.expand_sites(parents) if x["parent"] == "lagunahorse"]
+        kids = [x for x in bf.expand_sites(parents) if x["parent"] == "lagunahorse" and not x.get("_hpoint")]
         return {k["launch_name"]: k for k in kids}
 
     def test_north_wind_aloft_kills_horse(self):
@@ -247,6 +247,8 @@ class Physics(unittest.TestCase):
     def test_sites_have_real_positions(self):
         parents = json.loads((ROOT / "sites.json").read_text())["sites"]
         for x in bf.expand_sites(parents):
+            if x.get("_hpoint"):          # height points only measure lift, they have no launch or LZ
+                continue
             self.assertIsNotNone(x.get("lz_ft"), x["id"])
             self.assertLess(x["lz_ft"], x["launch_ft"], x["id"])
 
@@ -320,3 +322,12 @@ class Venturi(unittest.TestCase):
         self.assertTrue(capped_near(inv, launch, 760))
         self.assertFalse(capped_near(free, launch, 760))
         self.assertTrue(capped_near(free, launch, 760, top_m=1300))
+
+
+class BestFour(unittest.TestCase):
+    def test_best_four_two_per_point(self):
+        hrs = [(12, {"pts": [(1000, "a"), (900, "b"), (500, "c")]}), (13, {"pts": [(1100, "a"), (800, "b"), (700, "c")]}),
+               (14, {"pts": [(1200, "a"), (600, "b"), (400, "c")]})]
+        # a: 1200, 1100 (third reading of a skipped), b: 900, 800
+        self.assertAlmostEqual(bf.best4_height(hrs), (1200 + 1100 + 900 + 800) / 4)
+        self.assertIsNone(bf.best4_height([(12, {"pts": None})]))

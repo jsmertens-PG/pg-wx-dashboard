@@ -68,6 +68,18 @@ details.day > summary.hd .sum { grid-column: 1 / -1; margin: 0; display: flex; f
 details.day > summary.hd .sum .sc { margin: 0; }
 details.day > summary.hd > .mods { grid-column: 1 / -1; justify-self: end; margin-top: -2px; }
 .rx-why { --rxc: #444b52; }
+/* weather notices: one neutral look, an icon says what it is; dark only for a strong signal */
+details.day > summary.hd .notes .rx, details.day > summary.hd .notes .rx.rx-weak, details.day > summary.hd .notes .rx.rx-soft {
+  background: rgba(255,255,255,.8) !important; color: #26303a !important; box-shadow: 0 0 0 1px rgba(20,30,40,.16) !important;
+  border: 0 !important; border-radius: 5px; font-size: .66rem; font-weight: 600; letter-spacing: .03em; padding: 0 8px; gap: 5px; }
+details.day > summary.hd .notes .rx.strong { background: #26303a !important; color: #fff !important; box-shadow: none !important; }
+details.day > summary.hd .notes .rx .rq { opacity: 1; font-weight: 800; }
+.rx .ic { font-style: normal; font-size: .82rem; line-height: 1; }
+/* site pills: bigger than the weather notices; XC a small bonus tag */
+details.day > summary.hd .sum .sc { font-size: .9rem; padding: 6px 12px 5px; border-radius: 7px; }
+details.day > summary.hd .sum .sc .sc-t { gap: 6px; }
+details.day > summary.hd .sum .sc .xcmark { font-size: .56rem; padding: 1px 4px; letter-spacing: .05em; border-radius: 3px; }
+@media (max-width: 640px) { details.day > summary.hd .sum .sc { font-size: .84rem; padding: 5px 10px 4px; } }
 .of5 { font-size: .72em; font-weight: 500; opacity: .65; margin-left: 1px; }
 .srcnote { font-size: .72rem; color: var(--muted); margin: 10px 2px 0; }
 .banner { border: 1px solid var(--line); border-left: 3px solid var(--q0); padding: 9px 14px; font-size: .88rem; display: grid; gap: 4px; }
@@ -449,8 +461,9 @@ footer .btnlink { font-size: .8rem; min-height: 30px; padding: 3px 10px; border:
   header.top h1 { gap: 16px; }
 }
 .qbar { height: 6px; border-radius: 3px; box-shadow: inset 0 0 0 .5px color-mix(in srgb, var(--ink) 25%, transparent);
-  background: linear-gradient(90deg, var(--q0) 0 14%, var(--q1) 26% 34%, var(--q2) 46% 54%, var(--q4) 66% 74%, var(--q5) 86% 100%); }
-.qlab { display: flex; justify-content: space-between; font-size: .62rem; color: var(--muted); }
+  background: linear-gradient(90deg, var(--q0) 0 19.6%, transparent 19.6% 20.4%, var(--q1) 20.4% 39.6%, transparent 39.6% 40.4%, var(--q2) 40.4% 59.6%, transparent 59.6% 60.4%, var(--q4) 60.4% 79.6%, transparent 79.6% 80.4%, var(--q5) 80.4% 100%); box-shadow: none; border-radius: 2px; }
+.qlab { display: grid; grid-template-columns: repeat(5, 1fr); font-size: .62rem; color: var(--muted); }
+.qlab span { text-align: center !important; }
 .qlab span { flex: 1; text-align: center; } .qlab span:first-child { text-align: left; } .qlab span:last-child { text-align: right; }
 </style>
 </head>
@@ -482,7 +495,7 @@ footer .btnlink { font-size: .8rem; min-height: 30px; padding: 3px 10px; border:
   <section class="days" id="arch" aria-label="Archive" hidden></section>
   <div class="qlegend" aria-label="Rating colours">
     <span class="qbar"></span>
-    <span class="qlab"><span>1 no go</span><span>2 marginal</span><span>3 local / glass-off</span><span>4 XC</span><span>5 great</span></span>
+    <span class="qlab"><span>1 no go</span><span>2 marginal</span><span>3 local</span><span>4 XC</span><span>5 great</span></span>
   </div>
 
 
@@ -573,6 +586,10 @@ const pct = (p) => (p == null ? "–" : `${Math.round(p * 100)}%`);
 const r1 = (r) => (r == null ? "–" : String(Math.max(1, Math.min(5, Math.round(r)))));
 const RX = { "Front": ["front", "Front"], "Pre-frontal": ["pre", "Pre-frontal"], "Post-frontal": ["post", "Post-frontal"],
   "Santa Ana": ["sa", "Santa Ana"], "Switch day": ["switch", "Switch day"] };
+/* weather-pill icons: one small symbol per kind of notice */
+const ICON = { "Front": "≋", "Pre-frontal": "↗", "Post-frontal": "★", "Santa Ana": "☀", "Switch day": "⇄",
+  rain: "💧", cloud: "☁", warn: "⚠" };
+const ico = (k) => `<i class="ic" aria-hidden="true">${ICON[k]}\uFE0E</i>`;
 /* trend since about a day ago: an arrow when the shown number changed */
 const trendHtml = (c) => {
   if (!c || c.was == null) return "";
@@ -589,20 +606,21 @@ const rainPill = (d, small) => {
   const nws = d.nws_rain ? '<span class="lg"> · NWS</span>' : "";
   const txt = wet ? `${Math.round(d.rain_p * 100)}% Rain${nws}` : `Showers${nws}`;
   const tip = [wet && "share of model runs with rain at Torrey, Little Black, Blossom and Elsinore", d.nws_rain && "the NWS discussion mentions showers this day"].filter(Boolean).join("; ");
-  return `<span class="rx rx-rain${small ? " sm" : ""}${wet ? "" : " rx-soft"}" title="${esc(tip)}">${txt}</span>`;
+  return `<span class="rx rx-rain${small ? " sm" : ""}${wet ? "" : " rx-soft"}${d.rain_p >= 0.6 ? " strong" : ""}" title="${esc(tip)}">${small ? "" : ico("rain")}${txt}</span>`;
 };
 /* mid/high cloud (cirrus, alto-) over the SD sites from 10 am to sunset: a heads-up, never part of the rating */
 const cloudPill = (d) => {
   const c = d.cloud; if (!c || !c.level) return "";
   const tip = `mid/high cloud ${c.okta}/8 over Torrey, Little Black, Blossom and Elsinore, 10 am to sunset; sun at the ground ${Math.round(c.sun_loss * 100)}% below clear sky`;
-  return `<span class="rx rx-cloud${c.weak ? " rx-weak" : ""}" title="${esc(tip)}">${c.okta}/8 <span class="lg">high </span>cloud</span>`;
+  return `<span class="rx rx-cloud${c.weak ? " rx-weak" : ""}${c.level === "shade" && !c.weak ? " strong" : ""}" title="${esc(tip)}">${ico("cloud")}${c.okta}/8 <span class="lg">high </span>cloud</span>`;
 };
 const regimeHtml = (rg, small) => {
   if (!rg || !rg.type || !RX[rg.type]) return "";
   const pctTxt = rg.agree != null && rg.agree < 0.995 ? `${Math.round(rg.agree * 100)}%` : "";   // share of models that agree
   const label = rg.weak && rg.type === "Front" ? "Weak front" : rg.type;       // a pointer worth checking, not a big rainy front
   const name = small ? esc(rg.weak && rg.type === "Front" ? "Weak front" : RX[rg.type][1]) : `<span class="rx-l">${esc(label)}</span><span class="rx-s">${esc(label)}</span>`;
-  return `<span class="rx rx-${RX[rg.type][0]}${small ? " sm" : ""}${rg.weak ? " rx-weak" : ""}" title="${esc(Object.entries(rg.models || {}).map(([m, t]) => `${m}: ${t || "–"}`).join(" · "))}">${pctTxt && !small ? `<span class="rq">${pctTxt}</span> ` : ""}${name}</span>`;
+  const strong = !rg.weak && (rg.agree == null || rg.agree >= 0.75);
+  return `<span class="rx rx-${RX[rg.type][0]}${small ? " sm" : ""}${rg.weak ? " rx-weak" : ""}${strong ? " strong" : ""}" title="${esc(Object.entries(rg.models || {}).map(([m, t]) => `${m}: ${t || "–"}`).join(" · "))}">${small ? "" : ico(rg.type)}${pctTxt && !small ? `<span class="rq">${pctTxt}</span> ` : ""}${name}</span>`;
 };
 
 
@@ -687,7 +705,7 @@ function render(data) {
       <summary class="hd">
         <span class="when"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small></span>
         <span class="exp" aria-hidden="true"><i class="chev"></i></span>
-        ${(() => { const n = regimeHtml(d.regime) + rainPill(d) + cloudPill(d) + (d.why && !(/rain|shower/i.test(d.why) && rainPill(d)) ? `<span class="rx rx-why">${esc(d.why)}</span>` : ""); return n ? `<span class="notes">${n}</span>` : ""; })()}
+        ${(() => { const n = regimeHtml(d.regime) + rainPill(d) + cloudPill(d) + (d.why && !(/rain|shower/i.test(d.why) && rainPill(d)) ? `<span class="rx rx-why">${ico("warn")}${esc(d.why)}</span>` : ""); return n ? `<span class="notes">${n}</span>` : ""; })()}
         <span class="sum">${daySummary(d, big, other)}${watchPill(d)}</span>
         ${mods ? `<span class="mods">${mods}</span>` : ""}
       </summary>

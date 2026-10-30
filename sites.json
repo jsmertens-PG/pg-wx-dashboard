@@ -154,6 +154,33 @@
           15,
           "cross-N"
         ]
+      ],
+      "height_points": [
+        {
+          "name": "Little Black launch",
+          "lat": 32.98796,
+          "lon": -117.12232
+        },
+        {
+          "name": "10 km N",
+          "lat": 33.07805,
+          "lon": -117.12232
+        },
+        {
+          "name": "10 km E",
+          "lat": 32.98796,
+          "lon": -117.01491
+        },
+        {
+          "name": "10 km S",
+          "lat": 32.89787,
+          "lon": -117.12232
+        },
+        {
+          "name": "10 km W",
+          "lat": 32.98796,
+          "lon": -117.22973
+        }
       ]
     },
     {
@@ -229,6 +256,16 @@
           "name": "Blossom launch",
           "lat": 32.87661,
           "lon": -116.84838
+        },
+        {
+          "name": "10 km N",
+          "lat": 32.9667,
+          "lon": -116.84838
+        },
+        {
+          "name": "10 km W",
+          "lat": 32.87661,
+          "lon": -116.95565
         },
         {
           "name": "El Cajon Mountain peak",
@@ -311,14 +348,24 @@
       "aloft_bad_min_kt": 10,
       "height_points": [
         {
-          "name": "Santa Ana ridge SW of the lake",
-          "lat": 33.6,
-          "lon": -117.42
+          "name": "Elsinore launch",
+          "lat": 33.62981,
+          "lon": -117.37144
         },
         {
-          "name": "Santa Ana ridge W of the lake (Main Divide)",
-          "lat": 33.7,
-          "lon": -117.47
+          "name": "10 km N",
+          "lat": 33.7199,
+          "lon": -117.37144
+        },
+        {
+          "name": "10 km E",
+          "lat": 33.62981,
+          "lon": -117.26324
+        },
+        {
+          "name": "10 km S",
+          "lat": 33.53972,
+          "lon": -117.37144
         },
         {
           "name": "Menifee hills",
@@ -388,6 +435,33 @@
       "window": [
         13,
         16
+      ],
+      "height_points": [
+        {
+          "name": "Soboba launch",
+          "lat": 33.8223,
+          "lon": -116.9588
+        },
+        {
+          "name": "10 km N",
+          "lat": 33.91239,
+          "lon": -116.9588
+        },
+        {
+          "name": "10 km E",
+          "lat": 33.8223,
+          "lon": -116.85036
+        },
+        {
+          "name": "10 km S",
+          "lat": 33.73221,
+          "lon": -116.9588
+        },
+        {
+          "name": "10 km W",
+          "lat": 33.8223,
+          "lon": -117.06724
+        }
       ]
     },
     {
@@ -443,6 +517,33 @@
       "window": [
         11,
         13
+      ],
+      "height_points": [
+        {
+          "name": "Otay launch",
+          "lat": 32.57401,
+          "lon": -116.89399
+        },
+        {
+          "name": "10 km N",
+          "lat": 32.6641,
+          "lon": -116.89399
+        },
+        {
+          "name": "10 km E",
+          "lat": 32.57401,
+          "lon": -116.78708
+        },
+        {
+          "name": "10 km S",
+          "lat": 32.48392,
+          "lon": -116.89399
+        },
+        {
+          "name": "10 km W",
+          "lat": 32.57401,
+          "lon": -117.0009
+        }
       ]
     },
     {
@@ -486,7 +587,34 @@
       "ok_ft": 2000,
       "xc_top_ft": 3000,
       "xc_span_ft": 1000,
-      "note": "SW-facing bowl across Otay Lakes Rd from Skydive San Diego. Non-permitted, not an SDHGPA site: coordinate with the DZ, never land at the DZ, no north wind at all. Ridge plus thermal site flying; a few hundred feet over launch is a good day, XC on great days. Under the SAN approach (3,500 ft), not part of the rating. Launch and LZ heights are estimates."
+      "note": "SW-facing bowl across Otay Lakes Rd from Skydive San Diego. Non-permitted, not an SDHGPA site: coordinate with the DZ, never land at the DZ, no north wind at all. Ridge plus thermal site flying; a few hundred feet over launch is a good day, XC on great days. Under the SAN approach (3,500 ft), not part of the rating. Launch and LZ heights are estimates.",
+      "height_points": [
+        {
+          "name": "Whale's V launch",
+          "lat": 32.6454,
+          "lon": -116.8867
+        },
+        {
+          "name": "10 km N",
+          "lat": 32.73549,
+          "lon": -116.8867
+        },
+        {
+          "name": "10 km E",
+          "lat": 32.6454,
+          "lon": -116.77971
+        },
+        {
+          "name": "10 km S",
+          "lat": 32.55531,
+          "lon": -116.8867
+        },
+        {
+          "name": "10 km W",
+          "lat": 32.6454,
+          "lon": -116.99369
+        }
+      ]
     },
     {
       "id": "lagunahorse",
@@ -574,6 +702,23 @@
       "window": [
         11,
         15
+      ],
+      "height_points": [
+        {
+          "name": "between Laguna and Horse",
+          "lat": 32.85433,
+          "lon": -116.47943
+        },
+        {
+          "name": "10 km N of the middle",
+          "lat": 32.94442,
+          "lon": -116.47943
+        },
+        {
+          "name": "10 km S of the middle",
+          "lat": 32.76424,
+          "lon": -116.47943
+        }
       ]
     },
     {
@@ -633,6 +778,33 @@
       "window": [
         11,
         15
+      ],
+      "height_points": [
+        {
+          "name": "Marshall launch",
+          "lat": 34.20999,
+          "lon": -117.30286
+        },
+        {
+          "name": "10 km N",
+          "lat": 34.30008,
+          "lon": -117.30286
+        },
+        {
+          "name": "10 km E",
+          "lat": 34.20999,
+          "lon": -117.19392
+        },
+        {
+          "name": "10 km S",
+          "lat": 34.1199,
+          "lon": -117.30286
+        },
+        {
+          "name": "10 km W",
+          "lat": 34.20999,
+          "lon": -117.4118
+        }
       ]
     },
     {
@@ -719,7 +891,24 @@
       "aloft_block": {
         "kt": 10,
         "wstar": 1.4
-      }
+      },
+      "height_points": [
+        {
+          "name": "Santa Barbara launch",
+          "lat": 34.48119,
+          "lon": -119.68509
+        },
+        {
+          "name": "10 km E",
+          "lat": 34.48119,
+          "lon": -119.5758
+        },
+        {
+          "name": "10 km W",
+          "lat": 34.48119,
+          "lon": -119.79438
+        }
+      ]
     },
     {
       "id": "owens",

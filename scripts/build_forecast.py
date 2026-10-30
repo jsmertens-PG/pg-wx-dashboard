@@ -761,6 +761,7 @@ def score_hour(site, hr, i, levels, elev_m):
     corr = (site.get("_corr") or {}).get(hr["time"][i]) if hr.get("time") else None
     if corr:                                  # highest top along the site's corridor this hour
         usable, wstar = corr[0], corr[1]
+    pts_h = corr[3] if corr and len(corr) > 3 else None   # every height point's top this hour
     usable_show = usable                      # what the model says (and XC Skies shows)
     bias = site.get("_bias_m", 0.0)           # RRFS: its recent gap to HRRR here, for scoring only
     if bias:
@@ -894,7 +895,7 @@ def score_hour(site, hr, i, levels, elev_m):
     return {"q": q, "xc_s": xc_s, "xc_block": xc_block, "dbg": dbg, "glass": glass, "cold": cold_aloft, "good_launch": bool(good_launch), "launch": launch,
             "usable": usable, "usable_show": usable_show, "peak_top": peak_top, "base": base, "agl": agl, "wstar": wstar, "climb": max(0.0, wstar - SINK + 0.3),
             "lw": lw_mph, "ld": ld, "lg": lg_mph, "a_max": a_max, "tw": (tw_dir, tw_spd) if tw_spd is not None else None, "a_spd": a_spd, "a_dir": a_dir,
-            "pr": pr, "cape": cape, "codes": codes + (["venturi"] if venturi else [])}
+            "pr": pr, "cape": cape, "codes": codes + (["venturi"] if venturi else []), "pts": pts_h}
 
 
 def ceil_level(site, ft):
@@ -910,6 +911,22 @@ def ceil_level(site, ft):
         if ft <= b:
             return qa + (qb - qa) * (ft - a) / max(1, b - a)
     return 5.0
+
+
+def best4_height(hour_list, bias=0.0):
+    """Height of the day from a site's height points: the average of the four best readings (point x hour)
+    in the given hours, at most two from any one point. None when the site has no height points."""
+    reads = [(u, name) for _, sc in hour_list for u, name in (sc.get("pts") or [])]
+    if not reads:
+        return None
+    take, per = [], {}
+    for u, name in sorted(reads, reverse=True):
+        if per.get(name, 0) >= 2:
+            continue
+        take.append(u); per[name] = per.get(name, 0) + 1
+        if len(take) == 4:
+            break
+    return sum(take) / len(take) + bias
 
 
 def best_block(hours, n, key):
@@ -992,6 +1009,9 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
             conv = [(h, sc) for h, sc in win if sc["xc_s"] > 0]
             if conv:
                 best_h, sc = max(conv, key=lambda x: hour_r(x[1], True))
+                h4 = best4_height(win, site.get("_bias_m", 0.0))
+                if h4 is not None:
+                    sc = dict(sc, peak_top=h4)
                 rating, peak, xc_now = max(3.0, hour_r(sc, True)), sc["peak_top"], True
             else:
                 rating = min(2.0, 1.0 + local)
@@ -1021,7 +1041,8 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
             if launchable:
                 during = [(h, sc) for h, sc in hours if switch_h is not None and switch_h <= h <= switch_h + 1]
                 best_h, sc = max(launchable + during, key=lambda x: x[1]["peak_top"])
-                peak = sc["peak_top"]
+                h4 = best4_height(launchable + during, site.get("_bias_m", 0.0))
+                peak = h4 if h4 is not None else sc["peak_top"]
                 lv = 1.0 + (ceil_level(site, peak * FT) - 1.0) * clamp(max(x["q"] for _, x in launchable) / 0.6)
                 if switch_h is None or switch_h > 16:
                     rating = min(lv, 3.2)
@@ -1041,9 +1062,14 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
             # the two best hours of the window, averaged (rating and height): a peak hour counts, but one
             # spiky model hour (HRRR's PBL jumps around) only gets half the say
             ranked = sorted(scored, key=lambda x: x[1], reverse=True)[:2]
+            # with height points around the site the day's height is the average of the four best readings
+            # in the window (at most two per point), and the two best hours are rated at that height
+            h4 = best4_height(win, site.get("_bias_m", 0.0))
+            if h4 is not None:
+                ranked = [(h, hour_r(dict(sc, peak_top=h4), True), sc) for h, _r, sc in ranked]
             rating = sum(x[1] for x in ranked) / len(ranked)
             best_h, _r, sc = ranked[0]
-            peak = sum(x[2]["peak_top"] for x in ranked) / len(ranked)
+            peak = h4 if h4 is not None else sum(x[2]["peak_top"] for x in ranked) / len(ranked)
             xc_now = sc["xc_s"] > 0 and rating >= 3.5
         if style not in ("convergence", "switch"):
             gw = [x["lw"] for h, x in gwin if h in glass_hours and x["lw"] is not None]
@@ -1382,7 +1408,7 @@ def expand_sites(sites):
         for k, hp in enumerate(s.get("height_points") or []):
             c = {kk: vv for kk, vv in s.items() if kk not in ("launches", "height_points", "sp", "routes", "blocked")}
             c.update({"id": f"{s['id']}#h{k}", "parent": s["id"], "_hpoint": True, "lat": hp["lat"], "lon": hp["lon"],
-                      "hp_name": hp.get("name", f"point {k}")})
+                      "hp_name": f"{s.get('short', s['id'])}: {hp.get('name', f'point {k}')}"})
             out.append(c)
     return out
 
@@ -1409,8 +1435,10 @@ def corridor_heights(sites, det):
                 if sc and int(t[11:13]) in (11, 12, 13, 14, 15):
                     CORRIDOR_DBG.setdefault(t[:10], {}).setdefault(s["hp_name"], {}).setdefault(name, {})[int(t[11:13])] = \
                         [round(elev * FT), round(sc["usable_show"] * FT)]
-                if sc and (t not in dst or sc["usable_show"] > dst[t][0]):
-                    dst[t] = (sc["usable_show"], sc["wstar"], s["hp_name"])
+                if sc:
+                    pts = (dst[t][3] if t in dst else []) + [(sc["usable_show"], s["hp_name"])]
+                    best = dst[t] if t in dst and dst[t][0] >= sc["usable_show"] else (sc["usable_show"], sc["wstar"], s["hp_name"])
+                    dst[t] = (best[0], best[1], best[2], pts)
     return out
 
 
@@ -1539,8 +1567,9 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
         for s, d in zip(sites, data or []):
             if s.get("_hpoint"):
                 continue
-            if corr.get(name, {}).get(s["id"]):
-                s = dict(s, _corr=corr[name][s["id"]])
+            ck = s["id"] if corr.get(name, {}).get(s["id"]) else s.get("parent")
+            if corr.get(name, {}).get(ck):
+                s = dict(s, _corr=corr[name][ck])
             if name == "RRFS" and bias.get(s["id"]):
                 s = dict(s, _bias_m=bias[s["id"]])
             for dstr, a in run_site(s, d, DET_LEVELS, "det"):
@@ -1756,7 +1785,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                     factors.insert(0, row)              # the thermal-height row was already taken out above
                 src = "models"
             if s.get("height_points") and factors and factors[0]["k"] == "Height":
-                factors[0]["sub"] = (factors[0].get("sub") or "") + " · highest over the hills / toward Soboba"
+                factors[0]["sub"] = (factors[0].get("sub") or "") + f" · best 4 readings over {len(s['height_points'])} points"
             if ridge:                                   # Torrey: wind and direction tell it; no height bar
                 factors = [f for f in factors if f["k"] not in ("Height", "Thermal height")]
             lead_view = dict(lead, label=label, top=top if top is not None else lead.get("top"), shower_p=shower_p) if lead else None
