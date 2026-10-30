@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="en" data-skin="glossy">
+<html lang="en" data-skin="glossy" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>SD Flying Radar</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<script>try { var t = localStorage.getItem("radar-theme") || "light"; if (t !== "auto") document.documentElement.setAttribute("data-theme", t); } catch (e) { document.documentElement.setAttribute("data-theme", "light"); }</script>
+
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -29,12 +29,6 @@
   --font-data: "JetBrains Mono", ui-monospace, Menlo, monospace;
   color-scheme: light;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { --bg: #000; --surface: #080908; --sunk: #121412; --ink: #f1f2f1; --muted: #8e958f; --line: #252826;
-    --q0: #ec5f4c; --q1: #f2a33a; --q2: #a8e04e; --q3: #4fc072; --q4: #2fa864; --q5: #2bd19a; color-scheme: dark; }
-}
-:root[data-theme="dark"] { --bg: #000; --surface: #080908; --sunk: #121412; --ink: #f1f2f1; --muted: #8e958f; --line: #252826;
-  --q0: #ec5f4c; --q1: #f2a33a; --q2: #a8e04e; --q3: #4fc072; --q4: #2fa864; --q5: #2bd19a; color-scheme: dark; }
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -59,8 +53,6 @@ header.top h1 .logo { width: 78px; height: 78px; flex: 0 0 auto; }
 header.top h1 .wm { display: flex; flex-direction: column; line-height: .98; font-weight: 800; font-size: 2.15rem; letter-spacing: -0.02em; }
 header.top h1 .wm1 { color: #2b1d14; } header.top h1 .wm2 { color: #c26a24; white-space: nowrap; }
 header.top h1 .chev3 { height: 1ex; width: auto; vertical-align: baseline; margin-left: .12em; }
-:root[data-theme="dark"] header.top h1 .wm1 { color: var(--ink); }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) header.top h1 .wm1 { color: var(--ink); } }
 .fresh.bottom { margin: 12px 2px 0; }
 header.top h1 .sub { font-weight: 400; font-size: .9rem; color: var(--muted); letter-spacing: 0; }
 .fresh { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; font-size: .84rem; color: var(--muted); }
@@ -358,10 +350,6 @@ details.day:not([open]) > .mods-b { display: none; }
 
 /* ---------- optional glossy skin (button next to Light/Dark) ---------- */
 :root[data-skin="glossy"] { --gl-hl: rgba(255,255,255,.95); --gl-hl2: rgba(255,255,255,.55); --gl-sh: rgba(20,32,56,.16); --gl-sh2: rgba(20,32,56,.08); --gl-page: linear-gradient(180deg, #eef1f5, #f8f9fb 40%, #eef1f5); }
-/* glossy is always light, with the rating colours at full strength */
-:root[data-skin="glossy"], :root[data-skin="glossy"][data-theme="dark"], :root[data-skin="glossy"]:not([data-theme="light"]) {
-  --bg: #f4f6f8; --surface: #ffffff; --sunk: #eceff2; --ink: #0b0b0b; --muted: #5f6670; --line: #e1e5ea; color-scheme: light;
-  --q0: #d9412b; --q1: #ef8a12; --q2: #9ccf3f; --q3: #3a9d57; --q4: #16864a; --q5: #0b6b4c; }
 :root[data-skin="glossy"] body { background: var(--gl-page); background-attachment: fixed; }
 :root[data-skin="glossy"] body::before { background: transparent; }
 :root[data-skin="glossy"] .day { border: 0; border-radius: 22px; overflow: hidden;
@@ -412,10 +400,6 @@ details.day:not([open]) > .mods-b { display: none; }
 :root[data-skin="glossy"] #story > .hd { background: linear-gradient(180deg, #cfd5dc, #dde2e8); border-bottom-color: rgba(15,25,40,.18); }
 :root[data-skin="glossy"] #story .wsec { background: #c9d0d8; border-color: rgba(15,25,40,.18); }
 :root[data-skin="glossy"] #story .wrow + .wrow { border-top-color: rgba(15,25,40,.12); }
-
-/* glossy: livelier rating colours */
-:root[data-skin="glossy"], :root[data-skin="glossy"][data-theme="dark"], :root[data-skin="glossy"]:not([data-theme="light"]) {
-  --q0: #ef3b2c; --q1: #ff8c00; --q2: #9ccf3f; --q3: #2fb35a; --q4: #0f9d58; --q5: #00795a; }
 :root[data-skin="glossy"] .day > .hd { background: linear-gradient(180deg, color-mix(in srgb, var(--qc) 66%, var(--surface)), color-mix(in srgb, var(--qc) 44%, var(--surface))); }
 :root[data-skin="glossy"] .srow, :root[data-skin="glossy"] .srow.coast { background: linear-gradient(180deg, color-mix(in srgb, var(--rc) 30%, var(--surface)), color-mix(in srgb, var(--rc) 52%, var(--surface))); }
 :root[data-skin="glossy"] .sc { background: linear-gradient(180deg, color-mix(in srgb, var(--rc) 48%, var(--surface)), color-mix(in srgb, var(--rc) 72%, var(--surface))); }
@@ -434,50 +418,6 @@ details.day:not([open]) > .mods-b { display: none; }
 :root[data-skin="glossy"] .fresh button, :root[data-skin="glossy"] footer button { border-radius: 5px; }
 .exp { border-radius: 6px; }
 :root[data-skin="glossy"] .bar, :root[data-skin="glossy"] .factor .fbar, :root[data-skin="glossy"] .bar i, :root[data-skin="glossy"] .factor .fbar i { border-radius: 2px; }
-
-/* ---------- glossy, dark ---------- */
-:root[data-skin="glossy"][data-theme="dark"] { --bg: #0d1013; --surface: #171b20; --sunk: #20252b; --ink: #eef1f4; --muted: #9aa3ad; --line: #2b3139; color-scheme: dark;
-  --q0: #ff5a4a; --q1: #ffa024; --q2: #a8e04e; --q3: #3fcf73; --q4: #22b86a; --q5: #18a57c;
-  --gl-hl: rgba(255,255,255,.08); --gl-hl2: rgba(255,255,255,.05); --gl-sh: rgba(0,0,0,.7); --gl-sh2: rgba(0,0,0,.5);
-  --gl-page: linear-gradient(180deg, #0b0e11, #12161a 40%, #0b0e11); }
-:root[data-skin="glossy"][data-theme="dark"] .day, :root[data-skin="glossy"][data-theme="dark"] .wk { box-shadow: 0 0 0 1px rgba(255,255,255,.09), inset 0 1px 0 var(--gl-hl), 0 18px 40px -16px rgba(0,0,0,.8); }
-:root[data-skin="glossy"][data-theme="dark"] .day > .hd { background: linear-gradient(180deg, color-mix(in srgb, var(--qc) 46%, var(--surface)), color-mix(in srgb, var(--qc) 30%, var(--surface))); border-bottom-color: rgba(255,255,255,.08); }
-:root[data-skin="glossy"][data-theme="dark"] .srow, :root[data-skin="glossy"][data-theme="dark"] .srow.coast { background: linear-gradient(180deg, color-mix(in srgb, var(--rc) 18%, var(--surface)), color-mix(in srgb, var(--rc) 30%, var(--surface)));
-  box-shadow: 0 0 0 1px rgba(255,255,255,.08), inset 0 1px 0 var(--gl-hl), inset 5px 0 0 var(--rc), 0 8px 18px -10px rgba(0,0,0,.8); }
-:root[data-skin="glossy"][data-theme="dark"] .ds { background: linear-gradient(180deg, color-mix(in srgb, var(--rc) 18%, var(--surface)), color-mix(in srgb, var(--rc) 30%, var(--surface))); }
-:root[data-skin="glossy"][data-theme="dark"] .sc { background: linear-gradient(180deg, color-mix(in srgb, var(--rc) 30%, var(--surface)), color-mix(in srgb, var(--rc) 46%, var(--surface))); box-shadow: 0 0 0 1px rgba(255,255,255,.10), 0 2px 6px -3px rgba(0,0,0,.7); }
-:root[data-skin="glossy"][data-theme="dark"] .wk-c { background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,0) 55%), linear-gradient(180deg, color-mix(in srgb, var(--rc) 40%, var(--surface)), color-mix(in srgb, var(--rc) 58%, var(--surface)));
-  box-shadow: 0 0 0 1px rgba(255,255,255,.10), inset 0 1px 0 var(--gl-hl), 0 6px 14px -6px rgba(0,0,0,.8); }
-:root[data-skin="glossy"][data-theme="dark"] #story { background: linear-gradient(180deg, #1d2228, #171b20); }
-:root[data-skin="glossy"][data-theme="dark"] #story > .hd { background: linear-gradient(180deg, #2a3038, #22282e); border-bottom-color: rgba(255,255,255,.10); }
-:root[data-skin="glossy"][data-theme="dark"] #story .wsec { background: #2c333b; border-color: rgba(255,255,255,.10); }
-:root[data-skin="glossy"][data-theme="dark"] #story .wrow + .wrow { border-top-color: rgba(255,255,255,.07); }
-:root[data-skin="glossy"][data-theme="dark"] .det { background: linear-gradient(180deg, color-mix(in srgb, #fff 4%, var(--surface)), var(--surface)); }
-:root[data-skin="glossy"][data-theme="dark"] .exp, :root[data-skin="glossy"][data-theme="dark"] .why, :root[data-skin="glossy"][data-theme="dark"] .fresh button, :root[data-skin="glossy"][data-theme="dark"] footer button { background: linear-gradient(180deg, #262c33, #1d2227); box-shadow: 0 0 0 1px rgba(255,255,255,.10), 0 2px 6px -2px rgba(0,0,0,.7); }
-:root[data-skin="glossy"][data-theme="dark"] .xcmark { background: #eef1f4; color: #0d1013; }
-:root[data-skin="glossy"][data-theme="dark"] .bar, :root[data-skin="glossy"][data-theme="dark"] .factor .fbar { background: #2a3038; }
-@media (prefers-color-scheme: dark) {
-:root[data-skin="glossy"]:not([data-theme="light"]) { --bg: #0d1013; --surface: #171b20; --sunk: #20252b; --ink: #eef1f4; --muted: #9aa3ad; --line: #2b3139; color-scheme: dark;
-  --q0: #ff5a4a; --q1: #ffa024; --q2: #a8e04e; --q3: #3fcf73; --q4: #22b86a; --q5: #18a57c;
-  --gl-hl: rgba(255,255,255,.08); --gl-hl2: rgba(255,255,255,.05); --gl-sh: rgba(0,0,0,.7); --gl-sh2: rgba(0,0,0,.5);
-  --gl-page: linear-gradient(180deg, #0b0e11, #12161a 40%, #0b0e11); }
-:root[data-skin="glossy"]:not([data-theme="light"]) .day, :root[data-skin="glossy"]:not([data-theme="light"]) .wk { box-shadow: 0 0 0 1px rgba(255,255,255,.09), inset 0 1px 0 var(--gl-hl), 0 18px 40px -16px rgba(0,0,0,.8); }
-:root[data-skin="glossy"]:not([data-theme="light"]) .day > .hd { background: linear-gradient(180deg, color-mix(in srgb, var(--qc) 46%, var(--surface)), color-mix(in srgb, var(--qc) 30%, var(--surface))); border-bottom-color: rgba(255,255,255,.08); }
-:root[data-skin="glossy"]:not([data-theme="light"]) .srow, :root[data-skin="glossy"]:not([data-theme="light"]) .srow.coast { background: linear-gradient(180deg, color-mix(in srgb, var(--rc) 18%, var(--surface)), color-mix(in srgb, var(--rc) 30%, var(--surface)));
-  box-shadow: 0 0 0 1px rgba(255,255,255,.08), inset 0 1px 0 var(--gl-hl), inset 5px 0 0 var(--rc), 0 8px 18px -10px rgba(0,0,0,.8); }
-:root[data-skin="glossy"]:not([data-theme="light"]) .ds { background: linear-gradient(180deg, color-mix(in srgb, var(--rc) 18%, var(--surface)), color-mix(in srgb, var(--rc) 30%, var(--surface))); }
-:root[data-skin="glossy"]:not([data-theme="light"]) .sc { background: linear-gradient(180deg, color-mix(in srgb, var(--rc) 30%, var(--surface)), color-mix(in srgb, var(--rc) 46%, var(--surface))); box-shadow: 0 0 0 1px rgba(255,255,255,.10), 0 2px 6px -3px rgba(0,0,0,.7); }
-:root[data-skin="glossy"]:not([data-theme="light"]) .wk-c { background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,0) 55%), linear-gradient(180deg, color-mix(in srgb, var(--rc) 40%, var(--surface)), color-mix(in srgb, var(--rc) 58%, var(--surface)));
-  box-shadow: 0 0 0 1px rgba(255,255,255,.10), inset 0 1px 0 var(--gl-hl), 0 6px 14px -6px rgba(0,0,0,.8); }
-:root[data-skin="glossy"]:not([data-theme="light"]) #story { background: linear-gradient(180deg, #1d2228, #171b20); }
-:root[data-skin="glossy"]:not([data-theme="light"]) #story > .hd { background: linear-gradient(180deg, #2a3038, #22282e); border-bottom-color: rgba(255,255,255,.10); }
-:root[data-skin="glossy"]:not([data-theme="light"]) #story .wsec { background: #2c333b; border-color: rgba(255,255,255,.10); }
-:root[data-skin="glossy"]:not([data-theme="light"]) #story .wrow + .wrow { border-top-color: rgba(255,255,255,.07); }
-:root[data-skin="glossy"]:not([data-theme="light"]) .det { background: linear-gradient(180deg, color-mix(in srgb, #fff 4%, var(--surface)), var(--surface)); }
-:root[data-skin="glossy"]:not([data-theme="light"]) .exp, :root[data-skin="glossy"]:not([data-theme="light"]) .why, :root[data-skin="glossy"]:not([data-theme="light"]) .fresh button, :root[data-skin="glossy"]:not([data-theme="light"]) footer button { background: linear-gradient(180deg, #262c33, #1d2227); box-shadow: 0 0 0 1px rgba(255,255,255,.10), 0 2px 6px -2px rgba(0,0,0,.7); }
-:root[data-skin="glossy"]:not([data-theme="light"]) .xcmark { background: #eef1f4; color: #0d1013; }
-:root[data-skin="glossy"]:not([data-theme="light"]) .bar, :root[data-skin="glossy"]:not([data-theme="light"]) .factor .fbar { background: #2a3038; }
-}
 
 /* chip with a small rating bar under the name */
 .sc { flex-direction: column; align-items: stretch; gap: 3px; padding-bottom: 4px; }
@@ -574,11 +514,6 @@ footer .btnlink { font-size: .8rem; min-height: 30px; padding: 3px 10px; border:
     <span id="foot"></span>
     <button type="button" id="archBtn" title="Every past day as the radar forecast it that day">Archive</button>
     <a id="runNow" class="btnlink" href="#" target="_blank" rel="noopener" hidden title="Opens GitHub, where you press Run workflow">Start new forecast run</a>
-    <span class="presets" id="theme">
-      <button type="button" data-t="auto">Auto</button>
-      <button type="button" data-t="light">Light</button>
-      <button type="button" data-t="dark">Dark</button>
-    </span>
   </footer>
 </div>
 
@@ -653,14 +588,7 @@ const regimeHtml = (rg, small) => {
   return `<span class="rx rx-${RX[rg.type][0]}${small ? " sm" : ""}${rg.weak ? " rx-weak" : ""}" title="${esc(Object.entries(rg.models || {}).map(([m, t]) => `${m}: ${t || "–"}`).join(" · "))}">${name}${pctTxt && !small ? ` <span class="rq">${pctTxt}</span>` : ""}</span>`;
 };
 
-const setTheme = (t) => {
-  try { localStorage.setItem("radar-theme", t); } catch (e) {}
-  if (t === "auto") document.documentElement.removeAttribute("data-theme"); else document.documentElement.setAttribute("data-theme", t);
-  document.querySelectorAll("#theme button[data-t]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.t === t)));
-};
-let saved = "light"; try { saved = localStorage.getItem("radar-theme") || "light"; } catch (e) {}   // light by default; switch at the bottom of the page
-setTheme(saved);
-$("#theme").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) setTheme(b.dataset.t); });
+
 
 function dayLabel(dstr) {
   const d = new Date(dstr + "T12:00:00");
