@@ -179,7 +179,7 @@ def om_url(base, sites, model, hourly, past_days=0):
     }
     if past_days:
         q["past_days"] = past_days                          # the day type needs the days before
-    if all(s.get("lz_ft") is not None for s in sites):    # thermals start from the valley ground
+    if all(s.get("lz_ft") is not None or s.get("_hpoint") for s in sites):    # thermals start from the valley ground
         q["elevation"] = ",".join("nan" if s.get("_hpoint") else f"{s.get('model_ground_ft', s['lz_ft']) / FT:.0f}" for s in sites)
     return base + "?" + urllib.parse.urlencode(q)
 
@@ -271,6 +271,9 @@ def _fetch_model(kind, name, ids, sites, log):
                 else:   # one site per request keeps each ensemble response small and fast
                     data = []
                     for site in sites:
+                        if site.get("_hpoint"):           # height points only need the regular models
+                            data.append(None)
+                            continue
                         if time.time() - t0 > 240:
                             raise TimeoutError("ensemble took longer than 4 minutes")
                         d = http_json(om_url(base, [site], mid, hv), tries=2, timeout=60)
