@@ -23,7 +23,7 @@
    Same paper/ink look as the PG logbook; colour is reserved for day quality (1-5) and the day type. */
 :root {
   --bg: #ffffff; --surface: #ffffff; --sunk: #f3f4f3; --ink: #0b0b0b; --muted: #676d69; --line: #e2e4e2;
-  --q0: #c8412f; --q1: #df8a17; --q2: #9ccf3f; --q3: #3a9d57; --q4: #1a7a45; --q5: #0d5a44;
+  --q0: #d8402f; --q1: #ee8a1c; --q2: #f1c72b; --q3: #5fb24f; --q4: #3aa457; --q5: #2f7fcf;
   --font-display: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
   --font-body: "Work Sans", "Helvetica Neue", Arial, sans-serif;
   --font-data: "JetBrains Mono", ui-monospace, Menlo, monospace;
@@ -57,6 +57,17 @@ header.top h1 .chev3 { height: 1ex; width: auto; vertical-align: baseline; margi
 header.top h1 .sub { font-weight: 400; font-size: .9rem; color: var(--muted); letter-spacing: 0; }
 .fresh { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; font-size: .84rem; color: var(--muted); }
 .fresh button { font-size: .8rem; min-height: 30px; padding: 3px 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; }
+/* day card header: row 1 day + date, row 2 weather notices, row 3 sites; all on one left edge */
+details.day > summary.hd { display: grid; grid-template-columns: minmax(0, 1fr) 34px; column-gap: 12px; row-gap: 8px; align-items: center; }
+details.day > summary.hd .when { grid-column: 1; display: flex; align-items: baseline; gap: 6px; flex-wrap: nowrap; overflow: visible; }
+details.day > summary.hd .when small { margin: 0 !important; display: inline !important; }
+details.day > summary.hd .exp { grid-column: 2; grid-row: 1; }
+details.day > summary.hd .notes { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+details.day > summary.hd .notes .rx { margin: 0 !important; height: 24px; box-sizing: border-box; display: inline-flex; align-items: center; overflow: visible; }
+details.day > summary.hd .sum { grid-column: 1 / -1; margin: 0; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+details.day > summary.hd .sum .sc { margin: 0; }
+details.day > summary.hd > .mods { grid-column: 1 / -1; justify-self: end; margin-top: -2px; }
+.rx-why { --rxc: #444b52; }
 .of5 { font-size: .72em; font-weight: 500; opacity: .65; margin-left: 1px; }
 .srcnote { font-size: .72rem; color: var(--muted); margin: 10px 2px 0; }
 .banner { border: 1px solid var(--line); border-left: 3px solid var(--q0); padding: 9px 14px; font-size: .88rem; display: grid; gap: 4px; }
@@ -265,7 +276,7 @@ details.day:not([open]) > summary { border-bottom: 0 !important; }
 .wk-h span { line-height: 1.15; align-self: end; }
 .sc .xcmark { font-size: .55rem; padding: 0 4px; }
 .sx { font-size: .74rem; color: var(--muted); margin-left: 4px; }
-details.day[open] > summary .sum { display: none; }
+details.day[open] > summary .sum, details.day[open] > summary > .mods { display: none; }
 .exp { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--ink); background: var(--surface); display: inline-flex; align-items: center; justify-content: center; align-self: center; flex: 0 0 auto; }
 .chev { display: block; width: 9px; height: 9px; border-right: 2.5px solid var(--ink); border-bottom: 2.5px solid var(--ink); transform: translateY(-2px) rotate(45deg); transition: transform .15s ease; }
 details.day[open] > summary .chev { transform: translateY(2px) rotate(-135deg); }
@@ -576,7 +587,7 @@ const rainPill = (d, small) => {
   const wet = d.rain_p != null && d.rain_p >= 0.5;
   if (!wet && !d.nws_rain) return "";
   const nws = d.nws_rain ? '<span class="lg"> · NWS</span>' : "";
-  const txt = wet ? `Rain ${Math.round(d.rain_p * 100)}%${nws}` : `Showers${nws}`;
+  const txt = wet ? `${Math.round(d.rain_p * 100)}% Rain${nws}` : `Showers${nws}`;
   const tip = [wet && "share of model runs with rain at Torrey, Little Black, Blossom and Elsinore", d.nws_rain && "the NWS discussion mentions showers this day"].filter(Boolean).join("; ");
   return `<span class="rx rx-rain${small ? " sm" : ""}${wet ? "" : " rx-soft"}" title="${esc(tip)}">${txt}</span>`;
 };
@@ -584,14 +595,14 @@ const rainPill = (d, small) => {
 const cloudPill = (d) => {
   const c = d.cloud; if (!c || !c.level) return "";
   const tip = `mid/high cloud ${c.okta}/8 over Torrey, Little Black, Blossom and Elsinore, 10 am to sunset; sun at the ground ${Math.round(c.sun_loss * 100)}% below clear sky`;
-  return `<span class="rx rx-cloud${c.weak ? " rx-weak" : ""}" title="${esc(tip)}"><span class="lg">High </span>cloud ${c.okta}/8</span>`;
+  return `<span class="rx rx-cloud${c.weak ? " rx-weak" : ""}" title="${esc(tip)}">${c.okta}/8 <span class="lg">high </span>cloud</span>`;
 };
 const regimeHtml = (rg, small) => {
   if (!rg || !rg.type || !RX[rg.type]) return "";
   const pctTxt = rg.agree != null && rg.agree < 0.995 ? `${Math.round(rg.agree * 100)}%` : "";   // share of models that agree
   const label = rg.weak && rg.type === "Front" ? "Weak front" : rg.type;       // a pointer worth checking, not a big rainy front
   const name = small ? esc(rg.weak && rg.type === "Front" ? "Weak front" : RX[rg.type][1]) : `<span class="rx-l">${esc(label)}</span><span class="rx-s">${esc(label)}</span>`;
-  return `<span class="rx rx-${RX[rg.type][0]}${small ? " sm" : ""}${rg.weak ? " rx-weak" : ""}" title="${esc(Object.entries(rg.models || {}).map(([m, t]) => `${m}: ${t || "–"}`).join(" · "))}">${name}${pctTxt && !small ? ` <span class="rq">${pctTxt}</span>` : ""}</span>`;
+  return `<span class="rx rx-${RX[rg.type][0]}${small ? " sm" : ""}${rg.weak ? " rx-weak" : ""}" title="${esc(Object.entries(rg.models || {}).map(([m, t]) => `${m}: ${t || "–"}`).join(" · "))}">${pctTxt && !small ? `<span class="rq">${pctTxt}</span> ` : ""}${name}</span>`;
 };
 
 
@@ -621,7 +632,7 @@ function render(data) {
   /* collapsed card: only when it stands out (starred, full colour); the open card always lists it, greyed below 4.5 */
   const watchPill = (d) => watchSites.filter((s) => d.sites[s.id]).map((s) => {
     const c = d.sites[s.id];
-    return watchOn(d, s) ? `<span class="sc watch" style="--rc:${qv(c.rating)}">★ <b>${esc(s.short)}</b> ${r1(c.rating)}<small class="of5">/5</small></span>` : "";
+    return watchOn(d, s) ? `<span class="sc watch" style="--rc:${qv(c.rating)}">★ <b>${esc(s.short)}</b></span>` : "";
   }).join("");
   const big = SITES.filter((s) => s.tier === "main" || s.tier === "coast");   // in sites.json order: Torrey, LB, Blossom, Elsinore
 
@@ -668,21 +679,17 @@ function render(data) {
     /* the day's score is the best San Diego site; the trips (Soboba, Marshall, Santa Barbara, Owens) never set it */
     const sdCells = Object.entries(d.sites || {}).filter(([k, c]) => !TRIPS.has(k) && c && c.rating != null).map(([, c]) => c);
     const bm = sdCells.slice().sort((a, b) => b.rating - a.rating)[0];
-    /* card colour: the best home site's colour, mixed toward the next level down by how many home sites
-       reach it (all three: full colour; two: 75%; one standing out: 50%), so a standout site's pill pops */
-    const homeR = sdCells.map((c) => c.rating).sort((x, y) => y - x).slice(0, 3);
-    const tint = homeR[0] ?? 0;
-    const atTop = homeR.filter((r) => q(r) === q(tint)).length, below = homeR.find((r) => q(r) !== q(tint));
-    const share = homeR.length > 1 ? (atTop - 1) / (homeR.length - 1) : 1;
-    const cardCol = below === undefined ? qv(tint) : `color-mix(in srgb, ${qv(tint)} ${Math.round(50 + 50 * share)}%, ${qv(below)})`;
+    /* card colour: one of five colours (red, orange, yellow, green, blue) from the best San Diego site */
+    const cardCol = bm ? `var(${QSTOP[Math.max(1, Math.min(5, Math.round(bm.rating)))]})` : "var(--line)";
     const open = openDays.has(d.date);
     const mods = [dayModels(d), d.frozen_at ? `(final ${esc(fmtTime(d.frozen_at).toLowerCase())})` : ""].filter(Boolean).join(" ");
     return `<details class="day" id="day-${i}" data-date="${esc(d.date)}" style="--qc:${cardCol}"${open ? " open" : ""}>
       <summary class="hd">
-        <span class="when${d.regime && d.regime.type ? " has-rx" : ""}"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small>${regimeHtml(d.regime) || rainPill(d) || cloudPill(d) ? `<span class="pills">${regimeHtml(d.regime)}${rainPill(d)}${cloudPill(d)}</span>` : ""}</span>
-        <!-- the day's score (best San Diego site) still sets the card colour, but isn't shown -->
+        <span class="when"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small></span>
         <span class="exp" aria-hidden="true"><i class="chev"></i></span>
-        <span class="sum">${d.why ? `<span class="why">${esc(d.why)}</span>` : ""}${daySummary(d, big, other)}${watchPill(d)}${mods ? `<span class="mods">${mods}</span>` : ""}</span>
+        ${(() => { const n = regimeHtml(d.regime) + rainPill(d) + cloudPill(d) + (d.why && !(/rain|shower/i.test(d.why) && rainPill(d)) ? `<span class="rx rx-why">${esc(d.why)}</span>` : ""); return n ? `<span class="notes">${n}</span>` : ""; })()}
+        <span class="sum">${daySummary(d, big, other)}${watchPill(d)}</span>
+        ${mods ? `<span class="mods">${mods}</span>` : ""}
       </summary>
       ${d._flown && d._flown.length ? `<div class="flown"><b>Flown:</b> ${d._flown.map((f) => esc(f)).join(" · ")}</div>` : ""}
       <div class="list">
@@ -738,10 +745,10 @@ function daySummary(d, big, other) {
   const best = (list) => Math.max(-1, ...list.map((s) => Math.round(d.sites[s.id].rating)));
   const sd = good.filter((s) => SD_SITES.has(s.id));
   if (sd.length && best(sd) >= best(good.filter((s) => !SD_SITES.has(s.id)))) good = sd;
-  if (!good.length) return `<span class="sx">no site at 3 or better</span>`;
+  if (!good.length) return `<span class="sx">no site looks good</span>`;
   return good.map((s) => {
     const c = d.sites[s.id];
-    return `<span class="sc" style="--rc:${qgrad(c.rating)}"><span class="sc-t"><b>${esc(siteName(s))}</b> <span class="n5">${r1(c.rating)}<small class="of5">/5</small></span>${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span><span class="sc-bar"><i style="width:${Math.max(6, Math.min(100, c.rating * 20))}%"></i></span></span>`;
+    return `<span class="sc" style="--rc:${qgrad(c.rating)}"><span class="sc-t"><b>${esc(siteName(s))}</b>${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span><span class="sc-bar"><i style="width:${Math.max(6, Math.min(100, c.rating * 20))}%"></i></span></span>`;
   }).join("");
 }
 let openDays = new Set();
