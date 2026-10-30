@@ -1301,8 +1301,12 @@ def classify_days(F):
             t0, tm2, tm3 = g(d, "t850"), g(shift(d, -2), "t850"), g(shift(d, -3), "t850")
             d700 = g(d, "d700")
             cold_surge = t0 is not None and tm2 is not None and t0 <= tm2 - 4 and d700 is not None and wrap_in(d700, 240, 360)
-            if front_day(shift(d, -1)) and shift(d, -1) in F or cold_surge or (
-                    front_day(shift(d, -2)) and shift(d, -2) in F and tm3 is not None and t0 is not None and t0 <= tm3 - 2):
+            # post-frontal needs the flow behind the front: westerly to northerly at 700 hPa (a SW flow with
+            # showers is the next system moving in), and no new front the next day
+            behind = d700 is None or wrap_in(d700, 250, 30)
+            next_front = shift(d, 1) in F and front_day(shift(d, 1))
+            if behind and not next_front and (front_day(shift(d, -1)) and shift(d, -1) in F or cold_surge or (
+                    front_day(shift(d, -2)) and shift(d, -2) in F and tm3 is not None and t0 is not None and t0 <= tm3 - 2)):
                 t = "Post-frontal"
             elif shift(d, 1) in F and (front_day(shift(d, 1)) or front(d)):
                 t = "Pre-frontal"
