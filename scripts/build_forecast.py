@@ -1355,8 +1355,10 @@ def day_regimes(det, sites):
             w[t] = w.get(t, 0) + model_weight(n, names)
         t, wt = max(w.items(), key=lambda x: (x[1], x[0] is not None))
         # undecided between before and after a front: one "pre/post-frontal" call instead of picking a side
+        # between two fronts, or the models split before/after: one "pre/post-frontal" call, never one side
         pp = sum(w.get(k, 0) for k in ("Pre-frontal", "Post-frontal", "Pre/post-frontal"))
-        if t in ("Pre-frontal", "Post-frontal") and wt / tot < 0.75 and pp / tot >= 0.75 and w.get("Pre-frontal") and w.get("Post-frontal"):
+        mixed = w.get("Pre/post-frontal") or (w.get("Pre-frontal") and w.get("Post-frontal"))
+        if mixed and pp / tot >= 0.5 and not (t in ("Pre-frontal", "Post-frontal") and wt / tot >= 0.75 and not light):
             t, wt = "Pre/post-frontal", pp
         # a weak call: the deciding models split, or a "front" that brings only light rain (< 2 mm)
         rains = [feats.get(dstr, {}).get(n, {}).get("rain_mm") for n, t2 in vs if t2 == t]
