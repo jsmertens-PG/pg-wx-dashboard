@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-30T19:22+00:00",
+ "generated": "2026-10-30T19:34+00:00",
  "sample": false,
  "calib": {
   "2026-10-30": {
@@ -25763,7 +25763,7 @@
    }
   }
  },
- "overview": "Showers now \u00b7 post-frontal now \u00b7 pre/post-frontal Sat \u00b7 front Sun",
+ "overview": "Showers now \u00b7 pre/post-frontal now \u00b7 front Sun",
  "models": {
   "HRRR": "ncep_hrrr_conus",
   "RRFS": "ncep_rrfs_conus",
@@ -25787,11 +25787,12 @@
  },
  "log": [
   "HRRR: ok (ncep_hrrr_conus)",
+  "RRFS: ncep_rrfs_conus surface fields empty, retrying",
+  "RRFS: ncep_rrfs_conus surface fields empty, retrying",
   "RRFS: ok (ncep_rrfs_conus)",
   "NAM: ok (ncep_nam_conus)",
   "GFS: ok (gfs_global)",
   "ECMWF: ok (ecmwf_ifs025)",
-  "ICON: icon_global rejected (429)",
   "ICON: ok (icon_global)",
   "GFS ens: ok (gfs025)",
   "ECMWF ens: ok (ecmwf_ifs025)",
@@ -25811,7 +25812,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-10-30T17:00+00:00",
-   "fetched": "2026-10-30T19:14+00:00",
+   "fetched": "2026-10-30T19:24+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -25820,8 +25821,8 @@
    "provider": "Open-Meteo",
    "id": "ncep_rrfs_conus",
    "status": "ok",
-   "run": "2026-10-30T12:00+00:00",
-   "fetched": "2026-10-30T19:14+00:00",
+   "run": null,
+   "fetched": "2026-10-30T19:26+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -25831,7 +25832,7 @@
    "id": "ncep_nam_conus",
    "status": "ok",
    "run": "2026-10-30T12:00+00:00",
-   "fetched": "2026-10-30T19:14+00:00",
+   "fetched": "2026-10-30T19:26+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -25841,7 +25842,7 @@
    "id": "gfs_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-30T19:14+00:00",
+   "fetched": "2026-10-30T19:26+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -25850,8 +25851,8 @@
    "provider": "Open-Meteo",
    "id": "ecmwf_ifs025",
    "status": "ok",
-   "run": "2026-10-30T06:00+00:00",
-   "fetched": "2026-10-30T19:14+00:00",
+   "run": null,
+   "fetched": "2026-10-30T19:27+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -25861,7 +25862,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-30T19:14+00:00",
+   "fetched": "2026-10-30T19:28+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -25871,7 +25872,7 @@
    "id": "gfs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-30T19:15+00:00",
+   "fetched": "2026-10-30T19:29+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -25881,7 +25882,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-30T19:18+00:00",
+   "fetched": "2026-10-30T19:31+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -25891,7 +25892,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-30T19:22+00:00",
+   "fetched": "2026-10-30T19:34+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -25901,7 +25902,7 @@
    "id": "esierra",
    "status": "failed",
    "run": null,
-   "fetched": "2026-10-30T19:22+00:00",
+   "fetched": "2026-10-30T19:34+00:00",
    "url": "https://www.soaringpredictor.info/E-Sierra/E-SierraPredictor.htm"
   },
   {
@@ -25911,7 +25912,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-10-30T17:51:00+00:00",
-   "fetched": "2026-10-30T19:22+00:00",
+   "fetched": "2026-10-30T19:34+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   },
   {
@@ -25921,7 +25922,7 @@
    "id": "cloud_cover_mid/high",
    "status": "ok",
    "run": null,
-   "fetched": "2026-10-30T19:22+00:00",
+   "fetched": "2026-10-30T19:34+00:00",
    "url": "https://open-meteo.com/en/docs"
   }
  ],
@@ -26477,7 +26478,7 @@
      "label": "No go",
      "tags": [
       "rain 82%",
-      "little sun (\u221268%)"
+      "little sun (\u221271%)"
      ],
      "xc": false,
      "rain_p": 0.82,
@@ -26581,7 +26582,7 @@
      "tags": [
       "rain 78%",
       "glass-off",
-      "little sun (\u221248%)"
+      "little sun (\u221243%)"
      ],
      "xc": false,
      "rain_p": 0.78,
@@ -27204,9 +27205,9 @@
     }
    },
    "regime": {
-    "type": "Post-frontal",
-    "agree": 0.67,
-    "weak": true,
+    "type": "Pre/post-frontal",
+    "agree": 1.0,
+    "weak": false,
     "models": {
      "HRRR": "Post-frontal",
      "RRFS": "Pre/post-frontal"
@@ -28150,7 +28151,7 @@
       }
      },
      "was": 1.5,
-     "trend": -0.5
+     "trend": -0.4
     },
     "santabarbara": {
      "rating": 1.0,
@@ -28376,7 +28377,7 @@
     "agree": 1.0,
     "weak": false,
     "models": {
-     "HRRR": null,
+     "HRRR": "Post-frontal",
      "RRFS": "Pre-frontal"
     },
     "features": {
@@ -29098,7 +29099,7 @@
       {
        "k": "Wind 1 pm",
        "v": "NW 17g30",
-       "sub": "later W 24g38 \u00b7 gusty",
+       "sub": "later W 24g38 \u00b7 blown out",
        "q": 0.33
       },
       {
@@ -34784,8 +34785,8 @@
     }
    },
    "regime": {
-    "type": "Post-frontal",
-    "agree": 0.33,
+    "type": "Pre/post-frontal",
+    "agree": 0.67,
     "weak": true,
     "models": {
      "GFS": "Post-frontal",
@@ -34831,5 +34832,5 @@
    }
   }
  ],
- "trend_ref": "2026-10-29T23:08+00:00"
+ "trend_ref": "2026-10-29T23:27+00:00"
 }
