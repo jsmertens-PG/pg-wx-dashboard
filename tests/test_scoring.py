@@ -233,6 +233,17 @@ class Physics(unittest.TestCase):
         self.assertEqual(v(220, 10), "cross-SW")
         self.assertEqual(v(90, 10), "over the back")
 
+    def test_light_cross_wind_is_free(self):
+        lb = next(x for x in json.loads((ROOT / "sites.json").read_text())["sites"] if x["id"] == "lb")
+        base = {"temperature_2m": [24], "dew_point_2m": [5], "precipitation": [0], "cape": [0], "shortwave_radiation": [600]}
+        def h(d, kt):
+            return bf.score_hour(lb, dict(base, wind_speed_10m=[kt], wind_direction_10m=[d]), 0, [], 150)
+        on, calm_cross, cross = h(260, 2.6), h(340, 2.6), h(340, 8)   # 3 mph on, 3 mph NNW, 9 mph NNW
+        self.assertNotIn("cross", calm_cross["codes"])
+        self.assertAlmostEqual(calm_cross["q"], on["q"])
+        self.assertEqual(cross["launch"], "cross-N")
+        self.assertLess(cross["q"], h(260, 8)["q"])
+
     def test_sites_have_real_positions(self):
         parents = json.loads((ROOT / "sites.json").read_text())["sites"]
         for x in bf.expand_sites(parents):

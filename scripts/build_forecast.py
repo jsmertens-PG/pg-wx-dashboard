@@ -76,6 +76,7 @@ RAIN_MAX_STEP = 2.0
 # ground, not by cloud cover alone (thin cirrus lets most of it through); the ridge (Torrey) is left alone
 CLOUD_STEP = [(0.70, 1.5), (0.55, 1.0), (0.35, 0.5)]   # (share of the sunshine lost, step)
 WEATHER_MAX_STEP = 2.0                      # rain and cloud together never cost more than this
+CROSS_FREE_MPH, CROSS_FULL_MPH = 3.5, 6.0   # a cross wind that shows as 3 mph or less costs nothing
 CALIB_SITES = ("lb", "blossom", "elsinore", "owens")
 CORRIDOR_DBG = {}                  # per corridor point, midday: model ground and usable top (ft), for calibration
 
@@ -808,8 +809,10 @@ def score_hour(site, hr, i, levels, elev_m):
         good_launch = (on and lo <= lw_mph <= hi) or (lw_mph <= 5 and site["kind"] != "ridge")
         launch = "good"
         cross = next((c for c in site.get("cross", []) if wrap_in(ld, c[0], c[1])), None) if not on else None
-        if cross and lw_mph > 3:
-            q *= 0.5; codes.append("cross"); launch = cross[2]
+        if cross and lw_mph >= CROSS_FREE_MPH:
+            # a cross wind costs more the stronger it is: nothing up to ~3 mph, half the hour from 6 mph
+            q *= 1 - 0.5 * clamp((lw_mph - CROSS_FREE_MPH) / (CROSS_FULL_MPH - CROSS_FREE_MPH))
+            codes.append("cross"); launch = cross[2]
         elif not on and lw_mph > site.get("otb_mph", 5):
             q = 0.0; codes.append("otb"); launch = "over the back"
         elif lw_mph > hi + 5:
