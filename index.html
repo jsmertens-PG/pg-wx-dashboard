@@ -58,6 +58,7 @@ header.top h1 .logo { width: 44px; height: 44px; flex: 0 0 auto; }
 header.top h1 .sub { font-weight: 400; font-size: .9rem; color: var(--muted); letter-spacing: 0; }
 .fresh { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; font-size: .84rem; color: var(--muted); }
 .fresh button { font-size: .8rem; min-height: 30px; padding: 3px 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; }
+.of5 { font-size: .72em; font-weight: 500; opacity: .65; margin-left: 1px; }
 .srcnote { font-size: .72rem; color: var(--muted); margin: 10px 2px 0; }
 .banner { border: 1px solid var(--line); border-left: 3px solid var(--q0); padding: 9px 14px; font-size: .88rem; display: grid; gap: 4px; }
 
@@ -274,7 +275,7 @@ details.day[open] > summary .chev { transform: translateY(2px) rotate(-135deg); 
 .exp.sm { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; }
 .exp.sm .chev { width: 6px; height: 6px; border-width: 0 2px 2px 0; }
 .srow[aria-expanded="true"] .exp.sm .chev { transform: translateY(1px) rotate(-135deg); }
-details.day > summary.hd { grid-template-columns: minmax(0, 1fr) auto 34px; align-items: center; }
+details.day > summary.hd { grid-template-columns: minmax(0, 1fr) 34px; align-items: center; }
 details.day > summary.hd .when { flex-wrap: nowrap; overflow: hidden; }
 details.day > summary.hd .when .rx { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .rx-s { display: none; }
@@ -665,7 +666,7 @@ function render(data) {
   /* collapsed card: only when it stands out (starred, full colour); the open card always lists it, greyed below 4.5 */
   const watchPill = (d) => watchSites.filter((s) => d.sites[s.id]).map((s) => {
     const c = d.sites[s.id];
-    return watchOn(d, s) ? `<span class="sc watch" style="--rc:${qv(c.rating)}">★ <b>${esc(s.short)}</b> ${r1(c.rating)}</span>` : "";
+    return watchOn(d, s) ? `<span class="sc watch" style="--rc:${qv(c.rating)}">★ <b>${esc(s.short)}</b> ${r1(c.rating)}<small class="of5">/5</small></span>` : "";
   }).join("");
   const big = SITES.filter((s) => s.tier === "main" || s.tier === "coast");   // in sites.json order: Torrey, LB, Blossom, Elsinore
 
@@ -724,7 +725,7 @@ function render(data) {
     return `<details class="day" id="day-${i}" data-date="${esc(d.date)}" style="--qc:${cardCol}"${open ? " open" : ""}>
       <summary class="hd">
         <span class="when${d.regime && d.regime.type ? " has-rx" : ""}"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small>${regimeHtml(d.regime) || rainPill(d) || cloudPill(d) ? `<span class="pills">${regimeHtml(d.regime)}${rainPill(d)}${cloudPill(d)}</span>` : ""}</span>
-        <span class="big" title="Best San Diego site of the day">${trendHtml(bm)}${r1(bm?.rating)}<small>/5</small></span>
+        <!-- the day's score (best San Diego site) still sets the card colour, but isn't shown -->
         <span class="exp" aria-hidden="true"><i class="chev"></i></span>
         <span class="sum">${d.why ? `<span class="why">${esc(d.why)}</span>` : ""}${daySummary(d, big, other)}${watchPill(d)}${mods ? `<span class="mods">${mods}</span>` : ""}</span>
       </summary>
@@ -785,7 +786,7 @@ function daySummary(d, big, other) {
   if (!good.length) return `<span class="sx">no site at 3 or better</span>`;
   return good.map((s) => {
     const c = d.sites[s.id];
-    return `<span class="sc" style="--rc:${qgrad(c.rating)}"><span class="sc-t"><b>${esc(siteName(s))}</b> ${r1(c.rating)}${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span><span class="sc-bar"><i style="width:${Math.max(6, Math.min(100, c.rating * 20))}%"></i></span></span>`;
+    return `<span class="sc" style="--rc:${qgrad(c.rating)}"><span class="sc-t"><b>${esc(siteName(s))}</b> <span class="n5">${r1(c.rating)}<small class="of5">/5</small></span>${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span><span class="sc-bar"><i style="width:${Math.max(6, Math.min(100, c.rating * 20))}%"></i></span></span>`;
   }).join("");
 }
 let openDays = new Set();
@@ -800,7 +801,7 @@ function siteRow(d, s, i, kind) {
   const name = siteName(s);
   if (!c) return `<div class="srow ${kind}"><span class="nm">${esc(name)}</span><span class="muted">no data</span></div>`;
   return `<button type="button" class="srow ${kind}" style="--rc:${qv(c.rating)}" data-site="${s.id}" data-day="${i}" aria-expanded="false">
-    <span class="nm">${esc(name)}</span>${bar(c.rating, kind === "small")}<span class="rt">${trendHtml(c)}${r1(c.rating)}</span>
+    <span class="nm">${esc(name)}</span>${bar(c.rating, kind === "small")}<span class="rt">${trendHtml(c)}${r1(c.rating)}<small class="of5">/5</small></span>
     <span class="tx">${c.label === "XC" ? "" : `<span class="lab" style="color:${qv(c.rating)}">${esc(c.label)}</span>`}${c.xc ? '<span class="xcmark">XC</span>' : ""}${(c.tags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join("")}${rowNote(c) ? `<span class="note">${esc(rowNote(c))}</span>` : ""}</span>
     <span class="exp sm" aria-hidden="true"><span class="chev"></span></span>
   </button>`;
