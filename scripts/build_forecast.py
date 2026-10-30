@@ -67,6 +67,11 @@ SD_SITES = ("torrey", "lb", "blossom", "elsinore")   # the home sites the day's 
 WET_MM = 0.3
 WET_FRAC = (0.6, 0.35)             # 60%+ of the window wet: no-go; 35%+: wet much of the window, a step down
 RAIN_P = 0.6                       # (display) share of runs with any rain, for the tag and the day pill
+# on top of that, at every site but those with "rain": "true" (Torrey: cells are fine there, you land when
+# one comes): the chance of rain and the NWS each cost a bit, together never more than RAIN_MAX_STEP
+RAIN_PROB_STEP = [(0.7, 1.0), (0.5, 0.5)]   # share of runs with rain at the site
+NWS_STEP, NWS_MIN_P = 0.5, 0.3              # NWS names showers/rain that day, and the models show 30%+
+RAIN_MAX_STEP = 1.5
 CALIB_SITES = ("lb", "blossom", "elsinore", "owens")
 CORRIDOR_DBG = {}                  # per corridor point, midday: model ground and usable top (ft), for calibration
 
@@ -1548,8 +1553,14 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             wet = wet_f >= WET_FRAC[0]                   # a wet day: rock bottom
             if wet:
                 rating = 1.0
-            elif wet_f >= WET_FRAC[1]:                   # wet much of the window: a step down
-                rating = max(1.0, rating - 1.0)
+            else:
+                step = 1.0 if wet_f >= WET_FRAC[1] else 0.0   # wet much of the window
+                if s.get("rain") != "true":
+                    step += next((st for p0, st in RAIN_PROB_STEP if shower_p >= p0), 0.0)
+                    if dstr in nws_days and shower_p >= NWS_MIN_P:
+                        step += NWS_STEP
+                    step = min(step, RAIN_MAX_STEP)
+                rating = max(1.0, rating - step)
             off_season = bool(s.get("season_months")) and int(dstr[5:7]) not in s["season_months"]
             if off_season:
                 rating = min(rating, 2.0)
