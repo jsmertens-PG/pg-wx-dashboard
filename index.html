@@ -75,6 +75,7 @@ details.day > summary.hd .notes .rx, details.day > summary.hd .notes .rx.rx-weak
 details.day > summary.hd .notes .rx.strong { background: #26303a !important; color: #fff !important; box-shadow: none !important; }
 details.day > summary.hd .notes .rx .rq { opacity: 1; font-weight: 800; }
 .rx .ic { font-style: normal; font-size: .82rem; line-height: 1; }
+.rx .ic-svg { width: .62rem; height: .82rem; flex: 0 0 auto; }
 /* site pills: bigger than the weather notices; XC a small bonus tag */
 details.day > summary.hd .sum .sc { font-size: .9rem; padding: 6px 12px 5px; border-radius: 7px; }
 details.day > summary.hd .sum .sc .sc-t { gap: 6px; }
@@ -587,9 +588,11 @@ const r1 = (r) => (r == null ? "–" : String(Math.max(1, Math.min(5, Math.round
 const RX = { "Front": ["front", "Front"], "Pre-frontal": ["pre", "Pre-frontal"], "Post-frontal": ["post", "Post-frontal"],
   "Santa Ana": ["sa", "Santa Ana"], "Switch day": ["switch", "Switch day"] };
 /* weather-pill icons: one small symbol per kind of notice */
-const ICON = { "Front": "≋", "Pre-frontal": "↗", "Post-frontal": "★", "Santa Ana": "☀", "Switch day": "⇄",
-  rain: "💧", cloud: "☁", warn: "⚠" };
-const ico = (k) => `<i class="ic" aria-hidden="true">${ICON[k]}\uFE0E</i>`;
+const ICON = { "Front": "≋", "Pre-frontal": "↗", "Post-frontal": "★", "Santa Ana": "⇇", "Switch day": "⇄",
+  cloud: "☁", warn: "⚠" };
+/* the rain drop is drawn, so it stays one colour on every phone (the emoji is always blue) */
+const DROP = '<svg class="ic-svg" viewBox="0 0 12 16" aria-hidden="true"><path d="M6 1 C6 1 1.2 7 1.2 10.2 A4.8 4.8 0 0 0 10.8 10.2 C10.8 7 6 1 6 1 Z" fill="currentColor"/></svg>';
+const ico = (k) => (k === "rain" ? DROP : `<i class="ic" aria-hidden="true">${ICON[k]}\uFE0E</i>`);
 /* trend since about a day ago: an arrow when the shown number changed */
 const trendHtml = (c) => {
   if (!c || c.was == null) return "";
