@@ -484,7 +484,7 @@ footer .btnlink { font-size: .8rem; min-height: 30px; padding: 3px 10px; border:
 :root[data-skin="glossy"] footer .btnlink { border: 0; background: linear-gradient(180deg, var(--surface), color-mix(in srgb, var(--ink) 7%, var(--surface))); box-shadow: inset 0 1px 0 var(--gl-hl), 0 1px 2px var(--gl-sh2), 0 3px 8px -3px var(--gl-sh); }
 
 /* tiny colour legend above the footer */
-.qlegend { display: grid; gap: 3px; max-width: 420px; }
+.qlegend { display: grid; gap: 3px; max-width: 420px; margin: 18px 0 22px; }
 .qbar { height: 6px; border-radius: 3px; box-shadow: inset 0 0 0 .5px color-mix(in srgb, var(--ink) 25%, transparent);
   background: linear-gradient(90deg, var(--q0) 0 14%, var(--q1) 26% 34%, var(--q2) 46% 54%, var(--q4) 66% 74%, var(--q5) 86% 100%); }
 .qlab { display: flex; justify-content: space-between; font-size: .62rem; color: var(--muted); }
@@ -517,6 +517,10 @@ footer .btnlink { font-size: .8rem; min-height: 30px; padding: 3px 10px; border:
 
   <div class="days" id="days"><div class="empty">Loading forecast…</div></div>
   <section class="days" id="arch" aria-label="Archive" hidden></section>
+  <div class="qlegend" aria-label="Rating colours">
+    <span class="qbar"></span>
+    <span class="qlab"><span>1 no go</span><span>2 marginal</span><span>3 local / glass-off</span><span>4 XC</span><span>5 great</span></span>
+  </div>
 
 
 
@@ -555,10 +559,6 @@ footer .btnlink { font-size: .8rem; min-height: 30px; padding: 3px 10px; border:
     <div class="tablewrap"><table class="src" id="tSrc"></table></div>
   </details>
 
-  <div class="qlegend" aria-label="Rating colours">
-    <span class="qbar"></span>
-    <span class="qlab"><span>1 no go</span><span>2 marginal</span><span>3 local / glass-off</span><span>4 XC</span><span>5 great</span></span>
-  </div>
   <div id="notes"></div>
   <div class="fresh bottom">
       <span id="fresh"></span>
