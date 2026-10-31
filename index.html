@@ -83,8 +83,12 @@ details.fold, #sources { min-width: 0; max-width: 100%; }
 .howlink:hover { box-shadow: 0 0 0 1.5px #c26a24; }
 .rx-why { --rxc: #444b52; }
 /* the top of a day card (day, date, weather pills) is the coloured band; the sites sit on silver below */
-details.day > summary.hd .band { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 12px; row-gap: 10px;
-  align-items: center; margin: -12px -14px 0; padding: 12px 14px 10px; }
+details.day > summary.hd .band { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 12px;
+  align-items: center; margin: -12px -14px 0; padding: 7px 14px 7px; }
+/* the day's colour sits only behind the day and date; pills and sites are on silver */
+:root[data-skin="glossy"] details.day[data-date] { background: linear-gradient(180deg, #e3e7ec, #eef1f4) !important; }
+:root[data-skin="glossy"] details.day[data-date] > summary.hd { background: linear-gradient(180deg, #e3e7ec, #e8ebef) !important; }
+details.day[data-date] .band { background: linear-gradient(180deg, color-mix(in srgb, var(--qc) 78%, #fff), color-mix(in srgb, var(--qc) 64%, #fff)); }
 /* day card spacing: even breathing room between the three rows, on every screen */
 details.day > summary.hd.hd { row-gap: 10px; padding: 12px 14px 10px; }
 details.day > summary.hd .notes { gap: 6px; }
@@ -800,8 +804,8 @@ function render(data) {
     return `<details class="day" id="day-${i}" data-date="${esc(d.date)}" style="--qc:${cardCol}"${open ? " open" : ""}>
       <summary class="hd"><span class="band">
         <span class="when"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small></span>
-        <span class="exp" aria-hidden="true"><i class="chev"></i></span>
-        ${(() => { const n = regimeHtml(d.regime) + rainPill(d) + cloudPill(d) + (d.why && !(/rain|shower/i.test(d.why) && rainPill(d)) ? `<span class="rx rx-why">${ico("warn")}${esc(d.why)}</span>` : ""); return n ? `<span class="notes">${n}</span>` : ""; })()}</span>
+        <span class="exp" aria-hidden="true"><i class="chev"></i></span></span>
+        ${(() => { const n = regimeHtml(d.regime) + rainPill(d) + cloudPill(d) + (d.why && !(/rain|shower/i.test(d.why) && rainPill(d)) ? `<span class="rx rx-why">${ico("warn")}${esc(d.why)}</span>` : ""); return n ? `<span class="notes">${n}</span>` : ""; })()}
         <span class="sum">${daySummary(d, big, other)}${watchPill(d)}</span>
         ${mods ? `<span class="mods">${mods}</span>` : ""}
       </summary>
