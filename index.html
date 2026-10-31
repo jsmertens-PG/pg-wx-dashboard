@@ -527,6 +527,12 @@ footer .btnlink { font-size: .8rem; min-height: 30px; padding: 3px 10px; border:
 .qlab { display: grid; grid-template-columns: repeat(5, 1fr); font-size: .62rem; color: var(--muted); }
 .qlab span { text-align: center !important; }
 .qlab span { flex: 1; text-align: center; } .qlab span:first-child { text-align: left; } .qlab span:last-child { text-align: right; }
+/* day cards take the weather card's solid silver; the weather card itself goes a shade quieter */
+:root[data-skin="glossy"] details.day[data-date] { background: linear-gradient(180deg, #e3e7ec, #eef1f4); }
+:root[data-skin="glossy"] details.day[data-date] > summary.hd { background: linear-gradient(180deg, #cfd5dc, #dde2e8); border-bottom-color: rgba(15,25,40,.18); }
+:root[data-skin="glossy"] #story { background: linear-gradient(180deg, #eef1f4, #f5f6f8); }
+:root[data-skin="glossy"] #story > .hd { background: linear-gradient(180deg, #e6e9ed, #eef1f4); }
+:root[data-skin="glossy"] #story .wsec { background: #e1e5ea; }
 </style>
 </head>
 <body>
