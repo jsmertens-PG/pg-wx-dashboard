@@ -205,6 +205,7 @@ details.fold > :not(summary) { margin-top: 10px; }
 .srow .spills .dv { font-weight: 800; }
 .dscore { justify-self: start; width: max-content; display: inline-flex; align-items: baseline; gap: 2px; padding: 3px 12px; border-radius: 6px; margin-bottom: 8px;
   background: color-mix(in srgb, var(--rc) 45%, #fff); box-shadow: 0 0 0 1px rgba(20,30,40,.12); font-variant-numeric: tabular-nums; }
+.dscore .dsl { font-size: .95rem; font-weight: 600; margin-right: 6px; }
 .dscore b { font-size: 1.35rem; font-weight: 800; } .dscore small { font-size: .8rem; opacity: .7; }
 .dsec + .dsec { margin-top: 10px; }
 .dh { font-size: .62rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
@@ -894,7 +895,7 @@ function detail(d, s, inline) {
       <h3 style="font-size:1.1rem;font-family:var(--font-body);font-weight:600">${esc(s.name)} <span class="muted" style="font-size:.9rem;font-weight:500">${r1(c.rating)}/5</span></h3>${labelHtml(c)}</div>
     ${c.note && !/thermals/i.test(c.note) ? `<p class="note">${esc(c.note)}</p>` : ""}`;
   return `${head}
-    <div class="dscore" style="--rc:${qgrad(c.rating)}"><b>${half.toFixed(1).replace(".0", "")}</b><small>/5</small></div>
+    <div class="dscore" style="--rc:${qgrad(c.rating)}"><span class="dsl">Score:</span><b>${half.toFixed(1).replace(".0", "")}</b><small>/5</small></div>
     <div class="dsec"><span class="dh">What made the score</span>
       <div class="factors">${rows}</div>
       ${steps ? `<div class="steps">${steps}</div>` : ""}</div>
