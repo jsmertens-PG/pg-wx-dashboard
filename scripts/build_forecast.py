@@ -703,6 +703,7 @@ REASON_TEXT = {
     "light": "too light to soar", "aloft": "strong wind aloft", "aloftdir": "wrong wind aloft",
     "lid": "low lid", "weak": "weak thermals", "cross": "cross wind", "gusty": "gusty",
 }
+GUST_WARN_MPH, GUST_NOGO_MPH = 12, 18          # thermal sites: gusty from 12 mph, too windy from 18 mph
 SINK = 1.3   # paraglider sink rate in a thermal turn, m/s (about 1.2-1.4)
 
 
@@ -844,16 +845,30 @@ def score_hour(site, hr, i, levels, elev_m):
             codes.append("cross"); launch = cross[2]
         elif not on and lw_mph > site.get("otb_mph", 5):
             q = 0.0; codes.append("otb"); launch = "over the back"
+        elif site["kind"] == "ridge" and (lw_mph > hi or (lg_mph is not None and lg_mph > site.get("gust_mph", 25))):
+            # Torrey: over 20 mph, or gusts over 25, is simply too windy
+            q = 0.0; codes.append("windy"); launch = "too windy"
         elif lw_mph > hi + 5:
             q = 0.0; codes.append("windy"); launch = "blown out"
         elif lw_mph > hi:
             q *= 0.5; codes.append("strong"); launch = "strong"
-        elif lg_mph is not None and lg_mph > site.get("gust_mph", 15):
-            q *= clamp(1 - 0.8 * (lg_mph - site.get("gust_mph", 15)) / 5, 0.2); codes.append("gusty"); launch = "gusty"
         elif lw_mph < lo and site["kind"] == "ridge":
             q *= 0.3; codes.append("light"); launch = "too light"
         elif lw_mph < lo:
             launch = "light"
+    # gusts at the thermal sites: over 12 mph is gusty (the launch-wind bar drops and the day loses half a
+    # point, see build()), over 18 mph is too windy
+    gcat = 0
+    if site["kind"] != "ridge" and lg_mph is not None:
+        gcat = 2 if lg_mph > GUST_NOGO_MPH else 1 if lg_mph > GUST_WARN_MPH else 0
+        if gcat == 2:
+            q = 0.0; codes.append("windy"); launch = "too windy"
+        elif gcat == 1:
+            codes.append("gusty")
+            if launch in (None, "good", "light"):
+                launch = "gusty"
+        if gcat:
+            good_launch = False
     # wind aloft: strength and direction
     if a_max is not None and a_max > site["aloft_max_kt"]:
         q *= clamp(1 - (a_max - site["aloft_max_kt"]) / 10)
@@ -922,6 +937,7 @@ def score_hour(site, hr, i, levels, elev_m):
            "prof": [[round(z * FT), round(t, 1)] for z, t, *_ in pts[:9]]}
     return {"q": q, "xc_s": xc_s, "xc_block": xc_block, "dbg": dbg, "glass": glass, "cold": cold_aloft, "good_launch": bool(good_launch), "launch": launch,
             "usable": usable, "usable_show": usable_show, "peak_top": peak_top, "base": base, "agl": agl, "wstar": wstar, "climb": max(0.0, wstar - SINK + 0.3),
+            "gcat": gcat,
             "into": bool(on and lw_mph is not None and lw_mph >= max(3.0, lo)),   # blowing into the launch, not just light
             "off": (angdiff(ld, site_face(site)) if site_face(site) is not None and ld is not None
                     and lw_mph is not None and lw_mph > 4 else None),
@@ -1166,6 +1182,8 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "climb": med("climb", xblk), "lw": med("lw"), "ld": med("ld"),
         "launch_q": sum(1 for s in blk if s["good_launch"]) / len(blk),
         "into": sum(1 for s in blk if s.get("into")) / len(blk),
+        "gust12": sum(1 for s in blk if s.get("gcat", 0) >= 1) / len(blk),
+        "gust18": sum(1 for s in blk if s.get("gcat", 0) >= 2) / len(blk),
         "offcat": (lambda offs: sum(0 if o <= 20 else 1 if o <= 45 else 2 for o in offs) / len(offs) if offs else 0.0)(
             [s["off"] for s in blk if s.get("off") is not None]),
         "launch": max(set(x["launch"] for x in blk if x["launch"]) or {None}, key=lambda v: sum(1 for x in blk if x["launch"] == v)),
@@ -1731,6 +1749,15 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 into = sum(model_weight(k, D) * a.get("into", 0) for k, a in D.items()) / (sum(model_weight(k, D) for k in D) or 1)
                 if into < 0.5:
                     r0 = rating; rating = 4.49; note_adj("wind not into launch: 4 at most", r0)
+            # gusts through the window: over 12 mph for most of it costs half a point, over 18 mph is too windy
+            if s.get("kind") != "ridge" and D:
+                tw = sum(model_weight(k, D) for k in D) or 1
+                g18 = sum(model_weight(k, D) * a.get("gust18", 0) for k, a in D.items()) / tw
+                g12 = sum(model_weight(k, D) * a.get("gust12", 0) for k, a in D.items()) / tw
+                if g18 >= 0.5:
+                    r0 = rating; rating = min(rating, 1.4); note_adj("gusts over 18 mph: too windy", r0)
+                elif g12 >= 0.5:
+                    r0 = rating; rating = max(1.0, rating - 0.5); note_adj("gusts over 12 mph", r0)
             # how well the wind lines up with the launch through the window (thermal sites, light air ignored):
             # within 20 degrees is perfect, 20-45 degrees off costs half a point, more than 45 degrees off sinks the day
             if s.get("style") in ("thermal", "window") and D and site_face(s) is not None:
