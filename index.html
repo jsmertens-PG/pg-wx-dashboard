@@ -189,6 +189,13 @@ details.fold > :not(summary) { margin-top: 10px; }
 .factors { display: grid; gap: 6px; max-width: 720px; }
 /* opened site: two compact sections, what makes the number and what is only good to know */
 .dsec { display: grid; gap: 6px; max-width: 720px; }
+/* second level: name, label + what made the number, pills; no bar, no number (the colour says it) */
+.srow.srow, .srow.small.small { grid-template-columns: minmax(0, 1fr); row-gap: 4px; }
+.srow .tx { grid-column: 1 / -1; }
+@media (min-width: 760px) {
+  .srow.srow, .srow.small.small { grid-template-columns: 150px minmax(0, 1fr); column-gap: 14px; }
+  .srow .tx { grid-column: 2; } .srow .spills { grid-column: 2 !important; }
+}
 .srow .facts { font-size: .78rem; color: #33404c; font-variant-numeric: tabular-nums; }
 .srow.small .facts { font-size: .72rem; }
 .srow .spills { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 5px; }
@@ -846,7 +853,7 @@ function siteRow(d, s, i, kind) {
   if (!c) return `<div class="srow ${kind}"><span class="nm">${esc(name)}</span><span class="muted">no data</span></div>`;
   const pills = sitePills(c);
   return `<button type="button" class="srow ${kind}" style="--rc:${qv(c.rating)}" data-site="${s.id}" data-day="${i}" aria-expanded="false">
-    <span class="nm">${esc(name)}</span>${bar(c.rating, kind === "small")}<span class="rt">${r1(c.rating)}<small class="of5">/5</small></span>
+    <span class="nm">${esc(name)}</span>
     <span class="tx">${c.label === "XC" ? "" : `<span class="lab" style="color:${qv(c.rating)}">${esc(c.label)}</span>`}${c.xc ? '<span class="xcmark">XC</span>' : ""}<span class="facts">${esc(siteFacts(c))}</span></span>
     ${pills ? `<span class="spills">${pills}</span>` : ""}
     <span class="exp sm" aria-hidden="true"><span class="chev"></span></span>
@@ -859,21 +866,27 @@ function detail(d, s, inline) {
   const barCol = (x) => qgrad(1 + 4 * Math.max(0, Math.min(1, x)));
   const isFlag = (f) => f.k === "Rain & storms" || f.k === "Model agreement";
   const fac = (c.factors || []);
-  const rows = fac.filter((f) => !isFlag(f)).map((f) => `<div class="factor">
-      <span class="fk">${esc(f.k === "Wind 1 pm" ? "Launch wind" : f.k)}</span>
-      <span class="fbar">${(f.qs || [f.q]).map((x) => `<i style="width:${Math.max(3, Math.round(x * 100))}%;background:${barCol(x)}${f.qs && f.qs.length > 1 ? ";opacity:.55" : ""}"></i>`).join("")}</span>
-      <span class="fv">${esc(f.v)}</span>
-      ${f.sub ? `<span class="fs">${esc(f.sub)}</span>` : ""}
-    </div>`).join("");
+  const barRow = (k, x, v, sub, xs) => `<div class="factor">
+      <span class="fk">${esc(k)}</span>
+      <span class="fbar">${(xs || [x]).map((q) => `<i style="width:${Math.max(3, Math.round(q * 100))}%;background:${barCol(q)}${xs && xs.length > 1 ? ";opacity:.55" : ""}"></i>`).join("")}</span>
+      <span class="fv">${esc(v)}</span>
+      ${sub ? `<span class="fs">${esc(sub)}</span>` : ""}
+    </div>`;
+  const rows = fac.filter((f) => !isFlag(f)).map((f) => barRow(f.k === "Wind 1 pm" ? "Launch wind" : f.k, f.q, f.v, f.sub, f.qs)).join("")
+    + (c.rain_p != null ? barRow("Dry", 1 - c.rain_p, `${Math.round(c.rain_p * 100)}% rain`, "") : "")
+    + (c.cloud ? barRow("Sun", 1 - (c.cloud.sun_loss || 0), `−${Math.round((c.cloud.sun_loss || 0) * 100)}%`, `mid/high cloud ${c.cloud.okta}/8`) : "");
+  const agreeF = fac.find((f) => f.k === "Model agreement");
+  const extraBars = [
+    agreeF ? barRow("Models agree", agreeF.q, agreeF.v, agreeF.sub) : "",
+    c.p_fly != null ? barRow("Flyable", c.p_fly, pct(c.p_fly), "") : "",
+    c.p_xc != null ? barRow("XC", c.p_xc, pct(c.p_xc), "") : "",
+  ].join("");
   /* what pulled the number down (or capped it): only shown when something did */
   const steps = (c.adj || []).map(([t, v]) => `<span class="st neg">${esc(t)} ${v > 0 ? "+" : "−"}${Math.abs(v).toFixed(1)}</span>`).join("");
   /* also good to know: at most five, most useful first */
   const rain = fac.find((f) => f.k === "Rain & storms"), agree = fac.find((f) => f.k === "Model agreement");
   const info = [
     ...(c.tags || []).filter((t) => !/^rain |little sun/.test(t)),
-    agree ? `models ${agree.v}: ${agree.sub || ""}` : "",
-    c.cloud && c.cloud.okta >= 4 ? `sun −${Math.round(c.cloud.sun_loss * 100)}% from high cloud` : "",
-    `flyable ${pct(c.p_fly)} · XC ${pct(c.p_xc)}`,
     c.sunset ? `sunset ${c.sunset}` : "",
   ].filter(Boolean).slice(0, 6).map((t) => `<span class="gk">${esc(t)}</span>`).join("");
   const half = Math.max(1, Math.min(5, Math.round(c.rating * 2) / 2));
@@ -885,7 +898,7 @@ function detail(d, s, inline) {
     <div class="dsec"><span class="dh">What made the score</span>
       <div class="factors">${rows}</div>
       ${steps ? `<div class="steps">${steps}</div>` : ""}</div>
-    ${info ? `<div class="dsec"><span class="dh">Good to know · not in the score</span><div class="gks">${info}</div></div>` : ""}`;
+    <div class="dsec"><span class="dh">Good to know · not in the score</span><div class="factors">${extraBars}</div>${info ? `<div class="gks">${info}</div>` : ""}</div>`;
 }
 
 /* ---------- archive: every past day as it was forecast that day (frozen after noon) ---------- */
