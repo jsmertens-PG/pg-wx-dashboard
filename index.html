@@ -588,7 +588,7 @@ details.day[data-date] { border-left: 1px solid rgba(15,25,40,.18) !important; }
   <section class="days" id="arch" aria-label="Archive" hidden></section>
   <div class="qlegend" aria-label="Rating colours">
     <span class="qbar"></span>
-    <span class="qlab"><span>1 no go</span><span>2 marginal</span><span>3 local</span><span>4 XC</span><span>5 great</span></span>
+    <span class="qlab"><span>1 no go</span><span>2 marginal</span><span>3 local</span><span>4 XC</span><span>5 Hammerday</span></span>
   </div>
 
 
@@ -597,7 +597,7 @@ details.day[data-date] { border-left: 1px solid rgba(15,25,40,.18) !important; }
     <summary><h2>What this radar is</h2></summary>
     <div class="how">
       <p><b>A quick daily overview, not a forecast of its own.</b> It reads the models the way an experienced pilot reads XC Skies, Skysight and the NWS, so you see at a glance which day and which site deserve a closer look. Always check the real tools before you launch.</p>
-      <p><b>How to read it.</b> The chip next to the date (No-go, Marginal, Site flying, XC day, Hammertag) answers one personal question: <i>is it a good local thermal day?</i> It is the best of Little Black, Blossom and Elsinore; a Torrey-only day or a great day far away doesn't change it. The pills show the day type, rain, cloud and warnings; below them the best sites. Tap a day for every site with its score, lift and winds; tap a site for the hours and what made the score. Today keeps updating; the <b>Archive</b> (bottom of the page) keeps each day's midday read.</p>
+      <p><b>How to read it.</b> The chip next to the date (No-go, Marginal, Site flying, XC day, Hammerday) answers one personal question: <i>is it a good local thermal day?</i> It is the best of Little Black, Blossom and Elsinore; a Torrey-only day or a great day far away doesn't change it. The pills show the day type, rain, cloud and warnings; below them the best sites. Tap a day for every site with its score, lift and winds; tap a site for the hours and what made the score. Today keeps updating; the <b>Archive</b> (bottom of the page) keeps each day's midday read.</p>
       <p><b>How it's tuned.</b> By hand, against XC Skies, Skysight, the NWS and local pilots' reads of the same forecast, not against flights. Little Black, Blossom, Elsinore and Torrey are calibrated this way; the other sites are educated guesses.</p>
     </div>
   </details>
@@ -610,7 +610,7 @@ details.day[data-date] { border-left: 1px solid rgba(15,25,40,.18) !important; }
     <span class="chip"><i style="background:var(--q1)"></i>2 marginal</span>
     <span class="chip"><i style="background:var(--q2)"></i>3 good local / glass-off</span>
     <span class="chip"><i style="background:var(--q4)"></i>4 XC</span>
-    <span class="chip"><i style="background:var(--q5)"></i>5 outstanding</span>
+    <span class="chip"><i style="background:var(--q5)"></i>5 Hammerday</span>
   </div>
       <p><b>Optimistic by design.</b> The score shows how good a day <i>can</i> be from the numbers. The judgement calls stay with you.</p>
       <p><b>The score.</b> Each site starts from the <b>height of lift</b> and the <b>thermal strength</b> in its window, on its own height scale (Little Black: 1,800 ft a good local day, 2,300 ft XC, 3,500 ft great). Height is the top of usable lift, like XC Skies, averaged over the four best readings at the launch and points around it. Then the same deductions apply everywhere:</p>
@@ -620,7 +620,7 @@ details.day[data-date] { border-left: 1px solid rgba(15,25,40,.18) !important; }
         <tr><th>Gusts on launch</th><td>over 12 mph −0.5 · over 18 mph too windy</td></tr>
         <tr><th>Launch direction</th><td>within 20°: fine · 20–45° off −0.5 · more than 45° off: 2 at most</td></tr>
         <tr><th>Wind at top of lift</th><td>over 20 mph −0.5 · over 30 mph −1</td></tr>
-        <tr><th>A 5</th><td>the site's great height, wind into launch and no deductions; otherwise 4 at most</td></tr>
+        <tr><th>Hammerday (5)</th><td>the site's great height, wind into launch and no deductions; otherwise 4 at most</td></tr>
       </table>
       <p><a class="howlink" href="measure.html">Where the radar measures: a chart per site →</a></p>
       <p><b>Torrey</b> is a ridge: showers and cloud don't count on a ridge day, over 20 mph or gusts over 25 is too windy, and straight south or north is a no-go. A thermal day there takes the full deductions.</p>
@@ -867,7 +867,7 @@ const siteName = (s) => (s.id === "lb" ? "Little Black" : s.short);
 const SD_SITES = new Set(["torrey", "lb", "blossom", "otay", "lagunahorse", "elsinore"]);   // San Diego sites + Elsinore (a home site): always listed
 const DAY_COLOUR = true;    // the day colour shows as a stripe on the left edge; the cards stay silver
 const DAY_SITES = new Set(["lb", "blossom", "elsinore"]);
-const DAY_WORD = { 1: "No-go day", 2: "Marginal day", 3: "Site flying", 4: "XC day", 5: "Hammertag" };
+const DAY_WORD = { 1: "No-go day", 2: "Marginal day", 3: "Site flying", 4: "XC day", 5: "Hammerday" };
 const DAY_LT = new Set([2, 3]);   // light chip colours (orange, yellow) take dark text   // the sites that set a day's colour
 const TRIP_IDS = new Set(["soboba", "marshall", "santabarbara", "owens"]);
 function daySummary(d, big, other) {
