@@ -192,9 +192,12 @@ details.fold > :not(summary) { margin-top: 10px; }
 /* second level: name, label + what made the number, pills; no bar, no number (the colour says it) */
 .srow.srow, .srow.small.small { grid-template-columns: minmax(0, 1fr); row-gap: 4px; }
 .srow .tx { grid-column: 1 / -1; }
+.srow .nmrow { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 10px; min-width: 0; }
+.dscore.sm { margin: 0; padding: 2px 9px; border-radius: 5px; }
+.dscore.sm b { font-size: 1.05rem; } .dscore.sm .dsl { font-size: .75rem; margin-right: 4px; } .dscore.sm small { font-size: .7rem; }
 @media (min-width: 760px) {
   .srow.srow, .srow.small.small { grid-template-columns: 150px minmax(0, 1fr); column-gap: 14px; }
-  .srow .tx { grid-column: 2; } .srow .spills { grid-column: 2 !important; }
+  .srow .tx { grid-column: 1 / -1; } .srow .spills { grid-column: 1 / -1 !important; }
 }
 .srow .facts { font-size: .78rem; color: #33404c; font-variant-numeric: tabular-nums; }
 .srow.small .facts { font-size: .72rem; }
@@ -856,7 +859,7 @@ function siteRow(d, s, i, kind) {
   if (!c) return `<div class="srow ${kind}"><span class="nm">${esc(name)}</span><span class="muted">no data</span></div>`;
   const pills = sitePills(c);
   return `<button type="button" class="srow ${kind}" style="--rc:${qv(c.rating)}" data-site="${s.id}" data-day="${i}" aria-expanded="false">
-    <span class="nm">${esc(name)}</span>
+    <span class="nmrow"><span class="nm">${esc(name)}</span><span class="dscore sm" style="--rc:${qgrad(c.rating)}"><span class="dsl">Score:</span><b>${(Math.max(1, Math.min(5, Math.round(c.rating * 2) / 2))).toFixed(1).replace(".0", "")}</b><small>/5</small></span></span>
     <span class="tx">${c.label === "XC" ? "" : `<span class="lab" style="color:${qv(c.rating)}">${esc(c.label)}</span>`}${c.xc ? '<span class="xcmark">XC</span>' : ""}<span class="facts">${esc(siteFacts(c))}</span></span>
     ${pills ? `<span class="spills">${pills}</span>` : ""}
     <span class="exp sm" aria-hidden="true"><span class="chev"></span></span>
@@ -897,7 +900,6 @@ function detail(d, s, inline) {
       <h3 style="font-size:1.1rem;font-family:var(--font-body);font-weight:600">${esc(s.name)} <span class="muted" style="font-size:.9rem;font-weight:500">${r1(c.rating)}/5</span></h3>${labelHtml(c)}</div>
     ${c.note && !/thermals/i.test(c.note) ? `<p class="note">${esc(c.note)}</p>` : ""}`;
   return `${head}
-    <div class="dscore" style="--rc:${qgrad(c.rating)}"><span class="dsl">Score:</span><b>${half.toFixed(1).replace(".0", "")}</b><small>/5</small></div>
     <div class="dsec"><span class="dh">What made the score</span>
       <div class="factors">${rows}</div>
       ${steps ? `<div class="steps">${steps}</div>` : ""}</div>
