@@ -456,15 +456,23 @@ LATER_PAT = re.compile(r"\b(tomorrow|weekend|saturday|sunday|monday|tuesday|wedn
                        r"late(r)? (in )?the week|early next|mid(dle)? of next)", re.I)
 
 
+LEAD_PAT = re.compile(r"^(however|meanwhile|otherwise|additionally|also|overall|in addition|that said|as such|"
+                      r"by contrast|still|regardless|at this time|for now)\s*,?\s+", re.I)
+MODEL_TALK = re.compile(r"\b(GFS|ECMWF|EC\b|NAM|HRRR|NBM|CMC|ensembles?|soundings?|guidance|\d{2}z|deterministic|"
+                        r"cluster|model runs?|solutions?)\b", re.I)
+
+
 def clause(sentence, limit=95):
-    """Shorten to whole clauses so a bullet never ends mid-thought."""
-    t = squeeze(sentence, limit=10_000)
+    """Shorten to whole clauses so a bullet never ends mid-thought; a leading "However," is dropped and a
+    short opening ("Next week,") stays with what follows."""
+    t = LEAD_PAT.sub("", squeeze(sentence, limit=10_000)).strip()
+    t = t[0].upper() + t[1:] if t else t
     if len(t) <= limit:
         return t
-    parts = re.split(r"(?:,\s+(?:with|then|and|but|becoming|while|as|which)\s+|;\s+|\s+then\s+|,\s+)", t)
+    parts = re.split(r"(?:,\s+(?:with|then|and|but|becoming|while|as|which)\s+|;\s+|\s+then\s+|\s+[-–—]\s+|,\s+)", t)
     out = parts[0]
     for p in parts[1:]:
-        if len(out) + len(p) + 2 > limit:
+        if len(out) >= 30 and len(out) + len(p) + 2 > limit:
             break
         out += ", " + p
     return out.rstrip(" ,;:")
@@ -475,7 +483,8 @@ def summary_rules(text):
     synopsis = _section(text, "SYNOPSIS")
     body = " ".join(_section(text, n) for n in ("SHORT TERM", "DISCUSSION", "LONG TERM"))
     sents = [x for x in _sentences(synopsis) + _sentences(body)
-             if not re.search(r"\btides?\b|surf|beach|coastal flood|rip current|\bmarine\b(?! layer)", x, re.I)]
+             if not re.search(r"\btides?\b|surf|beach|coastal flood|rip current|\bmarine\b(?! layer)", x, re.I)
+             and not MODEL_TALK.search(x)]          # forecaster talk about model runs is not the pattern
     now, nxt, fly, seen = [], [], [], set()
     for x in sents:
         c = clause(x)
