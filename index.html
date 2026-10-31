@@ -88,6 +88,10 @@ details.day > summary.hd .band { grid-column: 1 / -1; display: grid; grid-templa
 /* the day's colour sits only behind the day and date; pills and sites are on silver */
 :root[data-skin="glossy"] details.day[data-date] { background: linear-gradient(180deg, #e3e7ec, #eef1f4) !important; }
 :root[data-skin="glossy"] details.day[data-date] > summary.hd { background: linear-gradient(180deg, #e3e7ec, #e8ebef) !important; }
+/* day cards stand out from the page: a slightly deeper silver, a firmer edge and a soft lift */
+:root[data-skin="glossy"] details.day[data-date] { background: linear-gradient(180deg, #dce1e7, #e7eaee) !important;
+  border: 1px solid rgba(15,25,40,.28) !important; box-shadow: 0 1px 0 rgba(255,255,255,.7) inset, 0 3px 10px -3px rgba(15,25,40,.35), 0 1px 2px rgba(15,25,40,.12) !important; }
+:root[data-skin="glossy"] details.day[data-date] > summary.hd { background: linear-gradient(180deg, #dce1e7, #e1e5ea) !important; }
 /* the day's quality is a small status chip next to the date; the card itself stays silver */
 details.day[data-date] .band { padding: 12px 14px 0; }
 .dchip { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 10px; font-size: .62rem; font-weight: 700;
