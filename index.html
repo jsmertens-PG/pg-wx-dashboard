@@ -592,7 +592,7 @@ details.day[data-date] { border-left: 1px solid rgba(15,25,40,.18) !important; }
     <summary><h2>What this radar is</h2></summary>
     <div class="how">
       <p><b>A quick daily overview, not a forecast of its own.</b> It reads the models the way an experienced pilot reads XC Skies, Skysight and the NWS, so you see at a glance which day and which site deserve a closer look. Always check the real tools before you launch.</p>
-      <p><b>How to read it.</b> The chip next to the date (No-go, Marginal, Local, XC, Great day) answers one personal question: <i>is it a good local thermal day?</i> It is the best of Little Black, Blossom and Elsinore; a Torrey-only day or a great day far away doesn't change it. The pills show the day type, rain, cloud and warnings; below them the best sites. Tap a day for every site with its score, lift and winds; tap a site for the hours and what made the score. Today keeps updating; the <b>Archive</b> (bottom of the page) keeps each day's midday read.</p>
+      <p><b>How to read it.</b> The chip next to the date (No-go, Marginal, Local, XC day, Hammertag) answers one personal question: <i>is it a good local thermal day?</i> It is the best of Little Black, Blossom and Elsinore; a Torrey-only day or a great day far away doesn't change it. The pills show the day type, rain, cloud and warnings; below them the best sites. Tap a day for every site with its score, lift and winds; tap a site for the hours and what made the score. Today keeps updating; the <b>Archive</b> (bottom of the page) keeps each day's midday read.</p>
       <p><b>How it's tuned.</b> By hand, against XC Skies, Skysight, the NWS and local pilots' reads of the same forecast, not against flights. Little Black, Blossom, Elsinore and Torrey are calibrated this way; the other sites are educated guesses.</p>
     </div>
   </details>
@@ -862,7 +862,7 @@ const siteName = (s) => (s.id === "lb" ? "Little Black" : s.short);
 const SD_SITES = new Set(["torrey", "lb", "blossom", "otay", "lagunahorse", "elsinore"]);   // San Diego sites + Elsinore (a home site): always listed
 const DAY_COLOUR = true;    // the day colour shows as a stripe on the left edge; the cards stay silver
 const DAY_SITES = new Set(["lb", "blossom", "elsinore"]);
-const DAY_WORD = { 1: "No-go day", 2: "Marginal day", 3: "Local day", 4: "XC day", 5: "Great day" };
+const DAY_WORD = { 1: "No-go day", 2: "Marginal day", 3: "Local day", 4: "XC day", 5: "Hammertag" };
 const DAY_LT = new Set([2, 3]);   // light chip colours (orange, yellow) take dark text   // the sites that set a day's colour
 const TRIP_IDS = new Set(["soboba", "marshall", "santabarbara", "owens"]);
 function daySummary(d, big, other) {
