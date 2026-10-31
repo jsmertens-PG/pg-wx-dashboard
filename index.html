@@ -748,7 +748,9 @@ function render(data) {
     /* card colour: one of five colours (red, orange, yellow, green, blue) from the best San Diego site */
     const cardCol = bm ? `var(${QSTOP[Math.max(1, Math.min(5, Math.round(bm.rating)))]})` : "var(--line)";
     const open = openDays.has(d.date);
-    const mods = [dayModels(d), d.frozen_at ? `(final ${esc(fmtTime(d.frozen_at).toLowerCase())})` : ""].filter(Boolean).join(" ");
+    /* which models and which run: today's final run once frozen, otherwise the latest run */
+    const runAt = d.frozen_at || data.generated;
+    const mods = dayModels(d) ? `Used models: ${dayModels(d)}${runAt ? ` (${esc(fmtTime(runAt).toLowerCase())}${d.frozen_at ? " final" : ""})` : ""}` : "";
     return `<details class="day" id="day-${i}" data-date="${esc(d.date)}" style="--qc:${cardCol}"${open ? " open" : ""}>
       <summary class="hd">
         <span class="when"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small></span>
