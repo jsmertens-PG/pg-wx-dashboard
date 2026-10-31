@@ -88,7 +88,11 @@ details.day > summary.hd .band { grid-column: 1 / -1; display: grid; grid-templa
 /* the day's colour sits only behind the day and date; pills and sites are on silver */
 :root[data-skin="glossy"] details.day[data-date] { background: linear-gradient(180deg, #e3e7ec, #eef1f4) !important; }
 :root[data-skin="glossy"] details.day[data-date] > summary.hd { background: linear-gradient(180deg, #e3e7ec, #e8ebef) !important; }
-details.day[data-date] .band { background: linear-gradient(180deg, color-mix(in srgb, var(--qc) 78%, #fff), color-mix(in srgb, var(--qc) 64%, #fff)); }
+/* the day's quality is a small status chip next to the date; the card itself stays silver */
+details.day[data-date] .band { padding: 12px 14px 0; }
+.dchip { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 10px; font-size: .62rem; font-weight: 700;
+  letter-spacing: .05em; text-transform: uppercase; color: #fff; background: var(--qc); white-space: nowrap; align-self: center; }
+.dchip.lt { color: #2b1d14; }
 /* day card spacing: even breathing room between the three rows, on every screen */
 details.day > summary.hd.hd { row-gap: 10px; padding: 12px 14px 10px; }
 details.day > summary.hd .notes { gap: 6px; }
@@ -588,7 +592,7 @@ details.day[data-date] { border-left: 1px solid rgba(15,25,40,.18) !important; }
     <summary><h2>What this radar is</h2></summary>
     <div class="how">
       <p><b>A quick daily overview, not a forecast of its own.</b> It reads the models the way an experienced pilot reads XC Skies, Skysight and the NWS, so you see at a glance which day and which site deserve a closer look. Always check the real tools before you launch.</p>
-      <p><b>How to read it.</b> The colour band of a day card answers one personal question: <i>is it a good local thermal day?</i> It is the best of Little Black, Blossom and Elsinore (red 1 → blue 5); a Torrey-only day or a great day far away doesn't colour it. The pills show the day type, rain, cloud and warnings; below them the best sites. Tap a day for every site with its score, lift and winds; tap a site for the hours and what made the score. Today keeps updating; the <b>Archive</b> (bottom of the page) keeps each day's midday read.</p>
+      <p><b>How to read it.</b> The chip next to the date (No-go, Marginal, Local, XC, Great day) answers one personal question: <i>is it a good local thermal day?</i> It is the best of Little Black, Blossom and Elsinore; a Torrey-only day or a great day far away doesn't change it. The pills show the day type, rain, cloud and warnings; below them the best sites. Tap a day for every site with its score, lift and winds; tap a site for the hours and what made the score. Today keeps updating; the <b>Archive</b> (bottom of the page) keeps each day's midday read.</p>
       <p><b>How it's tuned.</b> By hand, against XC Skies, Skysight, the NWS and local pilots' reads of the same forecast, not against flights. Little Black, Blossom, Elsinore and Torrey are calibrated this way; the other sites are educated guesses.</p>
     </div>
   </details>
@@ -616,7 +620,7 @@ details.day[data-date] { border-left: 1px solid rgba(15,25,40,.18) !important; }
       <p><a class="howlink" href="measure.html">Where the radar measures: a chart per site →</a></p>
       <p><b>Torrey</b> is a ridge: showers and cloud don't count on a ridge day, over 20 mph or gusts over 25 is too windy, and straight south or north is a no-go. A thermal day there takes the full deductions.</p>
       <p><b>Windows.</b> Little Black and Otay 11 am–1 pm, Blossom 11 am–2 pm, the others their own; glass-off is rated separately and the better one counts. Elsinore needs an east launch wind, then the west switch. Laguna/Horse/Fuzz needs a convergence.</p>
-      <p><b>Day cards.</b> The colour band is a personal choice: it shows whether it's a good <i>local thermal</i> day, so it is the best of Little Black, Blossom and Elsinore, rounded. Torrey, Otay, Whale's V, Laguna/Horse/Fuzz and the trips never set it; when they are good they show as pills on the card. The card lists the sites at that level, at least three; a trip only when it matches.</p>
+      <p><b>Day cards.</b> The chip next to the date is a personal choice: it shows whether it's a good <i>local thermal</i> day, so it is the best of Little Black, Blossom and Elsinore, rounded. Torrey, Otay, Whale's V, Laguna/Horse/Fuzz and the trips never set it; when they are good they show as pills on the card. The card lists the sites at that level, at least three; a trip only when it matches.</p>
       <p><b>Models.</b> HRRR ×2 and RRFS while HRRR covers the day, then RRFS ×2 with GFS, ECMWF and ICON, then the global models alone. The ensembles give the chance of flying and of XC.</p>
       <p><b>Not in the score:</b> the day type, the direction of the wind aloft (for planning an XC), model agreement and those chances.</p>
     </div>
@@ -796,6 +800,7 @@ function render(data) {
     const sdCells = Object.entries(d.sites || {}).filter(([k, c]) => DAY_SITES.has(k) && c && c.rating != null).map(([, c]) => c);
     const bm = sdCells.slice().sort((a, b) => b.rating - a.rating)[0];
     /* card colour: one of five colours (red, orange, yellow, green, blue) from the best San Diego site */
+    const dayLvl = bm ? Math.max(1, Math.min(5, Math.round(bm.rating))) : 0;
     const cardCol = !DAY_COLOUR ? "#e4e7eb" : bm ? `var(${QSTOP[Math.max(1, Math.min(5, Math.round(bm.rating)))]})` : "var(--line)";
     const open = openDays.has(d.date);
     /* which models and which run: today's final run once frozen, otherwise the latest run */
@@ -803,7 +808,7 @@ function render(data) {
     const mods = dayModels(d) ? `Models: ${dayModels(d)}${runAt ? ` (${esc(fmtTime(runAt).toLowerCase())}${d.frozen_at ? " final" : ""})` : ""}` : "";
     return `<details class="day" id="day-${i}" data-date="${esc(d.date)}" style="--qc:${cardCol}"${open ? " open" : ""}>
       <summary class="hd"><span class="band">
-        <span class="when"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small></span>
+        <span class="when"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small>${bm ? `<span class="dchip${DAY_LT.has(dayLvl) ? " lt" : ""}" title="best of Little Black, Blossom and Elsinore">${DAY_WORD[dayLvl]}</span>` : ""}</span>
         <span class="exp" aria-hidden="true"><i class="chev"></i></span></span>
         ${(() => { const n = regimeHtml(d.regime) + rainPill(d) + cloudPill(d) + (d.why && !(/rain|shower/i.test(d.why) && rainPill(d)) ? `<span class="rx rx-why">${ico("warn")}${esc(d.why)}</span>` : ""); return n ? `<span class="notes">${n}</span>` : ""; })()}
         <span class="sum">${daySummary(d, big, other)}${watchPill(d)}</span>
@@ -856,7 +861,9 @@ const siteName = (s) => (s.id === "lb" ? "Little Black" : s.short);
 /* what a closed day shows: the home sites and Torrey with their number, then any other XC site */
 const SD_SITES = new Set(["torrey", "lb", "blossom", "otay", "lagunahorse", "elsinore"]);   // San Diego sites + Elsinore (a home site): always listed
 const DAY_COLOUR = true;    // the day colour shows as a stripe on the left edge; the cards stay silver
-const DAY_SITES = new Set(["lb", "blossom", "elsinore"]);   // the sites that set a day's colour
+const DAY_SITES = new Set(["lb", "blossom", "elsinore"]);
+const DAY_WORD = { 1: "No-go day", 2: "Marginal day", 3: "Local day", 4: "XC day", 5: "Great day" };
+const DAY_LT = new Set([2, 3]);   // light chip colours (orange, yellow) take dark text   // the sites that set a day's colour
 const TRIP_IDS = new Set(["soboba", "marshall", "santabarbara", "owens"]);
 function daySummary(d, big, other) {
   /* the best level of the day (set by the San Diego sites; a trip shows only when it matches it),
