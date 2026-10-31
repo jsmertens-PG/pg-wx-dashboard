@@ -873,7 +873,7 @@ const LIFT = '<svg class="lift" viewBox="0 0 14 12" aria-hidden="true"><g fill="
 function siteFacts(c) {
   const f = (k) => (c.factors || []).find((x) => x.k === k);
   const h = f("Height") || f("Thermal height"), w = f("Wind 1 pm"), a = f("Wind aloft");
-  return [h && h.v !== "–" ? `<span class="wa">${LIFT}${esc(h.v)}${c.wstar != null && c.wstar > 0 ? ` <small>${Number(c.wstar).toFixed(1)} m/s</small>` : ""}</span>` : "", w && w.v !== "–" ? `launch ${windHtml(w.v, "mph")}` : "",
+  return [h && h.v !== "–" ? `<span class="wa">${LIFT}${esc(h.v)}</span>` : "", w && w.v !== "–" ? `launch ${windHtml(w.v, "mph")}` : "",
           a && a.v !== "–" ? `aloft ${windHtml(a.v, "kt")}` : ""].filter(Boolean).join('<span class="sep">·</span>');
 }
 function sitePills(c) {
