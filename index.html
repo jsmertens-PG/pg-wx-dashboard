@@ -529,6 +529,7 @@ footer .btnlink { font-size: .8rem; min-height: 30px; padding: 3px 10px; border:
 .qlab span { flex: 1; text-align: center; } .qlab span:first-child { text-align: left; } .qlab span:last-child { text-align: right; }
 /* day cards take the weather card's solid silver; the weather card itself goes a shade quieter */
 :root[data-skin="glossy"] details.day[data-date] { background: linear-gradient(180deg, #e3e7ec, #eef1f4); }
+details.day[data-date] { border-left: 7px solid var(--qc) !important; }
 :root[data-skin="glossy"] details.day[data-date] > summary.hd { background: linear-gradient(180deg, #cfd5dc, #dde2e8); border-bottom-color: rgba(15,25,40,.18); }
 :root[data-skin="glossy"] #story { background: linear-gradient(180deg, #eef1f4, #f5f6f8); }
 :root[data-skin="glossy"] #story > .hd { background: linear-gradient(180deg, #e6e9ed, #eef1f4); }
@@ -831,7 +832,7 @@ const rowNote = (c) => (!c.note || /\d,?\d{3} ft|thermals/i.test(c.note) ? (c.la
 const siteName = (s) => (s.id === "lb" ? "Little Black" : s.short);
 /* what a closed day shows: the home sites and Torrey with their number, then any other XC site */
 const SD_SITES = new Set(["torrey", "lb", "blossom", "otay", "lagunahorse", "elsinore"]);   // San Diego sites + Elsinore (a home site): always listed
-const DAY_COLOUR = false;   // day cards neutral; only the site pills carry the colour (set true to colour the cards again)
+const DAY_COLOUR = true;    // the day colour shows as a stripe on the left edge; the cards stay silver
 const TRIP_IDS = new Set(["soboba", "marshall", "santabarbara", "owens"]);
 function daySummary(d, big, other) {
   /* the best level of the day (set by the San Diego sites; a trip shows only when it matches it),
