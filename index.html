@@ -82,6 +82,9 @@ details.fold, #sources { min-width: 0; max-width: 100%; }
 .howlink { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 6px; background: #fff; color: #2b1d14; font-weight: 600; text-decoration: none; box-shadow: 0 0 0 1px rgba(20,30,40,.16), 0 2px 6px -3px rgba(20,30,40,.3); }
 .howlink:hover { box-shadow: 0 0 0 1.5px #c26a24; }
 .rx-why { --rxc: #444b52; }
+/* the top of a day card (day, date, weather pills) is the coloured band; the sites sit on silver below */
+details.day > summary.hd .band { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 12px; row-gap: 10px;
+  align-items: center; margin: -12px -14px 0; padding: 12px 14px 10px; }
 /* day card spacing: even breathing room between the three rows, on every screen */
 details.day > summary.hd.hd { row-gap: 10px; padding: 12px 14px 10px; }
 details.day > summary.hd .notes { gap: 6px; }
@@ -793,10 +796,10 @@ function render(data) {
     const runAt = d.frozen_at || data.generated;
     const mods = dayModels(d) ? `Models: ${dayModels(d)}${runAt ? ` (${esc(fmtTime(runAt).toLowerCase())}${d.frozen_at ? " final" : ""})` : ""}` : "";
     return `<details class="day" id="day-${i}" data-date="${esc(d.date)}" style="--qc:${cardCol}"${open ? " open" : ""}>
-      <summary class="hd">
+      <summary class="hd"><span class="band">
         <span class="when"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small></span>
         <span class="exp" aria-hidden="true"><i class="chev"></i></span>
-        ${(() => { const n = regimeHtml(d.regime) + rainPill(d) + cloudPill(d) + (d.why && !(/rain|shower/i.test(d.why) && rainPill(d)) ? `<span class="rx rx-why">${ico("warn")}${esc(d.why)}</span>` : ""); return n ? `<span class="notes">${n}</span>` : ""; })()}
+        ${(() => { const n = regimeHtml(d.regime) + rainPill(d) + cloudPill(d) + (d.why && !(/rain|shower/i.test(d.why) && rainPill(d)) ? `<span class="rx rx-why">${ico("warn")}${esc(d.why)}</span>` : ""); return n ? `<span class="notes">${n}</span>` : ""; })()}</span>
         <span class="sum">${daySummary(d, big, other)}${watchPill(d)}</span>
         ${mods ? `<span class="mods">${mods}</span>` : ""}
       </summary>
