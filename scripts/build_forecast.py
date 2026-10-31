@@ -834,7 +834,9 @@ def score_hour(site, hr, i, levels, elev_m):
     on = good_launch = None
     if lw_mph is not None and ld is not None:
         on = dir_ok(site, ld)
-        good_launch = (on and lo <= lw_mph <= hi) or (lw_mph <= 5 and site["kind"] != "ridge")
+        off_h = angdiff(ld, site_face(site)) if site_face(site) is not None and lw_mph > 4 else None
+        good_launch = ((on and lo <= lw_mph <= hi and (off_h is None or off_h <= 20))
+                       or (lw_mph <= 5 and site["kind"] != "ridge"))
         launch = "good"
         cross = next((c for c in site.get("cross", []) if wrap_in(ld, c[0], c[1])), None) if not on else None
         if cross and lw_mph >= CROSS_FREE_MPH:
@@ -871,7 +873,8 @@ def score_hour(site, hr, i, levels, elev_m):
             good_launch = False
     # wind aloft: strength and direction
     if a_max is not None and a_max > site["aloft_max_kt"]:
-        q *= clamp(1 - (a_max - site["aloft_max_kt"]) / 10)
+        if site["kind"] in ("ridge", "convergence"):
+            q *= clamp(1 - (a_max - site["aloft_max_kt"]) / 10)
         codes.append("aloft")
     # convergence sites are killed by even light synoptic flow from the wrong side
     bad_min = site.get("aloft_bad_min_kt") or (3 if site["kind"] == "convergence" else 6)
@@ -1183,6 +1186,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "launch_q": sum(1 for s in blk if s["good_launch"]) / len(blk),
         "into": sum(1 for s in blk if s.get("into")) / len(blk),
         "gust12": sum(1 for s in blk if s.get("gcat", 0) >= 1) / len(blk),
+        "top_wind": (lambda v: sorted(v)[len(v) // 2] if v else None)([s["tw"][1] * 1.15078 for s in blk if s.get("tw")]),
         "gust18": sum(1 for s in blk if s.get("gcat", 0) >= 2) / len(blk),
         "offcat": (lambda offs: sum(0 if o <= 20 else 1 if o <= 45 else 2 for o in offs) / len(offs) if offs else 0.0)(
             [s["off"] for s in blk if s.get("off") is not None]),
@@ -1742,13 +1746,13 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             great_ft = (s.get("xc_top_ft") or 0) + (s.get("xc_span_ft") or 1000)
             tops = [v["top"] * FT for v in D.values() if v.get("top")] if D else []
             if s.get("style") != "ridge" and s.get("xc_top_ft") and tops and max(tops) < great_ft:
-                r0 = rating; rating = min(rating, 4.49); note_adj(f"below {great_ft:,.0f} ft: 4 at most", r0)
+                r0 = rating; rating = min(rating, 4.24); note_adj(f"below {great_ft:,.0f} ft: 4 at most", r0)
             # a 5 also needs the wind blowing nicely into the launch for most of the window: light air from any
             # side, or a cross wind, is launchable but makes it a 4 at most (thermal sites; Torrey has its own rules)
             if s.get("style") in ("thermal", "window") and D and rating >= 4.5:
                 into = sum(model_weight(k, D) * a.get("into", 0) for k, a in D.items()) / (sum(model_weight(k, D) for k in D) or 1)
                 if into < 0.5:
-                    r0 = rating; rating = 4.49; note_adj("wind not into launch: 4 at most", r0)
+                    r0 = rating; rating = 4.24; note_adj("wind not into launch: 4 at most", r0)
             # gusts through the window: over 12 mph for most of it costs half a point, over 18 mph is too windy
             if s.get("kind") != "ridge" and D:
                 tw = sum(model_weight(k, D) for k in D) or 1
@@ -1758,6 +1762,15 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                     r0 = rating; rating = min(rating, 1.4); note_adj("gusts over 18 mph: too windy", r0)
                 elif g12 >= 0.5:
                     r0 = rating; rating = max(1.0, rating - 0.5); note_adj("gusts over 12 mph", r0)
+            # wind at the top of lift (we tolerate more up there than on launch): over 20 mph costs half a
+            # point, over 30 mph a full point
+            tws = [(a["top_wind"], model_weight(k, D)) for k, a in D.items() if a.get("top_wind") is not None]
+            tw_mph = wmedian(tws) if tws else None
+            if s.get("kind") not in ("ridge", "convergence") and D:
+                if tw_mph is not None and tw_mph > 30:
+                    r0 = rating; rating = max(1.0, rating - 1.0); note_adj("wind at top of lift over 30 mph", r0)
+                elif tw_mph is not None and tw_mph > 20:
+                    r0 = rating; rating = max(1.0, rating - 0.5); note_adj("wind at top of lift over 20 mph", r0)
             # how well the wind lines up with the launch through the window (thermal sites, light air ignored):
             # within 20 degrees is perfect, 20-45 degrees off costs half a point, more than 45 degrees off sinks the day
             if s.get("style") in ("thermal", "window") and D and site_face(s) is not None:
@@ -1766,6 +1779,9 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                     r0 = rating; rating = min(rating, 2.0); note_adj("wind more than 45° off launch: 2 at most", r0)
                 elif oc >= 0.5:
                     r0 = rating; rating = max(1.0, rating - 0.5); note_adj("wind 20–45° off launch", r0)
+            # a 5 is a clean day: any deduction above (rain, cloud, gusts, wind, direction) makes it a 4 at most
+            if rating >= 4.5 and any(v < 0 for _, v in adj):
+                r0 = rating; rating = 4.24; note_adj("a 5 needs a clean day: 4 at most", r0)
             # awkward drift at the top of lift (most of the rating weight agrees): a tag, and at some
             # sites a small nick (Blossom: NW or clearly WNW pushes XC toward the Rock Pile)
             xb = s.get("xc_bad_aloft") or {}
@@ -1864,7 +1880,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                      f"at {round(lead['top13'] * FT, -2):,.0f} ft" if lead and lead.get("top13") else "",
                      "blows over the back" if aloftdir else "",
                      ecmwf_wind) if x),
-                 "q": round(0.15 if aloftdir else 1 - clamp(((a_max or 0) - 0.6 * s["aloft_max_kt"]) / (0.8 * s["aloft_max_kt"])), 2)},
+                 # the bar: full up to about 12 mph at the top of lift, half at 20, empty at 30
+                 "q": round(1 - clamp(((tw_mph if tw_mph is not None else (a_max or 0) * 1.15078) - 12) / 18), 2)},
                 {"k": "Rain & storms", "v": f"{round(shower_p * 100)}% of runs" if shower_p >= 0.05 else "dry",
                  "sub": "storm risk" if (cape or 0) >= 1000 else "",
                  "q": round(clamp(1 - 1.4 * shower_p) * (1 - 0.4 * clamp(((cape or 0) - 800) / 1500)), 2)},
