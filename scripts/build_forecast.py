@@ -1151,6 +1151,10 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "aloftdir": sum(1 for s in blk if {"aloftdir", "drift"} & set(s["codes"])) >= 2,
         "venturi": sum(1 for s in blk if "venturi" in s["codes"]) >= 2,
         "dbg": [[h, x["dbg"]] for h, x in hours if 9 <= h <= 16],
+        # how good each hour is on the 1-5 scale (height level x conditions), for the hour strip on the site card
+        "hr": {h: round((1.0 + 2.0 * clamp(x["q"] / 0.7)) if style == "ridge"
+                        else (1.0 + (ceil_level(site, x["peak_top"] * FT) - 1.0) * clamp(x["q"] / 0.6)), 2)
+               for h, x in hours if 9 <= h <= 18},
         "xc_block": sum(1 for h, s in win if s["xc_block"]) >= max(1, len(win) // 2) if win else False,
         "pr": sum(s["pr"] for _, s in hours), "pr_win": window_rain,
         "wet_f": (sum(1 for _, s in win if s["pr"] >= WET_MM) / len(win)) if win else 0.0, "cape": max(s["cape"] for _, s in hours),
@@ -1840,6 +1844,9 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             drow["sites"][s["id"]] = {
                 "rating": round(rating, 2), "label": label, "tags": tags, "xc": xc, "rain_p": round(shower_p, 2),
                 "base": round(base_r, 2), "adj": adj,
+                "hours": {str(h): round(blend({m: a["hr"][h] for m, a in D.items() if h in (a.get("hr") or {})}), 1)
+                          for h in range(9, 19) if any(h in (a.get("hr") or {}) for a in D.values())},
+                "win": s.get("window"),
                 "note": note_for(s, lead_view, xc),
                 "p_fly": round(p_fly, 2), "p_xc": round(p_xc, 2),
                 "agree": factors[-1]["v"], "models": {k: round(v, 1) for k, v in det_r.items()},
