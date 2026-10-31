@@ -242,7 +242,9 @@ class Physics(unittest.TestCase):
         self.assertNotIn("cross", calm_cross["codes"])
         self.assertAlmostEqual(calm_cross["q"], on["q"])
         self.assertEqual(cross["launch"], "cross-N")
-        self.assertLess(cross["q"], h(260, 8)["q"])
+        # at Little Black the cost of a cross wind is the day rule on degrees off the launch (see off/offcat)
+        self.assertGreater(cross["off"], 45)
+        self.assertLessEqual(h(270, 8)["off"], 20)
 
     def test_sites_have_real_positions(self):
         parents = json.loads((ROOT / "sites.json").read_text())["sites"]
@@ -297,13 +299,11 @@ class RainAndSun(unittest.TestCase):
         self.assertLess(bf.weather_steps(3.83, 0.45, True, (1.0, 0.41))[0], 2.5)   # Little Black
         self.assertLess(bf.weather_steps(3.97, 0.40, True, (1.0, 0.38))[0], 3.0)   # Blossom
 
-    def test_thin_cirrus_costs_nothing(self):
-        self.assertEqual(bf.weather_steps(4.0, 0.0, False, (0.9, 0.2))[0], 4.0)
-
-    def test_sun_steps(self):
-        self.assertAlmostEqual(bf.weather_steps(4.0, 0.0, False, (1.0, 0.40))[0], 3.5)
-        self.assertAlmostEqual(bf.weather_steps(4.0, 0.0, False, (1.0, 0.60))[0], 3.0)
-        self.assertAlmostEqual(bf.weather_steps(4.0, 0.0, False, (1.0, 0.80))[0], 2.5)
+    def test_cloud_steps_by_okta(self):
+        self.assertAlmostEqual(bf.weather_steps(4.0, 0.0, False, (0.75, 0.40))[0], 3.25)   # 6/8
+        self.assertAlmostEqual(bf.weather_steps(4.0, 0.0, False, (1.0, 0.40))[0], 2.25)    # 8/8
+        self.assertAlmostEqual(bf.weather_steps(4.0, 0.0, False, (0.5, 0.30))[0], 4.0)     # 4/8: nothing
+        self.assertAlmostEqual(bf.weather_steps(4.0, 0.0, False, (1.0, 0.10))[0], 3.125)   # thin cirrus: half
 
     def test_ridge_and_rain_ok_sites_untouched(self):
         self.assertEqual(bf.weather_steps(3.3, 0.70, True, (1.0, 0.9), rain_ok=True)[0], 3.3)

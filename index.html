@@ -206,7 +206,8 @@ details.fold > :not(summary) { margin-top: 10px; }
 .wa small { font-size: .78em; opacity: .7; margin-left: 1px; }
 .facts .sep { margin: 0 6px; opacity: .5; }
 .hstrip { display: grid; grid-template-columns: repeat(10, 1fr); gap: 2px; max-width: 520px; }
-.hstrip .hc { height: 14px; border-radius: 2px; }
+.hstrip .hc { height: 14px; border-radius: 2px; box-shadow: inset 0 0 0 1.5px rgba(38,48,58,.75); }
+.hstrip .hl:first-of-type, .hstrip .hl:last-child { white-space: nowrap; }
 .hstrip .hl { font-size: .58rem; color: var(--muted); text-align: center; font-variant-numeric: tabular-nums; line-height: 1.1; }
 .hstrip .hc.win { box-shadow: inset 0 0 0 2px #26303a; }
 /* one text system: body .78rem, captions .72rem, every chip and section head .62rem capitals */
@@ -529,9 +530,9 @@ footer .btnlink { font-size: .8rem; min-height: 30px; padding: 3px 10px; border:
 .qlab span { text-align: center !important; }
 .qlab span { flex: 1; text-align: center; } .qlab span:first-child { text-align: left; } .qlab span:last-child { text-align: right; }
 /* day cards take the weather card's solid silver; the weather card itself goes a shade quieter */
-:root[data-skin="glossy"] details.day[data-date] { background: linear-gradient(180deg, #e3e7ec, #eef1f4); }
-details.day[data-date] { border-left: 7px solid var(--qc) !important; }
-:root[data-skin="glossy"] details.day[data-date] > summary.hd { background: linear-gradient(180deg, #cfd5dc, #dde2e8); border-bottom-color: rgba(15,25,40,.18); }
+:root[data-skin="glossy"] details.day[data-date] { background: linear-gradient(180deg, color-mix(in srgb, var(--qc) 14%, #e3e7ec), color-mix(in srgb, var(--qc) 8%, #eef1f4)); }
+details.day[data-date] { border-left: 1px solid rgba(15,25,40,.18) !important; }
+:root[data-skin="glossy"] details.day[data-date] > summary.hd { background: linear-gradient(180deg, color-mix(in srgb, var(--qc) 30%, #cfd5dc), color-mix(in srgb, var(--qc) 20%, #dde2e8)); border-bottom-color: rgba(15,25,40,.18); }
 :root[data-skin="glossy"] #story { background: linear-gradient(180deg, #eef1f4, #f5f6f8); }
 :root[data-skin="glossy"] #story > .hd { background: linear-gradient(180deg, #e6e9ed, #eef1f4); }
 :root[data-skin="glossy"] #story .wsec { background: #e1e5ea; }
@@ -658,7 +659,7 @@ const r1 = (r) => (r == null ? "–" : String(Math.max(1, Math.min(5, Math.round
 const RX = { "Front": ["front", "Front"], "Pre-frontal": ["pre", "Pre-frontal"], "Post-frontal": ["post", "Post-frontal"],
   "Santa Ana": ["sa", "Santa Ana"], "Switch day": ["switch", "Switch day"], "Pre/post-frontal": ["prepost", "Pre/post-frontal"] };
 /* weather-pill icons: one small symbol per kind of notice */
-const ICON = { "Front": "≋", "Pre-frontal": "↗", "Post-frontal": "★", "Santa Ana": "⇇", "Switch day": "⇄", "Pre/post-frontal": "⇅",
+const ICON = { "Front": "≋", "Pre-frontal": "↗", "Post-frontal": "★", "Santa Ana": "⇇", "Switch day": "⇆", "Pre/post-frontal": "⇅",
   cloud: "☁", warn: "⚠" };
 /* the rain drop is drawn, so it stays one colour on every phone (the emoji is always blue) */
 const DROP = '<svg class="ic-svg" viewBox="0 0 12 16" aria-hidden="true"><path d="M6 1 C6 1 1.2 7 1.2 10.2 A4.8 4.8 0 0 0 10.8 10.2 C10.8 7 6 1 6 1 Z" fill="currentColor"/></svg>';
@@ -912,9 +913,9 @@ function detail(d, s, inline) {
   /* hour by hour, 9 am to 6 pm, coloured by how good each hour is; the site's window outlined */
   const hrs = c.hours || {}, win = c.win || [];
   const hourStrip = Object.keys(hrs).length ? `<div class="hstrip">${Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => {
-      const v = hrs[String(h)], inWin = win.length === 2 && h >= win[0] && h <= win[1];
-      return `<span class="hc${inWin ? " win" : ""}" title="${h > 12 ? h - 12 : h} ${h >= 12 ? "pm" : "am"}${v != null ? ` · ${v}` : ""}" style="background:${v != null ? qgrad(v) : "var(--sunk)"}"></span>`;
-    }).join("")}${Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => `<span class="hl">${h > 12 ? h - 12 : h}</span>`).join("")}</div>` : "";
+      const v = hrs[String(h)];
+      return `<span class="hc" title="${h > 12 ? h - 12 : h} ${h >= 12 ? "pm" : "am"}${v != null ? ` · ${v}` : ""}" style="background:${v != null ? qgrad(v) : "var(--sunk)"}"></span>`;
+    }).join("")}${Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => `<span class="hl">${h === 9 ? "9 am" : h === 18 ? "6 pm" : h > 12 ? h - 12 : h}</span>`).join("")}</div>` : "";
   const barRow = (k, x, v, sub, xs) => `<div class="factor">
       <span class="fk">${esc(k)}</span>
       <span class="fbar">${(xs || [x]).map((q) => `<i style="width:${Math.max(3, Math.round(q * 100))}%;background:${barCol(q)}${xs && xs.length > 1 ? ";opacity:.55" : ""}"></i>`).join("")}</span>
@@ -923,7 +924,8 @@ function detail(d, s, inline) {
     </div>`;
   const strength = c.wstar != null && c.style !== "ridge"
     ? barRow("Thermals", Math.max(0, Math.min(1, (c.wstar - 0.5) / 2.0)), `${Number(c.wstar).toFixed(1)} m/s`,
-             `W* in the window · glider climb ~${Math.max(0, c.wstar - 0.8).toFixed(1)} m/s`) : "";
+             "W* in the window") + barRow("Glider climb", Math.max(0, Math.min(1, (c.wstar - 1.3) / 1.5)),
+             `${Math.max(0, c.wstar - 1.3).toFixed(1)} m/s`, "thermal strength minus a glider's sink (1.3 m/s)") : "";
   const rows = fac.filter((f) => !isFlag(f)).map((f) => barRow(f.k === "Wind 1 pm" ? "Launch wind" : f.k, f.q, f.v, f.sub, f.qs)).join("").replace(/(<\/div>)/, `$1${strength}`)
     + (c.rain_p != null ? barRow("Dry", 1 - c.rain_p, `${Math.round(c.rain_p * 100)}% rain`, "") : "")
     + (c.cloud ? barRow("Sun", 1 - (c.cloud.sun_loss || 0), `−${Math.round((c.cloud.sun_loss || 0) * 100)}%`, `mid/high cloud ${c.cloud.okta}/8`) : "");
@@ -946,7 +948,7 @@ function detail(d, s, inline) {
       <h3 style="font-size:1.1rem;font-family:var(--font-body);font-weight:600">${esc(s.name)} <span class="muted" style="font-size:.9rem;font-weight:500">${r1(c.rating)}/5</span></h3>${labelHtml(c)}</div>
     ${c.note && !/thermals/i.test(c.note) ? `<p class="note">${esc(c.note)}</p>` : ""}`;
   return `${head}
-    ${hourStrip ? `<div class="dsec"><span class="dh">Hour by hour${win.length === 2 ? " · window outlined" : ""}</span>${hourStrip}</div>` : ""}
+    ${hourStrip ? `<div class="dsec"><span class="dh">Hour by hour</span>${hourStrip}</div>` : ""}
     <div class="dsec"><span class="dh">What made the score</span>
       <div class="factors">${rows}</div>
       ${steps ? `<div class="steps">${steps}</div>` : ""}</div>

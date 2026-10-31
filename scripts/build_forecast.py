@@ -74,8 +74,10 @@ NWS_STEP, NWS_MIN_P = 0.5, 0.3              # NWS names showers/rain that day, a
 RAIN_MAX_STEP = 2.0
 # a grey day (10 am to sunset, see cloud_day) costs at thermal sites by how much sunshine is lost at the
 # ground, not by cloud cover alone (thin cirrus lets most of it through); the ridge (Torrey) is left alone
-CLOUD_STEP = [(0.70, 1.5), (0.55, 1.0), (0.35, 0.5)]   # (share of the sunshine lost, step)
-WEATHER_MAX_STEP = 2.0                      # rain and cloud together never cost more than this
+# mid/high cloud over the site (okta, eighths of the sky) costs points: 6/8 about 0.75, 8/8 about 1.75;
+# see-through cirrus that takes less than a fifth of the sun costs half of that
+CLOUD_STEP = [(8, 1.75), (7, 1.25), (6, 0.75), (5, 0.25)]
+WEATHER_MAX_STEP = 2.5                      # rain and cloud together never cost more than this
 CROSS_FREE_MPH, CROSS_FULL_MPH = 3.5, 6.0   # a cross wind that shows as 3 mph or less costs nothing
 CALIB_SITES = ("lb", "blossom", "elsinore", "owens")
 CORRIDOR_DBG = {}                  # per corridor point, midday: model ground and usable top (ft), for calibration
@@ -575,6 +577,18 @@ def wrap_in(d, lo, hi):
     return lo <= d <= hi if lo <= hi else (d >= lo or d <= hi)
 
 
+def site_face(site):
+    """The direction a launch faces (where a perfect wind comes from): 'face' in sites.json, else the middle
+    of its launch sector. None for sites that take any direction or have several sectors."""
+    if site.get("face") is not None:
+        return site["face"]
+    w = site.get("dir")
+    if not w or isinstance(w[0], (list, tuple)):
+        return None
+    span = (w[1] - w[0]) % 360
+    return None if span == 0 or span >= 300 else (w[0] + span / 2) % 360
+
+
 def dir_ok(site, d):
     """True when the wind direction fits any of the site's launches."""
     w = site["dir"]
@@ -689,7 +703,7 @@ REASON_TEXT = {
     "light": "too light to soar", "aloft": "strong wind aloft", "aloftdir": "wrong wind aloft",
     "lid": "low lid", "weak": "weak thermals", "cross": "cross wind", "gusty": "gusty",
 }
-SINK = 1.1   # paraglider sink rate, m/s
+SINK = 1.3   # paraglider sink rate in a thermal turn, m/s (about 1.2-1.4)
 
 
 def sunset_hour(day, lat, lon, utc_offset_h):
@@ -823,8 +837,10 @@ def score_hour(site, hr, i, levels, elev_m):
         launch = "good"
         cross = next((c for c in site.get("cross", []) if wrap_in(ld, c[0], c[1])), None) if not on else None
         if cross and lw_mph >= CROSS_FREE_MPH:
-            # a cross wind costs more the stronger it is: nothing up to ~3 mph, half the hour from 6 mph
-            q *= 1 - 0.5 * clamp((lw_mph - CROSS_FREE_MPH) / (CROSS_FULL_MPH - CROSS_FREE_MPH))
+            # a cross wind costs more the stronger it is: nothing up to ~3 mph, half the hour from 6 mph;
+            # at the thermal sites the day rule on degrees off the launch takes care of it instead
+            if site.get("style") not in ("thermal", "window"):
+                q *= 1 - 0.5 * clamp((lw_mph - CROSS_FREE_MPH) / (CROSS_FULL_MPH - CROSS_FREE_MPH))
             codes.append("cross"); launch = cross[2]
         elif not on and lw_mph > site.get("otb_mph", 5):
             q = 0.0; codes.append("otb"); launch = "over the back"
@@ -907,6 +923,8 @@ def score_hour(site, hr, i, levels, elev_m):
     return {"q": q, "xc_s": xc_s, "xc_block": xc_block, "dbg": dbg, "glass": glass, "cold": cold_aloft, "good_launch": bool(good_launch), "launch": launch,
             "usable": usable, "usable_show": usable_show, "peak_top": peak_top, "base": base, "agl": agl, "wstar": wstar, "climb": max(0.0, wstar - SINK + 0.3),
             "into": bool(on and lw_mph is not None and lw_mph >= max(3.0, lo)),   # blowing into the launch, not just light
+            "off": (angdiff(ld, site_face(site)) if site_face(site) is not None and ld is not None
+                    and lw_mph is not None and lw_mph > 4 else None),
             "lw": lw_mph, "ld": ld, "lg": lg_mph, "a_max": a_max, "tw": (tw_dir, tw_spd) if tw_spd is not None else None, "a_spd": a_spd, "a_dir": a_dir,
             "pr": pr, "cape": cape, "codes": codes + (["venturi"] if venturi else []), "pts": pts_h}
 
@@ -1148,6 +1166,8 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "climb": med("climb", xblk), "lw": med("lw"), "ld": med("ld"),
         "launch_q": sum(1 for s in blk if s["good_launch"]) / len(blk),
         "into": sum(1 for s in blk if s.get("into")) / len(blk),
+        "offcat": (lambda offs: sum(0 if o <= 20 else 1 if o <= 45 else 2 for o in offs) / len(offs) if offs else 0.0)(
+            [s["off"] for s in blk if s.get("off") is not None]),
         "launch": max(set(x["launch"] for x in blk if x["launch"]) or {None}, key=lambda v: sum(1 for x in blk if x["launch"] == v)),
         "a_max": med("a_max"), "a_spd": a_spd, "a_dir": a_dir,
         "aloftdir": sum(1 for s in blk if {"aloftdir", "drift"} & set(s["codes"])) >= 2,
@@ -1559,7 +1579,10 @@ def weather_steps(rating, shower_p, nws_rain, cloud, rain_ok=False, ridge=False)
     if nws_rain and shower_p >= NWS_MIN_P:
         step += NWS_STEP
     step = min(step, RAIN_MAX_STEP)
-    cstep = next((st for l0, st in CLOUD_STEP if cloud[1] >= l0), 0.0) if cloud else 0.0
+    cstep = 0.0
+    if cloud:
+        okta = round(cloud[0] * 8)
+        cstep = next((st for o0, st in CLOUD_STEP if okta >= o0), 0.0) * (0.5 if cloud[1] < 0.2 else 1.0)
     return max(1.0, rating - min(step + cstep, WEATHER_MAX_STEP)), cstep
 
 
@@ -1708,6 +1731,14 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 into = sum(model_weight(k, D) * a.get("into", 0) for k, a in D.items()) / (sum(model_weight(k, D) for k in D) or 1)
                 if into < 0.5:
                     r0 = rating; rating = 4.49; note_adj("wind not into launch: 4 at most", r0)
+            # how well the wind lines up with the launch through the window (thermal sites, light air ignored):
+            # within 20 degrees is perfect, 20-45 degrees off costs half a point, more than 45 degrees off sinks the day
+            if s.get("style") in ("thermal", "window") and D and site_face(s) is not None:
+                oc = sum(model_weight(k, D) * a.get("offcat", 0.0) for k, a in D.items()) / (sum(model_weight(k, D) for k in D) or 1)
+                if oc >= 1.5:
+                    r0 = rating; rating = min(rating, 2.0); note_adj("wind more than 45° off launch: 2 at most", r0)
+                elif oc >= 0.5:
+                    r0 = rating; rating = max(1.0, rating - 0.5); note_adj("wind 20–45° off launch", r0)
             # awkward drift at the top of lift (most of the rating weight agrees): a tag, and at some
             # sites a small nick (Blossom: NW or clearly WNW pushes XC toward the Rock Pile)
             xb = s.get("xc_bad_aloft") or {}
