@@ -598,14 +598,13 @@ const q = (r) => [0, 0, 1, 2, 4, 5][Math.max(1, Math.min(5, Math.round(r)))];   
 const QSTOP = { 1: "--q0", 2: "--q1", 3: "--q2", 4: "--q4", 5: "--q5" };
 const qgrad = (r) => {
   if (r == null) return "var(--q0)";
-  const x = Math.max(1, Math.min(5, r)), lo = Math.floor(x), hi = Math.ceil(x);
-  if (lo === hi) return `var(${QSTOP[lo]})`;
-  // the colour follows the number shown: it holds a level's colour and blends into the next one
-  // just before the number rounds up (x.2-x.5), so anything shown as a 3 is clearly yellow-green
-  const t = Math.max(0, Math.min(1, (x - lo - 0.2) / 0.3));
-  if (t === 0) return `var(${QSTOP[lo]})`;
-  if (t === 1) return `var(${QSTOP[hi]})`;
-  return `color-mix(in srgb, var(${QSTOP[lo]}) ${Math.round((1 - t) * 100)}%, var(${QSTOP[hi]}))`;
+  const x = Math.max(1, Math.min(5, r)), lvl = Math.round(x);
+  // the colour is the level the number rounds to (the same as the day cards), with only a light tint of
+  // the neighbouring level (at most 20%) so a 3.4 and a 3.0 still look a little different
+  const off = x - lvl, nb = Math.max(1, Math.min(5, lvl + Math.sign(off)));
+  const t = Math.round(Math.abs(off) * 40);
+  if (!t || nb === lvl) return `var(${QSTOP[lvl]})`;
+  return `color-mix(in srgb, var(${QSTOP[lvl]}) ${100 - t}%, var(${QSTOP[nb]}))`;
 };
 const qv = (r) => qgrad(r);                      // one colour scheme everywhere: blended by the exact rating
 const ft = (v) => (v == null ? "–" : (Math.round(v / 100) * 100).toLocaleString());
