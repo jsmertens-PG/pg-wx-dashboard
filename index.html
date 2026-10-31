@@ -205,9 +205,9 @@ details.fold > :not(summary) { margin-top: 10px; }
 .wa small { font-size: .78em; opacity: .7; margin-left: 1px; }
 .facts .sep { margin: 0 6px; opacity: .5; }
 .hstrip { display: grid; grid-template-columns: repeat(10, 1fr); gap: 2px; max-width: 520px; }
-.hstrip .hc { height: 18px; border-radius: 2px; position: relative; display: flex; align-items: flex-end; justify-content: center; }
+.hstrip .hc { height: 14px; border-radius: 2px; }
+.hstrip .hl { font-size: .58rem; color: var(--muted); text-align: center; font-variant-numeric: tabular-nums; line-height: 1.1; }
 .hstrip .hc.win { box-shadow: inset 0 0 0 2px #26303a; }
-.hstrip .hc i { font-style: normal; font-size: .6rem; font-weight: 700; color: rgba(0,0,0,.55); line-height: 1; padding-bottom: 2px; }
 /* one text system: body .78rem, captions .72rem, every chip and section head .62rem capitals */
 .dh, .gk, .steps .st, .srow .spills .rx, details.day > summary.hd .notes .rx { font-size: .62rem !important; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
 .gk, .steps .st { height: 21px; display: inline-flex; align-items: center; padding: 0 7px; border-radius: 5px; }
@@ -903,8 +903,8 @@ function detail(d, s, inline) {
   const hrs = c.hours || {}, win = c.win || [];
   const hourStrip = Object.keys(hrs).length ? `<div class="hstrip">${Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => {
       const v = hrs[String(h)], inWin = win.length === 2 && h >= win[0] && h <= win[1];
-      return `<span class="hc${inWin ? " win" : ""}" title="${h > 12 ? h - 12 : h} ${h >= 12 ? "pm" : "am"}${v != null ? ` · ${v}` : ""}" style="background:${v != null ? qgrad(v) : "var(--sunk)"}"><i>${h % 3 === 0 ? (h > 12 ? h - 12 : h) : ""}</i></span>`;
-    }).join("")}</div>` : "";
+      return `<span class="hc${inWin ? " win" : ""}" title="${h > 12 ? h - 12 : h} ${h >= 12 ? "pm" : "am"}${v != null ? ` · ${v}` : ""}" style="background:${v != null ? qgrad(v) : "var(--sunk)"}"></span>`;
+    }).join("")}${Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => `<span class="hl">${h > 12 ? h - 12 : h}</span>`).join("")}</div>` : "";
   const barRow = (k, x, v, sub, xs) => `<div class="factor">
       <span class="fk">${esc(k)}</span>
       <span class="fbar">${(xs || [x]).map((q) => `<i style="width:${Math.max(3, Math.round(q * 100))}%;background:${barCol(q)}${xs && xs.length > 1 ? ";opacity:.55" : ""}"></i>`).join("")}</span>
