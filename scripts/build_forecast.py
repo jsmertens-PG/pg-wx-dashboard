@@ -1779,8 +1779,9 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 return 1.0
             agl_ft = (top * FT - launch_ft) if top is not None else None
             ec = cell["all"].get("ECMWF") if "ECMWF" not in D else None
-            ecmwf_wind = (f"ECMWF {compass(ec['tw13'][0])} {round(ec['tw13'][1])} kt" if ec and ec.get("tw13")
-                          else f"ECMWF {compass(ec['a_dir'])} {round(ec['a_spd'])} kt" if ec and ec.get("a_spd") is not None else "")
+            MPH = 1.15078                                   # wind aloft is shown in mph, like the launch wind
+            ecmwf_wind = (f"ECMWF {compass(ec['tw13'][0])} {round(ec['tw13'][1] * MPH)} mph" if ec and ec.get("tw13")
+                          else f"ECMWF {compass(ec['a_dir'])} {round(ec['a_spd'] * MPH)} mph" if ec and ec.get("a_spd") is not None else "")
             factors = [
                 {"k": "Thermal height", "v": f"{round(top * FT, -2):,.0f} ft" if top else "–",
                  "sub": f"{round(agl_ft, -2):,.0f} ft over launch" if agl_ft is not None else "",
@@ -1791,8 +1792,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                      "venturi on the ridge" if lead and lead.get("venturi") else "",
                      lead.get("launch") if lead and (lead.get("launch") in ("over the back", "blown out", "strong", "gusty") or str(lead.get("launch")).startswith("cross")) else "") if x),
                  "q": round(lead["launch_q"] if lead else 0, 2)},
-                {"k": "Wind aloft", "v": (f"{compass(lead['tw13'][0])} {round(lead['tw13'][1])} kt" if lead and lead.get("tw13")
-                       else f"{compass(lead['a_dir'])} {round(lead['a_spd'])} kt" if lead and lead.get("a_spd") is not None else "–"),
+                {"k": "Wind aloft", "v": (f"{compass(lead['tw13'][0])} {round(lead['tw13'][1] * MPH)} mph" if lead and lead.get("tw13")
+                       else f"{compass(lead['a_dir'])} {round(lead['a_spd'] * MPH)} mph" if lead and lead.get("a_spd") is not None else "–"),
                  "sub": " · ".join(x for x in (
                      f"at {round(lead['top13'] * FT, -2):,.0f} ft" if lead and lead.get("top13") else "",
                      "blows over the back" if aloftdir else "",

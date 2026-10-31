@@ -866,7 +866,7 @@ function windHtml(v, unit) {
   const m = /^([NESW]{1,3})\s+(.*)$/.exec(v || "");
   if (!m || COMPASS.indexOf(m[1]) < 0) return esc(v || "");
   const deg = COMPASS.indexOf(m[1]) * 22.5;
-  return `<span class="wa" title="from ${m[1]}"><svg viewBox="0 0 12 12" aria-hidden="true" style="transform:rotate(${deg + 180}deg)"><path d="M6 1 L9.5 7 H7 V11 H5 V7 H2.5 Z" fill="currentColor"/></svg>${esc(m[2].replace(/ kt$/, ""))}${unit ? `<small>${unit}</small>` : ""}</span>`;
+  return `<span class="wa" title="from ${m[1]}"><svg viewBox="0 0 12 12" aria-hidden="true" style="transform:rotate(${deg + 180}deg)"><path d="M6 1 L9.5 7 H7 V11 H5 V7 H2.5 Z" fill="currentColor"/></svg>${esc(m[2].replace(/ (kt|mph)$/, ""))}${unit ? `<small>${unit}</small>` : ""}</span>`;
 }
 /* lift: three thin arrows pointing up */
 const LIFT = '<svg class="lift" viewBox="0 0 14 12" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 11 V2.5 M1 4 L2.5 2.5 L4 4"/><path d="M7 11 V1 M5.5 2.5 L7 1 L8.5 2.5"/><path d="M11.5 11 V2.5 M10 4 L11.5 2.5 L13 4"/></g></svg>';
@@ -874,7 +874,7 @@ function siteFacts(c) {
   const f = (k) => (c.factors || []).find((x) => x.k === k);
   const h = f("Height") || f("Thermal height"), w = f("Wind 1 pm"), a = f("Wind aloft");
   return [h && h.v !== "–" ? `<span class="wa">${LIFT}${esc(h.v)}</span>` : "", w && w.v !== "–" ? `launch ${windHtml(w.v, "mph")}` : "",
-          a && a.v !== "–" ? `aloft ${windHtml(a.v, "kt")}` : ""].filter(Boolean).join('<span class="sep">·</span>');
+          a && a.v !== "–" ? `aloft ${windHtml(a.v, "mph")}` : ""].filter(Boolean).join('<span class="sep">·</span>');
 }
 function sitePills(c) {
   const adj = c.adj || [];
