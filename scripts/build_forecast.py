@@ -906,6 +906,7 @@ def score_hour(site, hr, i, levels, elev_m):
            "prof": [[round(z * FT), round(t, 1)] for z, t, *_ in pts[:9]]}
     return {"q": q, "xc_s": xc_s, "xc_block": xc_block, "dbg": dbg, "glass": glass, "cold": cold_aloft, "good_launch": bool(good_launch), "launch": launch,
             "usable": usable, "usable_show": usable_show, "peak_top": peak_top, "base": base, "agl": agl, "wstar": wstar, "climb": max(0.0, wstar - SINK + 0.3),
+            "into": bool(on and lw_mph is not None and lw_mph >= max(3.0, lo)),   # blowing into the launch, not just light
             "lw": lw_mph, "ld": ld, "lg": lg_mph, "a_max": a_max, "tw": (tw_dir, tw_spd) if tw_spd is not None else None, "a_spd": a_spd, "a_dir": a_dir,
             "pr": pr, "cape": cape, "codes": codes + (["venturi"] if venturi else []), "pts": pts_h}
 
@@ -1146,6 +1147,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "start": hours[k][0], "top": peak_show if peak_show is not None else med("usable_show", xblk), "base": med("base"), "wstar": med("wstar", xblk),
         "climb": med("climb", xblk), "lw": med("lw"), "ld": med("ld"),
         "launch_q": sum(1 for s in blk if s["good_launch"]) / len(blk),
+        "into": sum(1 for s in blk if s.get("into")) / len(blk),
         "launch": max(set(x["launch"] for x in blk if x["launch"]) or {None}, key=lambda v: sum(1 for x in blk if x["launch"] == v)),
         "a_max": med("a_max"), "a_spd": a_spd, "a_dir": a_dir,
         "aloftdir": sum(1 for s in blk if {"aloftdir", "drift"} & set(s["codes"])) >= 2,
@@ -1700,6 +1702,12 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             tops = [v["top"] * FT for v in D.values() if v.get("top")] if D else []
             if s.get("style") != "ridge" and s.get("xc_top_ft") and tops and max(tops) < great_ft:
                 r0 = rating; rating = min(rating, 4.49); note_adj(f"below {great_ft:,.0f} ft: 4 at most", r0)
+            # a 5 also needs the wind blowing nicely into the launch for most of the window: light air from any
+            # side, or a cross wind, is launchable but makes it a 4 at most (thermal sites; Torrey has its own rules)
+            if s.get("style") in ("thermal", "window") and D and rating >= 4.5:
+                into = sum(model_weight(k, D) * a.get("into", 0) for k, a in D.items()) / (sum(model_weight(k, D) for k in D) or 1)
+                if into < 0.5:
+                    r0 = rating; rating = 4.49; note_adj("wind not into launch: 4 at most", r0)
             # awkward drift at the top of lift (most of the rating weight agrees): a tag, and at some
             # sites a small nick (Blossom: NW or clearly WNW pushes XC toward the Rock Pile)
             xb = s.get("xc_bad_aloft") or {}
