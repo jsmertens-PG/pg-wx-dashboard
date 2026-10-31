@@ -765,7 +765,7 @@ function render(data) {
       ${d._flown && d._flown.length ? `<div class="flown"><b>Flown:</b> ${d._flown.map((f) => esc(f)).join(" · ")}</div>` : ""}
       <div class="list">
         ${big.map((s) => siteRow(d, s, i, "")).join("")}
-        <div class="minor">${other.map((s) => siteRow(d, s, i, "small")).join("")}${watchSites.map((s) => siteRow(d, s, i, watchOn(d, s) ? "small watch" : "small watch shy")).join("")}</div>
+        ${other.map((s) => siteRow(d, s, i, "")).join("")}${watchSites.map((s) => siteRow(d, s, i, "")).join("")}
       </div>
       <div class="det" id="det-${i}" hidden></div>
       ${mods ? `<span class="mods mods-b">${mods}</span>` : ""}
