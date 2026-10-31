@@ -1829,7 +1829,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 # one bar, one translucent fill per model: where they overlap the models agree
                 rows = [height_row(m, D[m][hkey]) for m in hi_res]
                 fts = [round(D[m][hkey] * FT, -2) for m in hi_res]
-                v = f"{min(fts):,.0f} ft" if max(fts) - min(fts) < 250 else f"{min(fts):,.0f}–{max(fts):,.0f} ft"
+                v = f"{max(fts):,.0f} ft"           # one number: the better model (each model is in the caption)
                 factors[0:1] = [{"k": "Height", "v": v, "q": max(r["q"] for r in rows), "qs": [r["q"] for r in rows],
                                  "sub": " · ".join(f"{m} {ft:,.0f}" for m, ft in zip(hi_res, fts)) if len(hi_res) > 1 else hi_res[0]}]
             else:
