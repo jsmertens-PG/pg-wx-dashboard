@@ -1199,7 +1199,8 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "postfrontal": postfrontal, "glass": glass_ok, "glass_hours": glass_hours, "sunset": sunset_h,
         "start": hours[k][0], "top": peak_show if peak_show is not None else med("usable_show", xblk), "base": med("base"), "wstar": med("wstar", xblk),
         "climb": med("climb", xblk), "lw": med("lw"), "ld": med("ld"),
-        "launch_q": sum(1 for s in blk if s["good_launch"]) / len(blk),
+        # the launch-wind bar: share of the whole window with a good launch (gusts, direction and speed in range)
+        "launch_q": (sum(1 for _, s in win if s["good_launch"]) / len(win)) if win else sum(1 for s in blk if s["good_launch"]) / len(blk),
         "into": sum(1 for s in blk if s.get("into")) / len(blk),
         "gust12": sum(1 for s in blk if s.get("gcat", 0) >= 1) / len(blk),
         "top_wind": (lambda v: sorted(v)[len(v) // 2] if v else None)([s["tw"][1] * 1.15078 for s in blk if s.get("tw")]),
@@ -1896,8 +1897,9 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                      f"at {round(lead['top13'] * FT, -2):,.0f} ft" if lead and lead.get("top13") else "",
                      "blows over the back" if aloftdir else "",
                      ecmwf_wind) if x),
-                 # the bar: full up to about 12 mph at the top of lift, half at 20, empty at 30
-                 "q": round(1 - clamp(((tw_mph if tw_mph is not None else (a_max or 0) * 1.15078) - 12) / 18), 2)},
+                 # the bar follows the wind that is shown: full up to about 12 mph, half at 20, empty at 30
+                 "q": round(1 - clamp((((lead["tw13"][1] * MPH) if lead and lead.get("tw13") else
+                                        (tw_mph if tw_mph is not None else (a_max or 0) * MPH)) - 12) / 18), 2)},
                 {"k": "Rain & storms", "v": f"{round(shower_p * 100)}% of runs" if shower_p >= 0.05 else "dry",
                  "sub": "storm risk" if (cape or 0) >= 1000 else "",
                  "q": round(clamp(1 - 1.4 * shower_p) * (1 - 0.4 * clamp(((cape or 0) - 800) / 1500)), 2)},
