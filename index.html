@@ -749,7 +749,7 @@ function render(data) {
     const sdCells = Object.entries(d.sites || {}).filter(([k, c]) => !TRIPS.has(k) && c && c.rating != null).map(([, c]) => c);
     const bm = sdCells.slice().sort((a, b) => b.rating - a.rating)[0];
     /* card colour: one of five colours (red, orange, yellow, green, blue) from the best San Diego site */
-    const cardCol = bm ? `var(${QSTOP[Math.max(1, Math.min(5, Math.round(bm.rating)))]})` : "var(--line)";
+    const cardCol = !DAY_COLOUR ? "#e4e7eb" : bm ? `var(${QSTOP[Math.max(1, Math.min(5, Math.round(bm.rating)))]})` : "var(--line)";
     const open = openDays.has(d.date);
     /* which models and which run: today's final run once frozen, otherwise the latest run */
     const runAt = d.frozen_at || data.generated;
@@ -808,6 +808,7 @@ const rowNote = (c) => (!c.note || /\d,?\d{3} ft|thermals/i.test(c.note) ? (c.la
 const siteName = (s) => (s.id === "lb" ? "Little Black" : s.short);
 /* what a closed day shows: the home sites and Torrey with their number, then any other XC site */
 const SD_SITES = new Set(["torrey", "lb", "blossom", "otay", "lagunahorse", "elsinore"]);   // San Diego sites + Elsinore (a home site): always listed
+const DAY_COLOUR = false;   // day cards neutral; only the site pills carry the colour (set true to colour the cards again)
 const TRIP_IDS = new Set(["soboba", "marshall", "santabarbara", "owens"]);
 function daySummary(d, big, other) {
   /* the best level of the day (set by the San Diego sites; a trip shows only when it matches it),
