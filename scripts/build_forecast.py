@@ -1890,7 +1890,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
 
 
 WHY_GROUPS = [("Rain", {"rain", "showers", "cape"}), ("Too windy", {"windy", "strong", "gusty", "aloft"}),
-              ("Over the back", {"otb", "aloftdir", "cross"}), ("Low inversion", {"lid"}),
+              ("Low inversion", {"lid"}),
               ("Weak thermals", {"weak"}), ("Too light", {"light"})]
 
 
@@ -1910,7 +1910,9 @@ def inland_check(site, D, inland):
 
 
 def day_reason(sites, d):
-    """On a poor day at the home sites, the main reason in two words (rain, wind, offshore, inversion...)."""
+    """On a poor day at the home sites, the main reason in two words. Only reasons that hold for the whole
+    region (rain, too windy, low inversion, weak or light); a wind from the wrong side is a site matter, it
+    shows on the site, not on the day."""
     main = [s["id"] for s in sites if s.get("tier") == "main" and s["id"] in d["sites"]]
     if not main or max(d["sites"][k]["rating"] for k in main) >= 2.5:
         return None
