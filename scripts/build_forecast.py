@@ -1661,10 +1661,18 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 rating, cstep = weather_steps(rating, shower_p, dstr in nws_days, cl,
                                               rain_ok=s.get("rain") == "true" and not thermal_day,
                                               ridge=ridge_site and not thermal_day)
-                if abs(r0 - rating - cstep) >= 0.05:
-                    adj.append(["chance of rain" + (" + NWS" if dstr in nws_days else ""), round(rating + cstep - r0, 1)])
-                if cstep >= 0.05:
-                    adj.append(["little sun (mid/high cloud)", round(-cstep, 1)])
+                # split the drop that really happened (it stops at 1) between rain and cloud, in proportion
+                drop = r0 - rating
+                if drop >= 0.05:
+                    planned_rain = max(0.0, min(WEATHER_MAX_STEP, (r0 - weather_steps(r0, shower_p, dstr in nws_days, None,
+                                                                                     rain_ok=s.get("rain") == "true" and not thermal_day,
+                                                                                     ridge=ridge_site and not thermal_day)[0])))
+                    planned = planned_rain + cstep
+                    rain_part = drop * planned_rain / planned if planned else 0.0
+                    if rain_part >= 0.05:
+                        adj.append(["chance of rain" + (" + NWS" if dstr in nws_days else ""), round(-rain_part, 1)])
+                    if drop - rain_part >= 0.05:
+                        adj.append(["little sun (mid/high cloud)", round(-(drop - rain_part), 1)])
             off_season = bool(s.get("season_months")) and int(dstr[5:7]) not in s["season_months"]
             if off_season:
                 r0 = rating; rating = min(rating, 2.0); note_adj("off season: 2 at most", r0)

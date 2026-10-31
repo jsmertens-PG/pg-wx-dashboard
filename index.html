@@ -189,6 +189,9 @@ details.fold > :not(summary) { margin-top: 10px; }
 .factors { display: grid; gap: 6px; max-width: 720px; }
 /* opened site: two compact sections, what makes the number and what is only good to know */
 .dsec { display: grid; gap: 6px; max-width: 720px; }
+.dscore { justify-self: start; width: max-content; display: inline-flex; align-items: baseline; gap: 2px; padding: 3px 12px; border-radius: 6px; margin-bottom: 8px;
+  background: color-mix(in srgb, var(--rc) 45%, #fff); box-shadow: 0 0 0 1px rgba(20,30,40,.12); font-variant-numeric: tabular-nums; }
+.dscore b { font-size: 1.35rem; font-weight: 800; } .dscore small { font-size: .8rem; opacity: .7; }
 .dsec + .dsec { margin-top: 10px; }
 .dh { font-size: .62rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
 .steps { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; font-size: .74rem; }
@@ -831,28 +834,27 @@ function detail(d, s, inline) {
       <span class="fv">${esc(f.v)}</span>
       ${f.sub ? `<span class="fs">${esc(f.sub)}</span>` : ""}
     </div>`).join("");
-  /* how the number came about: the models' value, then each step that changed it */
-  const steps = (c.base != null ? [`<span class="st">models ${Number(c.base).toFixed(1)}</span>`] : [])
-    .concat((c.adj || []).map(([t, v]) => `<span class="st neg">${esc(t)} ${v > 0 ? "+" : "−"}${Math.abs(v).toFixed(1)}</span>`))
-    .concat([`<span class="st fin" style="--rc:${qgrad(c.rating)}">${r1(c.rating)}/5</span>`]).join('<span class="arr">→</span>');
-  /* good to know: shown, but not part of the number */
+  /* what pulled the number down (or capped it): only shown when something did */
+  const steps = (c.adj || []).map(([t, v]) => `<span class="st neg">${esc(t)} ${v > 0 ? "+" : "−"}${Math.abs(v).toFixed(1)}</span>`).join("");
+  /* also good to know: at most five, most useful first */
   const rain = fac.find((f) => f.k === "Rain & storms"), agree = fac.find((f) => f.k === "Model agreement");
   const info = [
-    ...(c.tags || []).filter((t) => !/^rain /.test(t)).map((t) => `<span class="gk">${esc(t)}</span>`),
-    rain && rain.v !== "dry" ? `<span class="gk">rain ${esc(rain.v)}${rain.sub ? " · " + esc(rain.sub) : ""}</span>` : "",
-    c.cloud && c.cloud.okta >= 4 ? `<span class="gk">mid/high cloud ${c.cloud.okta}/8 · sun −${Math.round(c.cloud.sun_loss * 100)}%</span>` : "",
-    agree ? `<span class="gk" title="${esc(agree.sub || "")}">models ${esc(agree.v)}${agree.sub ? ": " + esc(agree.sub) : ""}</span>` : "",
-    `<span class="gk">flyable ${pct(c.p_fly)} · XC ${pct(c.p_xc)}</span>`,
-    c.sunset ? `<span class="gk">sunset ${esc(c.sunset)}</span>` : "",
-  ].filter(Boolean).join("");
+    ...(c.tags || []).filter((t) => !/^rain /.test(t)),
+    rain && rain.v !== "dry" ? `rain ${rain.v}` : "",
+    c.cloud && c.cloud.okta >= 4 ? `high cloud ${c.cloud.okta}/8 · sun −${Math.round(c.cloud.sun_loss * 100)}%` : "",
+    agree && agree.v !== "agree" ? `models ${agree.v}: ${agree.sub || ""}` : "",
+    c.sunset ? `sunset ${c.sunset}` : "",
+  ].filter(Boolean).slice(0, 5).map((t) => `<span class="gk">${esc(t)}</span>`).join("");
+  const half = Math.max(1, Math.min(5, Math.round(c.rating * 2) / 2));
   const head = inline ? "" : `<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline">
       <h3 style="font-size:1.1rem;font-family:var(--font-body);font-weight:600">${esc(s.name)} <span class="muted" style="font-size:.9rem;font-weight:500">${r1(c.rating)}/5</span></h3>${labelHtml(c)}</div>
     ${c.note && !/thermals/i.test(c.note) ? `<p class="note">${esc(c.note)}</p>` : ""}`;
   return `${head}
-    <div class="dsec"><span class="dh">In the score</span>
+    <div class="dscore" style="--rc:${qgrad(c.rating)}"><b>${half.toFixed(1).replace(".0", "")}</b><small>/5</small></div>
+    <div class="dsec"><span class="dh">What made the score</span>
       <div class="factors">${rows}</div>
-      <div class="steps">${steps}</div></div>
-    <div class="dsec"><span class="dh">Good to know · not in the score</span><div class="gks">${info}</div></div>`;
+      ${steps ? `<div class="steps">${steps}</div>` : ""}</div>
+    ${info ? `<div class="dsec"><span class="dh">Also good to know</span><div class="gks">${info}</div></div>` : ""}`;
 }
 
 /* ---------- archive: every past day as it was forecast that day (frozen after noon) ---------- */
