@@ -920,8 +920,10 @@ function sitePills(c) {
   if (c.rain_p >= 0.3 || rr < 0) out.push(`<span class="rx${c.rain_p >= 0.6 ? " strong" : ""}">${ico("rain")}${Math.round((c.rain_p || 0) * 100)}% rain${dv(rr)}</span>`);
   const cc = take(/sun/);
   if ((c.cloud && c.cloud.okta >= 5) || cc < 0) out.push(`<span class="rx${cc < 0 ? " strong" : ""}">${ico("cloud")}${c.cloud ? c.cloud.okta + "/8 " : ""}cloud${dv(cc)}</span>`);
-  (c.why || []).filter((k) => WHY_TXT[k] && !/rain|showers|cape/.test(k)).slice(0, 2)
-    .forEach((k) => out.push(`<span class="rx">${ico("warn")}${esc(WHY_TXT[k])}</span>`));
+  /* warnings; Torrey shows all of them across its flying day, with when they show up (am, midday, pm) */
+  const when = c.when || {};
+  (c.why || []).filter((k) => WHY_TXT[k] && !/rain|showers|cape/.test(k)).slice(0, Object.keys(when).length ? 4 : 2)
+    .forEach((k) => out.push(`<span class="rx">${ico("warn")}${esc(WHY_TXT[k])}${when[k] ? ` <span class="dv">${esc(when[k])}</span>` : ""}</span>`));
   adj.filter(([t]) => !/rain|sun/.test(t)).forEach(([t, v]) => out.push(`<span class="rx">${ico("warn")}${esc(t)}${dv(v)}</span>`));
   return out.join("");
 }

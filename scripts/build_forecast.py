@@ -1143,11 +1143,27 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         label = "No go"
     xc_day = 1.0 if label in ("XC", "Thermal day") else 0.0
     counts = {}
-    for s in (blk if local >= 0.25 else [s for _, s in hours]):
+    # Torrey has no fixed window: it can work in the morning, midday or evening, so its warnings come from the
+    # whole flying day, each with the part of the day it shows up in
+    span = [s for _, s in hours] if style == "ridge" else (blk if local >= 0.25 else [s for _, s in hours])
+    for s in span:
         for c in s["codes"]:
             counts[c] = counts.get(c, 0) + 1
+    when = {}
+    if style == "ridge":
+        for c in counts:
+            hs = [h for h, x in hours if c in x["codes"]]
+            if len(hs) < 2:
+                continue
+            parts = []
+            if any(h < 12 for h in hs): parts.append("am")
+            if any(12 <= h < 15 for h in hs): parts.append("midday")
+            if any(h >= 15 for h in hs): parts.append("pm")
+            when[c] = "all day" if len(parts) == 3 else " & ".join(parts)
     prio = ["rain", "otb", "windy", "aloftdir", "aloft", "gusty", "cross", "lid", "weak", "strong", "light", "showers", "cape"]
     codes = sorted(counts, key=lambda c: (-(counts[c] >= 2), prio.index(c) if c in prio else 99))
+    if style == "ridge":
+        codes = [c for c in codes if counts[c] >= 2]
 
     def med(key, block=blk):
         v = [s[key] for s in block if s[key] is not None]
@@ -1179,7 +1195,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "tw13": h13["tw"] if h13 else None,
         "wind_1pm": wind_1pm,
         "wind_now": wind_now, "wind_later": wind_later,
-        "rating": rating, "local": local, "xc_day": xc_day, "label": label, "codes": codes,
+        "rating": rating, "local": local, "xc_day": xc_day, "label": label, "codes": codes, "when": when,
         "postfrontal": postfrontal, "glass": glass_ok, "glass_hours": glass_hours, "sunset": sunset_h,
         "start": hours[k][0], "top": peak_show if peak_show is not None else med("usable_show", xblk), "base": med("base"), "wstar": med("wstar", xblk),
         "climb": med("climb", xblk), "lw": med("lw"), "ld": med("ld"),
@@ -1942,7 +1958,8 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 "alt_source": src,
                 "ground_ft": lead.get("ground_ft") if lead else None,
                 "launch_ft": s["launch_ft"], "style": lead.get("style") if lead else None,
-                "why": (lead.get("codes") or [])[:3] if lead else [],
+                "why": (lead.get("codes") or [])[: (6 if ridge else 3)] if lead else [],
+                "when": lead.get("when") or {} if lead else {},
                 "diag": {k: {"r": round(v["rating"], 1), "top": round(v["top"] * FT, -2) if v["top"] else None,
                              "w": round(v["wstar"], 1) if v["wstar"] is not None else None,
                              "why": v["codes"][:3]} for k, v in D.items()},
