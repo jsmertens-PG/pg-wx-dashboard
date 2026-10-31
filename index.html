@@ -189,6 +189,13 @@ details.fold > :not(summary) { margin-top: 10px; }
 .factors { display: grid; gap: 6px; max-width: 720px; }
 /* opened site: two compact sections, what makes the number and what is only good to know */
 .dsec { display: grid; gap: 6px; max-width: 720px; }
+.srow .facts { font-size: .78rem; color: #33404c; font-variant-numeric: tabular-nums; }
+.srow.small .facts { font-size: .72rem; }
+.srow .spills { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 5px; }
+.srow .spills .rx { margin: 0; height: 21px; padding: 0 7px; gap: 4px; border-radius: 5px; font-size: .6rem; font-weight: 600; letter-spacing: .03em;
+  text-transform: uppercase; background: rgba(255,255,255,.8); color: #26303a; box-shadow: 0 0 0 1px rgba(20,30,40,.16); border: 0; display: inline-flex; align-items: center; }
+.srow .spills .rx.strong { background: #26303a; color: #fff; box-shadow: none; }
+.srow .spills .dv { font-weight: 800; }
 .dscore { justify-self: start; width: max-content; display: inline-flex; align-items: baseline; gap: 2px; padding: 3px 12px; border-radius: 6px; margin-bottom: 8px;
   background: color-mix(in srgb, var(--rc) 45%, #fff); box-shadow: 0 0 0 1px rgba(20,30,40,.12); font-variant-numeric: tabular-nums; }
 .dscore b { font-size: 1.35rem; font-weight: 800; } .dscore small { font-size: .8rem; opacity: .7; }
@@ -811,13 +818,37 @@ document.addEventListener("toggle", (e) => {
   if (el.open) openDays.add(el.dataset.date); else openDays.delete(el.dataset.date);
   try { sessionStorage.setItem("radar-open", JSON.stringify([...openDays])); } catch (err) {}
 }, true);
+/* second level: what made the site's number, in one line, plus the weather pills that hold for this site */
+const WHY_TXT = { otb: "over the back", cross: "cross wind", windy: "blown out", strong: "strong on launch", gusty: "gusty",
+  lid: "low lid", weak: "weak thermals", aloft: "strong wind aloft", light: "too light", aloftdir: "wrong flow aloft" };
+function siteFacts(c) {
+  const f = (k) => (c.factors || []).find((x) => x.k === k);
+  const h = f("Height") || f("Thermal height"), w = f("Wind 1 pm"), a = f("Wind aloft");
+  return [h && h.v !== "–" ? `↑ ${h.v}` : "", w && w.v !== "–" ? `launch ${w.v}` : "", a && a.v !== "–" ? `aloft ${a.v}` : ""].filter(Boolean).join(" · ");
+}
+function sitePills(c) {
+  const adj = c.adj || [];
+  const take = (re) => adj.filter(([t]) => re.test(t)).reduce((x, [, v]) => x + v, 0);
+  const dv = (v) => (v <= -0.05 ? ` <span class="dv">${v.toFixed(1).replace("-", "−")}</span>` : "");
+  const out = [];
+  const rr = take(/rain/);
+  if (c.rain_p >= 0.3 || rr < 0) out.push(`<span class="rx${c.rain_p >= 0.6 ? " strong" : ""}">${ico("rain")}${Math.round((c.rain_p || 0) * 100)}% rain${dv(rr)}</span>`);
+  const cc = take(/sun/);
+  if ((c.cloud && c.cloud.okta >= 5) || cc < 0) out.push(`<span class="rx${cc < 0 ? " strong" : ""}">${ico("cloud")}${c.cloud ? c.cloud.okta + "/8 " : ""}cloud${dv(cc)}</span>`);
+  (c.why || []).filter((k) => WHY_TXT[k] && !/rain|showers|cape/.test(k)).slice(0, 2)
+    .forEach((k) => out.push(`<span class="rx">${ico("warn")}${esc(WHY_TXT[k])}</span>`));
+  adj.filter(([t]) => !/rain|sun/.test(t)).forEach(([t, v]) => out.push(`<span class="rx">${ico("warn")}${esc(t)}${dv(v)}</span>`));
+  return out.join("");
+}
 function siteRow(d, s, i, kind) {
   const c = d.sites[s.id];
   const name = siteName(s);
   if (!c) return `<div class="srow ${kind}"><span class="nm">${esc(name)}</span><span class="muted">no data</span></div>`;
+  const pills = sitePills(c);
   return `<button type="button" class="srow ${kind}" style="--rc:${qv(c.rating)}" data-site="${s.id}" data-day="${i}" aria-expanded="false">
-    <span class="nm">${esc(name)}</span>${bar(c.rating, kind === "small")}<span class="rt">${trendHtml(c)}${r1(c.rating)}<small class="of5">/5</small></span>
-    <span class="tx">${c.label === "XC" ? "" : `<span class="lab" style="color:${qv(c.rating)}">${esc(c.label)}</span>`}${c.xc ? '<span class="xcmark">XC</span>' : ""}${(c.tags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join("")}${rowNote(c) ? `<span class="note">${esc(rowNote(c))}</span>` : ""}</span>
+    <span class="nm">${esc(name)}</span>${bar(c.rating, kind === "small")}<span class="rt">${r1(c.rating)}<small class="of5">/5</small></span>
+    <span class="tx">${c.label === "XC" ? "" : `<span class="lab" style="color:${qv(c.rating)}">${esc(c.label)}</span>`}${c.xc ? '<span class="xcmark">XC</span>' : ""}<span class="facts">${esc(siteFacts(c))}</span></span>
+    ${pills ? `<span class="spills">${pills}</span>` : ""}
     <span class="exp sm" aria-hidden="true"><span class="chev"></span></span>
   </button>`;
 }
@@ -839,12 +870,12 @@ function detail(d, s, inline) {
   /* also good to know: at most five, most useful first */
   const rain = fac.find((f) => f.k === "Rain & storms"), agree = fac.find((f) => f.k === "Model agreement");
   const info = [
-    ...(c.tags || []).filter((t) => !/^rain /.test(t)),
-    rain && rain.v !== "dry" ? `rain ${rain.v}` : "",
-    c.cloud && c.cloud.okta >= 4 ? `high cloud ${c.cloud.okta}/8 · sun −${Math.round(c.cloud.sun_loss * 100)}%` : "",
-    agree && agree.v !== "agree" ? `models ${agree.v}: ${agree.sub || ""}` : "",
+    ...(c.tags || []).filter((t) => !/^rain |little sun/.test(t)),
+    agree ? `models ${agree.v}: ${agree.sub || ""}` : "",
+    c.cloud && c.cloud.okta >= 4 ? `sun −${Math.round(c.cloud.sun_loss * 100)}% from high cloud` : "",
+    `flyable ${pct(c.p_fly)} · XC ${pct(c.p_xc)}`,
     c.sunset ? `sunset ${c.sunset}` : "",
-  ].filter(Boolean).slice(0, 5).map((t) => `<span class="gk">${esc(t)}</span>`).join("");
+  ].filter(Boolean).slice(0, 6).map((t) => `<span class="gk">${esc(t)}</span>`).join("");
   const half = Math.max(1, Math.min(5, Math.round(c.rating * 2) / 2));
   const head = inline ? "" : `<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline">
       <h3 style="font-size:1.1rem;font-family:var(--font-body);font-weight:600">${esc(s.name)} <span class="muted" style="font-size:.9rem;font-weight:500">${r1(c.rating)}/5</span></h3>${labelHtml(c)}</div>
@@ -854,7 +885,7 @@ function detail(d, s, inline) {
     <div class="dsec"><span class="dh">What made the score</span>
       <div class="factors">${rows}</div>
       ${steps ? `<div class="steps">${steps}</div>` : ""}</div>
-    ${info ? `<div class="dsec"><span class="dh">Also good to know</span><div class="gks">${info}</div></div>` : ""}`;
+    ${info ? `<div class="dsec"><span class="dh">Good to know · not in the score</span><div class="gks">${info}</div></div>` : ""}`;
 }
 
 /* ---------- archive: every past day as it was forecast that day (frozen after noon) ---------- */
