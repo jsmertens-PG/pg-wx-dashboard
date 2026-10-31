@@ -2322,6 +2322,26 @@ def freeze_today(result, prev_path, now=None):
     return days[0]["frozen_at"]
 
 
+def archive_midday(result, folder, now=None):
+    """Today keeps updating on the page; the archive keeps its midday read: every run from noon to 3 pm
+    overwrites today's archive copy, and if none ran in that window the first run after it is kept.
+    Before noon nothing is archived."""
+    now = (now or datetime.now(timezone.utc)).astimezone(_tz())
+    days = result.get("days") or []
+    today = now.date().isoformat()
+    if not days or days[0]["date"] != today or now.hour < FREEZE_FROM:
+        return None
+    path = Path(folder) / f"{today}.json"
+    if now.hour >= FREEZE_HOUR and path.exists():
+        try:
+            if _local(json.loads(path.read_text())["frozen_at"]).hour >= FREEZE_FROM:
+                return None                    # the midday read is already in
+        except Exception:
+            pass
+    keep = {"days": [dict(days[0], frozen_at=result.get("generated"))]}
+    return archive_today(keep, folder)
+
+
 def archive_today(result, folder):
     """Keep today's final (frozen) forecast as data/archive/<date>.json, with an index of all dates."""
     days = result.get("days") or []
@@ -2423,9 +2443,8 @@ def main(argv=None):
             log.append(f"clouds: failed ({e})")
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     if not args.sample:
-        freeze_today(result, Path(args.out))
         add_trend(result, ROOT / "data" / "trend.json")
-        archive_today(result, ROOT / "data" / "archive")
+        archive_midday(result, ROOT / "data" / "archive")      # today keeps updating; the archive gets the midday read
     Path(args.out).write_text(json.dumps(result, indent=1))
     if not args.sample:
         save_snapshot(result, ROOT / "data" / "history")

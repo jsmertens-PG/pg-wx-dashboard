@@ -342,3 +342,19 @@ class PostFrontalFlow(unittest.TestCase):
         self.assertEqual(t[2], "Pre/post-frontal")  # after one front, the next already moving in on a SW flow
         self.assertEqual(t[3], "Pre-frontal")
         self.assertEqual(t[4], "Front")
+
+
+class ArchiveMidday(unittest.TestCase):
+    def test_midday_read_goes_to_the_archive_and_today_keeps_updating(self):
+        import tempfile
+        tz = bf._tz()
+        with tempfile.TemporaryDirectory() as tmp:
+            arch = Path(tmp) / "archive"
+            mk = lambda gen, x: {"generated": gen, "days": [{"date": "2026-10-27", "sites": {}, "x": x}]}
+            self.assertIsNone(bf.archive_midday(mk("2026-10-27T17:00+00:00", "10am"), arch, now=bf.datetime(2026, 10, 27, 10, 0, tzinfo=tz)))
+            r = mk("2026-10-27T20:30+00:00", "1:30pm")
+            bf.archive_midday(r, arch, now=bf.datetime(2026, 10, 27, 13, 30, tzinfo=tz))
+            self.assertNotIn("frozen_at", r["days"][0])          # the page itself is not frozen
+            bf.archive_midday(mk("2026-10-28T00:30+00:00", "5:30pm"), arch, now=bf.datetime(2026, 10, 27, 17, 30, tzinfo=tz))
+            kept = json.loads((arch / "2026-10-27.json").read_text())
+            self.assertEqual(kept["day"]["x"], "1:30pm")
