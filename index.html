@@ -202,6 +202,7 @@ details.fold > :not(summary) { margin-top: 10px; }
 .fresh-top { margin: 2px 0 0; font-size: .74rem; color: var(--muted); }
 .wa { display: inline-flex; align-items: center; gap: 2px; white-space: nowrap; }
 .wa svg { width: .8em; height: .8em; }
+.wa svg.lift { width: 1.05em; height: .9em; margin-right: 3px; }
 .wa small { font-size: .78em; opacity: .7; margin-left: 1px; }
 .facts .sep { margin: 0 6px; opacity: .5; }
 .hstrip { display: grid; grid-template-columns: repeat(10, 1fr); gap: 2px; max-width: 520px; }
@@ -867,10 +868,12 @@ function windHtml(v, unit) {
   const deg = COMPASS.indexOf(m[1]) * 22.5;
   return `<span class="wa" title="from ${m[1]}"><svg viewBox="0 0 12 12" aria-hidden="true" style="transform:rotate(${deg + 180}deg)"><path d="M6 1 L9.5 7 H7 V11 H5 V7 H2.5 Z" fill="currentColor"/></svg>${esc(m[2].replace(/ kt$/, ""))}${unit ? `<small>${unit}</small>` : ""}</span>`;
 }
+/* lift: three thin arrows pointing up */
+const LIFT = '<svg class="lift" viewBox="0 0 14 12" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 11 V2.5 M1 4 L2.5 2.5 L4 4"/><path d="M7 11 V1 M5.5 2.5 L7 1 L8.5 2.5"/><path d="M11.5 11 V2.5 M10 4 L11.5 2.5 L13 4"/></g></svg>';
 function siteFacts(c) {
   const f = (k) => (c.factors || []).find((x) => x.k === k);
   const h = f("Height") || f("Thermal height"), w = f("Wind 1 pm"), a = f("Wind aloft");
-  return [h && h.v !== "–" ? `↑ ${esc(h.v)}` : "", w && w.v !== "–" ? `launch ${windHtml(w.v, "mph")}` : "",
+  return [h && h.v !== "–" ? `<span class="wa">${LIFT}${esc(h.v)}${c.wstar != null && c.wstar > 0 ? ` <small>${Number(c.wstar).toFixed(1)} m/s</small>` : ""}</span>` : "", w && w.v !== "–" ? `launch ${windHtml(w.v, "mph")}` : "",
           a && a.v !== "–" ? `aloft ${windHtml(a.v, "kt")}` : ""].filter(Boolean).join('<span class="sep">·</span>');
 }
 function sitePills(c) {
@@ -918,7 +921,10 @@ function detail(d, s, inline) {
       <span class="fv">${esc(v)}</span>
       ${sub ? `<span class="fs">${esc(sub)}</span>` : ""}
     </div>`;
-  const rows = fac.filter((f) => !isFlag(f)).map((f) => barRow(f.k === "Wind 1 pm" ? "Launch wind" : f.k, f.q, f.v, f.sub, f.qs)).join("")
+  const strength = c.wstar != null && c.style !== "ridge"
+    ? barRow("Thermals", Math.max(0, Math.min(1, (c.wstar - 0.5) / 2.0)), `${Number(c.wstar).toFixed(1)} m/s`,
+             `W* in the window · glider climb ~${Math.max(0, c.wstar - 0.8).toFixed(1)} m/s`) : "";
+  const rows = fac.filter((f) => !isFlag(f)).map((f) => barRow(f.k === "Wind 1 pm" ? "Launch wind" : f.k, f.q, f.v, f.sub, f.qs)).join("").replace(/(<\/div>)/, `$1${strength}`)
     + (c.rain_p != null ? barRow("Dry", 1 - c.rain_p, `${Math.round(c.rain_p * 100)}% rain`, "") : "")
     + (c.cloud ? barRow("Sun", 1 - (c.cloud.sun_loss || 0), `−${Math.round((c.cloud.sun_loss || 0) * 100)}%`, `mid/high cloud ${c.cloud.okta}/8`) : "");
   const agreeF = fac.find((f) => f.k === "Model agreement");
