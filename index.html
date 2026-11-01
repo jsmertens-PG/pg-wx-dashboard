@@ -677,15 +677,13 @@ const q = (r) => [0, 0, 1, 2, 4, 5][Math.max(1, Math.min(5, Math.round(r)))];   
 const QSTOP = { 1: "--q0", 2: "--q1", 3: "--q2", 4: "--q4", 5: "--q5" };
 const qgrad = (r) => {
   if (r == null) return "var(--q0)";
-  const x = Math.max(1, Math.min(5, r)), lvl = Math.round(x);
-  // the colour is the level the number rounds to (the same as the day cards), with only a light tint of
-  // the neighbouring level (at most 20%) so a 3.4 and a 3.0 still look a little different
-  const off = x - lvl, nb = Math.max(1, Math.min(5, lvl + Math.sign(off)));
-  const t = Math.round(Math.abs(off) * 40);
-  if (!t || nb === lvl) return `var(${QSTOP[lvl]})`;
-  return `color-mix(in srgb, var(${QSTOP[lvl]}) ${100 - t}%, var(${QSTOP[nb]}))`;
+  // shaded smoothly between the levels: a 2.5 sits halfway between orange (2) and yellow (3)
+  const x = Math.max(1, Math.min(5, r)), lo = Math.floor(x), hi = Math.min(5, lo + 1);
+  const t = Math.round((x - lo) * 100);
+  if (!t || hi === lo) return `var(${QSTOP[lo]})`;
+  return `color-mix(in srgb, var(${QSTOP[lo]}) ${100 - t}%, var(${QSTOP[hi]}))`;
 };
-const qv = (r) => qgrad(r);                      // one colour scheme everywhere: blended by the exact rating
+const qv = (r) => (r == null ? qgrad(r) : qgrad(Math.round(r * 2) / 2));   // sites: the colour of the score shown (x.0 / x.5)
 const ft = (v) => (v == null ? "–" : (Math.round(v / 100) * 100).toLocaleString());
 const pct = (p) => (p == null ? "–" : `${Math.round(p * 100)}%`);
 const r1 = (r) => (r == null ? "–" : String(Math.max(1, Math.min(5, Math.round(r)))));
@@ -887,7 +885,7 @@ function daySummary(d, big, other) {
   for (const s of sd) { if (shown.length >= 3) break; if (!shown.includes(s)) shown.push(s); }
   return shown.map((s) => {
     const c = d.sites[s.id];
-    return `<span class="sc" style="--rc:${qgrad(c.rating)}"><span class="sc-t"><b>${esc(siteName(s))}</b>${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span><span class="sc-bar"><i style="width:${Math.max(6, Math.min(100, c.rating * 20))}%"></i></span></span>`;
+    return `<span class="sc" style="--rc:${qv(c.rating)}"><span class="sc-t"><b>${esc(siteName(s))}</b>${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span><span class="sc-bar"><i style="width:${Math.max(6, Math.min(100, c.rating * 20))}%"></i></span></span>`;
   }).join("");
 }
 let openDays = new Set();
@@ -938,7 +936,7 @@ function siteRow(d, s, i, kind) {
   if (!c) return `<div class="srow ${kind}"><span class="nm">${esc(name)}</span><span class="muted">no data</span></div>`;
   const pills = sitePills(c);
   return `<button type="button" class="srow ${kind}" style="--rc:${qv(c.rating)}" data-site="${s.id}" data-day="${i}" aria-expanded="false">
-    <span class="nmrow"><span class="nm">${esc(name)}</span><span class="dscore sm" style="--rc:${qgrad(c.rating)}"><span class="dsl">Score:</span><b>${(Math.max(1, Math.min(5, Math.round(c.rating * 2) / 2))).toFixed(1).replace(".0", "")}</b><small>/5</small></span></span>
+    <span class="nmrow"><span class="nm">${esc(name)}</span><span class="dscore sm" style="--rc:${qv(c.rating)}"><span class="dsl">Score:</span><b>${(Math.max(1, Math.min(5, Math.round(c.rating * 2) / 2))).toFixed(1).replace(".0", "")}</b><small>/5</small></span></span>
     <span class="tx">${c.label === "XC" ? "" : `<span class="lab" style="color:${qv(c.rating)}">${esc(c.label)}</span>`}${c.xc ? '<span class="xcmark">XC</span>' : ""}<span class="facts">${siteFacts(c)}</span></span>
     ${pills ? `<span class="spills">${pills}</span>` : ""}
     <span class="exp sm" aria-hidden="true"><span class="chev"></span></span>
