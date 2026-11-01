@@ -1408,8 +1408,10 @@ def classify_days(F):
         dd, sp, rh = g(d, "d850"), g(d, "s850"), g(d, "rh")
         if dd is None or sp is None:
             return False
+        # offshore flow at 850 hPa (N to ESE): strong, or moderate and dry. Mild Santa Anas count too:
+        # already 6-7 kt of dry NE flow makes the inland launches gusty and over the back
         offshore = wrap_in(dd, 0, 120)
-        return offshore and (sp >= 15 or (sp >= 8 and rh is not None and rh <= 35))
+        return offshore and (sp >= 12 or (sp >= 6 and rh is not None and rh <= 45))
     def front(d):
         """Regional rain with the cold air arriving: SoCal fronts are often light on rain."""
         rain = g(d, "rain", 0) or 0
