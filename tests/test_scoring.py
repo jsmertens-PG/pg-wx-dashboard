@@ -387,3 +387,20 @@ class PickWindow(unittest.TestCase):
     def test_ridge_keeps_its_window(self):
         s = dict(self.site(), kind="ridge", window=[10, 17])
         self.assertEqual(bf.pick_window(s, self.hours({12: 2000}), 17.9), (10, 17))
+
+
+class ModelLog(unittest.TestCase):
+    def test_one_row_per_model_site_day_once_a_day(self):
+        import tempfile
+        tz = bf._tz()
+        res = {"days": [{"date": "2026-11-02", "sites": {"lb": {"diag": {
+            "HRRR": {"r": 3.1, "top": 2300, "w": 1.5, "wind": [270, 6, 9], "aloft": [280, 7], "wet": 0.0, "why": ["gusty"]},
+            "GFS": {"r": 2.8, "top": 2100, "w": 1.3, "wind": None, "aloft": None, "wet": 0.1, "why": []}}}}}]}
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            now = bf.datetime(2026, 11, 1, 8, 0, tzinfo=tz)
+            p = bf.save_model_log(res, folder, now=now)
+            self.assertIsNone(bf.save_model_log(res, folder, now=now))       # once a day
+            lines = p.read_text().strip().splitlines()
+            self.assertEqual(len(lines), 3)
+            self.assertTrue(lines[1].startswith("2026-11-01,2026-11-02,1,lb,HRRR,3.1,2300,1.5,270,6,9,280,7,0.0,gusty"))

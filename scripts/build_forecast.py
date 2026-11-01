@@ -13,6 +13,7 @@ Standard library only, so it runs on a bare GitHub Actions runner.
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import math
 import os
@@ -2030,6 +2031,9 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 "when": lead.get("when") or {} if lead else {},
                 "diag": {k: {"r": round(v["rating"], 1), "top": round(v["top"] * FT, -2) if v["top"] else None,
                              "w": round(v["wstar"], 1) if v["wstar"] is not None else None,
+                             "wind": [round(x) if x is not None else None for x in (v.get("wind_1pm") or [])] or None,
+                             "aloft": [round(v["tw13"][0]), round(v["tw13"][1] * 1.15078)] if v.get("tw13") else None,
+                             "wet": round(v.get("wet_f", 0.0), 2),
                              "why": v["codes"][:3]} for k, v in D.items()},
             }
         # merge per-launch results back into their site: show the better launch of the day
@@ -2546,6 +2550,39 @@ def snapshot_of(result):
     return {"generated": result.get("generated"), "models": result.get("models"), "days": days}
 
 
+MODEL_LOG_COLS = ["run_date", "target", "lead_d", "site", "model", "rating", "top_ft", "wstar",
+                  "wind_dir", "wind_mph", "gust_mph", "aloft_dir", "aloft_mph", "wet_frac", "codes"]
+
+
+def save_model_log(result, folder, now=None):
+    """Once a day (with the morning snapshot): every model's own read of every site and day, one CSV row each,
+    in data/modellog/<YYYY-MM>.csv. Months of these let us compare what the global models said days ahead
+    with what HRRR/RRFS showed on the day, and tune the globals toward it."""
+    now = now or datetime.now(timezone.utc).astimezone(_tz())
+    if now.hour < SNAPSHOT_HOUR:
+        return None
+    folder.mkdir(parents=True, exist_ok=True)
+    path = folder / f"{now.strftime('%Y-%m')}.csv"
+    run_date = now.date().isoformat()
+    if path.exists() and any(line.startswith(run_date + ",") for line in path.read_text().splitlines()[-2000:]):
+        return None
+    rows = []
+    for d in result.get("days", []):
+        lead = (date.fromisoformat(d["date"]) - now.date()).days
+        for sid, c in (d.get("sites") or {}).items():
+            for m, v in (c.get("diag") or {}).items():
+                w, a = v.get("wind") or [None, None, None], v.get("aloft") or [None, None]
+                rows.append([run_date, d["date"], lead, sid, m, v.get("r"), v.get("top"), v.get("w"),
+                             *(w + [None] * 3)[:3], *a, v.get("wet"), " ".join(v.get("why") or [])])
+    new = not path.exists()
+    with path.open("a", newline="") as f:
+        wr = csv.writer(f)
+        if new:
+            wr.writerow(MODEL_LOG_COLS)
+        wr.writerows([["" if x is None else x for x in r] for r in rows])
+    return path
+
+
 def save_snapshot(result, folder, now=None):
     """Write data/history/<date>.json once per day (the first run from SNAPSHOT_HOUR on) and keep an index."""
     now = now or datetime.now(timezone.utc).astimezone(_tz())
@@ -2617,6 +2654,10 @@ def main(argv=None):
     Path(args.out).write_text(json.dumps(result, indent=1))
     if not args.sample:
         save_snapshot(result, ROOT / "data" / "history")
+        try:
+            save_model_log(result, ROOT / "data" / "modellog")
+        except Exception as e:                       # the log must never cost a forecast
+            log.append(f"model log: failed ({e})")
     print("\n".join(log))
     print(f"wrote {args.out}: {len(result['days'])} days")
 
