@@ -647,7 +647,7 @@ details.day > summary.hd .sum .sc, details.day > summary.hd .sum .sc.sc { white-
       <p><a class="howlink" href="measure.html">Where the radar measures: a chart per site →</a></p>
       <p><b>Torrey</b> is a ridge: cloud and a chance of showers don't count on a ridge day, but a likely-wet day does (45% of runs −1, 60% −1.5). Over 20 mph or gusts over 25 is too windy: blown out a quarter of the day caps it at 3, half the day at 1.5, and a 4 needs no blown-out hours in the afternoon. Straight south or north is a no-go. A thermal day there takes the full deductions.</p>
       <p><b>Windows.</b> The score comes from a <b>3-hour flying window</b>. Every day the radar puts it where the lift is best — height of lift first, thermal strength second, never the wind — anywhere from 10 am until glass-off starts; the solid bracket under the hour strip shows it. <b>Glass-off</b> is the last 3 hours before sunset (dashed bracket when it still works); it is rated separately and the better one counts. Torrey uses the whole day; Elsinore keeps 11 am–4 pm around its switch and needs an east launch wind, then the west switch. Laguna/Horse/Fuzz needs a convergence.</p>
-      <p><b>Day cards.</b> The chip next to the date is a personal choice: it shows whether it's a good <i>local thermal</i> day, so it is the best of Little Black, Blossom and Elsinore, rounded. Torrey, Otay, Whale's V, Laguna/Horse/Fuzz and the trips never set it; when they are good they show as pills on the card. The card lists the sites at that level, at least three; a trip only when it matches.</p>
+      <p><b>Day cards.</b> The chip next to the date is a personal choice: it shows whether it's a good <i>local thermal</i> day, so it is the best of Little Black, Blossom and Elsinore, rounded. Torrey, Otay, Whale's V, Laguna/Horse/Fuzz and the trips never set it; when they are good they show as pills on the card. No-go and marginal days list their best three sites. Better days list every San Diego site at 2.5 or more, plus the trips that reach the day's level.</p>
       <p><b>Models.</b> HRRR ×2 and RRFS while HRRR covers the day, then RRFS ×2 with GFS, ECMWF and ICON, then the global models alone. The ensembles give the chance of flying and of XC.</p>
       <p><b>Not in the score:</b> the day type, the direction of the wind aloft (for planning an XC), model agreement and those chances.</p>
     </div>
@@ -891,18 +891,17 @@ const DAY_WORD = { 1: "No-go day", 2: "Marginal day", 3: "Site flying", 4: "XC d
 const DAY_LT = new Set([2, 3]);   // light chip colours (orange, yellow) take dark text   // the sites that set a day's colour
 const TRIP_IDS = new Set(["soboba", "marshall", "santabarbara", "owens"]);
 function daySummary(d, big, other) {
-  /* the best level of the day (set by the San Diego sites; a trip shows only when it matches it),
-     topped up with the next best San Diego sites so there are always at least three */
+  /* one level for the chip and the list: the best of Little Black, Blossom and Elsinore, rounded.
+     Bad days (1-2): the best three sites. Better days (3+): every San Diego site at 2.5 or more, plus the
+     trips that reach the day's level; at least three either way. Best first. */
   const all = big.concat(other).filter((s) => d.sites[s.id]).sort((a, b) => d.sites[b.id].rating - d.sites[a.id].rating);
-  const lvl = (s) => Math.round(d.sites[s.id].rating);
-  const sd = all.filter((s) => !TRIP_IDS.has(s.id));
-  if (!sd.length) return `<span class="sx">no data</span>`;
-  const top = lvl(sd[0]);
-  let shown = all.filter((s) => lvl(s) >= top);
-  for (const s of sd) { if (shown.length >= 3) break; if (!shown.includes(s)) shown.push(s); }
-  /* no-go and marginal days (by the day's chip): one row, the best three */
-  const dayBest = Math.max(0, ...all.filter((s) => DAY_SITES.has(s.id)).map((s) => d.sites[s.id].rating));
-  if (Math.round(dayBest) <= 2) shown = shown.slice(0, 3);
+  if (!all.length) return `<span class="sx">no data</span>`;
+  const r = (s) => d.sites[s.id].rating;
+  const dayLvl = Math.round(Math.max(0, ...all.filter((s) => DAY_SITES.has(s.id)).map(r)));
+  let shown = dayLvl <= 2 ? all.slice(0, 3)
+    : all.filter((s) => (TRIP_IDS.has(s.id) ? Math.round(r(s)) >= dayLvl : r(s) >= 2.5));
+  for (const s of all) { if (shown.length >= 3) break; if (!shown.includes(s)) shown.push(s); }
+  shown.sort((a, b) => r(b) - r(a));
   return shown.map((s) => {
     const c = d.sites[s.id];
     return `<span class="sc" style="--rc:${qv(c.rating)}"><span class="sc-t"><b>${esc(siteName(s))}</b>${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span><span class="sc-bar"><i style="width:${Math.max(6, Math.min(100, c.rating * 20))}%"></i></span></span>`;
