@@ -562,6 +562,17 @@ details.day[data-date] { border-left: 1px solid rgba(15,25,40,.18) !important; }
 :root[data-skin="glossy"] #story { background: linear-gradient(180deg, #eef1f4, #f5f6f8); }
 :root[data-skin="glossy"] #story > .hd { background: linear-gradient(180deg, #e6e9ed, #eef1f4); }
 :root[data-skin="glossy"] #story .wsec { background: #e1e5ea; }
+
+/* compact site cards (first layer): label beside the name, tighter padding and pills */
+.srow .nmw { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.srow .nmw .nm { flex: 0 1 auto; min-width: 0; }
+.srow .nmw .lab { flex: 0 0 auto; font-size: .8rem; }
+.srow.srow, .srow.small.small { padding-top: 7px; padding-bottom: 7px; row-gap: 3px; }
+.list { gap: 5px; padding: 8px; }
+:root[data-skin="glossy"] .list { gap: 6px; padding: 8px; }
+.srow .spills { gap: 4px; margin-top: 1px; }
+.srow .spills .rx { height: 19px; padding: 0 6px; }
+.dscore.sm b { font-size: 1rem; }
 </style>
 </head>
 <body>
@@ -936,8 +947,8 @@ function siteRow(d, s, i, kind) {
   if (!c) return `<div class="srow ${kind}"><span class="nm">${esc(name)}</span><span class="muted">no data</span></div>`;
   const pills = sitePills(c);
   return `<button type="button" class="srow ${kind}" style="--rc:${qv(c.rating)}" data-site="${s.id}" data-day="${i}" aria-expanded="false">
-    <span class="nmrow"><span class="nm">${esc(name)}</span><span class="dscore sm" style="--rc:${qv(c.rating)}"><span class="dsl">Score:</span><b>${(Math.max(1, Math.min(5, Math.round(c.rating * 2) / 2))).toFixed(1).replace(".0", "")}</b><small>/5</small></span></span>
-    <span class="tx">${c.label === "XC" ? "" : `<span class="lab" style="color:${qv(c.rating)}">${esc(c.label)}</span>`}${c.xc ? '<span class="xcmark">XC</span>' : ""}<span class="facts">${siteFacts(c)}</span></span>
+    <span class="nmrow"><span class="nmw"><span class="nm">${esc(name)}</span>${c.label === "XC" ? "" : `<span class="lab" style="color:${qv(c.rating)}">${esc(c.label)}</span>`}</span><span class="dscore sm" style="--rc:${qv(c.rating)}"><span class="dsl">Score:</span><b>${(Math.max(1, Math.min(5, Math.round(c.rating * 2) / 2))).toFixed(1).replace(".0", "")}</b><small>/5</small></span></span>
+    <span class="tx">${c.xc ? '<span class="xcmark">XC</span>' : ""}<span class="facts">${siteFacts(c)}</span></span>
     ${pills ? `<span class="spills">${pills}</span>` : ""}
     <span class="exp sm" aria-hidden="true"><span class="chev"></span></span>
   </button>`;
