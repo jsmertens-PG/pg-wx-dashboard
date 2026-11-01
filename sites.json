@@ -444,14 +444,14 @@
           "lon": -116.9588
         },
         {
-          "name": "10 km N",
-          "lat": 33.91239,
-          "lon": -116.9588
+          "name": "10 km NW",
+          "lat": 33.886,
+          "lon": -117.03548
         },
         {
-          "name": "10 km E",
-          "lat": 33.8223,
-          "lon": -116.85036
+          "name": "10 km SE",
+          "lat": 33.7586,
+          "lon": -116.88212
         },
         {
           "name": "10 km S",
@@ -720,6 +720,21 @@
           "name": "10 km S of the middle",
           "lat": 32.76424,
           "lon": -116.47943
+        },
+        {
+          "name": "Monument Peak (Mt Laguna)",
+          "lat": 32.8919,
+          "lon": -116.4194
+        },
+        {
+          "name": "Granite Mtn",
+          "lat": 33.0512,
+          "lon": -116.4792
+        },
+        {
+          "name": "Stonewall Peak",
+          "lat": 32.96088,
+          "lon": -116.571959
         }
       ]
     },

@@ -13,6 +13,35 @@ def xy(lat, lon, lat0, lon0):
     return ((lon - lon0) * 111.0 * math.cos(math.radians(lat0)), (lat - lat0) * 111.0)
 
 
+def arcs(a, b):
+    """Split a compass sector a->b (clockwise) into (start, end) pieces."""
+    return [(a % 360, a % 360 + (b - a) % 360)] if (b - a) % 360 else [(0, 360)]
+
+
+def sectors(s, l):
+    """(start, end, cls) wedges for one launch: green = within 20 deg of the face, yellow = the rest of the
+    accepted sector plus any cross sectors."""
+    w = l.get("dir") or s.get("dir")
+    if not w or (w[1] - w[0]) % 360 == 0:
+        return []
+    span = (w[1] - w[0]) % 360
+    face = s.get("face") if s.get("face") is not None and not l.get("dir") else (w[0] + span / 2)
+    fo = (face - w[0]) % 360
+    g0, g1 = w[0] + max(0, fo - 20), w[0] + min(span, fo + 20)
+    out = [(w[0], g0, "acc"), (g0, g1, "pref"), (g1, w[0] + span, "acc")]
+    if not l.get("dir"):
+        out += [(c[0], c[0] + (c[1] - c[0]) % 360, "acc") for c in s.get("cross") or []]
+    return [o for o in out if o[1] - o[0] > 0.5]
+
+
+def wedge(X, Y, r, a0, a1, cls):
+    pt = lambda a: (X + r * math.sin(math.radians(a)), Y - r * math.cos(math.radians(a)))
+    (x0, y0), (x1, y1) = pt(a0), pt(a1)
+    big = 1 if a1 - a0 > 180 else 0
+    return (f'<path d="M{X:.1f} {Y:.1f} L{x0:.1f} {y0:.1f} A{r:.1f} {r:.1f} 0 {big} 1 {x1:.1f} {y1:.1f} Z" '
+            f'class="sec {cls}"/>')
+
+
 def chart(sid, big):
     s = S[sid]
     launches = s.get("launches") or [{"name": s["short"], "lat": s["lat"], "lon": s["lon"]}]
@@ -32,10 +61,14 @@ def chart(sid, big):
                  f'y="{W/2-r*R*0.707-3:.1f}" class="km">{r} km</text>')
     o.append(f'<line x1="{W/2}" y1="{pad/2}" x2="{W/2}" y2="{W-pad/2}" class="axis"/><line x1="{pad/2}" y1="{W/2}" '
              f'x2="{W-pad/2}" y2="{W/2}" class="axis"/><text x="{W/2}" y="{pad/2-4}" class="north">N</text>')
+    wr = 62 if big else 44
+    for l, ((x, y), _) in zip(launches, L):
+        X, Y = P(x, y)
+        o += [wedge(X, Y, wr, a0, a1, c) for a0, a1, c in sectors(s, l)]
     near = lambda x, y: any(math.hypot(x - a, y - b) < 3 for (a, b), _ in L)
     for (x, y), n in pts:
         X, Y = P(x, y)
-        o.append(f'<circle cx="{X:.1f}" cy="{Y:.1f}" r="{6 if big else 5}" class="pt"/>')
+        o.append(f'<circle cx="{X:.1f}" cy="{Y:.1f}" r="{9 if big else 7}" class="pt"/>')
         if n.endswith("launch"):
             continue
         if near(x, y):
@@ -52,7 +85,7 @@ def chart(sid, big):
         o.append(f'<text x="{X+dx:.1f}" y="{Y+dy:.1f}" text-anchor="{anchor}" class="pl">{html.escape(n)}</text>')
     for (x, y), n in L:
         X, Y = P(x, y)
-        o.append(f'<path d="M{X:.1f} {Y-10:.1f} L{X+9:.1f} {Y+6:.1f} L{X-9:.1f} {Y+6:.1f} Z" class="launch"/>')
+        o.append(f'<path d="M{X:.1f} {Y-10:.1f} L{X+10:.1f} {Y+7:.1f} L{X-10:.1f} {Y+7:.1f} Z" class="launch"/>')
         o.append(f'<text x="{X-14:.1f}" y="{Y+5:.1f}" text-anchor="end" class="ll">{html.escape(n)}</text>' if len(L) > 1
                  else f'<text x="{X:.1f}" y="{Y+22:.1f}" class="ll" text-anchor="middle">{html.escape(n)}</text>')
     o.append("</svg>")

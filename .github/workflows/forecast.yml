@@ -16,7 +16,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -31,7 +31,7 @@ jobs:
           key: om-${{ github.run_id }}
           restore-keys: om-
       - name: Build forecast
-        run: python scripts/build_forecast.py
+        run: python -u scripts/build_forecast.py
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}   # optional: Claude summary of the NWS discussion
       - name: Keep model runs for next time
