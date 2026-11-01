@@ -708,6 +708,7 @@ REASON_TEXT = {
 }
 GUST_WARN_MPH, GUST_NOGO_MPH = 12, 18          # thermal sites: gusty from 12 mph, too windy from 18 mph
 SINK = 1.1   # paraglider sink rate in a thermal turn, m/s (about 1.0-1.2)
+CORE = 1.4   # a pilot climbs in the core: about 1.4 x W* (the area-average updraft), so climb = CORE*W* - SINK
 LIGHT_MPH = 6   # at the thermal sites a launch wind this light does not count, whatever its direction:
                 # the thermal cycles are stronger than it
 SHF_FRAC = 0.40   # without the model's own surface heat flux: share of the sunshine that heats the air
@@ -940,7 +941,7 @@ def score_hour(site, hr, i, levels, elev_m):
                     and wrap_in(tw_dir, *xb["from"]))
     # a convergence line needs real flow meeting at the site, not near-calm air
     conv_ok = site["kind"] != "convergence" or (lw_mph is not None and lw_mph >= site["wind_mph"][0] and on)
-    if site.get("xc_top_ft") and coast_ok and conv_ok and q >= 0.5 and not bad_dir and wstar >= 1.2:
+    if site.get("xc_top_ft") and coast_ok and conv_ok and q >= 0.5 and not bad_dir:
         over = (usable if site["kind"] == "ridge" else peak_top) * FT - site["xc_top_ft"]
         if over >= 0:
             wind_f = 1.0 if a_max is None or a_max <= site["aloft_max_kt"] - 3 else 0.8
@@ -958,7 +959,7 @@ def score_hour(site, hr, i, levels, elev_m):
            "prof": [[round(z * FT), round(t, 1)] for z, t, *_ in pts[:9]]}
     return {"q": q, "xc_s": xc_s, "xc_block": xc_block, "dbg": dbg, "glass": glass, "cold": cold_aloft, "good_launch": bool(good_launch), "launch": launch,
             "launch_pts": launch_pts if launch_pts is not None else (1.0 if good_launch else 0.0),
-            "usable": usable, "usable_show": usable_show, "peak_top": peak_top, "base": base, "agl": agl, "wstar": wstar, "climb": max(0.0, wstar - SINK),
+            "usable": usable, "usable_show": usable_show, "peak_top": peak_top, "base": base, "agl": agl, "wstar": wstar, "climb": max(0.0, CORE * wstar - SINK),
             "gcat": gcat,
             "into": bool(on and lw_mph is not None and lw_mph >= max(3.0, lo)),   # blowing into the launch, not just light
             "off": (angdiff(ld, site_face(site)) if site_face(site) is not None and ld is not None
@@ -2010,7 +2011,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 "n_members": len(cell["ens"]), "lead": lead_name,
                 "top_ft": round(top * FT, -2) if top else None, "base_ft": round(base * FT, -2) if base else None,
                 "wstar": round(wstar, 1) if wstar is not None else None,
-                "sink": SINK,
+                "sink": SINK, "core": CORE,
                 "sunset": fmt_clock(lead["sunset"]) if lead else None,
                 "factors": factors,
                 "alt_source": src,
