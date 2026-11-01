@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-01T16:52+00:00",
+ "generated": "2026-11-01T17:06+00:00",
  "sample": false,
  "calib": {
   "2026-11-01": {
@@ -26715,12 +26715,12 @@
   "ICON ens": "icon_global"
  },
  "log": [
-  "HRRR: ok (ncep_hrrr_conus), surface heat flux (8625 values)",
-  "RRFS: ok (ncep_rrfs_conus), surface heat flux (11109 values)",
-  "NAM: ok (ncep_nam_conus), surface heat flux (9453 values)",
-  "GFS: ok (gfs_global), surface heat flux (18216 values)",
+  "HRRR: ok (ncep_hrrr_conus), surface heat flux (8750 values)",
+  "RRFS: ok (ncep_rrfs_conus), surface heat flux (11270 values)",
+  "NAM: ok (ncep_nam_conus), surface heat flux (9590 values)",
+  "GFS: ok (gfs_global), surface heat flux (18480 values)",
   "ECMWF: ok (ecmwf_ifs025), surface heat flux (0 values)",
-  "ICON: ok (icon_global), surface heat flux (17733 values)",
+  "ICON: ok (icon_global), surface heat flux (17990 values)",
   "GFS ens: ok (gfs025)",
   "ECMWF ens: ok (ecmwf_ifs025)",
   "ICON ens: ok (icon_global)",
@@ -26738,7 +26738,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-11-01T14:00+00:00",
-   "fetched": "2026-11-01T16:41+00:00",
+   "fetched": "2026-11-01T16:52+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -26748,7 +26748,7 @@
    "id": "ncep_rrfs_conus",
    "status": "ok",
    "run": "2026-11-01T12:00+00:00",
-   "fetched": "2026-11-01T16:41+00:00",
+   "fetched": "2026-11-01T16:53+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -26757,8 +26757,8 @@
    "provider": "Open-Meteo",
    "id": "ncep_nam_conus",
    "status": "ok",
-   "run": null,
-   "fetched": "2026-11-01T16:42+00:00",
+   "run": "2026-11-01T12:00+00:00",
+   "fetched": "2026-11-01T16:53+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -26768,7 +26768,7 @@
    "id": "gfs_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-01T16:42+00:00",
+   "fetched": "2026-11-01T16:54+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -26777,8 +26777,8 @@
    "provider": "Open-Meteo",
    "id": "ecmwf_ifs025",
    "status": "ok",
-   "run": "2026-11-01T06:00+00:00",
-   "fetched": "2026-11-01T16:42+00:00",
+   "run": null,
+   "fetched": "2026-11-01T16:56+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -26788,7 +26788,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-01T16:43+00:00",
+   "fetched": "2026-11-01T16:56+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -26798,7 +26798,7 @@
    "id": "gfs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-01T16:45+00:00",
+   "fetched": "2026-11-01T16:58+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -26808,7 +26808,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-01T16:49+00:00",
+   "fetched": "2026-11-01T17:02+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -26818,7 +26818,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-01T16:52+00:00",
+   "fetched": "2026-11-01T17:05+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -26828,7 +26828,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-11-01T11:29:00+00:00",
-   "fetched": "2026-11-01T16:52+00:00",
+   "fetched": "2026-11-01T17:05+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   },
   {
@@ -26838,7 +26838,7 @@
    "id": "cloud_cover_mid/high",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-01T16:52+00:00",
+   "fetched": "2026-11-01T17:06+00:00",
    "url": "https://open-meteo.com/en/docs"
   }
  ],
@@ -27010,7 +27010,7 @@
      "label": "No go",
      "tags": [],
      "xc": false,
-     "rain_p": 0.98,
+     "rain_p": 0.97,
      "base": 3.0,
      "adj": [
       [
@@ -27058,7 +27058,7 @@
       },
       {
        "k": "Rain & storms",
-       "v": "98% of runs",
+       "v": "97% of runs",
        "sub": "",
        "q": 0.0
       },
@@ -27212,15 +27212,15 @@
        ]
       }
      },
-     "was": 3.0,
-     "trend": -1.5
+     "was": 2.5,
+     "trend": -1.0
     },
     "lb": {
      "rating": 1.0,
      "label": "No go",
      "tags": [],
      "xc": false,
-     "rain_p": 0.98,
+     "rain_p": 0.97,
      "base": 1.42,
      "adj": [
       [
@@ -27284,7 +27284,7 @@
       },
       {
        "k": "Rain & storms",
-       "v": "98% of runs",
+       "v": "97% of runs",
        "sub": "",
        "q": 0.0
       },
@@ -27453,7 +27453,7 @@
      "label": "No go",
      "tags": [],
      "xc": false,
-     "rain_p": 0.96,
+     "rain_p": 0.98,
      "base": 1.36,
      "adj": [
       [
@@ -27517,7 +27517,7 @@
       },
       {
        "k": "Rain & storms",
-       "v": "96% of runs",
+       "v": "98% of runs",
        "sub": "",
        "q": 0.0
       },
@@ -27688,7 +27688,7 @@
       "no launch window"
      ],
      "xc": false,
-     "rain_p": 0.87,
+     "rain_p": 0.9,
      "base": 1.0,
      "adj": [],
      "hours": {
@@ -27747,7 +27747,7 @@
       },
       {
        "k": "Rain & storms",
-       "v": "87% of runs",
+       "v": "90% of runs",
        "sub": "",
        "q": 0.0
       },
@@ -27916,7 +27916,7 @@
      "label": "No go",
      "tags": [],
      "xc": false,
-     "rain_p": 0.93,
+     "rain_p": 0.99,
      "base": 1.16,
      "adj": [
       [
@@ -27980,7 +27980,7 @@
       },
       {
        "k": "Rain & storms",
-       "v": "93% of runs",
+       "v": "99% of runs",
        "sub": "",
        "q": 0.0
       },
@@ -28149,7 +28149,7 @@
      "label": "No go",
      "tags": [],
      "xc": false,
-     "rain_p": 0.92,
+     "rain_p": 0.96,
      "base": 1.0,
      "adj": [],
      "hours": {
@@ -28208,7 +28208,7 @@
       },
       {
        "k": "Rain & storms",
-       "v": "92% of runs",
+       "v": "96% of runs",
        "sub": "",
        "q": 0.0
       },
@@ -28377,7 +28377,7 @@
      "label": "No go",
      "tags": [],
      "xc": false,
-     "rain_p": 0.92,
+     "rain_p": 0.96,
      "base": 1.0,
      "adj": [],
      "hours": {
@@ -28436,7 +28436,7 @@
       },
       {
        "k": "Rain & storms",
-       "v": "92% of runs",
+       "v": "96% of runs",
        "sub": "",
        "q": 0.0
       },
@@ -29272,8 +29272,8 @@
        ]
       }
      },
-     "was": 1.4,
-     "trend": 0.6
+     "was": 1.0,
+     "trend": 1.0
     },
     "owens": {
      "rating": 1.0,
@@ -29489,14 +29489,18 @@
      },
      "launch_name": "Walt's Point",
      "cloud": {
-      "okta": 6,
-      "cover": 0.69,
-      "sun_loss": 0.12,
+      "okta": 5,
+      "cover": 0.6,
+      "sun_loss": 0.09,
       "agree": 0.0,
       "models": {
        "HRRR": [
         0.69,
         0.12
+       ],
+       "RRFS": [
+        0.43,
+        0.02
        ]
       }
      },
@@ -29749,8 +29753,8 @@
        ]
       }
      },
-     "was": 2.5,
-     "trend": -0.0
+     "was": 1.6,
+     "trend": 0.9
     },
     "lb": {
      "rating": 3.37,
@@ -29950,8 +29954,8 @@
        ]
       }
      },
-     "was": 2.8,
-     "trend": 0.6
+     "was": 2.0,
+     "trend": 1.5
     },
     "blossom": {
      "rating": 2.58,
@@ -30152,8 +30156,8 @@
        ]
       }
      },
-     "was": 3.6,
-     "trend": -1.0
+     "was": 2.8,
+     "trend": -0.1
     },
     "elsinore": {
      "rating": 1.91,
@@ -30356,8 +30360,8 @@
        ]
       }
      },
-     "was": 1.8,
-     "trend": 0.1
+     "was": 1.2,
+     "trend": 1.2
     },
     "soboba": {
      "rating": 1.51,
@@ -30552,8 +30556,8 @@
        ]
       }
      },
-     "was": 3.6,
-     "trend": -2.1
+     "was": 1.9,
+     "trend": -0.0
     },
     "otay": {
      "rating": 2.0,
@@ -30756,8 +30760,8 @@
        ]
       }
      },
-     "was": 2.0,
-     "trend": 0.0
+     "was": 1.2,
+     "trend": 0.8
     },
     "whalesv": {
      "rating": 1.0,
@@ -31380,8 +31384,8 @@
        ]
       }
      },
-     "was": 1.4,
-     "trend": -0.4
+     "was": 1.0,
+     "trend": 0.0
     },
     "santabarbara": {
      "rating": 2.47,
@@ -31411,9 +31415,9 @@
       14
      ],
      "gwin": null,
-     "note": "EJ Bowl: low lid, 4,400 ft",
-     "p_fly": 0.34,
-     "p_xc": 0.0,
+     "note": "EJ Bowl: thermals to 4,400 ft",
+     "p_fly": 0.78,
+     "p_xc": 0.14,
      "agree": "split",
      "models": {
       "HRRR": 3.9,
@@ -31583,8 +31587,8 @@
        ]
       }
      },
-     "was": 1.7,
-     "trend": 0.8
+     "was": 1.0,
+     "trend": 1.7
     },
     "owens": {
      "rating": 1.0,
@@ -31784,18 +31788,22 @@
      "launch_name": "Walt's Point",
      "cloud": {
       "okta": 3,
-      "cover": 0.42,
+      "cover": 0.34,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
        "HRRR": [
         0.42,
         0.0
+       ],
+       "RRFS": [
+        0.16,
+        0.0
        ]
       }
      },
-     "was": 1.2,
-     "trend": -0.2
+     "was": 1.0,
+     "trend": 0.0
     }
    },
    "regime": {
@@ -32399,8 +32407,8 @@
        ]
       }
      },
-     "was": 3.1,
-     "trend": 0.4
+     "was": 3.0,
+     "trend": 0.5
     },
     "elsinore": {
      "rating": 2.77,
@@ -32609,8 +32617,8 @@
      ],
      "gwin": null,
      "note": "thermals to 3,300 ft",
-     "p_fly": 0.91,
-     "p_xc": 0.39,
+     "p_fly": 0.81,
+     "p_xc": 0.06,
      "agree": "agree",
      "models": {
       "RRFS": 3.1,
@@ -32753,8 +32761,8 @@
        ]
       }
      },
-     "was": 3.6,
-     "trend": -0.4
+     "was": 3.5,
+     "trend": -0.7
     },
     "otay": {
      "rating": 2.64,
@@ -33133,8 +33141,8 @@
        ]
       }
      },
-     "was": 1.5,
-     "trend": 0.5
+     "was": 1.3,
+     "trend": 0.7
     },
     "lagunahorse": {
      "rating": 1.18,
@@ -33352,7 +33360,7 @@
      ],
      "note": "",
      "p_fly": 0.86,
-     "p_xc": 0.42,
+     "p_xc": 0.0,
      "agree": "split",
      "models": {
       "RRFS": 2.4,
@@ -33880,11 +33888,15 @@
      },
      "launch_name": "Walt's Point",
      "cloud": {
-      "okta": 3,
-      "cover": 0.35,
-      "sun_loss": 0.04,
+      "okta": 1,
+      "cover": 0.17,
+      "sun_loss": 0.01,
       "agree": 0.0,
       "models": {
+       "RRFS": [
+        0.09,
+        0.0
+       ],
        "ECMWF": [
         0.19,
         0.0
@@ -34124,8 +34136,8 @@
        ]
       }
      },
-     "was": 2.5,
-     "trend": -0.5
+     "was": 2.3,
+     "trend": -0.3
     },
     "lb": {
      "rating": 4.24,
@@ -34309,8 +34321,8 @@
        ]
       }
      },
-     "was": 2.7,
-     "trend": 1.5
+     "was": 3.2,
+     "trend": 1.0
     },
     "blossom": {
      "rating": 2.87,
@@ -34864,7 +34876,7 @@
       "glass-off"
      ],
      "xc": true,
-     "rain_p": 0.16,
+     "rain_p": 0.15,
      "base": 3.94,
      "adj": [],
      "hours": {
@@ -34927,9 +34939,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "16% of runs",
+       "v": "15% of runs",
        "sub": "",
-       "q": 0.78
+       "q": 0.79
       },
       {
        "k": "Model agreement",
@@ -35045,7 +35057,7 @@
       "glass-off"
      ],
      "xc": false,
-     "rain_p": 0.15,
+     "rain_p": 0.14,
      "base": 3.02,
      "adj": [
       [
@@ -35113,9 +35125,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "15% of runs",
+       "v": "14% of runs",
        "sub": "",
-       "q": 0.79
+       "q": 0.8
       },
       {
        "k": "Model agreement",
@@ -35228,8 +35240,8 @@
        ]
       }
      },
-     "was": 3.1,
-     "trend": -1.1
+     "was": 2.8,
+     "trend": -0.8
     },
     "lagunahorse": {
      "rating": 1.12,
@@ -36354,8 +36366,8 @@
        ]
       }
      },
-     "was": 3.2,
-     "trend": 1.0
+     "was": 3.8,
+     "trend": 0.4
     },
     "blossom": {
      "rating": 3.74,
@@ -36844,8 +36856,8 @@
        ]
       }
      },
-     "was": 4.2,
-     "trend": -1.0
+     "was": 3.7,
+     "trend": -0.5
     },
     "otay": {
      "rating": 3.44,
@@ -38213,8 +38225,8 @@
        ]
       }
      },
-     "was": 3.0,
-     "trend": 0.7
+     "was": 3.4,
+     "trend": 0.3
     },
     "blossom": {
      "rating": 2.94,
@@ -38389,8 +38401,8 @@
        ]
       }
      },
-     "was": 3.1,
-     "trend": -0.2
+     "was": 3.3,
+     "trend": -0.4
     },
     "elsinore": {
      "rating": 1.0,
@@ -38555,8 +38567,8 @@
        ]
       }
      },
-     "was": 1.2,
-     "trend": -0.2
+     "was": 1.0,
+     "trend": 0.0
     },
     "soboba": {
      "rating": 3.04,
@@ -39051,8 +39063,8 @@
        ]
       }
      },
-     "was": 3.3,
-     "trend": -1.3
+     "was": 3.0,
+     "trend": -1.0
     },
     "lagunahorse": {
      "rating": 1.05,
@@ -39787,7 +39799,7 @@
      "label": "Ridge soaring",
      "tags": [],
      "xc": false,
-     "rain_p": 0.01,
+     "rain_p": 0.0,
      "base": 1.86,
      "adj": [],
      "hours": {
@@ -39833,7 +39845,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.99
+       "q": 1.0
       },
       {
        "k": "Model agreement",
@@ -39938,7 +39950,7 @@
      "label": "Marginal",
      "tags": [],
      "xc": false,
-     "rain_p": 0.01,
+     "rain_p": 0.0,
      "base": 2.89,
      "adj": [
       [
@@ -40001,7 +40013,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.99
+       "q": 1.0
       },
       {
        "k": "Model agreement",
@@ -40591,7 +40603,7 @@
       "glass-off"
      ],
      "xc": false,
-     "rain_p": 0.01,
+     "rain_p": 0.0,
      "base": 3.0,
      "adj": [
       [
@@ -40657,7 +40669,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.99
+       "q": 1.0
       },
       {
        "k": "Model agreement",
@@ -40757,7 +40769,7 @@
      "label": "Marginal",
      "tags": [],
      "xc": false,
-     "rain_p": 0.01,
+     "rain_p": 0.0,
      "base": 4.94,
      "adj": [
       [
@@ -40824,7 +40836,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.99
+       "q": 1.0
       },
       {
        "k": "Model agreement",
@@ -41620,7 +41632,7 @@
    "best_main": "lb",
    "headline": "XC at Santa Barbara",
    "why": "Too windy",
-   "rain_p": 0.01,
+   "rain_p": 0.0,
    "cloud": {
     "okta": 0,
     "sun_loss": 0.0,
@@ -41630,5 +41642,5 @@
    }
   }
  ],
- "trend_ref": "2026-10-31T19:45+00:00"
+ "trend_ref": "2026-10-31T21:05+00:00"
 }
