@@ -972,7 +972,7 @@ function detail(d, s, inline) {
       <span class="fv">${esc(v)}</span>
       ${sub ? `<span class="fs">${esc(sub)}</span>` : ""}
     </div>`;
-  /* one bar: the average climb a paraglider can expect in the window, W* (RASP's mid-BL updraft) minus its sink */
+  /* one bar: the average climb a paraglider can expect in the window, W* (the mid-boundary-layer updraft) minus its sink */
   const sink = c.sink || 1.1, core = c.core || 1.4, climb = c.wstar != null ? Math.max(0, core * c.wstar - sink) : null;
   const strength = climb != null && c.style !== "ridge"
     ? barRow("Climb rate", Math.max(0, Math.min(1, climb / 2.5)), `${climb.toFixed(1)} m/s`, "") : "";
