@@ -53,7 +53,7 @@ ENS_MODELS = {
 OPTIONAL_MODELS = {"RRFS"}           # not listed as "failed" while Open-Meteo doesn't offer it yet
 # trust for lift and rating (local experience: HRRR usually right, then NAM; GFS/ECMWF/ICON for the longer range)
 MODEL_WEIGHT = {"HRRR": 3, "RRFS": 3, "NAM": 2, "ECMWF": 1, "GFS": 1, "ICON": 1}
-# HRRR days: HRRR x2, RRFS x1 (weighted mean; HRRR is what XC Skies readers calibrate on).
+# HRRR days: HRRR x2, RRFS x1 (weighted mean; HRRR is what pilots calibrate on).
 # RRFS days (HRRR out of range): RRFS x2 plus the global models together counting once, so RRFS isn't alone.
 # Past RRFS: weighted median of the global models. NAM is not used for the rating.
 # RRFS heights are corrected by their recent gap to HRRR at each site before scoring (rrfs_bias).
@@ -700,7 +700,7 @@ def score_hour(site, hr, i, levels, elev_m):
     blh = _at(hr, "boundary_layer_height", i)
     if blh is not None and blh > 0:
         zi = min(zi, blh)
-    # thermal strength W* (Deardorff, as RASP/XC Skies): from the model's own sensible heat flux when it has
+    # thermal strength W* (Deardorff, as the usual soaring forecasts): from the model's own sensible heat flux when it has
     # one (sign conventions differ, so its size is used while the sun is up, kept within 10-60% of the
     # sunshine), else a share of the sunshine
     shf = _at(hr, "sensible_heat_flux", i)
@@ -709,11 +709,11 @@ def score_hour(site, hr, i, levels, elev_m):
     kin = heat / 1200.0
     wstar = (9.81 / (t2 + 273.15) * kin * zi) ** (1 / 3) if zi > 0 and kin > 0 else 0.0
     # a paraglider can only use the part of the mixed layer where thermals beat its sink rate
-    # (the idea behind RASP's Hcrit): weak days use about half of it, strong days most of it
+    # (the idea behind the standard Hcrit): weak days use about half of it, strong days most of it
     k = clamp(0.4 + 0.2 * (wstar - 1.0), 0.3, 0.8)
     usable = z0 + zi * k
     # the height used for rating and shown is this usable top, with no best-thermal bonus: it matches
-    # XC Skies' "top of usable lift" (LB 2026-10-26 12:00: HRRR 1,978 vs 1,968 ft, RRFS 1,649 vs 1,640 ft).
+    # the usual soaring forecasts' "top of usable lift" (LB 2026-10-26 12:00: HRRR 1,978 vs 1,968 ft, RRFS 1,649 vs 1,640 ft).
     # An earlier +25%/+10% best-thermal bonus overshot (Blossom 10-25: 6,200 shown, 4,900 flown).
     base = z0 + 125 * max(0.0, t2 - td) if td is not None else None
     if base is not None:
@@ -722,7 +722,7 @@ def score_hour(site, hr, i, levels, elev_m):
     if corr:                                  # highest top along the site's corridor this hour
         usable, wstar = corr[0], corr[1]
     pts_h = corr[3] if corr and len(corr) > 3 else None   # every height point's top this hour
-    usable_show = usable                      # what the model says (and XC Skies shows)
+    usable_show = usable                      # what the model says (and the usual soaring forecasts show)
     bias = site.get("_bias_m", 0.0)           # RRFS: its recent gap to HRRR here, for scoring only
     if bias:
         usable = usable + bias
@@ -1243,7 +1243,7 @@ def note_for(site, a, xc):
     if xc and site["kind"] == "ridge":
         return f"thermals above the cliffs to about {ft100(a['top'])}" if a.get("top") else "thermals above the cliffs"
     if xc:
-        return ""                                   # routes are planned by hand with Skysight / XC Skies
+        return ""                                   # routes are planned by hand with the usual soaring tools
     if a["label"] == "Glass-off":
         return ""                                   # the label says it all
     if a["label"] in ("Thermal", "Ridge soaring", "XC"):
@@ -1499,7 +1499,7 @@ def expand_sites(sites):
 
 def corridor_heights(sites, det):
     """{model: {site id: {time: (usable_m, wstar, point name)}}}: the highest usable top over a site's
-    height_points each hour (model grid-cell values, as XC Skies shows them). Used instead of the site's own
+    height_points each hour (model grid-cell values, as the usual soaring forecasts show them). Used instead of the site's own
     point for height, e.g. Elsinore: over the hills west of the lake and the Inland Empire toward Soboba,
     never over the lake, where the high-res models run falsely low."""
     out = {}
@@ -1986,7 +1986,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             drow["rain_p"] = round(sum(sd) / len(sd), 2) if sd else None
             out_days.append(drow)
 
-    # raw ingredients of the height calculation for a few sites, to calibrate against XC Skies / flights
+    # raw ingredients of the height calculation for a few sites, to calibrate against the usual soaring forecasts / flights
     calib = {}
     for dstr in [x["date"] for x in out_days][:3]:
         for sid in CALIB_SITES:
