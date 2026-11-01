@@ -567,6 +567,7 @@ details.day[data-date] { border-left: 1px solid rgba(15,25,40,.18) !important; }
 .srow .nmw { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
 .srow .nmw .nm { flex: 0 1 auto; min-width: 0; }
 .srow .nmw .lab { flex: 0 0 auto; font-size: .8rem; }
+.srow .nmw .xcmark { flex: none; align-self: center; }
 .srow.srow, .srow.small.small { padding-top: 7px; padding-bottom: 7px; row-gap: 3px; }
 .list { gap: 5px; padding: 8px; }
 :root[data-skin="glossy"] .list { gap: 6px; padding: 8px; }
@@ -577,9 +578,11 @@ details.day[data-date] { border-left: 1px solid rgba(15,25,40,.18) !important; }
 /* phone: the day's sites in one row of four (a fifth+ starts a second row) */
 @media (max-width: 640px) {
   details.day > summary.hd .sum { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; }
-  details.day > summary.hd .sum .sc { min-height: 42px; padding: 4px 3px; font-size: .78rem; line-height: 1.12; text-align: center; min-width: 0; }
-  details.day > summary.hd .sum .sc .sc-t { flex-wrap: wrap; justify-content: center; gap: 2px 4px; }
-  details.day > summary.hd .sum .sc b { overflow-wrap: anywhere; }
+  details.day > summary.hd .sum .sc { min-height: 42px; padding: 4px 2px; font-size: .78rem; line-height: 1.12; text-align: center; min-width: 0; }
+  details.day > summary.hd .sum .sc .sc-t { flex-wrap: nowrap; justify-content: center; gap: 3px; }
+  details.day > summary.hd .sum .sc .sc-t b { min-width: 0; }
+  details.day > summary.hd .sum .sc .xcmark { flex: none; font-size: .5rem; padding: 1px 3px; }
+  details.day > summary.hd .sum .sc .sc-t { letter-spacing: -.01em; }
 }
 </style>
 </head>
@@ -955,8 +958,8 @@ function siteRow(d, s, i, kind) {
   if (!c) return `<div class="srow ${kind}"><span class="nm">${esc(name)}</span><span class="muted">no data</span></div>`;
   const pills = sitePills(c);
   return `<button type="button" class="srow ${kind}" style="--rc:${qv(c.rating)}" data-site="${s.id}" data-day="${i}" aria-expanded="false">
-    <span class="nmrow"><span class="nmw"><span class="nm">${esc(name)}</span>${c.label === "XC" ? "" : `<span class="lab" style="color:${qv(c.rating)}">${esc(c.label)}</span>`}</span><span class="dscore sm" style="--rc:${qv(c.rating)}"><span class="dsl">Score:</span><b>${(Math.max(1, Math.min(5, Math.round(c.rating * 2) / 2))).toFixed(1).replace(".0", "")}</b><small>/5</small></span></span>
-    <span class="tx">${c.xc ? '<span class="xcmark">XC</span>' : ""}<span class="facts">${siteFacts(c)}</span></span>
+    <span class="nmrow"><span class="nmw"><span class="nm">${esc(name)}</span>${c.xc ? '<span class="xcmark">XC</span>' : ""}${c.label === "XC" ? "" : `<span class="lab" style="color:${qv(c.rating)}">${esc(c.label)}</span>`}</span><span class="dscore sm" style="--rc:${qv(c.rating)}"><span class="dsl">Score:</span><b>${(Math.max(1, Math.min(5, Math.round(c.rating * 2) / 2))).toFixed(1).replace(".0", "")}</b><small>/5</small></span></span>
+    <span class="tx"><span class="facts">${siteFacts(c)}</span></span>
     ${pills ? `<span class="spills">${pills}</span>` : ""}
     <span class="exp sm" aria-hidden="true"><span class="chev"></span></span>
   </button>`;
