@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Redraw the site charts in measure.html ("Where the radar measures") from sites.json."""
+"""Redraw the site charts in how.html ("Where the radar measures") from sites.json."""
 import html, json, math, re
 from pathlib import Path
 
@@ -99,7 +99,7 @@ def chart(sid, big):
 
 
 def main():
-    p = ROOT / "measure.html"
+    p = ROOT / "how.html"
     page = p.read_text()
     big = "".join(chart(x, True) for x in BIG if x in S)
     small = "".join(chart(x, False) for x in SMALL if x in S)
@@ -116,7 +116,7 @@ def main():
     else:
         page = page.replace('</main>', block + '</main>', 1)
     p.write_text(page)
-    print("measure.html redrawn")
+    print("how.html redrawn")
 
 
 if __name__ == "__main__":
