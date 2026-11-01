@@ -877,7 +877,7 @@ function render(data) {
 }
 
 const chipHtml = (c, prefix) => `<span class="chip"><i style="background:${qv(c.rating)}"></i>${prefix ? `<span class="muted">${esc(prefix)}</span> ` : ""}${r1(c.rating)}${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span>`;
-const labelHtml = (c) => `<span class="label">${c.label === "XC" ? "" : `<span class="lab" style="color:${qv(c.rating)}">${esc(c.label)}</span>`}${c.xc ? '<span class="xcmark">XC</span>' : ""}${(c.tags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join("")}</span>`;
+const labelHtml = (c) => `<span class="label">${c.label === "XC" ? "" : `<span class="lab" style="color:${qv(c.rating)}">${esc(c.label)}</span>`}${c.xc ? '<span class="xcmark">XC</span>' : ""}</span>`;
 const bar = (r, thin) => `<span class="bar${thin ? " thin" : ""}"><i style="width:${Math.max(4, Math.min(100, r * 20))}%;background:${qv(r)}"></i></span>`;
 
 /* in the rows, altitudes wait for a tap: keep XC directions and reasons, drop "thermals to 3,000 ft" */
@@ -948,6 +948,9 @@ function sitePills(c) {
   (c.why || []).filter((k) => WHY_TXT[k] && !/rain|showers|cape/.test(k)).slice(0, Object.keys(when).length ? 4 : 2)
     .forEach((k) => out.push(`<span class="rx">${ico("warn")}${esc(WHY_TXT[k])}${when[k] ? ` <span class="dv">${esc(when[k])}</span>` : ""}</span>`));
   adj.filter(([t]) => !/rain|sun/.test(t)).forEach(([t, v]) => out.push(`<span class="rx">${ico("warn")}${esc(t)}${dv(v)}</span>`));
+  /* good news and Elsinore's switch: glass-off when a decent one is expected, the switch time (or no switch) */
+  (c.tags || []).filter((t) => /^glass-off$|switch|no launch window/.test(t))
+    .forEach((t) => out.push(`<span class="rx">${t === "glass-off" ? '<i class="ic" aria-hidden="true">☼\uFE0E</i>' : ico("Switch day")}${esc(t)}</span>`));
   return out.join("");
 }
 function siteRow(d, s, i, kind) {
@@ -998,10 +1001,7 @@ function detail(d, s, inline) {
   const steps = (c.adj || []).map(([t, v]) => `<span class="st neg">${esc(t)} ${v > 0 ? "+" : "−"}${Math.abs(v).toFixed(1)}</span>`).join("");
   /* also good to know: at most five, most useful first */
   const rain = fac.find((f) => f.k === "Rain & storms"), agree = fac.find((f) => f.k === "Model agreement");
-  const info = [
-    ...(c.tags || []).filter((t) => !/^rain |little sun/.test(t)),
-    c.sunset ? `sunset ${c.sunset}` : "",
-  ].filter(Boolean).slice(0, 6).map((t) => `<span class="gk">${esc(t)}</span>`).join("");
+  const info = "";   // no chips here: glass-off and Elsinore's switch show as pills on the site card
   const half = Math.max(1, Math.min(5, Math.round(c.rating * 2) / 2));
   const head = inline ? "" : `<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline">
       <h3 style="font-size:1.1rem;font-family:var(--font-body);font-weight:600">${esc(s.name)} <span class="muted" style="font-size:.9rem;font-weight:500">${r1(c.rating)}/5</span></h3>${labelHtml(c)}</div>

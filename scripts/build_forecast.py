@@ -1901,25 +1901,12 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 label = "Marginal"
             elif label in ("Marginal", "No go") and rating >= 2.5:
                 label = "Ridge soaring" if ridge else ("Glass-off" if lead and lead["glass"] else "Thermal")
+            # site-card notes (shown as pills): Elsinore's switch, always; glass-off when a decent one is expected
             tags = []
-            if ridge and lead and lead.get("ridge_great") and not xc:
-                tags.append("strong W all afternoon")
-            if drift and rating >= 2.5 and xb:
-                tags.append(s["xc_bad_aloft"].get("tag", "awkward drift"))
-            if lead and lead.get("switch_tag") and (rating >= 2.5 or lead["switch_tag"] == "no launch window"):
+            if lead and lead.get("switch_tag"):
                 tags.append(lead["switch_tag"])
-            if xc and lead and lead.get("style") == "window" and lead.get("best_h") is not None:
-                tags.append(f"window ~{fmt_h(lead['best_h'])}")
             if lead and lead["glass"] and label in ("Thermal", "Marginal", "XC") and not ridge and lead.get("style") != "convergence":
                 tags.append("glass-off")
-            if off_season:
-                tags.insert(0, "off season")
-            if cstep and cl:
-                tags.append(f"little sun (−{int(round(cl[1] * 100))}%)")
-            if sp_weak:
-                tags.append(f"Soaring Predictor max {max(x['ceiling_ft'] for x in sp_cells):,} ft")
-            if shower_p >= 0.1:                       # any real chance of rain shows, also on no-go days
-                tags.insert(0, f"rain {round(shower_p * 100)}%")
             spread = (max(det_r.values()) - min(det_r.values())) if len(det_r) > 1 else 0
 
             # key values: median across the regular models (directions from the lead model)
@@ -2207,7 +2194,7 @@ def headline(sites, d):
         return f"XC at {by[k]['short']}" + (f" · also {', '.join(others)}" if others else "") + tail
     good = [k for k in main if cells[k]["rating"] >= 2.5]
     if good:
-        showers = any(t.startswith("rain") for k in main for t in cells[k]["tags"])
+        showers = any((cells[k].get("rain_p") or 0) >= 0.1 for k in main)
         return (" · ".join(f"{by[k]['short']} {cells[k]['label'].lower()}" for k in good)
                 + (" · showers around" if showers else "") + tail)
     if main:
