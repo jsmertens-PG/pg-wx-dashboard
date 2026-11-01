@@ -305,9 +305,12 @@ class RainAndSun(unittest.TestCase):
         self.assertAlmostEqual(bf.weather_steps(4.0, 0.0, False, (0.5, 0.30))[0], 4.0)     # 4/8: nothing
         self.assertAlmostEqual(bf.weather_steps(4.0, 0.0, False, (1.0, 0.10))[0], 3.125)   # thin cirrus: half
 
-    def test_ridge_and_rain_ok_sites_untouched(self):
-        self.assertEqual(bf.weather_steps(3.3, 0.70, True, (1.0, 0.9), rain_ok=True)[0], 3.3)
-        self.assertEqual(bf.weather_steps(3.3, 0.70, True, (1.0, 0.9), ridge=True)[0], 3.3)
+    def test_ridge_and_rain_ok_sites(self):
+        # cloud, the NWS and a mere chance of showers don't count on a ridge ...
+        self.assertEqual(bf.weather_steps(3.3, 0.35, True, (1.0, 0.9), rain_ok=True)[0], 3.3)
+        self.assertEqual(bf.weather_steps(3.3, 0.35, True, (1.0, 0.9), ridge=True)[0], 3.3)
+        # ... a likely-wet day does (70% of runs: -1.5, no NWS or cloud on top)
+        self.assertAlmostEqual(bf.weather_steps(3.3, 0.70, True, (1.0, 0.9), ridge=True)[0], 1.8)
 
 if __name__ == "__main__":
     unittest.main()

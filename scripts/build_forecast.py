@@ -1072,6 +1072,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     win = [(h, sc) for h, sc in hours if w0 <= h <= w1]
     rating, best_h, peak = 1.0, None, None
     xc_now = False
+    windy_share = 0.0
     switch_h, switch_tag = None, None
     ridge_great = False
     if style == "ridge":
@@ -1087,7 +1088,10 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
                     and (sc["lg"] is None or sc["lg"] <= site.get("gust_mph", 24))
                     and sc["pr"] < 0.3 and sc["cape"] < 1000)
         aft = [(h, sc) for h, sc in hours if 12 <= h <= min(16, math.floor(sunset_h) - 1)]
-        if (rating >= 2.5 and len(aft) >= 3 and sum(1 for _, sc in aft if strong_w(sc)) >= 0.75 * len(aft)
+        day = [sc for h, sc in hours if 10 <= h <= min(17, math.floor(sunset_h) - 1)]
+        windy_share = sum(1 for sc in day if "windy" in sc["codes"]) / len(day) if day else 0.0
+        windy_aft = sum(1 for _, sc in aft if "windy" in sc["codes"])
+        if (rating >= 2.5 and len(aft) >= 3 and windy_aft == 0 and sum(1 for _, sc in aft if strong_w(sc)) >= 0.75 * len(aft)
                 and max(sc["lw"] or 0 for _, sc in aft) >= peak_mph):
             rating, ridge_great = 4.0, True
         # a thermal day at Torrey also needs a clean launch: most of the thermal hours soarable on the face,
@@ -1210,7 +1214,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
             if any(h < 12 for h in hs): parts.append("am")
             if any(12 <= h < 15 for h in hs): parts.append("midday")
             if any(h >= 15 for h in hs): parts.append("pm")
-            when[c] = "all day" if len(parts) == 3 else " & ".join(parts)
+            when[c] = "all day" if len(parts) == 3 and len(hs) >= 0.6 * len(hours) else " & ".join(parts)
     prio = ["rain", "otb", "windy", "aloftdir", "aloft", "gusty", "cross", "lid", "weak", "strong", "light", "showers", "cape"]
     codes = sorted(counts, key=lambda c: (-(counts[c] >= 2), prio.index(c) if c in prio else 99))
     if style == "ridge":
@@ -1250,7 +1254,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "tw13": h13["tw"] if h13 else None,
         "wind_1pm": wind_1pm, "win": [w0, w1],
         "wind_now": wind_now, "wind_later": wind_later,
-        "rating": rating, "local": local, "xc_day": xc_day, "label": label, "codes": codes, "when": when,
+        "rating": rating, "local": local, "windy_share": windy_share, "xc_day": xc_day, "label": label, "codes": codes, "when": when,
         "postfrontal": postfrontal, "glass": glass_ok, "glass_hours": glass_hours,
         "gwin": [gwin[0][0], gwin[-1][0]] if gwin else None, "sunset": sunset_h,
         "start": hours[k][0], "top": peak_show if peak_show is not None else med("usable_show", xblk), "base": med("base"), "wstar": med("wstar", xblk),
@@ -1668,9 +1672,11 @@ def nws_rain_days(nws, dates):
 def weather_steps(rating, shower_p, nws_rain, cloud, rain_ok=False, ridge=False):
     """The rating after the rain chance, the NWS and a sunless sky have had their say.
     shower_p: share of runs with rain at the site; cloud: (cover 0-1, sun lost 0-1) or None.
-    rain_ok sites (Torrey: you land when a cell comes) and ridge sites skip all of this."""
+    rain_ok sites (Torrey: you land when a cell comes) and ridge sites skip the cloud, the NWS and a mere
+    chance of showers, but a likely-wet day (45%+ of runs) still costs them the usual step."""
     if rain_ok or ridge:
-        return rating, 0.0
+        step = next((st for p0, st in RAIN_PROB_STEP if shower_p >= p0 and p0 >= 0.45), 0.0)
+        return max(1.0, rating - step), 0.0
     step = next((st for p0, st in RAIN_PROB_STEP if shower_p >= p0), 0.0)
     if nws_rain and shower_p >= NWS_MIN_P:
         step += NWS_STEP
@@ -1807,6 +1813,12 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                         adj.append(["chance of rain" + (" + NWS" if dstr in nws_days else ""), round(-rain_part, 1)])
                     if drop - rain_part >= 0.05:
                         adj.append(["little sun (mid/high cloud)", round(-(drop - rain_part), 1)])
+            if s.get("kind") == "ridge" and D:
+                ws = blend({k: a.get("windy_share", 0.0) for k, a in D.items()})
+                cap = 1.5 if ws >= 0.5 else 3.0 if ws >= 0.25 else None
+                if cap is not None and rating > cap:
+                    r0 = rating; rating = cap
+                    note_adj(f"blown out {round(ws * 100)}% of the day: {cap:g} at most", r0)
             off_season = bool(s.get("season_months")) and int(dstr[5:7]) not in s["season_months"]
             if off_season:
                 r0 = rating; rating = min(rating, 2.0); note_adj("off season: 2 at most", r0)
