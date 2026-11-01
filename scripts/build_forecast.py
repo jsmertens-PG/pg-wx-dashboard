@@ -995,15 +995,20 @@ def best_block(hours, n, key):
     return max(0.0, best), start
 
 
+WIN_H = 3                                   # the flying window is 3 hours at every thermal site
+
+
 def pick_window(site, hours, sunset_h):
-    """The day's flying window: the site's usual window length, slid to where the lift is best -- height of
-    lift first, thermal strength second (wind plays no part). It may move between 10 am and the hour before
-    glass-off; ties go to the usual window. Torrey, full-day windows and Elsinore's switch keep their window."""
-    f0, f1 = site.get("window") or [11, 15]
-    n = f1 - f0 + 1
-    if site["kind"] == "ridge" or n >= 7 or site.get("style") == "switch":
+    """The day's flying window: 3 hours, slid to where the lift is best -- height of lift first, thermal
+    strength second (wind plays no part). It may sit anywhere from 10 am up to the start of glass-off (the
+    last 3 hours before sunset, which are rated on their own); ties go to the site's usual start.
+    Torrey and Elsinore's switch keep their own window."""
+    f0, f1 = site.get("window") or [11, 13]
+    if site["kind"] == "ridge" or site.get("style") == "switch":
         return f0, f1
-    lo, hi = min(f0, 10), max(f1, min(16, math.floor(sunset_h) - 1))
+    n = WIN_H
+    lo, hi = 10, max(10 + n - 1, math.floor(sunset_h) - 3)
+    f0 = min(max(f0, lo), hi - n + 1)
     by_h = dict(hours)
     bias = site.get("_bias_m", 0.0)
     def top_ft(s):
@@ -1019,7 +1024,7 @@ def pick_window(site, hours, sunset_h):
         m = height + 0.5 * thermals - 0.03 * abs(a - f0)
         if best is None or m > best[0] + 1e-9:
             best = (m, a)
-    return (best[1], best[1] + n - 1) if best else (f0, f1)
+    return (best[1], best[1] + n - 1) if best else (f0, f0 + n - 1)
 
 
 def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
@@ -1036,7 +1041,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         xc_day, xk = best_block(hours, 4, "xc_s")
         if sum(1 for _, s in hours[xk:xk + 4] if s["xc_s"] > 0) < 3:
             xc_day = 0.0
-    # glass-off: the last two hours before sunset (in late October about 4 to 6 pm)
+    # glass-off: the last 3 hours before sunset (in late October about 3 to 6 pm), outside the flying window
     gwin = [(h, s) for h, s in hours if h >= math.floor(sunset_h) - 2]
     glass_hours = [h for h, s in gwin if s["glass"]]
     glass_ok = len(glass_hours) >= 2
@@ -1233,7 +1238,8 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "wind_1pm": wind_1pm, "win": [w0, w1],
         "wind_now": wind_now, "wind_later": wind_later,
         "rating": rating, "local": local, "xc_day": xc_day, "label": label, "codes": codes, "when": when,
-        "postfrontal": postfrontal, "glass": glass_ok, "glass_hours": glass_hours, "sunset": sunset_h,
+        "postfrontal": postfrontal, "glass": glass_ok, "glass_hours": glass_hours,
+        "gwin": [gwin[0][0], gwin[-1][0]] if gwin else None, "sunset": sunset_h,
         "start": hours[k][0], "top": peak_show if peak_show is not None else med("usable_show", xblk), "base": med("base"), "wstar": med("wstar", xblk),
         "climb": med("climb", xblk), "lw": med("lw"), "ld": med("ld"),
         # the launch-wind bar: share of the whole window with a good launch (gusts, direction and speed in range)
@@ -1987,6 +1993,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 "hours": {str(h): round(blend({m: a["hr"][h] for m, a in D.items() if h in (a.get("hr") or {})}), 1)
                           for h in range(9, 19) if any(h in (a.get("hr") or {}) for a in D.values())},
                 "win": (lead.get("win") if lead else None) or s.get("window"),
+                "gwin": lead.get("gwin") if lead and lead.get("glass") and not ridge and lead.get("style") not in ("convergence", "switch") else None,
                 "note": note_for(s, lead_view, xc),
                 "p_fly": round(p_fly, 2), "p_xc": round(p_xc, 2),
                 "agree": factors[-1]["v"], "models": {k: round(v, 1) for k, v in det_r.items()},

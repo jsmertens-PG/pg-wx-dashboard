@@ -235,6 +235,7 @@ details.fold > :not(summary) { margin-top: 10px; }
 .hstrip .wbr { grid-row: 2; height: 9px; margin: 1px 2px 0; }
 .hstrip .wbr svg { display: block; width: 100%; height: 100%; overflow: visible; }
 .hstrip .wbr path { fill: none; stroke: #26303a; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.hstrip .wbr.glass path { stroke: #b07a2a; stroke-dasharray: 3 3; }
 /* one text system: body .78rem, captions .72rem, every chip and section head .62rem capitals */
 .dh, .gk, .steps .st, .srow .spills .rx, details.day > summary.hd .notes .rx { font-size: .62rem !important; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
 .gk, .steps .st { height: 21px; display: inline-flex; align-items: center; padding: 0 7px; border-radius: 5px; }
@@ -628,7 +629,7 @@ details.day[data-date] { border-left: 1px solid rgba(15,25,40,.18) !important; }
       </table>
       <p><a class="howlink" href="measure.html">Where the radar measures: a chart per site →</a></p>
       <p><b>Torrey</b> is a ridge: showers and cloud don't count on a ridge day, over 20 mph or gusts over 25 is too windy, and straight south or north is a no-go. A thermal day there takes the full deductions.</p>
-      <p><b>Windows.</b> Each site has a window length (Little Black and Otay 3 hours, Blossom 4, Laguna/Horse 5 …). Every day the radar slides it to where the lift is best — height of lift first, thermal strength second, never the wind — between 10 am and the hour before glass-off; the bracket under the hour strip shows it. Everything in the score comes from those hours. Torrey uses the whole day and Elsinore keeps 11 am–4 pm around its switch; glass-off is rated separately and the better one counts. Elsinore needs an east launch wind, then the west switch. Laguna/Horse/Fuzz needs a convergence.</p>
+      <p><b>Windows.</b> The score comes from a <b>3-hour flying window</b>. Every day the radar puts it where the lift is best — height of lift first, thermal strength second, never the wind — anywhere from 10 am until glass-off starts; the solid bracket under the hour strip shows it. <b>Glass-off</b> is the last 3 hours before sunset (dashed bracket when it still works); it is rated separately and the better one counts. Torrey uses the whole day; Elsinore keeps 11 am–4 pm around its switch and needs an east launch wind, then the west switch. Laguna/Horse/Fuzz needs a convergence.</p>
       <p><b>Day cards.</b> The chip next to the date is a personal choice: it shows whether it's a good <i>local thermal</i> day, so it is the best of Little Black, Blossom and Elsinore, rounded. Torrey, Otay, Whale's V, Laguna/Horse/Fuzz and the trips never set it; when they are good they show as pills on the card. The card lists the sites at that level, at least three; a trip only when it matches.</p>
       <p><b>Models.</b> HRRR ×2 and RRFS while HRRR covers the day, then RRFS ×2 with GFS, ECMWF and ICON, then the global models alone. The ensembles give the chance of flying and of XC.</p>
       <p><b>Not in the score:</b> the day type, the direction of the wind aloft (for planning an XC), model agreement and those chances.</p>
@@ -955,7 +956,7 @@ function detail(d, s, inline) {
   const hourStrip = Object.keys(hrs).length ? `<div class="hstrip">${Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => {
       const v = hrs[String(h)];
       return `<span class="hc" title="${h > 12 ? h - 12 : h} ${h >= 12 ? "pm" : "am"}${v != null ? ` · ${v}` : ""}" style="background:${v != null ? qgrad(v) : "var(--sunk)"}"></span>`;
-    }).join("")}${win.length === 2 && win[1] - win[0] < 7 ? `<span class="wbr" title="flying window: picked from height of lift, then thermal strength" style="grid-column:${Math.max(1, win[0] - 8)} / ${Math.min(11, win[1] - 7)}"><svg viewBox="0 0 100 10" preserveAspectRatio="none"><path vector-effect="non-scaling-stroke" d="M1 1 Q1 5 8 5 L44 5 Q50 5 50 9.5 Q50 5 56 5 L92 5 Q99 5 99 1"/></svg></span>` : ""}${Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => `<span class="hl">${h === 9 ? "9 am" : h === 18 ? "6 pm" : h > 12 ? h - 12 : h}</span>`).join("")}</div>` : "";
+    }).join("")}${[[win, "wbr", "flying window: the 3 hours with the best height of lift, then thermal strength"], [c.gwin || [], "wbr glass", "glass-off: still working in the last 3 hours before sunset"]].map(([w, cl, tt]) => w.length === 2 && w[1] - w[0] < 7 ? `<span class="${cl}" title="${tt}" style="grid-column:${Math.max(1, w[0] - 8)} / ${Math.min(11, w[1] - 7)}"><svg viewBox="0 0 100 10" preserveAspectRatio="none"><path vector-effect="non-scaling-stroke" d="M1 1 Q1 5 8 5 L44 5 Q50 5 50 9.5 Q50 5 56 5 L92 5 Q99 5 99 1"/></svg></span>` : "").join("")}${Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => `<span class="hl">${h === 9 ? "9 am" : h === 18 ? "6 pm" : h > 12 ? h - 12 : h}</span>`).join("")}</div>` : "";
   const barRow = (k, x, v, sub, xs) => `<div class="factor">
       <span class="fk">${esc(k)}</span>
       <span class="fbar">${(xs || [x]).map((q) => `<i style="width:${Math.max(3, Math.round(q * 100))}%;background:${barCol(q)}${xs && xs.length > 1 ? ";opacity:.55" : ""}"></i>`).join("")}</span>
