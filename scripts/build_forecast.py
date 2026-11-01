@@ -995,6 +995,33 @@ def best_block(hours, n, key):
     return max(0.0, best), start
 
 
+def pick_window(site, hours, sunset_h):
+    """The day's flying window: the site's usual window length, slid to where the lift is best -- height of
+    lift first, thermal strength second (wind plays no part). It may move between 10 am and the hour before
+    glass-off; ties go to the usual window. Torrey, full-day windows and Elsinore's switch keep their window."""
+    f0, f1 = site.get("window") or [11, 15]
+    n = f1 - f0 + 1
+    if site["kind"] == "ridge" or n >= 7 or site.get("style") == "switch":
+        return f0, f1
+    lo, hi = min(f0, 10), max(f1, min(16, math.floor(sunset_h) - 1))
+    by_h = dict(hours)
+    bias = site.get("_bias_m", 0.0)
+    def top_ft(s):
+        tops = [s["peak_top"]] + [u - bias for u, _ in (s.get("pts") or [])]
+        return max(x for x in tops if x is not None) * FT
+    best = None
+    for a in range(lo, hi - n + 2):
+        blk = [by_h[h] for h in range(a, a + n) if h in by_h]
+        if len(blk) < n:
+            continue
+        height = sum(ceil_level(site, top_ft(s)) for s in blk) / n            # 1-5, the site's own scale
+        thermals = sum(clamp(((s["wstar"] or 0) - 0.5) / 2.0) for s in blk) / n  # 0-1
+        m = height + 0.5 * thermals - 0.03 * abs(a - f0)
+        if best is None or m > best[0] + 1e-9:
+            best = (m, a)
+    return (best[1], best[1] + n - 1) if best else (f0, f1)
+
+
 def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     """Rate one day for one model run on the 1-5 scale (see 'style' in sites.json)."""
     idxs = [(h, i) for h, i in idxs if h + 0.5 <= sunset_h]          # nothing after sunset
@@ -1023,7 +1050,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         return median(v) if v else None
     ridge = site["kind"] == "ridge"
     style = site.get("style") or ("ridge" if ridge else site["kind"] if site["kind"] == "convergence" else "thermal")
-    w0, w1 = site.get("window") or [11, 15]
+    w0, w1 = pick_window(site, hours, sunset_h)
     win = [(h, sc) for h, sc in hours if w0 <= h <= w1]
     rating, best_h, peak = 1.0, None, None
     xc_now = False
@@ -1181,25 +1208,29 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     if du:
         u, v = sum(x for x, _ in du) / len(du), sum(y for _, y in du) / len(du)
         a_spd, a_dir = math.hypot(u, v), (math.degrees(math.atan2(u, v)) + 360) % 360
-    def wind_at(h_list):
-        for h, s in hours:
-            if h in h_list and s["lw"] is not None and s["ld"] is not None:
+    by_h = dict(hours)
+    def wind_at(h_list):                       # the first hour in h_list (in that order) that has a wind
+        for h in h_list:
+            s = by_h.get(h)
+            if s and s["lw"] is not None and s["ld"] is not None:
                 return (s["ld"], s["lw"], s["lg"])
         return None
     mid = hours[k][0] + 1
     wind_now = wind_at([mid, mid - 1, mid + 1])
-    later_h = [h for h in (16, 15, 17) if h >= mid + 2 and h + 0.5 <= sunset_h]
+    later_h = [h for h in (16, 15, 17) if h > w1 and h + 0.5 <= sunset_h]
     wind_later = wind_at(later_h) if later_h else None
     bias = site.get("_bias_m", 0.0)
     peak_show = (peak - bias) if peak is not None else None      # heights shown are the model's own
-    h13 = next((s for h, s in hours if h == 13), None) or next((s for h, s in hours if h in (12, 14)), None)
-    wind_1pm = wind_at([13, 12, 14])
+    # the wind and the wind aloft shown on the card: the middle of the day's window (1 pm for full-day sites)
+    wmid = (w0 + w1 + 1) // 2 if w1 - w0 < 6 else 13
+    h13 = next((by_h[h] for h in (wmid, wmid - 1, wmid + 1) if h in by_h), None)
+    wind_1pm = wind_at([wmid, wmid - 1, wmid + 1])
     return {
         "top13": h13["usable_show"] if h13 else None,
         "peak": peak_show, "ridge_great": ridge_great, "best_h": best_h, "style": style, "switch_h": switch_h, "switch_tag": switch_tag,
         "hrs": [(h, x["usable_show"]) for h, x in hours],
         "tw13": h13["tw"] if h13 else None,
-        "wind_1pm": wind_1pm,
+        "wind_1pm": wind_1pm, "win": [w0, w1],
         "wind_now": wind_now, "wind_later": wind_later,
         "rating": rating, "local": local, "xc_day": xc_day, "label": label, "codes": codes, "when": when,
         "postfrontal": postfrontal, "glass": glass_ok, "glass_hours": glass_hours, "sunset": sunset_h,
@@ -1955,7 +1986,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 "base": round(base_r, 2), "adj": adj,
                 "hours": {str(h): round(blend({m: a["hr"][h] for m, a in D.items() if h in (a.get("hr") or {})}), 1)
                           for h in range(9, 19) if any(h in (a.get("hr") or {}) for a in D.values())},
-                "win": s.get("window"),
+                "win": (lead.get("win") if lead else None) or s.get("window"),
                 "note": note_for(s, lead_view, xc),
                 "p_fly": round(p_fly, 2), "p_xc": round(p_xc, 2),
                 "agree": factors[-1]["v"], "models": {k: round(v, 1) for k, v in det_r.items()},
