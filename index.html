@@ -937,7 +937,7 @@ function siteFacts(c) {
 function sitePills(c) {
   const adj = c.adj || [];
   const take = (re) => adj.filter(([t]) => re.test(t)).reduce((x, [, v]) => x + v, 0);
-  const dv = (v) => (v <= -0.05 ? ` <span class="dv">${v.toFixed(1).replace("-", "−")}</span>` : "");
+  const dv = () => "";   // the points each item takes off are shown when the site is opened (What made the score)
   const out = [];
   const rr = take(/rain/);
   if (c.rain_p >= 0.3 || rr < 0) out.push(`<span class="rx${c.rain_p >= 0.6 ? " strong" : ""}">${ico("rain")}${Math.round((c.rain_p || 0) * 100)}% rain${dv(rr)}</span>`);
