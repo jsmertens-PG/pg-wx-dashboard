@@ -575,14 +575,13 @@ details.day[data-date] { border-left: 1px solid rgba(15,25,40,.18) !important; }
 .srow .spills .rx { height: 19px; padding: 0 6px; }
 .dscore.sm b { font-size: 1rem; }
 
-/* phone: the day's sites in one row of four (a fifth+ starts a second row) */
+/* phone: the day's sites in one row (pills share the width; a long list starts a second row), names on one line */
 @media (max-width: 640px) {
-  details.day > summary.hd .sum { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; }
-  details.day > summary.hd .sum .sc { min-height: 42px; padding: 4px 2px; font-size: .78rem; line-height: 1.12; text-align: center; min-width: 0; }
-  details.day > summary.hd .sum .sc .sc-t { flex-wrap: nowrap; justify-content: center; gap: 3px; }
-  details.day > summary.hd .sum .sc .sc-t b { min-width: 0; }
-  details.day > summary.hd .sum .sc .xcmark { flex: none; font-size: .5rem; padding: 1px 3px; }
-  details.day > summary.hd .sum .sc .sc-t { letter-spacing: -.01em; }
+  details.day > summary.hd .sum { display: flex; flex-wrap: wrap; gap: 4px; }
+  details.day > summary.hd .sum .sc { flex: 1 1 auto; min-height: 40px; padding: 4px 4px !important; font-size: .74rem; white-space: nowrap; text-align: center; }
+  details.day > summary.hd .sum .sc .sc-t { flex-wrap: nowrap; justify-content: center; gap: 2px; letter-spacing: -.015em; }
+  details.day > summary.hd .sum .sc .xcmark { flex: none; font-size: .46rem; padding: 0 2px; line-height: 1.5; align-self: flex-start; margin-top: 1px; }
+}
 }
 </style>
 </head>
