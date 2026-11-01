@@ -85,7 +85,6 @@ def chart(sid, big):
         o.append(f'<text x="{X+dx:.1f}" y="{Y+dy:.1f}" text-anchor="{anchor}" class="pl">{html.escape(n)}</text>')
     for (x, y), n in L:
         X, Y = P(x, y)
-        o.append(f'<path d="M{X:.1f} {Y-10:.1f} L{X+10:.1f} {Y+7:.1f} L{X-10:.1f} {Y+7:.1f} Z" class="launch"/>')
         o.append(f'<text x="{X-14:.1f}" y="{Y+5:.1f}" text-anchor="end" class="ll">{html.escape(n)}</text>' if len(L) > 1
                  else f'<text x="{X:.1f}" y="{Y+22:.1f}" class="ll" text-anchor="middle">{html.escape(n)}</text>')
     o.append("</svg>")
