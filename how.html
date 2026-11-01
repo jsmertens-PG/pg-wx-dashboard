@@ -50,6 +50,7 @@ svg { width:100%; height:auto; display:block; }
 
 :root { --q0:#d8402f; --q1:#ee8a1c; --q2:#f1c72b; --q4:#3aa457; --q5:#2f7fcf; }
 .how { display:grid; gap:10px; max-width:76ch; line-height:1.55; }
+.how.lead { font-size:1.05rem; }
 .how p { margin:0; }
 .legend { display:flex; flex-wrap:wrap; gap:6px 16px; font-size:.82rem; color:var(--muted); align-items:center; }
 .legend .chip { display:inline-flex; align-items:center; gap:6px; }
@@ -65,45 +66,67 @@ svg { width:100%; height:auto; display:block; }
 <a class="back" href="./">← SD Flying Radar</a>
 <h1>What this is <span>and how it works</span></h1>
 </header>
+<section class="how lead">
+<p><b>SD Flying Radar is a quick daily read of SoCal flying for the next 7 days.</b> It reads the weather models the way an experienced pilot reads XC Skies, Skysight and the NWS, and turns them into one score per site and day, so you see at a glance which day and which site deserve a closer look.</p>
+<p><b>Optimistic by design:</b> a score says how good the day <i>can</i> be from the numbers. It is tuned by hand against those tools and local pilots' reads, not against flights. Little Black, Blossom, Elsinore and Torrey are calibrated this way; the other sites are educated guesses. It never replaces your own check of the real forecast and conditions on launch.</p>
+</section>
+
+<h2>Reading the page</h2>
 <section class="how">
-      <p><b>A quick daily overview, not a forecast of its own.</b> It reads the models the way an experienced pilot reads XC Skies, Skysight and the NWS, so you see at a glance which day and which site deserve a closer look. Always check the real tools before you launch.</p>
-      <p><b>How to read it.</b> The chip next to the date (No-go, Marginal, Site flying, XC day, Hammerday) answers one personal question: <i>is it a good local thermal day?</i> It is the best of Little Black, Blossom and Elsinore; a Torrey-only day or a great day far away doesn't change it. The pills show the day type, rain, cloud and warnings; below them the best sites. Tap a day for every site with its score, lift and winds; tap a site for the hours and what made the score. Today keeps updating; the <b>Archive</b> (bottom of the page) keeps each day's midday read.</p>
-      <p><b>How it's tuned.</b> By hand, against XC Skies, Skysight, the NWS and local pilots' reads of the same forecast, not against flights. Little Black, Blossom, Elsinore and Torrey are calibrated this way; the other sites are educated guesses.</p>
-    </section>
-<h2>How the rating works</h2>
+<div class="legend">
+  <span class="chip"><i style="background:var(--q0)"></i>1 no-go</span>
+  <span class="chip"><i style="background:var(--q1)"></i>2 marginal</span>
+  <span class="chip"><i style="background:var(--q2)"></i>3 site flying / glass-off</span>
+  <span class="chip"><i style="background:var(--q4)"></i>4 XC</span>
+  <span class="chip"><i style="background:var(--q5)"></i>5 Hammerday</span>
+</div>
+<p><b>Day card.</b> The chip next to the date answers one question: <i>is it a good local thermal day?</i> It is the best of Little Black, Blossom and Elsinore. The pills under it give the day type (front, post-frontal, Santa Ana …, with the share of models that agree), rain, cloud and warnings. Below them the sites worth a look: on no-go and marginal days the best three, on better days every San Diego site at 2.5 or more, plus a trip area when it reaches the day's level.</p>
+<p><b>Site card</b> (tap a day). Score, label, warnings, glass-off and Elsinore's switch on the first line; then the height of lift, the launch wind and the wind at the top of lift.</p>
+<p><b>Detail</b> (tap a site). The hour strip from 9 am to 6 pm with the flying window (solid bracket) and glass-off (dashed bracket), the bars that made the score, the points it lost, and what the models say that is <i>not</i> in the score: how well they agree and the chance of flying and of XC from the ensembles.</p>
+<p><b>Today</b> keeps updating about every two hours; the <b>Archive</b> at the bottom of the main page keeps each day's midday read.</p>
+</section>
+
+<h2>How a score is made</h2>
 <section class="how">
-  <div class="legend">
-    <span class="chip"><i style="background:var(--q0)"></i>1 no go</span>
-    <span class="chip"><i style="background:var(--q1)"></i>2 marginal</span>
-    <span class="chip"><i style="background:var(--q2)"></i>3 good local / glass-off</span>
-    <span class="chip"><i style="background:var(--q4)"></i>4 XC</span>
-    <span class="chip"><i style="background:var(--q5)"></i>5 Hammerday</span>
-  </div>
-      <p><b>Optimistic by design.</b> The score shows how good a day <i>can</i> be from the numbers. The judgement calls stay with you.</p>
-      <p><b>The score.</b> Each site starts from the <b>height of lift</b> and the <b>thermal strength</b> in its window, on its own height scale (Little Black: 1,800 ft a good local day, 2,300 ft XC, 3,500 ft great). Height is the top of usable lift, like XC Skies, averaged over the four best readings at the launch and points around it. Thermal strength is W*, as on RASP and XC Skies, from the model's own surface heating where it has it; the card shows it as the <b>climb rate</b> in the core: 1.4 × W* minus a paraglider's sink of 1.1 m/s. XC needs a climb rate of at least 0.5 m/s. Then the same deductions apply everywhere:</p>
-      <table class="rules">
-        <tr><th>Rain</th><td>30% of runs wet −0.5 · 45% −1 · 60% −1.5 · NWS showers −0.5 more · raining through the window: no-go</td></tr>
-        <tr><th>Mid/high cloud</th><td>5/8 −0.25 · 6/8 −0.75 · 7/8 −1.25 · 8/8 −1.75 (thin cirrus half)</td></tr>
-        <tr><th>Gusts on launch</th><td>over 12 mph −0.5 · over 18 mph too windy</td></tr>
-        <tr><th>Launch direction</th><td>light (4g8 or less): any direction is fine, the thermals beat it · otherwise within 20°: fine · 20–45° off −0.5 · more than 45° off: 2 at most · over the back rules out that hour</td></tr>
-        <tr><th>Wind at top of lift</th><td>over 20 mph −0.5 · over 30 mph −1</td></tr>
-        <tr><th>Hammerday (5)</th><td>the site's great height, wind into launch and no deductions; otherwise 4 at most</td></tr>
-      </table>
-      <p><a class="back" href="#sites">Where the radar measures: a chart per site ↓</a></p>
-      <p><b>Torrey</b> is a ridge: cloud and a chance of showers don't count on a ridge day, but a likely-wet day does (45% of runs −1, 60% −1.5). Over 20 mph or gusts over 25 is too windy: blown out a quarter of the day caps it at 3, half the day at 1.5, and a 4 needs no blown-out hours in the afternoon. Straight south or north is a no-go. A thermal day there takes the full deductions.</p>
-      <p><b>Trip areas (experimental).</b> Santa Barbara / Ojai (Skyport, EJ Bowl, Ojai) and Owens Valley (Walt's Point, Paiute, Flynn's) are rated as areas: each main launch is scored on its own, the best one of the day counts, and the height is measured over the launches and the terrain between them. Owens looks for big days with almost no wind: wind at the top of lift over 10 mph, or over 8 mph on launch, makes it 2 at most; over 15 mph at the top is a no-go.</p>
-      <p><b>Windows.</b> The score comes from a <b>3-hour flying window</b>. Every day the radar puts it where the lift is best — height of lift first, thermal strength second, never the wind — anywhere from 10 am until glass-off starts; the solid bracket under the hour strip shows it. <b>Glass-off</b> is the last 3 hours before sunset (dashed bracket when it still works); it is rated separately and the better one counts. Torrey uses the whole day; Elsinore keeps 11 am–4 pm around its switch and needs an east launch wind, then the west switch. Laguna/Horse/Fuzz needs a convergence.</p>
-      <p><b>Day cards.</b> The chip next to the date is a personal choice: it shows whether it's a good <i>local thermal</i> day, so it is the best of Little Black, Blossom and Elsinore, rounded. Torrey, Otay, Whale's V, Laguna/Horse/Fuzz and the trips never set it; when they are good they show as pills on the card. No-go and marginal days list their best three sites. Better days list every San Diego site at 2.5 or more, plus the trips that reach the day's level.</p>
-      <p><b>Models.</b> HRRR ×2 and RRFS while HRRR covers the day, then RRFS ×2 with GFS, ECMWF and ICON, then the global models alone. The ensembles give the chance of flying and of XC.</p>
-      <p><b>Not in the score:</b> the day type, the direction of the wind aloft (for planning an XC), model agreement and those chances.</p>
-    </section>
+<p><b>1. The flying window.</b> Three hours, placed each day where the lift is best (height first, thermal strength second, never the wind), somewhere between 10 am and the start of glass-off.</p>
+<p><b>2. Height and strength in that window.</b> Height is the top of usable lift, as on XC Skies, read at the launch and at points over the terrain around it (see the charts below): the four best readings, at most two from one point. It is scored on each site's own scale, e.g. Little Black 1,800 ft a good local day, 2,300 ft XC, 3,500 ft great. Strength is shown as the <b>climb rate</b> in the core: 1.4 × W* minus a paraglider's sink of 1.1 m/s.</p>
+<p><b>3. Deductions,</b> the same everywhere:</p>
+<table class="rules">
+  <tr><th>Rain</th><td>30% of model runs wet −0.5 · 45% −1 · 60% −1.5 · NWS showers −0.5 more · rain through the window: no-go</td></tr>
+  <tr><th>Mid/high cloud</th><td>5/8 −0.25 · 6/8 −0.75 · 7/8 −1.25 · 8/8 −1.75 (half when the sun still gets through)</td></tr>
+  <tr><th>Gusts on launch</th><td>over 12 mph −0.5 · over 18 mph too windy</td></tr>
+  <tr><th>Launch direction</th><td>light wind (4g8 or less): any direction · within 20° of the face: fine · 20–45° off −0.5 · more than 45° off: 2 at most · over the back: that hour doesn't count</td></tr>
+  <tr><th>Wind at top of lift</th><td>over 20 mph −0.5 · over 30 mph −1</td></tr>
+</table>
+<p><b>4. XC and Hammerday.</b> XC needs the site's XC height, workable winds and a climb rate of at least 0.5 m/s. A <b>5</b> needs the site's great height, wind into launch and no deductions at all; otherwise 4 is the top.</p>
+<p><b>5. Glass-off.</b> The last 3 hours before sunset are rated on their own (3 at most). If that beats the day, the site shows "Glass-off".</p>
+</section>
+
+<h2>Sites with their own rules</h2>
+<section class="how">
+<p><b>Torrey</b> is a ridge: wind decides. Cloud and a chance of showers don't count, a likely-wet day does (45% of runs −1, 60% −1.5). Over 20 mph or gusts over 25 is too windy; blown out a quarter of the day caps it at 3, half the day at 1.5. Straight south or north is a no-go. A 4 needs a steady WSW–WNW in the afternoon; a thermal day there takes the full deductions.</p>
+<p><b>Elsinore</b> needs an east launch wind or calm, then the west switch; the card says when the switch comes (or "no switch"). It keeps an 11 am–4 pm window.</p>
+<p><b>Laguna / Horse / Fuzz</b> is a convergence site: each launch is scored on its own and it needs the convergence to rate above 2.</p>
+<p><b>Trip areas (experimental):</b> Santa Barbara / Ojai and Owens Valley are rated as areas: each main launch on its own, the best one counts, and height is read over the launches and the terrain between them. Owens is only for big, calm days: wind at the top of lift over 10 mph or over 8 mph on launch makes it 2 at most, over 15 mph at the top is a no-go, and outside its season it shows 2 at most.</p>
+</section>
+
+<h2>Models</h2>
+<section class="how">
+<p>HRRR (counted twice) and RRFS while HRRR covers the day, then RRFS (twice) with GFS, ECMWF and ICON, then the global models alone. The ensembles give the chance of flying and of XC. The NWS San Diego discussion adds showers and the day summary. The main page lists every source with its run time.</p>
+</section>
+
+<h2>What it doesn't know</h2>
+<section class="how">
+<p>Real-time observations, local wind effects beyond the rules above, turbulence and rotor, overdevelopment, site closures, permits and airspace. The day type and the direction of the wind aloft aren't scored (except a small nick at Blossom for drift toward the Rock Pile). Five to seven days out it runs on global models only, so expect those days to move.</p>
+</section>
+
 <h2 id="sites">Where the radar measures</h2>
 <section class="intro">
 <p>The wind always comes from the launch itself. For the height of lift, most sites also look at points around the launch, because the best climbs are often over the hills behind it, not right above take-off.</p>
 <div class="key"><span><i class="k-pt"></i>height point (a dot under a launch: the launch itself is measured too)</span><span>wedges sit on the launch, where the wind is measured:</span><span><i class="k-g"></i>preferred wind (within 20° of the launch face)</span><span><i class="k-y"></i>accepted / cross wind</span><span>dashed rings every 10 km, north up</span></div>
 </section>
 
-<div class="rule">How the height is worked out: in the site's flying window the radar reads the top of usable lift at every red point, every hour. It takes the <b>four best readings</b>, at most <b>two from any one point</b>, and averages them. So one strong point counts, but a single spiky hour does not decide the day.</div>
+
 <h2>Home sites</h2>
 <div class="grid big"><figure class="site big"><figcaption><b>Little Black</b><span>5 height points · wind from the launch</span></figcaption><svg viewBox="0 0 520 520" role="img" aria-label="Measuring points for Little Black"><circle cx="260.0" cy="260.0" r="141.2" class="ring"/><text x="362.9" y="157.1" class="km">10 km</text><line x1="260.0" y1="17.0" x2="260.0" y2="503.0" class="axis"/><line x1="17.0" y1="260.0" x2="503.0" y2="260.0" class="axis"/><text x="260.0" y="13.0" class="north">N</text><path d="M260.0 260.0 L238.8 318.3 A62.0 62.0 0 0 1 206.3 291.0 Z" class="sec acc"/><path d="M260.0 260.0 L206.3 291.0 A62.0 62.0 0 0 1 198.9 249.2 Z" class="sec pref"/><path d="M260.0 260.0 L198.9 249.2 A62.0 62.0 0 0 1 220.1 212.5 Z" class="sec acc"/><path d="M260.0 260.0 L281.2 318.3 A62.0 62.0 0 0 1 238.8 318.3 Z" class="sec acc"/><path d="M260.0 260.0 L220.1 212.5 A62.0 62.0 0 0 1 276.0 200.1 Z" class="sec acc"/><circle cx="260.0" cy="260.0" r="9" class="pt"/><circle cx="260.0" cy="118.8" r="9" class="pt"/><text x="260.0" y="108.8" text-anchor="middle" class="pl">10 km N</text><circle cx="401.3" cy="260.0" r="9" class="pt"/><text x="391.3" y="278.0" text-anchor="end" class="pl">10 km E</text><circle cx="260.0" cy="401.2" r="9" class="pt"/><text x="260.0" y="419.2" text-anchor="middle" class="pl">10 km S</text><circle cx="118.7" cy="260.0" r="9" class="pt"/><text x="108.7" y="264.0" text-anchor="end" class="pl">10 km W</text><text x="260.0" y="282.0" class="ll" text-anchor="middle">Little Black</text></svg></figure><figure class="site big"><figcaption><b>Blossom Valley</b><span>4 height points · wind from the launch</span></figcaption><svg viewBox="0 0 520 520" role="img" aria-label="Measuring points for Blossom Valley"><circle cx="260.0" cy="260.0" r="141.2" class="ring"/><text x="362.9" y="157.1" class="km">10 km</text><line x1="260.0" y1="17.0" x2="260.0" y2="503.0" class="axis"/><line x1="17.0" y1="260.0" x2="503.0" y2="260.0" class="axis"/><text x="260.0" y="13.0" class="north">N</text><path d="M260.0 260.0 L238.8 318.3 A62.0 62.0 0 0 1 207.7 293.3 Z" class="sec acc"/><path d="M260.0 260.0 L207.7 293.3 A62.0 62.0 0 0 1 198.5 251.9 Z" class="sec pref"/><path d="M260.0 260.0 L198.5 251.9 A62.0 62.0 0 0 1 216.2 216.2 Z" class="sec acc"/><path d="M260.0 260.0 L281.2 318.3 A62.0 62.0 0 0 1 238.8 318.3 Z" class="sec acc"/><path d="M260.0 260.0 L216.2 216.2 A62.0 62.0 0 0 1 276.0 200.1 Z" class="sec acc"/><circle cx="260.0" cy="260.0" r="9" class="pt"/><circle cx="260.0" cy="118.8" r="9" class="pt"/><text x="260.0" y="108.8" text-anchor="middle" class="pl">10 km N</text><circle cx="118.8" cy="260.0" r="9" class="pt"/><text x="108.8" y="264.0" text-anchor="end" class="pl">10 km W</text><circle cx="297.3" cy="200.1" r="9" class="pt"/><text x="307.3" y="190.1" text-anchor="start" class="pl">El Cajon Mountain peak</text><text x="260.0" y="282.0" class="ll" text-anchor="middle">Blossom</text></svg></figure><figure class="site big"><figcaption><b>Elsinore</b><span>7 height points · wind from the launch</span></figcaption><svg viewBox="0 0 520 520" role="img" aria-label="Measuring points for Elsinore"><circle cx="260.0" cy="260.0" r="62.0" class="ring"/><text x="306.8" y="213.2" class="km">10 km</text><circle cx="260.0" cy="260.0" r="123.9" class="ring"/><text x="350.6" y="169.4" class="km">20 km</text><circle cx="260.0" cy="260.0" r="185.9" class="ring"/><text x="394.4" y="125.6" class="km">30 km</text><line x1="260.0" y1="17.0" x2="260.0" y2="503.0" class="axis"/><line x1="17.0" y1="260.0" x2="503.0" y2="260.0" class="axis"/><text x="260.0" y="13.0" class="north">N</text><path d="M260.0 260.0 L291.0 206.3 A62.0 62.0 0 0 1 319.9 244.0 Z" class="sec acc"/><path d="M260.0 260.0 L319.9 244.0 A62.0 62.0 0 0 1 316.2 286.2 Z" class="sec pref"/><path d="M260.0 260.0 L316.2 286.2 A62.0 62.0 0 0 1 281.2 318.3 Z" class="sec acc"/><circle cx="260.0" cy="260.0" r="9" class="pt"/><circle cx="166.8" cy="203.7" r="9" class="pt"/><text x="156.8" y="193.7" text-anchor="end" class="pl">Santiago Peak</text><circle cx="322.0" cy="260.0" r="9" class="pt"/><text x="332.0" y="264.0" text-anchor="start" class="pl">10 km E</text><circle cx="260.0" cy="322.0" r="9" class="pt"/><text x="260.0" y="340.0" text-anchor="middle" class="pl">10 km S</text><circle cx="375.3" cy="211.7" r="9" class="pt"/><text x="385.3" y="201.7" text-anchor="start" class="pl">Menifee hills</text><circle cx="341.0" cy="156.7" r="9" class="pt"/><text x="351.0" y="146.7" text-anchor="start" class="pl">Perris valley</text><circle cx="461.2" cy="170.5" r="9" class="pt"/><text x="451.2" y="188.5" text-anchor="end" class="pl">Hemet / toward Soboba</text><text x="260.0" y="282.0" class="ll" text-anchor="middle">Elsinore</text></svg></figure><figure class="site big"><figcaption><b>Laguna / Horse / Fuzz</b><span>6 height points · wind from the launch</span></figcaption><svg viewBox="0 0 520 520" role="img" aria-label="Measuring points for Laguna / Horse / Fuzz"><circle cx="260.0" cy="260.0" r="87.4" class="ring"/><text x="324.8" y="195.2" class="km">10 km</text><circle cx="260.0" cy="260.0" r="174.8" class="ring"/><text x="386.6" y="133.4" class="km">20 km</text><line x1="260.0" y1="17.0" x2="260.0" y2="503.0" class="axis"/><line x1="17.0" y1="260.0" x2="503.0" y2="260.0" class="axis"/><text x="260.0" y="13.0" class="north">N</text><path d="M262.0 337.3 L262.0 399.3 A62.0 62.0 0 0 1 222.1 384.8 Z" class="sec acc"/><path d="M262.0 337.3 L222.1 384.8 A62.0 62.0 0 0 1 200.9 348.0 Z" class="sec pref"/><path d="M262.0 337.3 L200.9 348.0 A62.0 62.0 0 0 1 208.3 306.3 Z" class="sec acc"/><path d="M258.0 182.7 L289.0 129.0 A62.0 62.0 0 0 1 316.3 161.5 Z" class="sec acc"/><path d="M258.0 182.7 L316.3 161.5 A62.0 62.0 0 0 1 316.3 203.9 Z" class="sec pref"/><path d="M258.0 182.7 L316.3 203.9 A62.0 62.0 0 0 1 289.0 236.4 Z" class="sec acc"/><circle cx="260.0" cy="260.0" r="9" class="pt"/><text x="260.0" y="264.0" text-anchor="middle" class="pl">between Laguna and Horse</text><circle cx="260.0" cy="172.6" r="9" class="pt"/><text x="274.0" y="176.6" text-anchor="start" class="pl">10 km N of the middle</text><circle cx="260.0" cy="347.4" r="9" class="pt"/><text x="274.0" y="351.4" text-anchor="start" class="pl">10 km S of the middle</text><circle cx="308.9" cy="223.5" r="9" class="pt"/><text x="318.9" y="213.5" text-anchor="start" class="pl">Monument Peak (Mt Laguna)</text><circle cx="260.2" cy="69.0" r="9" class="pt"/><text x="260.2" y="59.0" text-anchor="middle" class="pl">Granite Mtn</text><circle cx="184.6" cy="156.6" r="9" class="pt"/><text x="174.6" y="146.6" text-anchor="end" class="pl">Stonewall Peak</text><text x="248.0" y="342.3" text-anchor="end" class="ll">Horse</text><text x="244.0" y="187.7" text-anchor="end" class="ll">Laguna</text></svg></figure></div>
 <h2>Torrey, the other San Diego sites and the trips</h2>
