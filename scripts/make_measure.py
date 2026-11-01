@@ -50,6 +50,7 @@ def chart(sid, big):
     lat0 = sum(l["lat"] for l in launches) / len(launches)
     lon0 = sum(l["lon"] for l in launches) / len(launches)
     pts = [(xy(p["lat"], p["lon"], lat0, lon0), p["name"]) for p in hp]
+    below = {p["name"] for p in hp if p.get("label") == "below"}
     L = [(xy(l["lat"], l["lon"], lat0, lon0), l["name"]) for l in launches]
     ext = max([12] + [max(abs(a), abs(b)) for (a, b), _ in pts + L]) + 4
     W = 520 if big else 300
@@ -85,7 +86,7 @@ def chart(sid, big):
         if anchor == "start" and X + dx > W - 110:
             anchor, dx, dy = "end", -10, 18
         if sid in EXP:                                # trip areas: points are spread out, label each one below it
-            anchor, dx, dy = "start", 8, -12
+            anchor, dx, dy = ("start", 8, 24) if n in below else ("start", 8, -12)
         o.append(f'<text x="{X+dx:.1f}" y="{Y+dy:.1f}" text-anchor="{anchor}" class="pl">{html.escape(n)}</text>')
     for (x, y), n in L:
         X, Y = P(x, y)

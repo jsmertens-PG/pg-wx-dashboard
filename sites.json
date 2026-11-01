@@ -908,14 +908,9 @@
           "lon": -119.703
         },
         {
-          "name": "Chief's Peak",
+          "name": "Ojai (Chief's Peak)",
           "lat": 34.5023,
           "lon": -119.169
-        },
-        {
-          "name": "La Cumbre Peak",
-          "lat": 34.4944,
-          "lon": -119.7125
         },
         {
           "name": "Montecito crest",
@@ -925,7 +920,8 @@
         {
           "name": "Peak 4864",
           "lat": 34.4797,
-          "lon": -119.4319
+          "lon": -119.4319,
+          "label": "below"
         }
       ],
       "launches": [
@@ -954,7 +950,7 @@
           ]
         },
         {
-          "name": "Chief's Peak",
+          "name": "Ojai (Chief's Peak)",
           "lat": 34.5023,
           "lon": -119.169,
           "launch_ft": 4800,
@@ -1007,7 +1003,7 @@
         9,
         10
       ],
-      "note": "Experimental trip area. Big-air site: the main launches are Walt's Point (Sierra side) and Gunter, Paiute and Flynn's (White Mountains side). We look for high days (10,000 ft+) with almost no wind; any real wind sinks it. Advanced pilots only.",
+      "note": "Experimental trip area. Big-air site: the main launches are Walt's Point (Sierra side) and Paiute and Flynn's (White Mountains side). We look for high days (10,000 ft+) with almost no wind; any real wind sinks it. Advanced pilots only.",
       "launches": [
         {
           "name": "Walt's Point",
@@ -1018,17 +1014,6 @@
           "dir": [
             20,
             160
-          ]
-        },
-        {
-          "name": "Gunter",
-          "lat": 37.4682,
-          "lon": -118.2631,
-          "launch_ft": 7900,
-          "lz_ft": 4100,
-          "dir": [
-            200,
-            340
           ]
         },
         {
@@ -1061,11 +1046,6 @@
           "lon": -118.1149
         },
         {
-          "name": "Gunter",
-          "lat": 37.4682,
-          "lon": -118.2631
-        },
-        {
           "name": "Paiute",
           "lat": 37.5215,
           "lon": -118.295
@@ -1084,6 +1064,11 @@
           "name": "Mazourka (Inyos)",
           "lat": 36.9767,
           "lon": -118.1228
+        },
+        {
+          "name": "Mt Whitney",
+          "lat": 36.5785,
+          "lon": -118.2923
         }
       ],
       "calm": {
