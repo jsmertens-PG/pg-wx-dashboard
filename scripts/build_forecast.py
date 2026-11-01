@@ -832,6 +832,7 @@ def score_hour(site, hr, i, levels, elev_m):
     # launch wind
     lo, hi = site["wind_mph"]
     on = good_launch = None
+    launch_pts = None
     if lw_mph is not None and ld is not None:
         on = dir_ok(site, ld)
         off_h = angdiff(ld, site_face(site)) if site_face(site) is not None and lw_mph > 4 else None
@@ -870,6 +871,8 @@ def score_hour(site, hr, i, levels, elev_m):
             if launch in (None, "good", "light"):
                 launch = "gusty"
         if gcat:
+            # a gusty but otherwise fine hour still mostly counts on the launch-wind bar (0.8); too windy = 0
+            launch_pts = 0.8 if (good_launch and gcat == 1) else 0.0
             good_launch = False
     # wind aloft: strength and direction
     if a_max is not None and a_max > site["aloft_max_kt"]:
@@ -939,6 +942,7 @@ def score_hour(site, hr, i, levels, elev_m):
            "base": round(base * FT) if base is not None else None,
            "prof": [[round(z * FT), round(t, 1)] for z, t, *_ in pts[:9]]}
     return {"q": q, "xc_s": xc_s, "xc_block": xc_block, "dbg": dbg, "glass": glass, "cold": cold_aloft, "good_launch": bool(good_launch), "launch": launch,
+            "launch_pts": launch_pts if launch_pts is not None else (1.0 if good_launch else 0.0),
             "usable": usable, "usable_show": usable_show, "peak_top": peak_top, "base": base, "agl": agl, "wstar": wstar, "climb": max(0.0, wstar - SINK + 0.3),
             "gcat": gcat,
             "into": bool(on and lw_mph is not None and lw_mph >= max(3.0, lo)),   # blowing into the launch, not just light
@@ -1200,7 +1204,8 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "start": hours[k][0], "top": peak_show if peak_show is not None else med("usable_show", xblk), "base": med("base"), "wstar": med("wstar", xblk),
         "climb": med("climb", xblk), "lw": med("lw"), "ld": med("ld"),
         # the launch-wind bar: share of the whole window with a good launch (gusts, direction and speed in range)
-        "launch_q": (sum(1 for _, s in win if s["good_launch"]) / len(win)) if win else sum(1 for s in blk if s["good_launch"]) / len(blk),
+        "launch_q": (sum(s.get("launch_pts", 1.0 if s["good_launch"] else 0.0) for _, s in win) / len(win)) if win
+        else sum(s.get("launch_pts", 1.0 if s["good_launch"] else 0.0) for s in blk) / len(blk),
         "into": sum(1 for s in blk if s.get("into")) / len(blk),
         "gust12": sum(1 for s in blk if s.get("gcat", 0) >= 1) / len(blk),
         "top_wind": (lambda v: sorted(v)[len(v) // 2] if v else None)([s["tw"][1] * 1.15078 for s in blk if s.get("tw")]),
