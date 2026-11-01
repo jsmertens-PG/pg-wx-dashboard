@@ -838,6 +838,8 @@ def score_hour(site, hr, i, levels, elev_m):
         off_h = angdiff(ld, site_face(site)) if site_face(site) is not None and lw_mph > 4 else None
         good_launch = ((on and lo <= lw_mph <= hi and (off_h is None or off_h <= 20))
                        or (lw_mph <= 5 and site["kind"] != "ridge"))
+        # the launch-wind bar's share for this hour: 1 = good, 0.6 = 20-45 deg off the face, else 0
+        launch_pts = 1.0 if good_launch else 0.6 if (on and lo <= lw_mph <= hi and off_h is not None and off_h <= 45) else 0.0
         launch = "good"
         cross = next((c for c in site.get("cross", []) if wrap_in(ld, c[0], c[1])), None) if not on else None
         if cross and lw_mph >= CROSS_FREE_MPH:
@@ -872,7 +874,7 @@ def score_hour(site, hr, i, levels, elev_m):
                 launch = "gusty"
         if gcat:
             # a gusty but otherwise fine hour still mostly counts on the launch-wind bar (0.8); too windy = 0
-            launch_pts = 0.8 if (good_launch and gcat == 1) else 0.0
+            launch_pts = 0.8 * (launch_pts or 0.0) if gcat == 1 else 0.0
             good_launch = False
     # wind aloft: strength and direction
     if a_max is not None and a_max > site["aloft_max_kt"]:
