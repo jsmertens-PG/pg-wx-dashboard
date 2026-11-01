@@ -618,12 +618,12 @@ details.day[data-date] { border-left: 1px solid rgba(15,25,40,.18) !important; }
     <span class="chip"><i style="background:var(--q5)"></i>5 Hammerday</span>
   </div>
       <p><b>Optimistic by design.</b> The score shows how good a day <i>can</i> be from the numbers. The judgement calls stay with you.</p>
-      <p><b>The score.</b> Each site starts from the <b>height of lift</b> and the <b>thermal strength</b> in its window, on its own height scale (Little Black: 1,800 ft a good local day, 2,300 ft XC, 3,500 ft great). Height is the top of usable lift, like XC Skies, averaged over the four best readings at the launch and points around it. Then the same deductions apply everywhere:</p>
+      <p><b>The score.</b> Each site starts from the <b>height of lift</b> and the <b>thermal strength</b> in its window, on its own height scale (Little Black: 1,800 ft a good local day, 2,300 ft XC, 3,500 ft great). Height is the top of usable lift, like XC Skies, averaged over the four best readings at the launch and points around it. Thermal strength is W*, as on RASP and XC Skies, from the model's own surface heating where it has it; the card shows it as the <b>predicted climb</b>: W* minus a paraglider's sink of 1.1 m/s. Then the same deductions apply everywhere:</p>
       <table class="rules">
         <tr><th>Rain</th><td>30% of runs wet −0.5 · 45% −1 · 60% −1.5 · NWS showers −0.5 more · raining through the window: no-go</td></tr>
         <tr><th>Mid/high cloud</th><td>5/8 −0.25 · 6/8 −0.75 · 7/8 −1.25 · 8/8 −1.75 (thin cirrus half)</td></tr>
         <tr><th>Gusts on launch</th><td>over 12 mph −0.5 · over 18 mph too windy</td></tr>
-        <tr><th>Launch direction</th><td>within 20°: fine · 20–45° off −0.5 · more than 45° off: 2 at most</td></tr>
+        <tr><th>Launch direction</th><td>6 mph or less: any direction is fine (the thermals beat it) · within 20°: fine · 20–45° off −0.5 · more than 45° off: 2 at most</td></tr>
         <tr><th>Wind at top of lift</th><td>over 20 mph −0.5 · over 30 mph −1</td></tr>
         <tr><th>Hammerday (5)</th><td>the site's great height, wind into launch and no deductions; otherwise 4 at most</td></tr>
       </table>
@@ -963,10 +963,11 @@ function detail(d, s, inline) {
       <span class="fv">${esc(v)}</span>
       ${sub ? `<span class="fs">${esc(sub)}</span>` : ""}
     </div>`;
-  const strength = c.wstar != null && c.style !== "ridge"
-    ? barRow("Thermals", Math.max(0, Math.min(1, (c.wstar - 0.5) / 2.0)), `${Number(c.wstar).toFixed(1)} m/s`,
-             "W* in the window") + barRow("Glider climb", Math.max(0, Math.min(1, (c.wstar - 1.3) / 1.5)),
-             `${Math.max(0, c.wstar - 1.3).toFixed(1)} m/s`, "thermal strength minus a glider's sink (1.3 m/s)") : "";
+  /* one bar: the average climb a paraglider can expect in the window, W* (RASP's mid-BL updraft) minus its sink */
+  const sink = c.sink || 1.1, climb = c.wstar != null ? Math.max(0, c.wstar - sink) : null;
+  const strength = climb != null && c.style !== "ridge"
+    ? barRow("Predicted climb", Math.max(0, Math.min(1, climb / 2.0)), `${climb.toFixed(1)} m/s`,
+             `thermals ${Number(c.wstar).toFixed(1)} m/s (W*) − glider sink ${sink.toFixed(1)} · cores and cloud days climb better`) : "";
   const rows = fac.filter((f) => !isFlag(f)).map((f) => barRow(f.k === "Wind 1 pm" ? "Launch wind" : f.k, f.q, f.v, f.sub, f.qs)).join("").replace(/(<\/div>)/, `$1${strength}`)
     + (c.rain_p != null ? barRow("Dry", 1 - c.rain_p, `${Math.round(c.rain_p * 100)}% rain`, "") : "")
     + (c.cloud ? barRow("Sun", 1 - (c.cloud.sun_loss || 0), `−${Math.round((c.cloud.sun_loss || 0) * 100)}%`, `mid/high cloud ${c.cloud.okta}/8`) : "");

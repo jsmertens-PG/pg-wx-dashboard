@@ -256,7 +256,9 @@ def _fetch_model(kind, name, ids, sites, log):
         base, hourly = "https://ensemble-api.open-meteo.com/v1/ensemble", ENS_VARS + level_vars(ENS_LEVELS, heights=False)
     t0 = time.time()
     for mid in ids:
-        for hv in (hourly, [v for v in hourly if v != "boundary_layer_height"]):
+        variants = ([hourly + ["sensible_heat_flux"]] if kind == "det" else []) + [
+            hourly, [v for v in hourly if v != "boundary_layer_height"]]
+        for hv in variants:
             try:
                 if kind == "det":
                     # a model run that is still loading can come back with empty surface fields:
@@ -280,7 +282,8 @@ def _fetch_model(kind, name, ids, sites, log):
                             raise TimeoutError("ensemble took longer than 4 minutes")
                         d = http_json(om_url(base, [site], mid, hv), tries=2, timeout=60)
                         data.append(d[0] if isinstance(d, list) else d)
-                log.append(f"{name}: ok ({mid})")
+                shf_n = sum(x is not None for d in data if d for x in (d.get("hourly") or {}).get("sensible_heat_flux") or [])
+                log.append(f"{name}: ok ({mid})" + (f", surface heat flux ({shf_n} values)" if kind == "det" else ""))
                 info = {"name": name, "kind": "model" if kind == "det" else "ensemble",
                         "provider": "Open-Meteo", "id": mid, "status": "ok",
                         "run": model_run_time(kind, mid), "fetched": now_iso(),
@@ -704,7 +707,11 @@ REASON_TEXT = {
     "lid": "low lid", "weak": "weak thermals", "cross": "cross wind", "gusty": "gusty",
 }
 GUST_WARN_MPH, GUST_NOGO_MPH = 12, 18          # thermal sites: gusty from 12 mph, too windy from 18 mph
-SINK = 1.3   # paraglider sink rate in a thermal turn, m/s (about 1.2-1.4)
+SINK = 1.1   # paraglider sink rate in a thermal turn, m/s (about 1.0-1.2)
+LIGHT_MPH = 6   # at the thermal sites a launch wind this light does not count, whatever its direction:
+                # the thermal cycles are stronger than it
+SHF_FRAC = 0.40   # without the model's own surface heat flux: share of the sunshine that heats the air
+                  # (dry inland SoCal terrain; 0.30 at the coast)
 
 
 def sunset_hour(day, lat, lon, utc_offset_h):
@@ -772,8 +779,13 @@ def score_hour(site, hr, i, levels, elev_m):
     blh = _at(hr, "boundary_layer_height", i)
     if blh is not None and blh > 0:
         zi = min(zi, blh)
-    # thermal strength W* (Deardorff) from surface heating; ~30% of sunshine becomes sensible heat
-    kin = 0.30 * sw / 1200.0
+    # thermal strength W* (Deardorff, as RASP/XC Skies): from the model's own sensible heat flux when it has
+    # one (sign conventions differ, so its size is used while the sun is up, kept within 10-60% of the
+    # sunshine), else a share of the sunshine
+    shf = _at(hr, "sensible_heat_flux", i)
+    frac = SHF_FRAC if site["kind"] != "ridge" else 0.30
+    heat = clamp(abs(shf), 0.10 * sw, 0.60 * sw) if (shf is not None and sw > 50) else frac * sw
+    kin = heat / 1200.0
     wstar = (9.81 / (t2 + 273.15) * kin * zi) ** (1 / 3) if zi > 0 and kin > 0 else 0.0
     # a paraglider can only use the part of the mixed layer where thermals beat its sink rate
     # (the idea behind RASP's Hcrit): weak days use about half of it, strong days most of it
@@ -835,20 +847,21 @@ def score_hour(site, hr, i, levels, elev_m):
     launch_pts = None
     if lw_mph is not None and ld is not None:
         on = dir_ok(site, ld)
-        off_h = angdiff(ld, site_face(site)) if site_face(site) is not None and lw_mph > 4 else None
+        light = site["kind"] != "ridge" and lw_mph <= LIGHT_MPH        # too light to matter at a thermal site
+        off_h = angdiff(ld, site_face(site)) if site_face(site) is not None and not light and lw_mph > 4 else None
         good_launch = ((on and lo <= lw_mph <= hi and (off_h is None or off_h <= 20))
-                       or (lw_mph <= 5 and site["kind"] != "ridge"))
+                       or light)
         # the launch-wind bar's share for this hour: 1 = good, 0.6 = 20-45 deg off the face, else 0
         launch_pts = 1.0 if good_launch else 0.6 if (on and lo <= lw_mph <= hi and off_h is not None and off_h <= 45) else 0.0
         launch = "good"
-        cross = next((c for c in site.get("cross", []) if wrap_in(ld, c[0], c[1])), None) if not on else None
+        cross = next((c for c in site.get("cross", []) if wrap_in(ld, c[0], c[1])), None) if not on and not light else None
         if cross and lw_mph >= CROSS_FREE_MPH:
             # a cross wind costs more the stronger it is: nothing up to ~3 mph, half the hour from 6 mph;
             # at the thermal sites the day rule on degrees off the launch takes care of it instead
             if site.get("style") not in ("thermal", "window"):
                 q *= 1 - 0.5 * clamp((lw_mph - CROSS_FREE_MPH) / (CROSS_FULL_MPH - CROSS_FREE_MPH))
             codes.append("cross"); launch = cross[2]
-        elif not on and lw_mph > site.get("otb_mph", 5):
+        elif not on and lw_mph > site.get("otb_mph", 5) and not light:
             q = 0.0; codes.append("otb"); launch = "over the back"
         elif site["kind"] == "ridge" and (lw_mph > hi or (lg_mph is not None and lg_mph > site.get("gust_mph", 25))):
             # Torrey: over 20 mph, or gusts over 25, is simply too windy
@@ -945,11 +958,11 @@ def score_hour(site, hr, i, levels, elev_m):
            "prof": [[round(z * FT), round(t, 1)] for z, t, *_ in pts[:9]]}
     return {"q": q, "xc_s": xc_s, "xc_block": xc_block, "dbg": dbg, "glass": glass, "cold": cold_aloft, "good_launch": bool(good_launch), "launch": launch,
             "launch_pts": launch_pts if launch_pts is not None else (1.0 if good_launch else 0.0),
-            "usable": usable, "usable_show": usable_show, "peak_top": peak_top, "base": base, "agl": agl, "wstar": wstar, "climb": max(0.0, wstar - SINK + 0.3),
+            "usable": usable, "usable_show": usable_show, "peak_top": peak_top, "base": base, "agl": agl, "wstar": wstar, "climb": max(0.0, wstar - SINK),
             "gcat": gcat,
             "into": bool(on and lw_mph is not None and lw_mph >= max(3.0, lo)),   # blowing into the launch, not just light
             "off": (angdiff(ld, site_face(site)) if site_face(site) is not None and ld is not None
-                    and lw_mph is not None and lw_mph > 4 else None),
+                    and lw_mph is not None and lw_mph > (LIGHT_MPH if site["kind"] != "ridge" else 4) else None),
             "lw": lw_mph, "ld": ld, "lg": lg_mph, "a_max": a_max, "tw": (tw_dir, tw_spd) if tw_spd is not None else None, "a_spd": a_spd, "a_dir": a_dir,
             "pr": pr, "cape": cape, "codes": codes + (["venturi"] if venturi else []), "pts": pts_h}
 
@@ -2000,6 +2013,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                 "n_members": len(cell["ens"]), "lead": lead_name,
                 "top_ft": round(top * FT, -2) if top else None, "base_ft": round(base * FT, -2) if base else None,
                 "wstar": round(wstar, 1) if wstar is not None else None,
+                "sink": SINK,
                 "sunset": fmt_clock(lead["sunset"]) if lead else None,
                 "factors": factors,
                 "alt_source": src,
