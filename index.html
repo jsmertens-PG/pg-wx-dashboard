@@ -975,7 +975,7 @@ function detail(d, s, inline) {
       const v = hrs[String(h)];
       return `<span class="hc" title="${h > 12 ? h - 12 : h} ${h >= 12 ? "pm" : "am"}${v != null ? ` · ${v}` : ""}" style="background:${v != null ? qgrad(v) : "var(--sunk)"}"></span>`;
     }).join("")}${[[win, "wbr", "flying window: the 3 hours with the best height of lift, then thermal strength"], [c.gwin || [], "wbr glass", "glass-off: still working in the last 3 hours before sunset"]].map(([w, cl, tt]) => w.length === 2 && w[1] - w[0] < 7 ? `<span class="${cl}" title="${tt}" style="grid-column:${Math.max(1, w[0] - 8)} / ${Math.min(11, w[1] - 7)}"><svg viewBox="0 0 100 10" preserveAspectRatio="none"><path vector-effect="non-scaling-stroke" d="M1 1 Q1 5 8 5 L44 5 Q50 5 50 9.5 Q50 5 56 5 L92 5 Q99 5 99 1"/></svg></span>` : "").join("")}${Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => `<span class="hl">${h === 9 ? "9 am" : h === 18 ? "6 pm" : h > 12 ? h - 12 : h}</span>`).join("")}</div>` : "";
-  const barRow = (k, x, v, sub, xs) => `<div class="factor">
+  const barRow = (k, x, v, sub0, xs, sub = String(sub0 || "").replace(/\s*·?\s*best 4 readings over \d+ points/, "").replace(/^\s*·\s*/, "")) => `<div class="factor">
       <span class="fk">${esc(k)}</span>
       <span class="fbar">${(xs || [x]).map((q) => `<i style="width:${Math.max(3, Math.round(q * 100))}%;background:${barCol(q)}${xs && xs.length > 1 ? ";opacity:.55" : ""}"></i>`).join("")}</span>
       <span class="fv">${esc(v)}</span>

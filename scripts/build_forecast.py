@@ -2007,8 +2007,6 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                     row["sub"] = "global models"
                     factors.insert(0, row)              # the thermal-height row was already taken out above
                 src = "models"
-            if s.get("height_points") and factors and factors[0]["k"] == "Height":
-                factors[0]["sub"] = (factors[0].get("sub") or "") + f" · best 4 readings over {len(s['height_points'])} points"
             if ridge:                                   # Torrey: wind and direction tell it; no height bar
                 factors = [f for f in factors if f["k"] not in ("Height", "Thermal height")]
             lead_view = dict(lead, label=label, top=top if top is not None else lead.get("top"), shower_p=shower_p) if lead else None
