@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-01T04:42+00:00",
+ "generated": "2026-11-01T04:54+00:00",
  "sample": false,
  "calib": {
   "2026-10-31": {
@@ -28653,6 +28653,7 @@
  },
  "log": [
   "HRRR: ok (ncep_hrrr_conus), surface heat flux (7866 values)",
+  "RRFS: ncep_rrfs_conus surface fields empty, retrying",
   "RRFS: ok (ncep_rrfs_conus), surface heat flux (9918 values)",
   "NAM: ok (ncep_nam_conus), surface heat flux (8550 values)",
   "GFS: ok (gfs_global), surface heat flux (15048 values)",
@@ -28676,7 +28677,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-11-01T02:00+00:00",
-   "fetched": "2026-11-01T04:34+00:00",
+   "fetched": "2026-11-01T04:43+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -28686,7 +28687,7 @@
    "id": "ncep_rrfs_conus",
    "status": "ok",
    "run": "2026-11-01T00:00+00:00",
-   "fetched": "2026-11-01T04:34+00:00",
+   "fetched": "2026-11-01T04:44+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -28696,7 +28697,7 @@
    "id": "ncep_nam_conus",
    "status": "ok",
    "run": "2026-11-01T00:00+00:00",
-   "fetched": "2026-11-01T04:34+00:00",
+   "fetched": "2026-11-01T04:44+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -28706,7 +28707,7 @@
    "id": "gfs_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-01T04:34+00:00",
+   "fetched": "2026-11-01T04:44+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -28715,8 +28716,8 @@
    "provider": "Open-Meteo",
    "id": "ecmwf_ifs025",
    "status": "ok",
-   "run": null,
-   "fetched": "2026-11-01T04:36+00:00",
+   "run": "2026-10-31T18:00+00:00",
+   "fetched": "2026-11-01T04:44+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -28726,7 +28727,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-01T04:36+00:00",
+   "fetched": "2026-11-01T04:46+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -28736,7 +28737,7 @@
    "id": "gfs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-01T04:37+00:00",
+   "fetched": "2026-11-01T04:47+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -28746,7 +28747,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-01T04:40+00:00",
+   "fetched": "2026-11-01T04:51+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -28756,7 +28757,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-01T04:42+00:00",
+   "fetched": "2026-11-01T04:54+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -28766,7 +28767,7 @@
    "id": "esierra",
    "status": "ok",
    "run": "2026-10-31T12:00+00:00",
-   "fetched": "2026-11-01T04:42+00:00",
+   "fetched": "2026-11-01T04:54+00:00",
    "url": "https://www.soaringpredictor.info/E-Sierra/E-SierraPredictor.htm"
   },
   {
@@ -28776,7 +28777,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-10-31T23:49:00+00:00",
-   "fetched": "2026-11-01T04:42+00:00",
+   "fetched": "2026-11-01T04:54+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   },
   {
@@ -28786,7 +28787,7 @@
    "id": "cloud_cover_mid/high",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-01T04:42+00:00",
+   "fetched": "2026-11-01T04:54+00:00",
    "url": "https://open-meteo.com/en/docs"
   }
  ],
@@ -28954,9 +28955,7 @@
     "torrey": {
      "rating": 1.98,
      "label": "Marginal",
-     "tags": [
-      "rain 32%"
-     ],
+     "tags": [],
      "xc": false,
      "rain_p": 0.32,
      "base": 1.98,
@@ -29064,9 +29063,7 @@
      "rating": 2.46,
      "label": "Marginal",
      "tags": [
-      "rain 28%",
-      "glass-off",
-      "little sun (\u221221%)"
+      "glass-off"
      ],
      "xc": false,
      "rain_p": 0.28,
@@ -29120,7 +29117,7 @@
         0.77,
         0.82
        ],
-       "sub": "RRFS 2,400 \u00b7 HRRR 2,600 \u00b7 best 4 readings over 5 points"
+       "sub": "RRFS 2,400 \u00b7 HRRR 2,600"
       },
       {
        "k": "Wind 1 pm",
@@ -29186,9 +29183,7 @@
      "rating": 2.29,
      "label": "Marginal",
      "tags": [
-      "rain 25%",
-      "glass-off",
-      "little sun (\u221215%)"
+      "glass-off"
      ],
      "xc": false,
      "rain_p": 0.25,
@@ -29246,7 +29241,7 @@
         0.58,
         0.68
        ],
-       "sub": "RRFS 2,800 \u00b7 HRRR 3,200 \u00b7 best 4 readings over 4 points"
+       "sub": "RRFS 2,800 \u00b7 HRRR 3,200"
       },
       {
        "k": "Wind 1 pm",
@@ -29312,8 +29307,7 @@
      "rating": 1.23,
      "label": "No go",
      "tags": [
-      "rain 20%",
-      "little sun (\u221223%)"
+      "late switch"
      ],
      "xc": false,
      "rain_p": 0.2,
@@ -29364,7 +29358,7 @@
         0.58,
         0.45
        ],
-       "sub": "RRFS 4,600 \u00b7 HRRR 4,100 \u00b7 best 4 readings over 7 points"
+       "sub": "RRFS 4,600 \u00b7 HRRR 4,100"
       },
       {
        "k": "Wind 1 pm",
@@ -29433,9 +29427,7 @@
     "soboba": {
      "rating": 2.09,
      "label": "Marginal",
-     "tags": [
-      "little sun (\u221214%)"
-     ],
+     "tags": [],
      "xc": false,
      "rain_p": 0.1,
      "base": 2.97,
@@ -29485,7 +29477,7 @@
         0.52,
         0.5
        ],
-       "sub": "RRFS 3,200 \u00b7 HRRR 3,100 \u00b7 best 4 readings over 5 points"
+       "sub": "RRFS 3,200 \u00b7 HRRR 3,100"
       },
       {
        "k": "Wind 1 pm",
@@ -29554,10 +29546,7 @@
     "otay": {
      "rating": 1.43,
      "label": "No go",
-     "tags": [
-      "rain 42%",
-      "little sun (\u221221%)"
-     ],
+     "tags": [],
      "xc": false,
      "rain_p": 0.42,
      "base": 3.68,
@@ -29614,7 +29603,7 @@
         0.61,
         0.7
        ],
-       "sub": "RRFS 2,600 \u00b7 HRRR 2,900 \u00b7 best 4 readings over 5 points"
+       "sub": "RRFS 2,600 \u00b7 HRRR 2,900"
       },
       {
        "k": "Wind 1 pm",
@@ -29677,13 +29666,9 @@
      "trend": -0.7
     },
     "whalesv": {
-     "rating": 2.07,
-     "label": "Marginal",
-     "tags": [
-      "rain 36%",
-      "glass-off",
-      "little sun (\u221217%)"
-     ],
+     "rating": 1.19,
+     "label": "No go",
+     "tags": [],
      "xc": false,
      "rain_p": 0.36,
      "base": 3.94,
@@ -29721,8 +29706,8 @@
       17
      ],
      "note": "not flyable",
-     "p_fly": 0.32,
-     "p_xc": 0.08,
+     "p_fly": 0.09,
+     "p_xc": 0.0,
      "agree": "agree",
      "models": {
       "HRRR": 4.1,
@@ -29744,7 +29729,7 @@
         0.75,
         0.78
        ],
-       "sub": "RRFS 3,000 \u00b7 HRRR 3,100 \u00b7 best 4 readings over 5 points"
+       "sub": "RRFS 3,000 \u00b7 HRRR 3,100"
       },
       {
        "k": "Wind 1 pm",
@@ -29804,15 +29789,12 @@
       }
      },
      "was": 4.0,
-     "trend": -1.9
+     "trend": -2.8
     },
     "lagunahorse": {
      "rating": 1.0,
      "label": "No go",
-     "tags": [
-      "rain 25%",
-      "little sun (\u22129%)"
-     ],
+     "tags": [],
      "xc": false,
      "rain_p": 0.25,
      "base": 1.38,
@@ -29862,7 +29844,7 @@
         0.0,
         0.4
        ],
-       "sub": "RRFS 4,300 \u00b7 HRRR 5,500 \u00b7 best 4 readings over 6 points"
+       "sub": "RRFS 4,300 \u00b7 HRRR 5,500"
       },
       {
        "k": "Wind 1 pm",
@@ -29936,10 +29918,7 @@
     "marshall": {
      "rating": 1.0,
      "label": "No go",
-     "tags": [
-      "rain 14%",
-      "little sun (\u221223%)"
-     ],
+     "tags": [],
      "xc": false,
      "rain_p": 0.14,
      "base": 2.19,
@@ -29989,12 +29968,12 @@
         0.59,
         0.0
        ],
-       "sub": "RRFS 4,600 \u00b7 HRRR 4,000 \u00b7 best 4 readings over 5 points"
+       "sub": "RRFS 4,600 \u00b7 HRRR 4,000"
       },
       {
        "k": "Wind 1 pm",
        "v": "SSE 7g13",
-       "sub": "later SE 5g14 \u00b7 over the back",
+       "sub": "later SE 5g14",
        "q": 0.0
       },
       {
@@ -30066,10 +30045,7 @@
     "santabarbara": {
      "rating": 1.0,
      "label": "No go",
-     "tags": [
-      "rain 85%",
-      "little sun (\u221262%)"
-     ],
+     "tags": [],
      "xc": false,
      "rain_p": 0.85,
      "base": 2.01,
@@ -30123,7 +30099,7 @@
         0.14,
         0.22
        ],
-       "sub": "RRFS 3,300 \u00b7 HRRR 3,500 \u00b7 best 4 readings over 3 points"
+       "sub": "RRFS 3,300 \u00b7 HRRR 3,500"
       },
       {
        "k": "Wind 1 pm",
@@ -30200,11 +30176,7 @@
     "owens": {
      "rating": 1.0,
      "label": "No go",
-     "tags": [
-      "rain 43%",
-      "little sun (\u221214%)",
-      "Soaring Predictor max 9,657 ft"
-     ],
+     "tags": [],
      "xc": false,
      "rain_p": 0.43,
      "base": 1.0,
@@ -30390,11 +30362,9 @@
     "torrey": {
      "rating": 1.46,
      "label": "No go",
-     "tags": [
-      "rain 87%"
-     ],
+     "tags": [],
      "xc": false,
-     "rain_p": 0.87,
+     "rain_p": 0.97,
      "base": 2.96,
      "adj": [
       [
@@ -30442,7 +30412,7 @@
       },
       {
        "k": "Rain & storms",
-       "v": "87% of runs",
+       "v": "97% of runs",
        "sub": "",
        "q": 0.0
       },
@@ -30489,13 +30459,17 @@
      },
      "cloud": {
       "okta": 1,
-      "cover": 0.11,
-      "sun_loss": 0.36,
+      "cover": 0.13,
+      "sun_loss": 0.32,
       "agree": 0.0,
       "models": {
        "HRRR": [
+        0.14,
+        0.32
+       ],
+       "RRFS": [
         0.11,
-        0.36
+        0.33
        ]
       }
      },
@@ -30505,11 +30479,9 @@
     "lb": {
      "rating": 1.0,
      "label": "No go",
-     "tags": [
-      "rain 87%"
-     ],
+     "tags": [],
      "xc": false,
-     "rain_p": 0.87,
+     "rain_p": 0.97,
      "base": 1.75,
      "adj": [
       [
@@ -30557,7 +30529,7 @@
         0.58,
         0.54
        ],
-       "sub": "RRFS 2,000 \u00b7 HRRR 1,900 \u00b7 best 4 readings over 5 points"
+       "sub": "RRFS 2,000 \u00b7 HRRR 1,900"
       },
       {
        "k": "Wind 1 pm",
@@ -30573,7 +30545,7 @@
       },
       {
        "k": "Rain & storms",
-       "v": "87% of runs",
+       "v": "97% of runs",
        "sub": "",
        "q": 0.0
       },
@@ -30618,13 +30590,17 @@
      },
      "cloud": {
       "okta": 1,
-      "cover": 0.09,
-      "sun_loss": 0.48,
+      "cover": 0.15,
+      "sun_loss": 0.4,
       "agree": 0.0,
       "models": {
        "HRRR": [
-        0.09,
-        0.48
+        0.16,
+        0.42
+       ],
+       "RRFS": [
+        0.13,
+        0.36
        ]
       }
      },
@@ -30634,11 +30610,9 @@
     "blossom": {
      "rating": 1.0,
      "label": "No go",
-     "tags": [
-      "rain 89%"
-     ],
+     "tags": [],
      "xc": false,
-     "rain_p": 0.89,
+     "rain_p": 0.97,
      "base": 1.26,
      "adj": [
       [
@@ -30686,7 +30660,7 @@
         0.44,
         0.46
        ],
-       "sub": "RRFS 2,400 \u00b7 HRRR 2,400 \u00b7 best 4 readings over 4 points"
+       "sub": "RRFS 2,400 \u00b7 HRRR 2,400"
       },
       {
        "k": "Wind 1 pm",
@@ -30702,7 +30676,7 @@
       },
       {
        "k": "Rain & storms",
-       "v": "89% of runs",
+       "v": "97% of runs",
        "sub": "",
        "q": 0.0
       },
@@ -30746,14 +30720,18 @@
       }
      },
      "cloud": {
-      "okta": 0,
-      "cover": 0.03,
-      "sun_loss": 0.68,
+      "okta": 2,
+      "cover": 0.2,
+      "sun_loss": 0.61,
       "agree": 0.0,
       "models": {
        "HRRR": [
-        0.03,
-        0.68
+        0.2,
+        0.61
+       ],
+       "RRFS": [
+        0.19,
+        0.61
        ]
       }
      },
@@ -30764,11 +30742,10 @@
      "rating": 1.0,
      "label": "No go",
      "tags": [
-      "rain 80%",
       "no launch window"
      ],
      "xc": false,
-     "rain_p": 0.8,
+     "rain_p": 0.9,
      "base": 1.1,
      "adj": [
       [
@@ -30816,7 +30793,7 @@
         0.17,
         0.52
        ],
-       "sub": "RRFS 3,200 \u00b7 HRRR 4,400 \u00b7 best 4 readings over 7 points"
+       "sub": "RRFS 3,200 \u00b7 HRRR 4,400"
       },
       {
        "k": "Wind 1 pm",
@@ -30832,7 +30809,7 @@
       },
       {
        "k": "Rain & storms",
-       "v": "80% of runs",
+       "v": "90% of runs",
        "sub": "",
        "q": 0.0
       },
@@ -30876,14 +30853,18 @@
       }
      },
      "cloud": {
-      "okta": 1,
-      "cover": 0.09,
-      "sun_loss": 0.37,
+      "okta": 0,
+      "cover": 0.05,
+      "sun_loss": 0.44,
       "agree": 0.0,
       "models": {
        "HRRR": [
-        0.09,
-        0.37
+        0.0,
+        0.43
+       ],
+       "RRFS": [
+        0.14,
+        0.48
        ]
       }
      },
@@ -30893,11 +30874,9 @@
     "soboba": {
      "rating": 1.0,
      "label": "No go",
-     "tags": [
-      "rain 87%"
-     ],
+     "tags": [],
      "xc": false,
-     "rain_p": 0.87,
+     "rain_p": 0.93,
      "base": 2.04,
      "adj": [
       [
@@ -30945,7 +30924,7 @@
         0.1,
         0.52
        ],
-       "sub": "RRFS 2,400 \u00b7 HRRR 3,200 \u00b7 best 4 readings over 5 points"
+       "sub": "RRFS 2,400 \u00b7 HRRR 3,200"
       },
       {
        "k": "Wind 1 pm",
@@ -30961,7 +30940,7 @@
       },
       {
        "k": "Rain & storms",
-       "v": "87% of runs",
+       "v": "93% of runs",
        "sub": "",
        "q": 0.0
       },
@@ -31006,13 +30985,17 @@
      },
      "cloud": {
       "okta": 1,
-      "cover": 0.12,
-      "sun_loss": 0.61,
+      "cover": 0.09,
+      "sun_loss": 0.67,
       "agree": 0.0,
       "models": {
        "HRRR": [
-        0.12,
-        0.61
+        0.02,
+        0.63
+       ],
+       "RRFS": [
+        0.22,
+        0.73
        ]
       }
      },
@@ -31022,11 +31005,9 @@
     "otay": {
      "rating": 1.0,
      "label": "No go",
-     "tags": [
-      "rain 86%"
-     ],
+     "tags": [],
      "xc": false,
-     "rain_p": 0.86,
+     "rain_p": 0.96,
      "base": 1.05,
      "adj": [],
      "hours": {
@@ -31069,7 +31050,7 @@
         0.2,
         0.19
        ],
-       "sub": "RRFS 1,800 \u00b7 HRRR 1,800 \u00b7 best 4 readings over 5 points"
+       "sub": "RRFS 1,800 \u00b7 HRRR 1,800"
       },
       {
        "k": "Wind 1 pm",
@@ -31085,7 +31066,7 @@
       },
       {
        "k": "Rain & storms",
-       "v": "86% of runs",
+       "v": "96% of runs",
        "sub": "",
        "q": 0.0
       },
@@ -31130,13 +31111,17 @@
      },
      "cloud": {
       "okta": 1,
-      "cover": 0.12,
-      "sun_loss": 0.63,
+      "cover": 0.18,
+      "sun_loss": 0.58,
       "agree": 0.0,
       "models": {
        "HRRR": [
-        0.12,
-        0.63
+        0.19,
+        0.58
+       ],
+       "RRFS": [
+        0.18,
+        0.57
        ]
       }
      },
@@ -31146,11 +31131,9 @@
     "whalesv": {
      "rating": 1.0,
      "label": "No go",
-     "tags": [
-      "rain 86%"
-     ],
+     "tags": [],
      "xc": false,
-     "rain_p": 0.86,
+     "rain_p": 0.96,
      "base": 1.0,
      "adj": [],
      "hours": {
@@ -31193,7 +31176,7 @@
         0.51,
         0.13
        ],
-       "sub": "RRFS 2,000 \u00b7 HRRR 1,700 \u00b7 best 4 readings over 5 points"
+       "sub": "RRFS 2,000 \u00b7 HRRR 1,700"
       },
       {
        "k": "Wind 1 pm",
@@ -31209,7 +31192,7 @@
       },
       {
        "k": "Rain & storms",
-       "v": "86% of runs",
+       "v": "96% of runs",
        "sub": "",
        "q": 0.0
       },
@@ -31254,13 +31237,17 @@
      },
      "cloud": {
       "okta": 1,
-      "cover": 0.11,
-      "sun_loss": 0.53,
+      "cover": 0.17,
+      "sun_loss": 0.52,
       "agree": 0.0,
       "models": {
        "HRRR": [
-        0.11,
+        0.16,
         0.53
+       ],
+       "RRFS": [
+        0.18,
+        0.5
        ]
       }
      },
@@ -31270,11 +31257,9 @@
     "lagunahorse": {
      "rating": 1.0,
      "label": "No go",
-     "tags": [
-      "rain 89%"
-     ],
+     "tags": [],
      "xc": false,
-     "rain_p": 0.89,
+     "rain_p": 0.9,
      "base": 1.02,
      "adj": [],
      "hours": {
@@ -31317,7 +31302,7 @@
         0.0,
         0.0
        ],
-       "sub": "RRFS 3,900 \u00b7 HRRR 3,300 \u00b7 best 4 readings over 6 points"
+       "sub": "RRFS 3,900 \u00b7 HRRR 3,300"
       },
       {
        "k": "Wind 1 pm",
@@ -31333,7 +31318,7 @@
       },
       {
        "k": "Rain & storms",
-       "v": "89% of runs",
+       "v": "90% of runs",
        "sub": "",
        "q": 0.0
       },
@@ -31378,14 +31363,18 @@
      },
      "launch_name": "Horse",
      "cloud": {
-      "okta": 1,
-      "cover": 0.13,
-      "sun_loss": 0.64,
+      "okta": 2,
+      "cover": 0.26,
+      "sun_loss": 0.58,
       "agree": 0.0,
       "models": {
        "HRRR": [
-        0.13,
-        0.64
+        0.26,
+        0.57
+       ],
+       "RRFS": [
+        0.25,
+        0.59
        ]
       }
      },
@@ -31395,11 +31384,9 @@
     "marshall": {
      "rating": 1.0,
      "label": "No go",
-     "tags": [
-      "rain 82%"
-     ],
+     "tags": [],
      "xc": false,
-     "rain_p": 0.82,
+     "rain_p": 0.89,
      "base": 1.27,
      "adj": [
       [
@@ -31447,7 +31434,7 @@
         0.0,
         0.53
        ],
-       "sub": "RRFS 3,900 \u00b7 HRRR 4,400 \u00b7 best 4 readings over 5 points"
+       "sub": "RRFS 3,900 \u00b7 HRRR 4,400"
       },
       {
        "k": "Wind 1 pm",
@@ -31463,7 +31450,7 @@
       },
       {
        "k": "Rain & storms",
-       "v": "82% of runs",
+       "v": "89% of runs",
        "sub": "",
        "q": 0.0
       },
@@ -31508,13 +31495,17 @@
      },
      "cloud": {
       "okta": 0,
-      "cover": 0.0,
-      "sun_loss": 0.4,
+      "cover": 0.06,
+      "sun_loss": 0.47,
       "agree": 0.0,
       "models": {
        "HRRR": [
         0.0,
-        0.4
+        0.42
+       ],
+       "RRFS": [
+        0.17,
+        0.57
        ]
       }
      },
@@ -31569,7 +31560,7 @@
         0.43,
         0.56
        ],
-       "sub": "RRFS 3,900 \u00b7 HRRR 4,200 \u00b7 best 4 readings over 3 points"
+       "sub": "RRFS 3,900 \u00b7 HRRR 4,200"
       },
       {
        "k": "Wind 1 pm",
@@ -31631,10 +31622,14 @@
      "cloud": {
       "okta": 0,
       "cover": 0.0,
-      "sun_loss": 0.0,
+      "sun_loss": 0.04,
       "agree": 0.0,
       "models": {
        "HRRR": [
+        0.0,
+        0.05
+       ],
+       "RRFS": [
         0.0,
         0.0
        ]
@@ -31646,13 +31641,9 @@
     "owens": {
      "rating": 1.0,
      "label": "No go",
-     "tags": [
-      "rain 78%",
-      "off season",
-      "Soaring Predictor max 9,650 ft"
-     ],
+     "tags": [],
      "xc": false,
-     "rain_p": 0.78,
+     "rain_p": 0.87,
      "base": 1.0,
      "adj": [],
      "hours": {
@@ -31711,7 +31702,7 @@
       },
       {
        "k": "Rain & storms",
-       "v": "78% of runs",
+       "v": "87% of runs",
        "sub": "",
        "q": 0.0
       },
@@ -31755,14 +31746,18 @@
       }
      },
      "cloud": {
-      "okta": 3,
-      "cover": 0.38,
-      "sun_loss": 0.12,
+      "okta": 2,
+      "cover": 0.3,
+      "sun_loss": 0.06,
       "agree": 0.0,
       "models": {
        "HRRR": [
-        0.38,
-        0.12
+        0.34,
+        0.08
+       ],
+       "RRFS": [
+        0.21,
+        0.02
        ]
       }
      },
@@ -31821,7 +31816,7 @@
    "best_main": "lb",
    "headline": "Poor at home sites: blown out",
    "why": "Too windy",
-   "rain_p": 0.86,
+   "rain_p": 0.95,
    "cloud": {
     "okta": 1,
     "sun_loss": 0.47,
@@ -31944,7 +31939,6 @@
      "rating": 3.14,
      "label": "Thermal",
      "tags": [
-      "north drift",
       "glass-off"
      ],
      "xc": false,
@@ -31999,7 +31993,7 @@
         0.83,
         0.58
        ],
-       "sub": "RRFS 2,700 \u00b7 HRRR 2,000 \u00b7 best 4 readings over 5 points"
+       "sub": "RRFS 2,700 \u00b7 HRRR 2,000"
       },
       {
        "k": "Wind 1 pm",
@@ -32114,7 +32108,7 @@
         0.63,
         0.58
        ],
-       "sub": "RRFS 3,000 \u00b7 HRRR 2,800 \u00b7 best 4 readings over 4 points"
+       "sub": "RRFS 3,000 \u00b7 HRRR 2,800"
       },
       {
        "k": "Wind 1 pm",
@@ -32226,7 +32220,7 @@
         0.6,
         0.38
        ],
-       "sub": "RRFS 4,700 \u00b7 HRRR 3,900 \u00b7 best 4 readings over 7 points"
+       "sub": "RRFS 4,700 \u00b7 HRRR 3,900"
       },
       {
        "k": "Wind 1 pm",
@@ -32340,7 +32334,7 @@
         0.41,
         0.26
        ],
-       "sub": "RRFS 2,900 \u00b7 HRRR 2,700 \u00b7 best 4 readings over 5 points"
+       "sub": "RRFS 2,900 \u00b7 HRRR 2,700"
       },
       {
        "k": "Wind 1 pm",
@@ -32461,7 +32455,7 @@
         0.64,
         0.46
        ],
-       "sub": "RRFS 2,700 \u00b7 HRRR 2,200 \u00b7 best 4 readings over 5 points"
+       "sub": "RRFS 2,700 \u00b7 HRRR 2,200"
       },
       {
        "k": "Wind 1 pm",
@@ -32577,7 +32571,7 @@
         0.71,
         0.52
        ],
-       "sub": "RRFS 2,800 \u00b7 HRRR 2,100 \u00b7 best 4 readings over 5 points"
+       "sub": "RRFS 2,800 \u00b7 HRRR 2,100"
       },
       {
        "k": "Wind 1 pm",
@@ -32693,7 +32687,7 @@
         0.28,
         0.0
        ],
-       "sub": "RRFS 5,200 \u00b7 HRRR 3,800 \u00b7 best 4 readings over 6 points"
+       "sub": "RRFS 5,200 \u00b7 HRRR 3,800"
       },
       {
        "k": "Wind 1 pm",
@@ -32821,7 +32815,7 @@
         0.59,
         0.16
        ],
-       "sub": "RRFS 4,600 \u00b7 HRRR 4,100 \u00b7 best 4 readings over 5 points"
+       "sub": "RRFS 4,600 \u00b7 HRRR 4,100"
       },
       {
        "k": "Wind 1 pm",
@@ -32896,11 +32890,9 @@
      "trend": -0.8
     },
     "santabarbara": {
-     "rating": 1.28,
+     "rating": 1.53,
      "label": "No go",
-     "tags": [
-      "little sun (\u22120%)"
-     ],
+     "tags": [],
      "xc": false,
      "rain_p": 0.0,
      "base": 1.9,
@@ -32950,7 +32942,7 @@
         0.1,
         0.13
        ],
-       "sub": "RRFS 3,300 \u00b7 HRRR 3,300 \u00b7 best 4 readings over 3 points"
+       "sub": "RRFS 3,300 \u00b7 HRRR 3,300"
       },
       {
        "k": "Wind 1 pm",
@@ -33004,27 +32996,28 @@
       }
      },
      "cloud": {
-      "okta": 7,
-      "cover": 0.84,
+      "okta": 6,
+      "cover": 0.74,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
        "HRRR": [
         0.84,
         0.0
+       ],
+       "RRFS": [
+        0.53,
+        0.0
        ]
       }
      },
      "was": 2.4,
-     "trend": -1.1
+     "trend": -0.9
     },
     "owens": {
      "rating": 1.27,
      "label": "No go",
-     "tags": [
-      "off season",
-      "Soaring Predictor max 11,067 ft"
-     ],
+     "tags": [],
      "xc": false,
      "rain_p": 0.0,
      "base": 1.27,
@@ -33130,12 +33123,16 @@
      },
      "cloud": {
       "okta": 1,
-      "cover": 0.09,
+      "cover": 0.07,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
        "HRRR": [
         0.09,
+        0.0
+       ],
+       "RRFS": [
+        0.03,
         0.0
        ]
       }
@@ -33212,7 +33209,7 @@
      "label": "Ridge soaring",
      "tags": [],
      "xc": false,
-     "rain_p": 0.08,
+     "rain_p": 0.07,
      "base": 2.96,
      "adj": [],
      "hours": {
@@ -33257,9 +33254,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "8% of runs",
+       "v": "7% of runs",
        "sub": "",
-       "q": 0.89
+       "q": 0.9
       },
       {
        "k": "Model agreement",
@@ -33321,11 +33318,15 @@
       }
      },
      "cloud": {
-      "okta": 1,
-      "cover": 0.16,
+      "okta": 3,
+      "cover": 0.36,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
+       "RRFS": [
+        0.46,
+        0.0
+       ],
        "ECMWF": [
         0.17,
         0.0
@@ -33343,11 +33344,10 @@
      "rating": 4.13,
      "label": "XC",
      "tags": [
-      "window ~1pm",
       "glass-off"
      ],
      "xc": true,
-     "rain_p": 0.02,
+     "rain_p": 0.01,
      "base": 4.13,
      "adj": [],
      "hours": {
@@ -33394,7 +33394,7 @@
        "qs": [
         0.82
        ],
-       "sub": "RRFS \u00b7 best 4 readings over 5 points"
+       "sub": "RRFS"
       },
       {
        "k": "Wind 1 pm",
@@ -33412,7 +33412,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.98
+       "q": 0.99
       },
       {
        "k": "Model agreement",
@@ -33459,11 +33459,15 @@
       }
      },
      "cloud": {
-      "okta": 1,
-      "cover": 0.13,
+      "okta": 3,
+      "cover": 0.38,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
+       "RRFS": [
+        0.51,
+        0.0
+       ],
        "ECMWF": [
         0.12,
         0.0
@@ -33481,7 +33485,6 @@
      "rating": 3.77,
      "label": "XC",
      "tags": [
-      "window ~2pm",
       "glass-off"
      ],
      "xc": true,
@@ -33532,7 +33535,7 @@
        "qs": [
         0.67
        ],
-       "sub": "RRFS \u00b7 best 4 readings over 4 points"
+       "sub": "RRFS"
       },
       {
        "k": "Wind 1 pm",
@@ -33596,11 +33599,15 @@
       }
      },
      "cloud": {
-      "okta": 1,
-      "cover": 0.11,
+      "okta": 3,
+      "cover": 0.37,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
+       "RRFS": [
+        0.51,
+        0.0
+       ],
        "ECMWF": [
         0.14,
         0.0
@@ -33615,7 +33622,7 @@
      "trend": 0.1
     },
     "elsinore": {
-     "rating": 2.77,
+     "rating": 2.65,
      "label": "Thermal",
      "tags": [
       "switch ~2pm"
@@ -33623,7 +33630,12 @@
      "xc": false,
      "rain_p": 0.01,
      "base": 2.77,
-     "adj": [],
+     "adj": [
+      [
+       "little sun (mid/high cloud)",
+       -0.1
+      ]
+     ],
      "hours": {
       "9": 1.6,
       "10": 1.7,
@@ -33642,7 +33654,7 @@
      "gwin": null,
      "note": "thermals to 4,400 ft",
      "p_fly": 1.0,
-     "p_xc": 0.37,
+     "p_xc": 0.35,
      "agree": "mixed",
      "models": {
       "RRFS": 3.0,
@@ -33665,7 +33677,7 @@
        "qs": [
         0.52
        ],
-       "sub": "RRFS \u00b7 best 4 readings over 7 points"
+       "sub": "RRFS"
       },
       {
        "k": "Wind 1 pm",
@@ -33730,11 +33742,15 @@
       }
      },
      "cloud": {
-      "okta": 4,
-      "cover": 0.52,
+      "okta": 5,
+      "cover": 0.63,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
+       "RRFS": [
+        0.69,
+        0.0
+       ],
        "ECMWF": [
         0.66,
         0.0
@@ -33746,16 +33762,21 @@
       }
      },
      "was": 2.8,
-     "trend": -0.0
+     "trend": -0.1
     },
     "soboba": {
-     "rating": 3.3,
+     "rating": 3.17,
      "label": "Thermal",
      "tags": [],
      "xc": false,
      "rain_p": 0.01,
      "base": 3.3,
-     "adj": [],
+     "adj": [
+      [
+       "little sun (mid/high cloud)",
+       -0.1
+      ]
+     ],
      "hours": {
       "9": 1.4,
       "10": 1.4,
@@ -33773,8 +33794,8 @@
      ],
      "gwin": null,
      "note": "thermals to 3,500 ft",
-     "p_fly": 0.82,
-     "p_xc": 0.35,
+     "p_fly": 0.8,
+     "p_xc": 0.34,
      "agree": "agree",
      "models": {
       "RRFS": 3.3,
@@ -33797,7 +33818,7 @@
        "qs": [
         0.59
        ],
-       "sub": "RRFS \u00b7 best 4 readings over 5 points"
+       "sub": "RRFS"
       },
       {
        "k": "Wind 1 pm",
@@ -33859,11 +33880,15 @@
       }
      },
      "cloud": {
-      "okta": 4,
-      "cover": 0.46,
+      "okta": 5,
+      "cover": 0.57,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
+       "RRFS": [
+        0.62,
+        0.0
+       ],
        "ECMWF": [
         0.61,
         0.0
@@ -33875,7 +33900,7 @@
       }
      },
      "was": 4.1,
-     "trend": -0.8
+     "trend": -0.9
     },
     "otay": {
      "rating": 2.65,
@@ -33936,7 +33961,7 @@
        "qs": [
         0.59
        ],
-       "sub": "RRFS \u00b7 best 4 readings over 5 points"
+       "sub": "RRFS"
       },
       {
        "k": "Wind 1 pm",
@@ -34008,11 +34033,15 @@
       }
      },
      "cloud": {
-      "okta": 0,
-      "cover": 0.04,
+      "okta": 2,
+      "cover": 0.22,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
+       "RRFS": [
+        0.31,
+        0.0
+       ],
        "ECMWF": [
         0.06,
         0.0
@@ -34080,7 +34109,7 @@
        "qs": [
         0.74
        ],
-       "sub": "RRFS \u00b7 best 4 readings over 5 points"
+       "sub": "RRFS"
       },
       {
        "k": "Wind 1 pm",
@@ -34151,11 +34180,15 @@
       }
      },
      "cloud": {
-      "okta": 0,
-      "cover": 0.06,
+      "okta": 2,
+      "cover": 0.27,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
+       "RRFS": [
+        0.37,
+        0.0
+       ],
        "ECMWF": [
         0.08,
         0.0
@@ -34218,7 +34251,7 @@
        "qs": [
         0.0
        ],
-       "sub": "RRFS \u00b7 best 4 readings over 6 points"
+       "sub": "RRFS"
       },
       {
        "k": "Wind 1 pm",
@@ -34297,11 +34330,15 @@
      },
      "launch_name": "Horse",
      "cloud": {
-      "okta": 0,
-      "cover": 0.06,
+      "okta": 2,
+      "cover": 0.28,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
+       "RRFS": [
+        0.39,
+        0.0
+       ],
        "ECMWF": [
         0.11,
         0.0
@@ -34316,20 +34353,13 @@
      "trend": 0.1
     },
     "marshall": {
-     "rating": 2.66,
+     "rating": 2.79,
      "label": "Glass-off",
-     "tags": [
-      "little sun (\u22120%)"
-     ],
+     "tags": [],
      "xc": false,
      "rain_p": 0.0,
      "base": 2.79,
-     "adj": [
-      [
-       "little sun (mid/high cloud)",
-       -0.1
-      ]
-     ],
+     "adj": [],
      "hours": {
       "9": 1.1,
       "10": 1.2,
@@ -34374,7 +34404,7 @@
        "qs": [
         0.52
        ],
-       "sub": "RRFS \u00b7 best 4 readings over 5 points"
+       "sub": "RRFS"
       },
       {
        "k": "Wind 1 pm",
@@ -34445,11 +34475,15 @@
       }
      },
      "cloud": {
-      "okta": 5,
-      "cover": 0.6,
+      "okta": 4,
+      "cover": 0.55,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
+       "RRFS": [
+        0.52,
+        0.0
+       ],
        "ECMWF": [
         0.65,
         0.0
@@ -34461,22 +34495,16 @@
       }
      },
      "was": 4.5,
-     "trend": -1.8
+     "trend": -1.7
     },
     "santabarbara": {
-     "rating": 1.51,
-     "label": "No go",
-     "tags": [
-      "little sun (\u22121%)"
-     ],
+     "rating": 1.64,
+     "label": "Marginal",
+     "tags": [],
      "xc": false,
      "rain_p": 0.01,
      "base": 2.14,
      "adj": [
-      [
-       "little sun (mid/high cloud)",
-       -0.1
-      ],
       [
        "wind 20\u201345\u00b0 off launch",
        -0.5
@@ -34499,7 +34527,7 @@
      ],
      "gwin": null,
      "note": "low lid, 3,800 ft",
-     "p_fly": 0.13,
+     "p_fly": 0.23,
      "p_xc": 0.0,
      "agree": "mixed",
      "models": {
@@ -34523,7 +34551,7 @@
        "qs": [
         0.37
        ],
-       "sub": "RRFS \u00b7 best 4 readings over 3 points"
+       "sub": "RRFS"
       },
       {
        "k": "Wind 1 pm",
@@ -34595,11 +34623,15 @@
       }
      },
      "cloud": {
-      "okta": 5,
-      "cover": 0.58,
-      "sun_loss": 0.01,
+      "okta": 2,
+      "cover": 0.31,
+      "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
+       "RRFS": [
+        0.18,
+        0.0
+       ],
        "ECMWF": [
         0.19,
         0.0
@@ -34611,15 +34643,12 @@
       }
      },
      "was": 2.4,
-     "trend": -0.9
+     "trend": -0.8
     },
     "owens": {
      "rating": 1.0,
      "label": "No go",
-     "tags": [
-      "off season",
-      "little sun (\u22123%)"
-     ],
+     "tags": [],
      "xc": false,
      "rain_p": 0.01,
      "base": 1.0,
@@ -34745,11 +34774,15 @@
       }
      },
      "cloud": {
-      "okta": 5,
-      "cover": 0.61,
-      "sun_loss": 0.03,
+      "okta": 2,
+      "cover": 0.23,
+      "sun_loss": 0.01,
       "agree": 0.0,
       "models": {
+       "RRFS": [
+        0.04,
+        0.0
+       ],
        "ECMWF": [
         0.23,
         0.0
@@ -34812,7 +34845,7 @@
    "why": null,
    "rain_p": 0.03,
    "cloud": {
-    "okta": 2,
+    "okta": 3,
     "sun_loss": 0.0,
     "agree": 0.0,
     "level": null,
@@ -34827,7 +34860,7 @@
      "label": "Marginal",
      "tags": [],
      "xc": false,
-     "rain_p": 0.07,
+     "rain_p": 0.06,
      "base": 2.24,
      "adj": [],
      "hours": {
@@ -34871,9 +34904,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "7% of runs",
+       "v": "6% of runs",
        "sub": "",
-       "q": 0.9
+       "q": 0.92
       },
       {
        "k": "Model agreement",
@@ -34949,11 +34982,10 @@
      "rating": 3.59,
      "label": "XC",
      "tags": [
-      "window ~1pm",
       "glass-off"
      ],
      "xc": true,
-     "rain_p": 0.03,
+     "rain_p": 0.02,
      "base": 4.09,
      "adj": [
       [
@@ -35000,7 +35032,7 @@
       {
        "k": "Height",
        "v": "~2,400 ft",
-       "sub": "global models \u00b7 best 4 readings over 5 points",
+       "sub": "global models",
        "q": 0.77
       },
       {
@@ -35019,7 +35051,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.95
+       "q": 0.98
       },
       {
        "k": "Model agreement",
@@ -35086,7 +35118,7 @@
       "glass-off"
      ],
      "xc": false,
-     "rain_p": 0.03,
+     "rain_p": 0.02,
      "base": 3.4,
      "adj": [
       [
@@ -35133,7 +35165,7 @@
       {
        "k": "Height",
        "v": "~2,900 ft",
-       "sub": "global models \u00b7 best 4 readings over 4 points",
+       "sub": "global models",
        "q": 0.6
       },
       {
@@ -35152,7 +35184,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.95
+       "q": 0.97
       },
       {
        "k": "Model agreement",
@@ -35219,7 +35251,7 @@
       "no switch"
      ],
      "xc": false,
-     "rain_p": 0.01,
+     "rain_p": 0.0,
      "base": 2.52,
      "adj": [],
      "hours": {
@@ -35258,7 +35290,7 @@
       {
        "k": "Height",
        "v": "~3,800 ft",
-       "sub": "global models \u00b7 best 4 readings over 7 points",
+       "sub": "global models",
        "q": 0.34
       },
       {
@@ -35277,7 +35309,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.99
+       "q": 1.0
       },
       {
        "k": "Model agreement",
@@ -35340,7 +35372,7 @@
      "label": "Thermal",
      "tags": [],
      "xc": false,
-     "rain_p": 0.02,
+     "rain_p": 0.01,
      "base": 3.46,
      "adj": [],
      "hours": {
@@ -35379,7 +35411,7 @@
       {
        "k": "Height",
        "v": "~3,700 ft",
-       "sub": "global models \u00b7 best 4 readings over 5 points",
+       "sub": "global models",
        "q": 0.61
       },
       {
@@ -35398,7 +35430,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.98
+       "q": 0.99
       },
       {
        "k": "Model agreement",
@@ -35460,11 +35492,10 @@
      "rating": 2.97,
      "label": "Thermal",
      "tags": [
-      "rain 14%",
       "glass-off"
      ],
      "xc": false,
-     "rain_p": 0.14,
+     "rain_p": 0.12,
      "base": 3.47,
      "adj": [
       [
@@ -35511,7 +35542,7 @@
       {
        "k": "Height",
        "v": "~2,600 ft",
-       "sub": "global models \u00b7 best 4 readings over 5 points",
+       "sub": "global models",
        "q": 0.62
       },
       {
@@ -35528,9 +35559,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "14% of runs",
+       "v": "12% of runs",
        "sub": "",
-       "q": 0.8
+       "q": 0.83
       },
       {
        "k": "Model agreement",
@@ -35593,11 +35624,9 @@
     "whalesv": {
      "rating": 2.65,
      "label": "Thermal",
-     "tags": [
-      "rain 11%"
-     ],
+     "tags": [],
      "xc": false,
-     "rain_p": 0.11,
+     "rain_p": 0.1,
      "base": 3.65,
      "adj": [
       [
@@ -35645,7 +35674,7 @@
       {
        "k": "Height",
        "v": "~2,700 ft",
-       "sub": "global models \u00b7 best 4 readings over 5 points",
+       "sub": "global models",
        "q": 0.66
       },
       {
@@ -35662,9 +35691,9 @@
       },
       {
        "k": "Rain & storms",
-       "v": "11% of runs",
+       "v": "10% of runs",
        "sub": "",
-       "q": 0.84
+       "q": 0.86
       },
       {
        "k": "Model agreement",
@@ -35769,7 +35798,7 @@
       {
        "k": "Height",
        "v": "~4,600 ft",
-       "sub": "global models \u00b7 best 4 readings over 6 points",
+       "sub": "global models",
        "q": 0.04
       },
       {
@@ -35864,7 +35893,7 @@
      "label": "No go",
      "tags": [],
      "xc": false,
-     "rain_p": 0.01,
+     "rain_p": 0.0,
      "base": 1.0,
      "adj": [],
      "hours": {
@@ -35903,7 +35932,7 @@
       {
        "k": "Height",
        "v": "~5,200 ft",
-       "sub": "global models \u00b7 best 4 readings over 5 points",
+       "sub": "global models",
        "q": 0.8
       },
       {
@@ -35922,7 +35951,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.99
+       "q": 1.0
       },
       {
        "k": "Model agreement",
@@ -35993,7 +36022,7 @@
      "label": "Marginal",
      "tags": [],
      "xc": false,
-     "rain_p": 0.01,
+     "rain_p": 0.0,
      "base": 2.4,
      "adj": [
       [
@@ -36037,7 +36066,7 @@
       {
        "k": "Height",
        "v": "~3,600 ft",
-       "sub": "global models \u00b7 best 4 readings over 3 points",
+       "sub": "global models",
        "q": 0.27
       },
       {
@@ -36056,7 +36085,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.99
+       "q": 1.0
       },
       {
        "k": "Model agreement",
@@ -36123,9 +36152,7 @@
     "owens": {
      "rating": 2.0,
      "label": "Marginal",
-     "tags": [
-      "off season"
-     ],
+     "tags": [],
      "xc": false,
      "rain_p": 0.01,
      "base": 2.4,
@@ -36295,7 +36322,7 @@
    "best_main": "lb",
    "headline": "XC at Little Black",
    "why": null,
-   "rain_p": 0.04,
+   "rain_p": 0.03,
    "cloud": {
     "okta": 0,
     "sun_loss": 0.02,
@@ -36427,7 +36454,6 @@
      "rating": 3.89,
      "label": "XC",
      "tags": [
-      "window ~1pm",
       "glass-off"
      ],
      "xc": true,
@@ -36473,7 +36499,7 @@
       {
        "k": "Height",
        "v": "~2,500 ft",
-       "sub": "global models \u00b7 best 4 readings over 5 points",
+       "sub": "global models",
        "q": 0.79
       },
       {
@@ -36601,7 +36627,7 @@
       {
        "k": "Height",
        "v": "~2,900 ft",
-       "sub": "global models \u00b7 best 4 readings over 4 points",
+       "sub": "global models",
        "q": 0.59
       },
       {
@@ -36724,7 +36750,7 @@
       {
        "k": "Height",
        "v": "~4,200 ft",
-       "sub": "global models \u00b7 best 4 readings over 7 points",
+       "sub": "global models",
        "q": 0.47
       },
       {
@@ -36846,7 +36872,7 @@
       {
        "k": "Height",
        "v": "~4,100 ft",
-       "sub": "global models \u00b7 best 4 readings over 5 points",
+       "sub": "global models",
        "q": 0.69
       },
       {
@@ -36926,7 +36952,7 @@
       "glass-off"
      ],
      "xc": false,
-     "rain_p": 0.03,
+     "rain_p": 0.02,
      "base": 3.73,
      "adj": [
       [
@@ -36973,7 +36999,7 @@
       {
        "k": "Height",
        "v": "~2,900 ft",
-       "sub": "global models \u00b7 best 4 readings over 5 points",
+       "sub": "global models",
        "q": 0.69
       },
       {
@@ -36992,7 +37018,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.95
+       "q": 0.97
       },
       {
        "k": "Model agreement",
@@ -37101,7 +37127,7 @@
       {
        "k": "Height",
        "v": "~3,200 ft",
-       "sub": "global models \u00b7 best 4 readings over 5 points",
+       "sub": "global models",
        "q": 0.8
       },
       {
@@ -37120,7 +37146,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.97
+       "q": 0.98
       },
       {
        "k": "Model agreement",
@@ -37224,7 +37250,7 @@
       {
        "k": "Height",
        "v": "~5,300 ft",
-       "sub": "global models \u00b7 best 4 readings over 6 points",
+       "sub": "global models",
        "q": 0.32
       },
       {
@@ -37350,7 +37376,7 @@
       {
        "k": "Height",
        "v": "~5,700 ft",
-       "sub": "global models \u00b7 best 4 readings over 5 points",
+       "sub": "global models",
        "q": 0.97
       },
       {
@@ -37431,7 +37457,7 @@
      "label": "Marginal",
      "tags": [],
      "xc": false,
-     "rain_p": 0.01,
+     "rain_p": 0.0,
      "base": 2.11,
      "adj": [
       [
@@ -37475,7 +37501,7 @@
       {
        "k": "Height",
        "v": "~3,500 ft",
-       "sub": "global models \u00b7 best 4 readings over 3 points",
+       "sub": "global models",
        "q": 0.2
       },
       {
@@ -37494,7 +37520,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.99
+       "q": 1.0
       },
       {
        "k": "Model agreement",
@@ -37566,9 +37592,7 @@
     "owens": {
      "rating": 1.0,
      "label": "No go",
-     "tags": [
-      "off season"
-     ],
+     "tags": [],
      "xc": false,
      "rain_p": 0.01,
      "base": 1.0,
@@ -37749,7 +37773,7 @@
      "label": "Ridge soaring",
      "tags": [],
      "xc": false,
-     "rain_p": 0.03,
+     "rain_p": 0.02,
      "base": 2.22,
      "adj": [],
      "hours": {
@@ -37795,7 +37819,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.95
+       "q": 0.98
       },
       {
        "k": "Model agreement",
@@ -37873,7 +37897,7 @@
       "glass-off"
      ],
      "xc": false,
-     "rain_p": 0.03,
+     "rain_p": 0.02,
      "base": 3.56,
      "adj": [],
      "hours": {
@@ -37915,7 +37939,7 @@
       {
        "k": "Height",
        "v": "~2,100 ft",
-       "sub": "global models \u00b7 best 4 readings over 5 points",
+       "sub": "global models",
        "q": 0.64
       },
       {
@@ -37934,7 +37958,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.95
+       "q": 0.98
       },
       {
        "k": "Model agreement",
@@ -37996,11 +38020,9 @@
     "blossom": {
      "rating": 4.38,
      "label": "XC",
-     "tags": [
-      "window ~12pm"
-     ],
+     "tags": [],
      "xc": true,
-     "rain_p": 0.04,
+     "rain_p": 0.02,
      "base": 4.38,
      "adj": [],
      "hours": {
@@ -38039,7 +38061,7 @@
       {
        "k": "Height",
        "v": "~3,900 ft",
-       "sub": "global models \u00b7 best 4 readings over 4 points",
+       "sub": "global models",
        "q": 0.84
       },
       {
@@ -38058,7 +38080,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.94
+       "q": 0.97
       },
       {
        "k": "Model agreement",
@@ -38127,7 +38149,7 @@
       "switch ~4pm"
      ],
      "xc": false,
-     "rain_p": 0.02,
+     "rain_p": 0.01,
      "base": 2.97,
      "adj": [],
      "hours": {
@@ -38166,7 +38188,7 @@
       {
        "k": "Height",
        "v": "~4,300 ft",
-       "sub": "global models \u00b7 best 4 readings over 7 points",
+       "sub": "global models",
        "q": 0.49
       },
       {
@@ -38185,7 +38207,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.97
+       "q": 0.99
       },
       {
        "k": "Model agreement",
@@ -38292,7 +38314,7 @@
       {
        "k": "Height",
        "v": "~5,000 ft",
-       "sub": "global models \u00b7 best 4 readings over 5 points",
+       "sub": "global models",
        "q": 0.87
       },
       {
@@ -38311,7 +38333,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.97
+       "q": 0.98
       },
       {
        "k": "Model agreement",
@@ -38370,11 +38392,9 @@
     "otay": {
      "rating": 3.82,
      "label": "XC",
-     "tags": [
-      "window ~2pm"
-     ],
+     "tags": [],
      "xc": true,
-     "rain_p": 0.06,
+     "rain_p": 0.04,
      "base": 3.82,
      "adj": [],
      "hours": {
@@ -38413,7 +38433,7 @@
       {
        "k": "Height",
        "v": "~2,900 ft",
-       "sub": "global models \u00b7 best 4 readings over 5 points",
+       "sub": "global models",
        "q": 0.7
       },
       {
@@ -38499,7 +38519,7 @@
      "label": "Thermal",
      "tags": [],
      "xc": false,
-     "rain_p": 0.04,
+     "rain_p": 0.02,
      "base": 4.0,
      "adj": [
       [
@@ -38543,7 +38563,7 @@
       {
        "k": "Height",
        "v": "~3,000 ft",
-       "sub": "global models \u00b7 best 4 readings over 5 points",
+       "sub": "global models",
        "q": 0.75
       },
       {
@@ -38628,7 +38648,7 @@
      "label": "No go",
      "tags": [],
      "xc": false,
-     "rain_p": 0.05,
+     "rain_p": 0.03,
      "base": 1.04,
      "adj": [],
      "hours": {
@@ -38667,7 +38687,7 @@
       {
        "k": "Height",
        "v": "~4,000 ft",
-       "sub": "global models \u00b7 best 4 readings over 6 points",
+       "sub": "global models",
        "q": 0.0
       },
       {
@@ -38762,7 +38782,7 @@
      "label": "No go",
      "tags": [],
      "xc": false,
-     "rain_p": 0.03,
+     "rain_p": 0.02,
      "base": 1.0,
      "adj": [],
      "hours": {
@@ -38801,7 +38821,7 @@
       {
        "k": "Height",
        "v": "~5,900 ft",
-       "sub": "global models \u00b7 best 4 readings over 5 points",
+       "sub": "global models",
        "q": 1.0
       },
       {
@@ -38820,7 +38840,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.95
+       "q": 0.98
       },
       {
        "k": "Model agreement",
@@ -38938,7 +38958,7 @@
       {
        "k": "Height",
        "v": "~3,900 ft",
-       "sub": "global models \u00b7 best 4 readings over 3 points",
+       "sub": "global models",
        "q": 0.45
       },
       {
@@ -39022,11 +39042,9 @@
     "owens": {
      "rating": 1.0,
      "label": "No go",
-     "tags": [
-      "off season"
-     ],
+     "tags": [],
      "xc": false,
-     "rain_p": 0.05,
+     "rain_p": 0.02,
      "base": 1.0,
      "adj": [],
      "hours": {
@@ -39084,7 +39102,7 @@
        "k": "Rain & storms",
        "v": "dry",
        "sub": "",
-       "q": 0.93
+       "q": 0.97
       },
       {
        "k": "Model agreement",
@@ -39191,7 +39209,7 @@
    "best_main": "blossom",
    "headline": "XC at Blossom \u00b7 also Soboba, Otay",
    "why": null,
-   "rain_p": 0.03,
+   "rain_p": 0.02,
    "cloud": {
     "okta": 0,
     "sun_loss": 0.0,
