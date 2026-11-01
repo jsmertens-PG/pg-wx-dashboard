@@ -710,7 +710,8 @@ GUST_WARN_MPH, GUST_NOGO_MPH = 12, 18          # thermal sites: gusty from 12 mp
 SINK = 1.1   # paraglider sink rate in a thermal turn, m/s (about 1.0-1.2)
 XC_MIN_CLIMB = 0.5   # XC needs at least this climb rate (m/s) in the core: a low bar
 CORE = 1.4   # a pilot climbs in the core: about 1.4 x W* (the area-average updraft), so climb = CORE*W* - SINK
-LIGHT_MPH = 6   # at the thermal sites a launch wind this light does not count, whatever its direction:
+LIGHT_MPH = 6   # at the thermal sites a launch wind this light (and gusting no more than 12 mph) does not
+                # count, whatever its direction:
                 # the thermal cycles are stronger than it
 SHF_FRAC = 0.40   # without the model's own surface heat flux: share of the sunshine that heats the air
                   # (dry inland SoCal terrain; 0.30 at the coast)
@@ -847,9 +848,12 @@ def score_hour(site, hr, i, levels, elev_m):
     lo, hi = site["wind_mph"]
     on = good_launch = None
     launch_pts = None
+    light = False
     if lw_mph is not None and ld is not None:
         on = dir_ok(site, ld)
-        light = site["kind"] != "ridge" and lw_mph <= LIGHT_MPH        # too light to matter at a thermal site
+        # too light to matter at a thermal site: the mean wind light AND the gusts no more than gusty (12 mph);
+        # otherwise a wrong direction counts, and over the back the gusts count as much as the mean wind
+        light = site["kind"] != "ridge" and lw_mph <= LIGHT_MPH and (lg_mph is None or lg_mph <= GUST_WARN_MPH)
         off_h = angdiff(ld, site_face(site)) if site_face(site) is not None and not light and lw_mph > 4 else None
         good_launch = ((on and lo <= lw_mph <= hi and (off_h is None or off_h <= 20))
                        or light)
@@ -863,7 +867,8 @@ def score_hour(site, hr, i, levels, elev_m):
             if site.get("style") not in ("thermal", "window"):
                 q *= 1 - 0.5 * clamp((lw_mph - CROSS_FREE_MPH) / (CROSS_FULL_MPH - CROSS_FREE_MPH))
             codes.append("cross"); launch = cross[2]
-        elif not on and lw_mph > site.get("otb_mph", 5) and not light:
+        elif not on and not light and (lw_mph > site.get("otb_mph", 5)
+                                       or (site["kind"] != "ridge" and lg_mph is not None and lg_mph > GUST_WARN_MPH)):
             q = 0.0; codes.append("otb"); launch = "over the back"
         elif site["kind"] == "ridge" and (lw_mph > hi or (lg_mph is not None and lg_mph > site.get("gust_mph", 25))):
             # Torrey: over 20 mph, or gusts over 25, is simply too windy
@@ -964,7 +969,7 @@ def score_hour(site, hr, i, levels, elev_m):
             "gcat": gcat,
             "into": bool(on and lw_mph is not None and lw_mph >= max(3.0, lo)),   # blowing into the launch, not just light
             "off": (angdiff(ld, site_face(site)) if site_face(site) is not None and ld is not None
-                    and lw_mph is not None and lw_mph > (LIGHT_MPH if site["kind"] != "ridge" else 4) else None),
+                    and lw_mph is not None and not light and (site["kind"] != "ridge" or lw_mph > 4) else None),
             "lw": lw_mph, "ld": ld, "lg": lg_mph, "a_max": a_max, "tw": (tw_dir, tw_spd) if tw_spd is not None else None, "a_spd": a_spd, "a_dir": a_dir,
             "pr": pr, "cape": cape, "codes": codes + (["venturi"] if venturi else []), "pts": pts_h}
 
