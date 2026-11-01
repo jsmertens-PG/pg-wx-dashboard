@@ -2034,7 +2034,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                              "wind": [round(x) if x is not None else None for x in (v.get("wind_1pm") or [])] or None,
                              "aloft": [round(v["tw13"][0]), round(v["tw13"][1] * 1.15078)] if v.get("tw13") else None,
                              "wet": round(v.get("wet_f", 0.0), 2),
-                             "why": v["codes"][:3]} for k, v in D.items()},
+                             "why": v["codes"][:3], "used": k in D} for k, v in cell.get("all", D).items()},
             }
         # merge per-launch results back into their site: show the better launch of the day
         merged = {}
