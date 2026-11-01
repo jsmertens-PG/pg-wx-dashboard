@@ -710,7 +710,7 @@ GUST_WARN_MPH, GUST_NOGO_MPH = 12, 18          # thermal sites: gusty from 12 mp
 SINK = 1.1   # paraglider sink rate in a thermal turn, m/s (about 1.0-1.2)
 XC_MIN_CLIMB = 0.5   # XC needs at least this climb rate (m/s) in the core: a low bar
 CORE = 1.4   # a pilot climbs in the core: about 1.4 x W* (the area-average updraft), so climb = CORE*W* - SINK
-LIGHT_MPH = 6   # at the thermal sites a launch wind this light (and gusting no more than 12 mph) does not
+LIGHT_MPH, LIGHT_GUST_MPH = 4, 8   # at the thermal sites a launch wind this light (4g8 or less) does not
                 # count, whatever its direction:
                 # the thermal cycles are stronger than it
 SHF_FRAC = 0.40   # without the model's own surface heat flux: share of the sunshine that heats the air
@@ -851,9 +851,8 @@ def score_hour(site, hr, i, levels, elev_m):
     light = False
     if lw_mph is not None and ld is not None:
         on = dir_ok(site, ld)
-        # too light to matter at a thermal site: the mean wind light AND the gusts no more than gusty (12 mph);
-        # otherwise a wrong direction counts, and over the back the gusts count as much as the mean wind
-        light = site["kind"] != "ridge" and lw_mph <= LIGHT_MPH and (lg_mph is None or lg_mph <= GUST_WARN_MPH)
+        # too light to matter at a thermal site: 4g8 or less; anything stronger from behind is over the back
+        light = site["kind"] != "ridge" and lw_mph <= LIGHT_MPH and (lg_mph is None or lg_mph <= LIGHT_GUST_MPH)
         off_h = angdiff(ld, site_face(site)) if site_face(site) is not None and not light and lw_mph > 4 else None
         good_launch = ((on and lo <= lw_mph <= hi and (off_h is None or off_h <= 20))
                        or light)
@@ -861,14 +860,13 @@ def score_hour(site, hr, i, levels, elev_m):
         launch_pts = 1.0 if good_launch else 0.6 if (on and lo <= lw_mph <= hi and off_h is not None and off_h <= 45) else 0.0
         launch = "good"
         cross = next((c for c in site.get("cross", []) if wrap_in(ld, c[0], c[1])), None) if not on and not light else None
-        if cross and lw_mph >= CROSS_FREE_MPH:
+        if cross and (lw_mph >= CROSS_FREE_MPH or site["kind"] != "ridge"):
             # a cross wind costs more the stronger it is: nothing up to ~3 mph, half the hour from 6 mph;
             # at the thermal sites the day rule on degrees off the launch takes care of it instead
             if site.get("style") not in ("thermal", "window"):
                 q *= 1 - 0.5 * clamp((lw_mph - CROSS_FREE_MPH) / (CROSS_FULL_MPH - CROSS_FREE_MPH))
             codes.append("cross"); launch = cross[2]
-        elif not on and not light and (lw_mph > site.get("otb_mph", 5)
-                                       or (site["kind"] != "ridge" and lg_mph is not None and lg_mph > GUST_WARN_MPH)):
+        elif not on and not light and (site["kind"] != "ridge" or lw_mph > site.get("otb_mph", 5)):
             q = 0.0; codes.append("otb"); launch = "over the back"
         elif site["kind"] == "ridge" and (lw_mph > hi or (lg_mph is not None and lg_mph > site.get("gust_mph", 25))):
             # Torrey: over 20 mph, or gusts over 25, is simply too windy
@@ -1509,8 +1507,11 @@ def day_regimes(det, sites):
         rains = [r for r in rains if r is not None]
         weak = bool(t) and (wt / tot < 0.75 or (t == "Front" and rains and median(rains) < 2.0)
                             or (t == "Post-frontal" and light))
+        # a second call that a third of the models or more make (e.g. Santa Ana and switch day): shown too
+        also = [{"type": t2, "agree": round(w2 / tot, 2)} for t2, w2 in sorted(w.items(), key=lambda x: -x[1])
+                if t2 and t2 != t and w2 / tot >= 0.33 and not (t == "Pre/post-frontal" and t2 in ("Pre-frontal", "Post-frontal"))]
         out[dstr] = {"type": t, "agree": round(wt / tot, 2), "weak": weak, "models": {n: t2 for n, t2 in vs},
-                     "features": feats.get(dstr, {})}
+                     "also": also[:1], "features": feats.get(dstr, {})}
     return out
 
 # ---------------------------------------------------------------- per-model plumbing
