@@ -1810,7 +1810,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                     planned = planned_rain + cstep
                     rain_part = drop * planned_rain / planned if planned else 0.0
                     if rain_part >= 0.05:
-                        adj.append(["chance of rain" + (" + NWS" if dstr in nws_days else ""), round(-rain_part, 1)])
+                        adj.append(["chance of rain" + (" + NWS" if dstr in nws_days and not (ridge_site and not thermal_day) and s.get("rain") != "true" else ""), round(-rain_part, 1)])
                     if drop - rain_part >= 0.05:
                         adj.append(["little sun (mid/high cloud)", round(-(drop - rain_part), 1)])
             if s.get("kind") == "ridge" and D:
