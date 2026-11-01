@@ -708,6 +708,7 @@ REASON_TEXT = {
 }
 GUST_WARN_MPH, GUST_NOGO_MPH = 12, 18          # thermal sites: gusty from 12 mph, too windy from 18 mph
 SINK = 1.1   # paraglider sink rate in a thermal turn, m/s (about 1.0-1.2)
+XC_MIN_CLIMB = 0.5   # XC needs at least this climb rate (m/s) in the core: a low bar
 CORE = 1.4   # a pilot climbs in the core: about 1.4 x W* (the area-average updraft), so climb = CORE*W* - SINK
 LIGHT_MPH = 6   # at the thermal sites a launch wind this light does not count, whatever its direction:
                 # the thermal cycles are stronger than it
@@ -941,7 +942,7 @@ def score_hour(site, hr, i, levels, elev_m):
                     and wrap_in(tw_dir, *xb["from"]))
     # a convergence line needs real flow meeting at the site, not near-calm air
     conv_ok = site["kind"] != "convergence" or (lw_mph is not None and lw_mph >= site["wind_mph"][0] and on)
-    if site.get("xc_top_ft") and coast_ok and conv_ok and q >= 0.5 and not bad_dir:
+    if site.get("xc_top_ft") and coast_ok and conv_ok and q >= 0.5 and not bad_dir and CORE * wstar - SINK >= XC_MIN_CLIMB:
         over = (usable if site["kind"] == "ridge" else peak_top) * FT - site["xc_top_ft"]
         if over >= 0:
             wind_f = 1.0 if a_max is None or a_max <= site["aloft_max_kt"] - 3 else 0.8
