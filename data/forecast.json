@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-01T05:03+00:00",
+ "generated": "2026-11-01T05:17+00:00",
  "sample": false,
  "calib": {
   "2026-10-31": {
@@ -28671,7 +28671,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-11-01T03:00+00:00",
-   "fetched": "2026-11-01T04:54+00:00",
+   "fetched": "2026-11-01T05:06+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -28680,8 +28680,8 @@
    "provider": "Open-Meteo",
    "id": "ncep_rrfs_conus",
    "status": "ok",
-   "run": null,
-   "fetched": "2026-11-01T04:55+00:00",
+   "run": "2026-11-01T00:00+00:00",
+   "fetched": "2026-11-01T05:08+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -28691,7 +28691,7 @@
    "id": "ncep_nam_conus",
    "status": "ok",
    "run": "2026-11-01T00:00+00:00",
-   "fetched": "2026-11-01T04:55+00:00",
+   "fetched": "2026-11-01T05:08+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -28701,7 +28701,7 @@
    "id": "gfs_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-01T04:56+00:00",
+   "fetched": "2026-11-01T05:08+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -28711,7 +28711,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": "2026-10-31T18:00+00:00",
-   "fetched": "2026-11-01T04:56+00:00",
+   "fetched": "2026-11-01T05:09+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -28721,7 +28721,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-01T04:58+00:00",
+   "fetched": "2026-11-01T05:09+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -28731,7 +28731,7 @@
    "id": "gfs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-01T04:59+00:00",
+   "fetched": "2026-11-01T05:11+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -28741,7 +28741,7 @@
    "id": "ecmwf_ifs025",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-01T05:00+00:00",
+   "fetched": "2026-11-01T05:13+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -28751,7 +28751,7 @@
    "id": "icon_global",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-01T05:03+00:00",
+   "fetched": "2026-11-01T05:17+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api"
   },
   {
@@ -28761,7 +28761,7 @@
    "id": "esierra",
    "status": "ok",
    "run": "2026-10-31T12:00+00:00",
-   "fetched": "2026-11-01T05:03+00:00",
+   "fetched": "2026-11-01T05:17+00:00",
    "url": "https://www.soaringpredictor.info/E-Sierra/E-SierraPredictor.htm"
   },
   {
@@ -28771,7 +28771,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-10-31T23:49:00+00:00",
-   "fetched": "2026-11-01T05:03+00:00",
+   "fetched": "2026-11-01T05:17+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   },
   {
@@ -28781,7 +28781,7 @@
    "id": "cloud_cover_mid/high",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-01T05:03+00:00",
+   "fetched": "2026-11-01T05:17+00:00",
    "url": "https://open-meteo.com/en/docs"
   }
  ],
@@ -29050,8 +29050,8 @@
        ]
       }
      },
-     "was": 2.2,
-     "trend": -0.2
+     "was": 2.6,
+     "trend": -0.6
     },
     "lb": {
      "rating": 2.47,
@@ -29170,8 +29170,8 @@
        ]
       }
      },
-     "was": 3.3,
-     "trend": -0.8
+     "was": 3.2,
+     "trend": -0.7
     },
     "blossom": {
      "rating": 2.29,
@@ -29294,8 +29294,8 @@
        ]
       }
      },
-     "was": 4.0,
-     "trend": -1.7
+     "was": 3.9,
+     "trend": -1.6
     },
     "elsinore": {
      "rating": 1.23,
@@ -29415,8 +29415,8 @@
        ]
       }
      },
-     "was": 1.0,
-     "trend": 0.2
+     "was": 1.1,
+     "trend": 0.1
     },
     "soboba": {
      "rating": 2.09,
@@ -29534,8 +29534,8 @@
        ]
       }
      },
-     "was": 3.9,
-     "trend": -1.8
+     "was": 3.7,
+     "trend": -1.6
     },
     "otay": {
      "rating": 1.43,
@@ -29702,8 +29702,8 @@
       17
      ],
      "note": "not flyable",
-     "p_fly": 0.09,
-     "p_xc": 0.0,
+     "p_fly": 0.32,
+     "p_xc": 0.08,
      "agree": "agree",
      "models": {
       "HRRR": 4.1,
@@ -29784,8 +29784,8 @@
        ]
       }
      },
-     "was": 4.0,
-     "trend": -2.8
+     "was": 3.9,
+     "trend": -1.8
     },
     "lagunahorse": {
      "rating": 1.0,
@@ -29969,7 +29969,7 @@
       {
        "k": "Wind 1 pm",
        "v": "SSE 7g13",
-       "sub": "later SE 5g14",
+       "sub": "later SE 5g14 \u00b7 gusty",
        "q": 0.0
       },
       {
@@ -30035,8 +30035,8 @@
        ]
       }
      },
-     "was": 1.3,
-     "trend": -0.3
+     "was": 1.4,
+     "trend": -0.4
     },
     "santabarbara": {
      "rating": 1.0,
@@ -30465,8 +30465,8 @@
        ]
       }
      },
-     "was": 2.8,
-     "trend": -1.3
+     "was": 3.5,
+     "trend": -2.0
     },
     "lb": {
      "rating": 1.0,
@@ -31211,10 +31211,6 @@
        "HRRR": [
         0.16,
         0.53
-       ],
-       "RRFS": [
-        0.18,
-        0.5
        ]
       }
      },
@@ -31883,8 +31879,8 @@
        ]
       }
      },
-     "was": 2.4,
-     "trend": -0.4
+     "was": 2.5,
+     "trend": -0.5
     },
     "lb": {
      "rating": 3.15,
@@ -32471,8 +32467,8 @@
        ]
       }
      },
-     "was": 2.5,
-     "trend": -0.6
+     "was": 2.4,
+     "trend": -0.5
     },
     "whalesv": {
      "rating": 2.53,
@@ -32587,8 +32583,8 @@
        ]
       }
      },
-     "was": 2.5,
-     "trend": 0.0
+     "was": 2.4,
+     "trend": 0.1
     },
     "lagunahorse": {
      "rating": 1.05,
@@ -32947,23 +32943,19 @@
       }
      },
      "cloud": {
-      "okta": 6,
-      "cover": 0.74,
+      "okta": 7,
+      "cover": 0.84,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
        "HRRR": [
         0.84,
         0.0
-       ],
-       "RRFS": [
-        0.53,
-        0.0
        ]
       }
      },
      "was": 2.4,
-     "trend": -0.9
+     "trend": -1.1
     },
     "owens": {
      "rating": 1.27,
@@ -33074,16 +33066,12 @@
      },
      "cloud": {
       "okta": 1,
-      "cover": 0.07,
+      "cover": 0.09,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
        "HRRR": [
         0.09,
-        0.0
-       ],
-       "RRFS": [
-        0.03,
         0.0
        ]
       }
@@ -33269,15 +33257,11 @@
       }
      },
      "cloud": {
-      "okta": 3,
-      "cover": 0.36,
+      "okta": 1,
+      "cover": 0.16,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.46,
-        0.0
-       ],
        "ECMWF": [
         0.17,
         0.0
@@ -33288,8 +33272,8 @@
        ]
       }
      },
-     "was": 2.1,
-     "trend": 0.9
+     "was": 2.5,
+     "trend": 0.5
     },
     "lb": {
      "rating": 4.14,
@@ -33410,15 +33394,11 @@
       }
      },
      "cloud": {
-      "okta": 3,
-      "cover": 0.38,
+      "okta": 1,
+      "cover": 0.13,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.51,
-        0.0
-       ],
        "ECMWF": [
         0.12,
         0.0
@@ -33550,15 +33530,11 @@
       }
      },
      "cloud": {
-      "okta": 3,
-      "cover": 0.37,
+      "okta": 1,
+      "cover": 0.11,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.51,
-        0.0
-       ],
        "ECMWF": [
         0.14,
         0.0
@@ -33569,11 +33545,11 @@
        ]
       }
      },
-     "was": 3.7,
-     "trend": 0.1
+     "was": 3.9,
+     "trend": -0.1
     },
     "elsinore": {
-     "rating": 2.65,
+     "rating": 2.77,
      "label": "Thermal",
      "tags": [
       "switch ~2pm"
@@ -33581,12 +33557,7 @@
      "xc": false,
      "rain_p": 0.01,
      "base": 2.77,
-     "adj": [
-      [
-       "little sun (mid/high cloud)",
-       -0.1
-      ]
-     ],
+     "adj": [],
      "hours": {
       "9": 1.6,
       "10": 1.7,
@@ -33605,7 +33576,7 @@
      "gwin": null,
      "note": "thermals to 4,400 ft",
      "p_fly": 1.0,
-     "p_xc": 0.35,
+     "p_xc": 0.37,
      "agree": "mixed",
      "models": {
       "RRFS": 3.0,
@@ -33693,15 +33664,11 @@
       }
      },
      "cloud": {
-      "okta": 5,
-      "cover": 0.63,
+      "okta": 4,
+      "cover": 0.52,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.69,
-        0.0
-       ],
        "ECMWF": [
         0.66,
         0.0
@@ -33713,7 +33680,7 @@
       }
      },
      "was": 2.8,
-     "trend": -0.1
+     "trend": -0.0
     },
     "soboba": {
      "rating": 3.29,
@@ -33740,8 +33707,8 @@
      ],
      "gwin": null,
      "note": "thermals to 3,500 ft",
-     "p_fly": 0.8,
-     "p_xc": 0.34,
+     "p_fly": 0.82,
+     "p_xc": 0.35,
      "agree": "agree",
      "models": {
       "RRFS": 3.3,
@@ -33826,15 +33793,11 @@
       }
      },
      "cloud": {
-      "okta": 5,
-      "cover": 0.57,
+      "okta": 4,
+      "cover": 0.46,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.62,
-        0.0
-       ],
        "ECMWF": [
         0.61,
         0.0
@@ -33846,7 +33809,7 @@
       }
      },
      "was": 4.1,
-     "trend": -0.9
+     "trend": -0.8
     },
     "otay": {
      "rating": 2.65,
@@ -33979,15 +33942,11 @@
       }
      },
      "cloud": {
-      "okta": 2,
-      "cover": 0.22,
+      "okta": 0,
+      "cover": 0.04,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.31,
-        0.0
-       ],
        "ECMWF": [
         0.06,
         0.0
@@ -34126,15 +34085,11 @@
       }
      },
      "cloud": {
-      "okta": 2,
-      "cover": 0.27,
+      "okta": 0,
+      "cover": 0.06,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.37,
-        0.0
-       ],
        "ECMWF": [
         0.08,
         0.0
@@ -34276,15 +34231,11 @@
      },
      "launch_name": "Horse",
      "cloud": {
-      "okta": 2,
-      "cover": 0.28,
+      "okta": 0,
+      "cover": 0.06,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.39,
-        0.0
-       ],
        "ECMWF": [
         0.11,
         0.0
@@ -34295,17 +34246,22 @@
        ]
       }
      },
-     "was": 1.0,
-     "trend": 0.1
+     "was": 1.1,
+     "trend": 0.0
     },
     "marshall": {
-     "rating": 2.79,
+     "rating": 2.66,
      "label": "Glass-off",
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
      "base": 2.79,
-     "adj": [],
+     "adj": [
+      [
+       "little sun (mid/high cloud)",
+       -0.1
+      ]
+     ],
      "hours": {
       "9": 1.1,
       "10": 1.2,
@@ -34421,15 +34377,11 @@
       }
      },
      "cloud": {
-      "okta": 4,
-      "cover": 0.55,
+      "okta": 5,
+      "cover": 0.6,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.52,
-        0.0
-       ],
        "ECMWF": [
         0.65,
         0.0
@@ -34441,7 +34393,7 @@
       }
      },
      "was": 4.5,
-     "trend": -1.7
+     "trend": -1.8
     },
     "santabarbara": {
      "rating": 1.52,
@@ -34451,6 +34403,10 @@
      "rain_p": 0.01,
      "base": 2.15,
      "adj": [
+      [
+       "little sun (mid/high cloud)",
+       -0.1
+      ],
       [
        "wind 20\u201345\u00b0 off launch",
        -0.5
@@ -34473,7 +34429,7 @@
      ],
      "gwin": null,
      "note": "low lid, 3,800 ft",
-     "p_fly": 0.23,
+     "p_fly": 0.13,
      "p_xc": 0.0,
      "agree": "mixed",
      "models": {
@@ -34569,15 +34525,11 @@
       }
      },
      "cloud": {
-      "okta": 2,
-      "cover": 0.31,
-      "sun_loss": 0.0,
+      "okta": 5,
+      "cover": 0.58,
+      "sun_loss": 0.01,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.18,
-        0.0
-       ],
        "ECMWF": [
         0.19,
         0.0
@@ -34589,7 +34541,7 @@
       }
      },
      "was": 2.4,
-     "trend": -0.8
+     "trend": -0.9
     },
     "owens": {
      "rating": 1.0,
@@ -34720,15 +34672,11 @@
       }
      },
      "cloud": {
-      "okta": 2,
-      "cover": 0.23,
-      "sun_loss": 0.01,
+      "okta": 5,
+      "cover": 0.61,
+      "sun_loss": 0.03,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.04,
-        0.0
-       ],
        "ECMWF": [
         0.23,
         0.0
@@ -34791,7 +34739,7 @@
    "why": null,
    "rain_p": 0.03,
    "cloud": {
-    "okta": 3,
+    "okta": 2,
     "sun_loss": 0.0,
     "agree": 0.0,
     "level": null,
@@ -36092,8 +36040,8 @@
        ]
       }
      },
-     "was": 2.5,
-     "trend": -0.6
+     "was": 3.1,
+     "trend": -1.2
     },
     "owens": {
      "rating": 2.0,
@@ -36521,8 +36469,8 @@
        ]
       }
      },
-     "was": 4.3,
-     "trend": -0.4
+     "was": 4.0,
+     "trend": -0.1
     },
     "blossom": {
      "rating": 3.36,
@@ -36647,8 +36595,8 @@
        ]
       }
      },
-     "was": 4.1,
-     "trend": -0.7
+     "was": 3.2,
+     "trend": 0.2
     },
     "elsinore": {
      "rating": 2.91,
@@ -37660,8 +37608,8 @@
        ]
       }
      },
-     "was": 1.0,
-     "trend": 0.0
+     "was": 1.8,
+     "trend": -0.8
     }
    },
    "regime": {
@@ -37833,8 +37781,8 @@
        ]
       }
      },
-     "was": 2.4,
-     "trend": -0.2
+     "was": 2.6,
+     "trend": -0.4
     },
     "lb": {
      "rating": 3.56,
@@ -37960,8 +37908,8 @@
        ]
       }
      },
-     "was": 3.7,
-     "trend": -0.1
+     "was": 4.0,
+     "trend": -0.4
     },
     "blossom": {
      "rating": 4.38,
@@ -38085,8 +38033,8 @@
        ]
       }
      },
-     "was": 3.7,
-     "trend": 0.7
+     "was": 3.6,
+     "trend": 0.8
     },
     "elsinore": {
      "rating": 2.97,
@@ -38208,8 +38156,8 @@
        ]
       }
      },
-     "was": 1.1,
-     "trend": 1.9
+     "was": 1.2,
+     "trend": 1.8
     },
     "soboba": {
      "rating": 4.24,
@@ -38457,8 +38405,8 @@
        ]
       }
      },
-     "was": 1.3,
-     "trend": 2.5
+     "was": 1.6,
+     "trend": 2.2
     },
     "whalesv": {
      "rating": 3.5,
@@ -38586,8 +38534,8 @@
        ]
       }
      },
-     "was": 1.6,
-     "trend": 1.9
+     "was": 2.8,
+     "trend": 0.7
     },
     "lagunahorse": {
      "rating": 1.04,
@@ -38720,8 +38668,8 @@
        ]
       }
      },
-     "was": 1.0,
-     "trend": 0.0
+     "was": 1.1,
+     "trend": -0.1
     },
     "marshall": {
      "rating": 1.0,
@@ -39165,5 +39113,5 @@
    }
   }
  ],
- "trend_ref": "2026-10-31T07:25+00:00"
+ "trend_ref": "2026-10-31T09:10+00:00"
 }
