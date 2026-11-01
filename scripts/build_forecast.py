@@ -300,90 +300,7 @@ def _fetch_model(kind, name, ids, sites, log):
                         "run": None, "fetched": now_iso(), "url": "https://open-meteo.com/en/docs"}
 
 
-SP_PAGES = {
-    "scal": "https://www.soaringpredictor.info/scal/SouthCalPredictor.htm",
-    "santabarb": "https://www.soaringpredictor.info/santabarb/SantaBarbPredictor.htm",
-    "esierra": "https://www.soaringpredictor.info/E-Sierra/E-SierraPredictor.htm",
-}
-SP_LABEL = {"scal": "South Cal", "santabarb": "Santa Barbara", "esierra": "Eastern Sierra"}
-# the SoCal tables run far too high (a sounding estimate), so only the Eastern Sierra table is read, and only
-# as a veto for Owens (sp_veto_ft): no launch there with that much above launch -> it can't light up
-SP_ACTIVE = ("esierra",)
 WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-
-
-def http_text(url, timeout=60):
-    req = urllib.request.Request(url, headers={"User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return r.read().decode("utf-8", "replace")
-
-
-def parse_sp(html):
-    """Soaring Predictor summary table -> {"run": iso, "dates": [...], "rows": {site: [(wind, above_ft), ...]}}."""
-    text = re.sub(r"<[^>]+>", " ", html)
-    text = re.sub(r"&nbsp;|&#160;", " ", text)
-    text = re.sub(r"\s+", " ", text)
-    run = None
-    m = re.search(r"(\d{2})(\d{2})(\d{2})/(\d{2})(\d{2})", text)          # e.g. 261024/1200 = 26-10-24 12:00 UTC
-    if m:
-        yy, mm, dd, hh, mi = (int(g) for g in m.groups())
-        try:
-            run = datetime(2000 + yy, mm, dd, hh, mi, tzinfo=timezone.utc)
-        except ValueError:
-            run = None
-    hm = re.search(r"\b((?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\b(?:\s+(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\b){2,6})", text)
-    heads = hm.group(1).split() if hm else []
-    dates = []
-    if heads:
-        start = (run.astimezone().date() if run else datetime.now(timezone.utc).date())
-        d0 = start
-        while WEEKDAYS[d0.weekday()] != heads[0]:
-            d0 -= timedelta(days=1)
-            if (start - d0).days > 6:
-                d0 = start
-                break
-        dates = [(d0 + timedelta(days=k)).isoformat() for k in range(len(heads))]
-    return {"run": run.isoformat(timespec="minutes") if run else None, "dates": dates, "text": text}
-
-
-def sp_row(parsed, name, n):
-    """(wind, above-launch ft) for each day column of one site."""
-    m = re.search(re.escape(name) + r"((?:\s+[NSEW]{1,3}\s+\d{1,2}\s+\d{1,5}){1,%d})" % n, parsed["text"])
-    if not m:
-        return []
-    return [(f"{w} {v}", int(a)) for w, v, a in re.findall(r"([NSEW]{1,3})\s+(\d{1,2})\s+(\d{1,5})", m.group(1))]
-
-
-def fetch_sp(sites, log):
-    """Soaring Predictor ceilings (public summary tables), shown next to the radar's own heights."""
-    out, info = {}, []
-    for key, url in SP_PAGES.items():
-        if key not in SP_ACTIVE:
-            continue
-        if not any(sp["page"] == key for s in sites for sp in s.get("sp", [])):
-            continue
-        try:
-            parsed = parse_sp(http_text(url))
-            n = len(parsed["dates"]) or 6
-            found = 0
-            for s in sites:
-                for sp in s.get("sp", []):
-                    if sp["page"] != key:
-                        continue
-                    for k, (wind, above) in enumerate(sp_row(parsed, sp["name"], n)):
-                        if k < len(parsed["dates"]):
-                            out.setdefault((s["id"], parsed["dates"][k]), []).append(
-                                {"name": sp["name"], "ceiling_ft": sp["launch_ft"] + above, "above_ft": above, "wind": wind})
-                            found += 1
-            log.append(f"Soaring Predictor {key}: ok ({found} site-days)")
-            info.append({"name": f"Soaring Predictor ({SP_LABEL.get(key, key)})", "kind": "reference",
-                         "provider": "soaringpredictor.info", "id": key, "status": "ok" if found else "failed",
-                         "run": parsed["run"], "fetched": now_iso(), "url": url})
-        except Exception as e:
-            log.append(f"Soaring Predictor {key}: failed ({e})")
-            info.append({"name": f"Soaring Predictor ({key})", "kind": "reference", "provider": "soaringpredictor.info",
-                         "id": key, "status": "failed", "run": None, "fetched": now_iso(), "url": url})
-    return out, info
 
 
 def fetch_nws(log):
@@ -1573,7 +1490,7 @@ def expand_sites(sites):
         else:
             out.append(dict(s, parent=s["id"]))
         for k, hp in enumerate(s.get("height_points") or []):
-            c = {kk: vv for kk, vv in s.items() if kk not in ("launches", "height_points", "sp", "routes", "blocked")}
+            c = {kk: vv for kk, vv in s.items() if kk not in ("launches", "height_points", "routes", "blocked")}
             c.update({"id": f"{s['id']}#h{k}", "parent": s["id"], "_hpoint": True, "lat": hp["lat"], "lon": hp["lon"],
                       "hp_name": f"{s.get('short', s['id'])}: {hp.get('name', f'point {k}')}"})
             out.append(c)
@@ -1713,8 +1630,7 @@ def cloud_mix(site, cdata, dstr):
     return (sum(w[m] * v[0] for m, v in per.items()) / tot, sum(w[m] * v[1] for m, v in per.items()) / tot)
 
 
-def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parents=None, cdata=None):
-    sp = sp or {}
+def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, cdata=None):
     days = {}
 
     def run_site(s, d, levels, sink):
@@ -1833,11 +1749,6 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
             off_season = bool(s.get("season_months")) and int(dstr[5:7]) not in s["season_months"]
             if off_season:
                 r0 = rating; rating = min(rating, 2.0); note_adj("off season: 2 at most", r0)
-            # Soaring Predictor veto (Owens): if no listed launch gets above sp_veto_ft (MSL), it can't be a 5
-            sp_cells = sp.get((s["id"], dstr)) or []
-            sp_weak = bool(s.get("sp_veto_ft") and sp_cells) and max(x["ceiling_ft"] for x in sp_cells) < s["sp_veto_ft"]
-            if sp_weak:
-                r0 = rating; rating = min(rating, 4.0); note_adj("Soaring Predictor: 4 at most", r0)
             # a 5 needs the site's "great" height (xc_top_ft + xc_span_ft, e.g. Little Black 3,500 ft) in at
             # least the best model; short of it the day shows 4 at most (Torrey's ridge scale is its own)
             great_ft = (s.get("xc_top_ft") or 0) + (s.get("xc_span_ft") or 1000)
@@ -1868,6 +1779,17 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, sp=None, parent
                     r0 = rating; rating = max(1.0, rating - 1.0); note_adj("wind at top of lift over 30 mph", r0)
                 elif tw_mph is not None and tw_mph > 20:
                     r0 = rating; rating = max(1.0, rating - 0.5); note_adj("wind at top of lift over 20 mph", r0)
+            # calm sites (Owens): big air only works with almost no wind. Wind at the top of lift over the first
+            # limit, or on launch over launch_mph: 2 at most; over the second limit at the top: a no-go
+            calm = s.get("calm")
+            if calm and D:
+                lws = [(a["lw"], model_weight(k, D)) for k, a in D.items() if a.get("lw") is not None]
+                lw_b = wmedian(lws) if lws else None
+                t1, t2 = calm.get("top_mph", [10, 15])
+                if tw_mph is not None and tw_mph > t2:
+                    r0 = rating; rating = 1.0; note_adj(f"wind at top of lift over {t2} mph: no-go", r0)
+                elif (tw_mph is not None and tw_mph > t1) or (lw_b is not None and lw_b > calm.get("launch_mph", 8)):
+                    r0 = rating; rating = min(rating, 2.0); note_adj("not calm enough: 2 at most", r0)
             # how well the wind lines up with the launch through the window (thermal sites, light air ignored):
             # within 20 degrees is perfect, 20-45 degrees off costs half a point, more than 45 degrees off sinks the day
             if s.get("style") in ("thermal", "window") and D and site_face(s) is not None:
@@ -2292,17 +2214,6 @@ def sample_sources(det, ens):
     return out
 
 
-def sample_sp(sites):
-    out = {}
-    for k in range(3):
-        d = (date.today() + timedelta(days=k)).isoformat()
-        for s in sites:
-            for sp in s.get("sp", []):
-                out.setdefault((s["id"], d), []).append({"name": sp["name"], "ceiling_ft": sp["launch_ft"] + 1500 + 500 * k,
-                                                         "above_ft": 1500 + 500 * k, "wind": "W 8"})
-    return out
-
-
 def sample_nws():
     return {"issued": datetime.now(timezone.utc).isoformat(timespec="minutes"),
             "synopsis": "SAMPLE TEXT. Showers and a slight chance of thunderstorms through Friday morning, ending from the northwest. Dry and warmer for the weekend with weak offshore flow Saturday morning.",
@@ -2617,14 +2528,12 @@ def main(argv=None):
         nws = sample_nws()
         log.append("sample data")
         sources = sample_sources(det, ens)
-        sp = {}
     else:
         det = {n: fetch_model("det", n, ids, sites, log) for n, ids in DET_MODELS.items()}
         ens = {n: fetch_model("ens", n, ids, sites, log) for n, ids in ENS_MODELS.items()}
         nws = fetch_nws(log)
-        sp, sp_info = fetch_sp(sites, log)   # Eastern Sierra only, as a veto for Owens (see SP_ACTIVE)
         sources = [v[2] for k, v in det.items() if not (k in OPTIONAL_MODELS and v[2]["status"] == "failed")]
-        sources += [v[2] for v in ens.values()] + sp_info
+        sources += [v[2] for v in ens.values()]
         sources.append({"name": "NWS San Diego forecast discussion", "kind": "text", "provider": "NWS",
                         "id": "AFD SGX", "status": "ok" if nws else "failed",
                         "run": nws.get("issued") if nws else None, "fetched": now_iso(),
@@ -2638,7 +2547,7 @@ def main(argv=None):
             cdata = fetch_clouds(parents, log)
         except Exception as e:
             log.append(f"clouds: failed ({e})")
-    result = build(sites, det, ens, nws, log, sample=args.sample, sources=sources, sp=sp, parents=parents, cdata=cdata)
+    result = build(sites, det, ens, nws, log, sample=args.sample, sources=sources, parents=parents, cdata=cdata)
     if not args.sample and cdata is not None:
         try:
             add_clouds(result, parents, cdata)
