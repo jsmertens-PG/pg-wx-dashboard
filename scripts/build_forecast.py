@@ -40,7 +40,6 @@ UA = "sd-xc-radar (personal paragliding forecast; github.com)"
 DET_MODELS = {
     "HRRR":  ["ncep_hrrr_conus", "gfs_hrrr"],
     "RRFS":  ["ncep_rrfs_conus", "rrfs_conus", "ncep_rrfs"],     # NOAA's NAM/HRRR successor; used once Open-Meteo has it
-    "NAM":   ["ncep_nam_conus", "nam_conus"],
     "GFS":   ["gfs_global", "ncep_gfs025", "gfs025"],
     "ECMWF": ["ecmwf_ifs025", "ecmwf_ifs"],
     "ICON":  ["icon_global", "icon_seamless"],
@@ -50,6 +49,11 @@ ENS_MODELS = {
     "ECMWF ens": ["ecmwf_ifs025"],
     "ICON ens":  ["icon_global", "icon_seamless"],
 }
+# Open-Meteo's free tier is 10,000 weighted calls a day (weight ~ locations x days/14 x variables/10), so:
+# the high-res models are fetched every run but only for the days they cover; the global models and the
+# ensembles, which update about every 6 hours, are reused from the last run while they are fresher than this
+MODEL_DAYS = {"HRRR": 3, "RRFS": 4}          # forecast days asked for (HRRR runs 48 h, RRFS a bit longer)
+REUSE_H = 5.5                                 # global models and ensembles: fetch again only when older than this
 OPTIONAL_MODELS = {"RRFS"}           # not listed as "failed" while Open-Meteo doesn't offer it yet
 # trust for lift and rating (local experience: HRRR usually right, then NAM; GFS/ECMWF/ICON for the longer range)
 MODEL_WEIGHT = {"HRRR": 3, "RRFS": 3, "NAM": 2, "ECMWF": 1, "GFS": 1, "ICON": 1}
@@ -170,14 +174,14 @@ def surface_filled(data, skip_h=0):
     return ok >= max(1, len(data) // 2)
 
 
-def om_url(base, sites, model, hourly, past_days=0):
+def om_url(base, sites, model, hourly, past_days=0, days=None):
     q = {
         "latitude": ",".join(str(s["lat"]) for s in sites),
         "longitude": ",".join(str(s["lon"]) for s in sites),
         "hourly": ",".join(hourly),
         "models": model,
         "timezone": TZ,
-        "forecast_days": DAYS + (1 if past_days else 0),     # deterministic: one extra day so day 7 has a "next day"
+        "forecast_days": days or (DAYS + (1 if past_days else 0)),     # deterministic: one extra day so day 7 has a "next day"
         "wind_speed_unit": "kn",
     }
     if past_days:
@@ -224,14 +228,14 @@ def cache_save(name, mid, data, info):
         pass
 
 
-def cache_load(name, log):
-    """The last good run of a model, if it is less than CACHE_MAX_H hours old."""
+def cache_load(name, log, max_h=None):
+    """The last good run of a model, if it is less than max_h (default CACHE_MAX_H) hours old."""
     try:
         import gzip
         with gzip.open(CACHE_DIR / f"{name}.json.gz", "rt") as fh:
             c = json.load(fh)
         age_h = (datetime.now(timezone.utc) - datetime.fromisoformat(c["info"]["fetched"])).total_seconds() / 3600
-        if age_h > CACHE_MAX_H:
+        if age_h > (max_h if max_h is not None else CACHE_MAX_H):
             return None
         log.append(f"{name}: using the last good run, fetched {age_h:.1f} h ago")
         return c["mid"], c["data"], dict(c["info"], status="ok", note=f"cached, fetched {age_h:.0f} h ago")
@@ -240,12 +244,16 @@ def cache_load(name, log):
 
 
 def fetch_model(kind, name, ids, sites, log):
+    key = name if kind == "det" else f"ens {name}"
+    if name not in HIRES:                      # global models and ensembles: reuse a fresh enough last run
+        fresh = cache_load(key, log, max_h=REUSE_H)
+        if fresh:
+            return fresh
     res = _fetch_model(kind, name, ids, sites, log)
-    if kind == "det":
-        if res[0]:
-            cache_save(name, *res)
-        else:
-            res = cache_load(name, log) or res
+    if res[0]:
+        cache_save(key, *res)
+    else:
+        res = cache_load(key, log) or res
     return res
 
 
@@ -265,7 +273,8 @@ def _fetch_model(kind, name, ids, sites, log):
                     # a model run that is still loading can come back with empty surface fields:
                     # wait and ask again rather than losing the model for the day
                     for attempt in range(4):
-                        data = http_json(om_url(base, sites, mid, hv, past_days=3))
+                        data = http_json(om_url(base, sites, mid, hv, past_days=3,
+                                                days=MODEL_DAYS.get(name)))
                         data = data if isinstance(data, list) else [data]
                         if surface_filled(data, skip_h=72):
                             break
