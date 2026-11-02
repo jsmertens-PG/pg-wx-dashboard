@@ -605,7 +605,9 @@ header.top { position: relative; }
 .srow .mstrip i { height: 6px; border-radius: 2px; opacity: .55; }
 .srow .mstrip i { position: relative; }
 .srow[aria-expanded="true"] .mstrip { display: none; }   /* open: the big strip below takes over */
-.srow .mstrip i.noon::after { content: ""; position: absolute; left: 50%; top: -4px; width: 2px; height: 3px; margin-left: -1px; border-radius: 1px; background: #26303a; }
+.srow .mstrip { margin-top: 9px; }
+.srow .mstrip .mcells { position: relative; }
+.srow .mstrip em { position: absolute; bottom: calc(100% + 2px); font-size: 8.5px; line-height: 1; font-weight: 600; font-style: normal; color: var(--muted); white-space: nowrap; }
 .srow .mstrip i.none { box-shadow: inset 0 0 0 1px rgba(38,48,58,.35); opacity: .7; }
 .srow .mstrip i.w { opacity: 1; height: 8px; margin-top: -1px; box-shadow: inset 0 0 0 1px rgba(38,48,58,.55); }
 </style>
@@ -977,10 +979,9 @@ function miniStrip(c) {
   if (!(two || (c.rating ?? 0) >= 2.5)) return "";
   const cells = Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => {
     const inw = win.length === 2 && h >= win[0] && h <= win[1];
-    const cl = [inw ? "w" : "", h === 12 ? "noon" : ""].filter(Boolean).join(" ");
-    return v(h) != null ? `<i class="${cl}" style="background:${qgrad(v(h))}"></i>` : `<i class="none${h === 12 ? " noon" : ""}"></i>`;   // after sunset: an empty cell
+    return v(h) != null ? `<i class="${inw ? "w" : ""}" style="background:${qgrad(v(h))}"></i>` : `<i class="none"></i>`;   // after sunset: an empty cell
   }).join("");
-  return `<span class="mstrip" aria-label="hour by hour, 9 am to 6 pm"><b>9a</b><span class="mcells">${cells}</span><b>6p</b></span>`;
+  return `<span class="mstrip" aria-label="hour by hour, 9 am to 6 pm"><b>9a</b><span class="mcells">${cells}<em style="left:30%">noon</em><em style="left:60%">3pm</em></span><b>6p</b></span>`;
 }
 function siteRow(d, s, i, kind) {
   const c = d.sites[s.id];
