@@ -54,6 +54,7 @@ ENS_MODELS = {
 # ensembles, which update about every 6 hours, are reused from the last run while they are fresher than this
 MODEL_DAYS = {"HRRR": 3, "RRFS": 4}          # forecast days asked for (HRRR runs 48 h, RRFS a bit longer)
 REUSE_H = 5.5                                 # global models: fetch again only when older than this
+SLOW_PARENTS = {"santabarbara", "owens"}      # trip areas: their high-res data too is refreshed only every REUSE_H
 ENS_REUSE_H = 11.5                            # ensembles (each member counts, so they are the costly part): twice a day
 OPTIONAL_MODELS = {"RRFS"}           # not listed as "failed" while Open-Meteo doesn't offer it yet
 # trust for lift and rating (local experience: HRRR usually right, then NAM; GFS/ECMWF/ICON for the longer range)
@@ -250,12 +251,39 @@ def fetch_model(kind, name, ids, sites, log):
         fresh = cache_load(key, log, max_h=REUSE_H if kind == "det" else ENS_REUSE_H)
         if fresh:
             return fresh
-    res = _fetch_model(kind, name, ids, sites, log)
+    slow = [k for k, s in enumerate(sites) if s.get("parent") in SLOW_PARENTS] if kind == "det" else []
+    if slow:
+        res = _fetch_split(kind, name, ids, sites, slow, log)
+    else:
+        res = _fetch_model(kind, name, ids, sites, log)
     if res[0]:
         cache_save(key, *res)
     else:
         res = cache_load(key, log) or res
     return res
+
+
+def _fetch_split(kind, name, ids, sites, slow, log):
+    """High-res models: the trip areas' points from a fresh-enough last fetch, everything else every run."""
+    slow_set = set(slow)
+    fast_sites = [s for k, s in enumerate(sites) if k not in slow_set]
+    slow_sites = [sites[k] for k in slow]
+    mid, fast, info = _fetch_model(kind, name, ids, fast_sites, log)
+    if not mid:
+        return mid, fast, info
+    c = cache_load(f"{name} trips", log, max_h=REUSE_H)
+    if c and c[1] and len(c[1]) == len(slow_sites):
+        slow_data = c[1]
+    else:
+        m2, slow_data, i2 = _fetch_model(kind, name, ids, slow_sites, log)
+        if m2:
+            cache_save(f"{name} trips", m2, slow_data, i2)
+        else:
+            slow_data = [None] * len(slow_sites)
+    it_f, it_s, data = iter(fast), iter(slow_data), []
+    for k in range(len(sites)):
+        data.append(next(it_s) if k in slow_set else next(it_f))
+    return mid, data, info
 
 
 def _fetch_model(kind, name, ids, sites, log):
@@ -286,8 +314,8 @@ def _fetch_model(kind, name, ids, sites, log):
                 else:   # one site per request keeps each ensemble response small and fast
                     data, by_parent = [], {}
                     for site in sites:
-                        if site.get("_hpoint"):           # height points only need the regular models
-                            data.append(None)
+                        if site.get("_hpoint") or site.get("parent") in SLOW_PARENTS:
+                            data.append(None)             # height points and trip areas: regular models only
                             continue
                         if site.get("parent") in by_parent:  # launches of one site share its ensemble read
                             data.append(by_parent[site["parent"]])
@@ -1667,7 +1695,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
     bias = rrfs_bias(sites, det, corr)
     for name, (mid, data, *_i) in det.items():
         for s, d in zip(sites, data or []):
-            if s.get("_hpoint"):
+            if s.get("_hpoint") or not d:                 # (a trip area whose refresh failed: no data)
                 continue
             ck = s["id"] if corr.get(name, {}).get(s["id"]) else s.get("parent")
             if corr.get(name, {}).get(ck):
@@ -2306,9 +2334,15 @@ def fetch_clouds(parents, log):
             owner.append(s["id"])
     out = {}
     for name, mid in CLOUD_MODELS.items():
+        if name not in HIRES:                  # the global models' cloud: reuse while fresh, like their other fields
+            fresh = cache_load(f"clouds {name}", log, max_h=REUSE_H)
+            if fresh:
+                out[name] = fresh[1]
+                continue
         try:
             data = http_json(om_url("https://api.open-meteo.com/v1/forecast", pts, mid,
-                                    ["cloud_cover_mid", "cloud_cover_high", "shortwave_radiation"]))
+                                    ["cloud_cover_mid", "cloud_cover_high", "shortwave_radiation"],
+                                    days=MODEL_DAYS.get(name)))
             data = data if isinstance(data, list) else [data]
             per = {}
             for sid, d in zip(owner, data):
@@ -2316,6 +2350,8 @@ def fetch_clouds(parents, log):
                 hr["_utc_offset_h"] = (d.get("utc_offset_seconds") or -7 * 3600) / 3600
                 per.setdefault(sid, []).append(hr)
             out[name] = per
+            if name not in HIRES:
+                cache_save(f"clouds {name}", mid, per, {"fetched": now_iso()})
             log.append(f"clouds {name}: ok ({mid})")
         except Exception as e:
             log.append(f"clouds {name}: failed ({e})")
