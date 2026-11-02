@@ -2038,6 +2038,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                              "wind": [round(x) if x is not None else None for x in (v.get("wind_1pm") or [])] or None,
                              "aloft": [round(v["tw13"][0]), round(v["tw13"][1] * 1.15078)] if v.get("tw13") else None,
                              "wet": round(v.get("wet_f", 0.0), 2),
+                             "wind_src": "ECMWF" if (k in ("GFS", "ICON") and "RRFS" in cell.get("all", D) and "ECMWF" in cell.get("all", D)) else k,
                              "why": v["codes"][:3], "used": k in D} for k, v in cell.get("all", D).items()},
             }
         # merge per-launch results back into their site: show the better launch of the day
@@ -2552,7 +2553,7 @@ def snapshot_of(result):
 
 
 MODEL_LOG_COLS = ["run_date", "target", "lead_d", "site", "model", "rating", "top_ft", "wstar",
-                  "wind_dir", "wind_mph", "gust_mph", "aloft_dir", "aloft_mph", "wet_frac", "codes"]
+                  "wind_dir", "wind_mph", "gust_mph", "aloft_dir", "aloft_mph", "wet_frac", "codes", "wind_src"]
 
 
 def save_model_log(result, folder, now=None):
@@ -2574,7 +2575,8 @@ def save_model_log(result, folder, now=None):
             for m, v in (c.get("diag") or {}).items():
                 w, a = v.get("wind") or [None, None, None], v.get("aloft") or [None, None]
                 rows.append([run_date, d["date"], lead, sid, m, v.get("r"), v.get("top"), v.get("w"),
-                             *(w + [None] * 3)[:3], *a, v.get("wet"), " ".join(v.get("why") or [])])
+                             *(w + [None] * 3)[:3], *a, v.get("wet"), " ".join(v.get("why") or []),
+                             v.get("wind_src") or m])
     new = not path.exists()
     with path.open("a", newline="") as f:
         wr = csv.writer(f)
