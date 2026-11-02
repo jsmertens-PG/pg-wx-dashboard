@@ -53,7 +53,8 @@ ENS_MODELS = {
 # the high-res models are fetched every run but only for the days they cover; the global models and the
 # ensembles, which update about every 6 hours, are reused from the last run while they are fresher than this
 MODEL_DAYS = {"HRRR": 3, "RRFS": 4}          # forecast days asked for (HRRR runs 48 h, RRFS a bit longer)
-REUSE_H = 5.5                                 # global models and ensembles: fetch again only when older than this
+REUSE_H = 5.5                                 # global models: fetch again only when older than this
+ENS_REUSE_H = 11.5                            # ensembles (each member counts, so they are the costly part): twice a day
 OPTIONAL_MODELS = {"RRFS"}           # not listed as "failed" while Open-Meteo doesn't offer it yet
 # trust for lift and rating (local experience: HRRR usually right, then NAM; GFS/ECMWF/ICON for the longer range)
 MODEL_WEIGHT = {"HRRR": 3, "RRFS": 3, "NAM": 2, "ECMWF": 1, "GFS": 1, "ICON": 1}
@@ -246,7 +247,7 @@ def cache_load(name, log, max_h=None):
 def fetch_model(kind, name, ids, sites, log):
     key = name if kind == "det" else f"ens {name}"
     if name not in HIRES:                      # global models and ensembles: reuse a fresh enough last run
-        fresh = cache_load(key, log, max_h=REUSE_H)
+        fresh = cache_load(key, log, max_h=REUSE_H if kind == "det" else ENS_REUSE_H)
         if fresh:
             return fresh
     res = _fetch_model(kind, name, ids, sites, log)
@@ -283,15 +284,19 @@ def _fetch_model(kind, name, ids, sites, log):
                     else:
                         raise ValueError("surface fields empty")
                 else:   # one site per request keeps each ensemble response small and fast
-                    data = []
+                    data, by_parent = [], {}
                     for site in sites:
                         if site.get("_hpoint"):           # height points only need the regular models
                             data.append(None)
+                            continue
+                        if site.get("parent") in by_parent:  # launches of one site share its ensemble read
+                            data.append(by_parent[site["parent"]])
                             continue
                         if time.time() - t0 > 240:
                             raise TimeoutError("ensemble took longer than 4 minutes")
                         d = http_json(om_url(base, [site], mid, hv), tries=2, timeout=60)
                         data.append(d[0] if isinstance(d, list) else d)
+                        by_parent[site.get("parent")] = data[-1]
                 shf_n = sum(x is not None for d in data if d for x in (d.get("hourly") or {}).get("sensible_heat_flux") or [])
                 log.append(f"{name}: ok ({mid})" + (f", surface heat flux ({shf_n} values)" if kind == "det" else ""))
                 info = {"name": name, "kind": "model" if kind == "det" else "ensemble",
