@@ -604,6 +604,7 @@ header.top { position: relative; }
 .srow .mstrip .mcells { flex: 1 1 auto; display: grid; grid-template-columns: repeat(10, 1fr); gap: 2px; }
 .srow .mstrip i { height: 6px; border-radius: 2px; opacity: .55; }
 .srow .mstrip i { position: relative; }
+.srow[aria-expanded="true"] .mstrip { display: none; }   /* open: the big strip below takes over */
 .srow .mstrip i.noon::after { content: ""; position: absolute; left: 50%; top: -4px; width: 2px; height: 3px; margin-left: -1px; border-radius: 1px; background: #26303a; }
 .srow .mstrip i.none { box-shadow: inset 0 0 0 1px rgba(38,48,58,.35); opacity: .7; }
 .srow .mstrip i.w { opacity: 1; height: 8px; margin-top: -1px; box-shadow: inset 0 0 0 1px rgba(38,48,58,.55); }
@@ -856,10 +857,12 @@ function render(data) {
     const wasOpen = b.getAttribute("aria-expanded") === "true";
     card.querySelectorAll("[data-site]").forEach((x) => x.setAttribute("aria-expanded", "false"));
     if (wasOpen) { det.hidden = true; return; }
-    b.setAttribute("aria-expanded", "true");
+    const mini = b.querySelector(".mcells"), from = mini ? mini.getBoundingClientRect() : null;
+    b.setAttribute("aria-expanded", "true");        // the mini strip hides while the site is open
     det.innerHTML = detail(DAYKEY[i], BY[b.dataset.site], true);
     b.after(det);                                   // open right under the site
     det.hidden = false;
+    morphStrip(from, det);
     const r = det.getBoundingClientRect();
     if (r.bottom > window.innerHeight) det.scrollIntoView({ block: "nearest", behavior: "smooth" });
   };
@@ -873,6 +876,20 @@ function render(data) {
   $("#foot").textContent = `Built ${new Date(data.generated).toISOString().slice(0, 16).replace("T", " ")} UTC · a guide, not a launch decision`;
 }
 
+/* opening a site: the card's mini hour strip grows into the big one (no duplicate strips) */
+function morphStrip(from, det) {
+  const big = det.querySelector(".hstrip"), cells = big ? big.querySelectorAll(".hc") : [];
+  if (!from || !cells.length || (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches)) return;
+  const a = cells[0].getBoundingClientRect(), z = cells[cells.length - 1].getBoundingClientRect(), b0 = big.getBoundingClientRect();
+  const sx = from.width / Math.max(1, z.right - a.left), sy = from.height / Math.max(1, a.height);
+  const dx = from.left - (b0.left + (a.left - b0.left) * sx), dy = from.top - (b0.top + (a.top - b0.top) * sy);
+  big.style.transformOrigin = "0 0";
+  try {
+    big.animate([{ transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})` }, { transform: "none" }],
+                { duration: 360, easing: "cubic-bezier(.2,.7,.2,1)" });
+    big.querySelectorAll(".hl, .wbr").forEach((el) => el.animate([{ opacity: 0 }, { opacity: 0, offset: .5 }, { opacity: 1 }], { duration: 420 }));
+  } catch (e) {}
+}
 const chipHtml = (c, prefix) => `<span class="chip"><i style="background:${qv(c.rating)}"></i>${prefix ? `<span class="muted">${esc(prefix)}</span> ` : ""}${r1(c.rating)}${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span>`;
 const labelHtml = (c) => `<span class="label">${c.label === "XC" ? "" : `<span class="lab" style="color:${qv(c.rating)}">${esc(c.label)}</span>`}${c.xc ? '<span class="xcmark">XC</span>' : ""}</span>`;
 const bar = (r, thin) => `<span class="bar${thin ? " thin" : ""}"><i style="width:${Math.max(4, Math.min(100, r * 20))}%;background:${qv(r)}"></i></span>`;
