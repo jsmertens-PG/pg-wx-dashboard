@@ -752,7 +752,11 @@ def score_hour(site, hr, i, levels, elev_m):
     wstar = (9.81 / (t2 + 273.15) * kin * zi) ** (1 / 3) if zi > 0 and kin > 0 else 0.0
     # a paraglider can only use the part of the mixed layer where thermals beat its sink rate
     # (the idea behind the standard Hcrit): weak days use about half of it, strong days most of it
-    k = clamp(0.4 + 0.2 * (wstar - 1.0), 0.3, 0.8)
+    # the usable share of the mixed layer is calibrated against the usual soaring forecasts with W* from 30% of
+    # the sunshine, so it keeps that W*; the model's own heat flux (above) is only used for the climb rate
+    kin_h = 0.30 * sw / 1200.0
+    wstar_h = (9.81 / (t2 + 273.15) * kin_h * zi) ** (1 / 3) if zi > 0 and kin_h > 0 else 0.0
+    k = clamp(0.4 + 0.2 * (wstar_h - 1.0), 0.3, 0.8)
     usable = z0 + zi * k
     # the height used for rating and shown is this usable top, with no best-thermal bonus: it matches
     # the usual soaring forecasts' "top of usable lift" (LB 2026-10-26 12:00: HRRR 1,978 vs 1,968 ft, RRFS 1,649 vs 1,640 ft).
