@@ -931,6 +931,7 @@ def score_hour(site, hr, i, levels, elev_m):
            "prof": [[round(z * FT), round(t, 1)] for z, t, *_ in pts[:9]]}
     return {"q": q, "xc_s": xc_s, "xc_block": xc_block, "dbg": dbg, "glass": glass, "cold": cold_aloft, "good_launch": bool(good_launch), "launch": launch,
             "launch_pts": launch_pts if launch_pts is not None else (1.0 if good_launch else 0.0),
+            "dbg": [top_parcel, blh, base, z0],              # height ingredients, for calibration only
             "usable": usable, "usable_show": usable_show, "peak_top": peak_top, "base": base, "agl": agl, "wstar": wstar, "climb": max(0.0, CORE * wstar - SINK),
             "gcat": gcat,
             "into": bool(on and lw_mph is not None and lw_mph >= max(3.0, lo)),   # blowing into the launch, not just light
@@ -1568,7 +1569,8 @@ def corridor_heights(sites, det):
                     continue
                 if sc and int(t[11:13]) in (11, 12, 13, 14, 15):
                     CORRIDOR_DBG.setdefault(t[:10], {}).setdefault(s["hp_name"], {}).setdefault(name, {})[int(t[11:13])] = \
-                        [round(elev * FT), round(sc["usable_show"] * FT)]
+                        [round(elev * FT), round(sc["usable_show"] * FT)] + [
+                            round(x * FT) if x is not None else None for x in (sc.get("dbg") or [])]
                 if sc:
                     pts = (dst[t][3] if t in dst else []) + [(sc["usable_show"], s["hp_name"])]
                     best = dst[t] if t in dst and dst[t][0] >= sc["usable_show"] else (sc["usable_show"], sc["wstar"], s["hp_name"])
