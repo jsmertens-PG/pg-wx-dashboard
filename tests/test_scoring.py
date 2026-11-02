@@ -404,3 +404,16 @@ class ModelLog(unittest.TestCase):
             lines = p.read_text().strip().splitlines()
             self.assertEqual(len(lines), 3)
             self.assertTrue(lines[1].startswith("2026-11-01,2026-11-02,1,lb,HRRR,3.1,2300,1.5,270,6,9,280,7,0.0,gusty"))
+
+
+class EcmwfWindForGlobals(unittest.TestCase):
+    def test_gfs_takes_ecmwf_wind_only_where_rrfs_covers(self):
+        t = ["2026-11-03T12:00", "2026-11-06T12:00"]
+        mk = lambda ws, temp=(20, 20): {"hourly": {"time": t, "temperature_2m": list(temp), "wind_speed_10m": list(ws),
+                                                   "wind_direction_10m": [270, 270], "wind_gusts_10m": [10, 10]}}
+        det = {"RRFS": ("r", [mk([5, 5], (20, None))], {}), "ECMWF": ("e", [mk([3, 3])], {}),
+               "GFS": ("g", [mk([9, 9])], {}), "ICON": ("i", [mk([8, 8])], {})}
+        out = bf.ecmwf_wind_for_globals(det, [])
+        self.assertEqual(out["GFS"][1][0]["hourly"]["wind_speed_10m"], [3, 9])   # day 4+: its own wind
+        self.assertEqual(out["ICON"][1][0]["hourly"]["wind_speed_10m"], [3, 8])
+        self.assertEqual(det["GFS"][1][0]["hourly"]["wind_speed_10m"], [9, 9])   # raw data untouched

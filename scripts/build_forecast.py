@@ -1672,8 +1672,48 @@ def cloud_mix(site, cdata, dstr):
     return (sum(w[m] * v[0] for m, v in per.items()) / tot, sum(w[m] * v[1] for m, v in per.items()) / tot)
 
 
+WIND_VARS = ["wind_speed_10m", "wind_direction_10m", "wind_gusts_10m"] + [
+    f"wind_{k}_{L}hPa" for L in DET_LEVELS for k in ("speed", "direction")]
+
+
+def ecmwf_wind_for_globals(det, log):
+    """Where RRFS and ECMWF both cover an hour, GFS and ICON take ECMWF's winds (launch, gusts and aloft):
+    on those days their wind isn't trusted, only their thermals. Works on copies, the raw data stays as is."""
+    if not (det.get("RRFS") or (None, None))[1] or not (det.get("ECMWF") or (None, None))[1]:
+        return det
+    rr, ec = det["RRFS"][1], det["ECMWF"][1]
+    out = dict(det)
+    for name in ("GFS", "ICON"):
+        if not (det.get(name) or (None, None))[1]:
+            continue
+        mid, data, *rest = det[name]
+        new = []
+        for d, dr, de in zip(data, rr, ec):
+            if not d or not dr or not de:
+                new.append(d)
+                continue
+            hr, hre, hrr = d.get("hourly", {}), de.get("hourly", {}), dr.get("hourly", {})
+            ie = {t: i for i, t in enumerate(hre.get("time", []))}
+            rr_t = {t for t, v in zip(hrr.get("time", []), hrr.get("temperature_2m", [])) if v is not None}
+            h2 = dict(hr)
+            for var in WIND_VARS:
+                if var not in hr or var not in hre:
+                    continue
+                vals, ev = list(hr[var]), hre[var]
+                for i, t in enumerate(hr.get("time", [])):
+                    j = ie.get(t)
+                    if t in rr_t and j is not None and ev[j] is not None:
+                        vals[i] = ev[j]
+                h2[var] = vals
+            new.append(dict(d, hourly=h2))
+        out[name] = (mid, new, *rest)
+    log.append("wind: GFS and ICON use ECMWF's winds where RRFS and ECMWF overlap")
+    return out
+
+
 def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, cdata=None):
     days = {}
+    det = ecmwf_wind_for_globals(det, log)
 
     def run_site(s, d, levels, sink):
         hr, elev = d.get("hourly", {}), d.get("elevation", 0) or 0
