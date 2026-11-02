@@ -43,14 +43,6 @@
       ],
       "note": "Ridge soaring in a steady W to WNW sea breeze. SW or NW is cross (soarable but not great); only east is over the back. Rare thermal days (1,200 ft+) are flagged as a Thermal day.",
       "xc_span_ft": 1000,
-      "sp": [
-        {
-          "page": "scal",
-          "name": "Torrey Pines Gliderport",
-          "launch_ft": 300,
-          "lz_ft": 0
-        }
-      ],
       "lz_ft": 0,
       "cross": [
         [
@@ -71,7 +63,8 @@
         17
       ],
       "rain": "true",
-      "otb_mph": 3
+      "otb_mph": 3,
+      "min_mph": 6
     },
     {
       "id": "lb",
