@@ -963,7 +963,19 @@ function sitePills(c) {
   const SAME = { gusty: /gust/, aloft: /top of lift/, windy: /too windy|blown/, cross: /off launch/ };   // no pill twice
   (c.why || []).filter((k) => WHY_TXT[k] && !/rain|showers|cape/.test(k) && !(SAME[k] && adj.some(([t]) => SAME[k].test(t)))).slice(0, Object.keys(when).length ? 4 : 2)
     .forEach((k) => out.push(`<span class="rx">${ico("warn")}${esc(WHY_TXT[k])}${when[k] ? ` <span class="dv">${esc(when[k])}</span>` : ""}</span>`));
-  adj.filter(([t]) => !/rain|sun/.test(t)).forEach(([t, v]) => out.push(`<span class="rx">${ico("warn")}${esc(t)}${dv(v)}</span>`));
+  /* deductions as short chips (the full wording and the points stay in the detail view); the ones that only
+     cap a 5 at 4 don't get a chip */
+  const SHORT = [[/20–45° off launch/, "cross wind"], [/more than 45° off launch/, "wrong direction"],
+    [/gusts over 18/, "too windy"], [/gusts over 12/, "gusty"], [/top of lift over \d+ mph: no-go/, "too windy aloft"],
+    [/top of lift over/, "strong wind aloft"], [/blown out/, "blown out"], [/not calm/, "not calm"],
+    [/off season/, "off season"], [/awkward drift/, "awkward drift"]];
+  const seen = new Set(out.map((x) => x.replace(/<i[^>]*>.*?<\/i>/g, "").replace(/<[^>]+>/g, "").trim().toLowerCase()));
+  adj.filter(([t]) => !/rain|sun|4 at most$/.test(t) || /off launch|blown|calm|season/.test(t)).forEach(([t]) => {
+    const s = (SHORT.find(([re]) => re.test(t)) || [null, t])[1];
+    if (seen.has(s.toLowerCase())) return;
+    seen.add(s.toLowerCase());
+    out.push(`<span class="rx">${ico("warn")}${esc(s)}</span>`);
+  });
   /* good news and Elsinore's switch: glass-off when a decent one is expected, the switch time (or no switch) */
   (c.tags || []).filter((t) => /^glass-off$|switch|no launch window/.test(t))
     .forEach((t) => out.push(`<span class="rx">${t === "glass-off" ? '<i class="ic" aria-hidden="true">☼\uFE0E</i>' : ico("Switch day")}${esc(t)}</span>`));
