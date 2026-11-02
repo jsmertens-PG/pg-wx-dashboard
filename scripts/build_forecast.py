@@ -1746,7 +1746,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                 days.setdefault(dstr, {}).setdefault(s["id"], {"det": {}, "ens": []})["det"][name] = a
     for name, (mid, data, *_i) in ens.items():
         for s, d in zip(sites, data or []):
-            if s.get("_hpoint"):
+            if s.get("_hpoint") or not d:                 # trip areas get no ensembles
                 continue
             for dstr, a in run_site(s, d, ENS_LEVELS, "ens"):
                 days.setdefault(dstr, {}).setdefault(s["id"], {"det": {}, "ens": []})["ens"].append(a)

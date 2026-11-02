@@ -417,3 +417,16 @@ class EcmwfWindForGlobals(unittest.TestCase):
         self.assertEqual(out["GFS"][1][0]["hourly"]["wind_speed_10m"], [3, 9])   # day 4+: its own wind
         self.assertEqual(out["ICON"][1][0]["hourly"]["wind_speed_10m"], [3, 8])
         self.assertEqual(det["GFS"][1][0]["hourly"]["wind_speed_10m"], [9, 9])   # raw data untouched
+
+
+class TripAreasWithoutEnsembles(unittest.TestCase):
+    def test_build_survives_missing_ensemble_data(self):
+        import json as _j
+        parents = _j.loads((Path(bf.__file__).resolve().parent.parent / "sites.json").read_text())["sites"]
+        sites = bf.expand_sites(parents)
+        det = {"HRRR": ("s", bf.sample_response(sites, bf.DET_LEVELS, horizon_h=48, seed=1), None),
+               "GFS": ("s", bf.sample_response(sites, bf.DET_LEVELS, seed=3), None)}
+        ens_data = bf.sample_response(sites, bf.ENS_LEVELS, members=4, seed=6)
+        ens_data = [None if (s.get("_hpoint") or s.get("parent") in bf.SLOW_PARENTS) else d for s, d in zip(sites, ens_data)]
+        res = bf.build(sites, det, {"GFS ens": ("s", ens_data, None)}, bf.sample_nws(), [], sample=True, parents=parents)
+        self.assertTrue(res["days"])
