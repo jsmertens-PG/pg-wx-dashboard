@@ -1290,11 +1290,11 @@ def route_note(site, a):
 
 
 def wind_txt(w):
-    """'SW 10g22' (mph); gusts only when they are 5 mph or more above the mean."""
+    """'SW 8g12' (mph); gusts whenever the model has them above the mean."""
     if not w:
         return "–"
     d, spd, g = w
-    return f"{compass(d)} {round(spd)}" + (f"g{round(g)}" if g is not None and g - spd >= 5 else "")
+    return f"{compass(d)} {round(spd)}" + (f"g{round(g)}" if g is not None and round(g) > round(spd) else "")
 
 
 def ft100(m):
