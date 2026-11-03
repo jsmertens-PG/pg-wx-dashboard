@@ -108,7 +108,7 @@ details.day > summary.hd .notes .rx, details.day > summary.hd .notes .rx.rx-weak
   background: rgba(255,255,255,.8) !important; color: #26303a !important; box-shadow: 0 0 0 1px rgba(20,30,40,.16) !important;
   border: 0 !important; border-radius: 5px; font-size: .66rem; font-weight: 600; letter-spacing: .03em; padding: 0 8px; gap: 5px; }
 details.day > summary.hd .notes .rx.strong { background: #26303a !important; color: #fff !important; box-shadow: none !important; }
-details.day > summary.hd .notes .rx .rq { opacity: 1; font-weight: 800; }
+details.day > summary.hd .notes .rx .rq { opacity: .85; font-weight: 600; }
 .rx .ic { font-style: normal; font-size: .82rem; line-height: 1; }
 .rx .ic-svg { width: .62rem; height: .82rem; flex: 0 0 auto; }
 /* site pills: bigger than the weather notices; XC a small bonus tag */
@@ -848,7 +848,7 @@ const regimeHtml = (rg, small) => {
   const label = rg.weak && rg.type === "Front" ? "Weak front" : rg.type;       // a pointer worth checking, not a big rainy front
   const name = small ? esc(rg.weak && rg.type === "Front" ? "Weak front" : RX[rg.type][1]) : `<span class="rx-l">${esc(label)}</span><span class="rx-s">${esc(label)}</span>`;
   const strong = !rg.weak && (rg.agree == null || rg.agree >= 0.75);
-  return `<span class="rx rx-${RX[rg.type][0]}${small ? " sm" : ""}${rg.weak ? " rx-weak" : ""}${strong ? " strong" : ""}" title="${esc(Object.entries(rg.models || {}).map(([m, t]) => `${m}: ${t || "–"}`).join(" · "))}">${small ? "" : ico(rg.type)}${pctTxt && !small ? `<span class="rq">${pctTxt}</span> ` : ""}${name}</span>`;
+  return `<span class="rx rx-${RX[rg.type][0]}${small ? " sm" : ""}${rg.weak ? " rx-weak" : ""}${strong ? " strong" : ""}" title="${esc(Object.entries(rg.models || {}).map(([m, t]) => `${m}: ${t || "–"}`).join(" · "))}">${small ? "" : ico(rg.type)}${name}${pctTxt && !small ? ` <span class="rq">(${pctTxt})</span>` : ""}</span>`;
 };
 
 
