@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-03T19:19+00:00",
+ "generated": "2026-11-03T19:43+00:00",
  "sample": false,
  "calib": {
   "2026-11-03": {
@@ -29675,7 +29675,7 @@
    }
   }
  },
- "overview": "Low pressure now \u00b7 showers tonight \u00b7 high pressure Thu",
+ "overview": "Ridge now \u00b7 gusty winds now \u00b7 marine layer tonight",
  "models": {
   "HRRR": "ncep_hrrr_conus",
   "RRFS": "ncep_rrfs_conus",
@@ -29698,24 +29698,20 @@
  },
  "log": [
   "HRRR: ok (ncep_hrrr_conus), surface heat flux (6500 values)",
-  "HRRR: ok (ncep_hrrr_conus), surface heat flux (2250 values)",
-  "RRFS: ncep_rrfs_conus surface fields empty, retrying",
+  "HRRR trips: using the last good run, fetched 0.5 h ago",
   "RRFS: ok (ncep_rrfs_conus), surface heat flux (8372 values)",
-  "RRFS: ok (ncep_rrfs_conus), surface heat flux (2898 values)",
-  "GFS: ok (gfs_global), surface heat flux (13728 values)",
-  "GFS: ok (gfs_global), surface heat flux (4752 values)",
-  "ECMWF: ok (ecmwf_ifs025), surface heat flux (0 values)",
-  "ECMWF: ok (ecmwf_ifs025), surface heat flux (0 values)",
-  "ICON: ok (icon_global), surface heat flux (13364 values)",
-  "ICON: ok (icon_global), surface heat flux (4626 values)",
-  "ens GFS ens: using the last good run, fetched 5.7 h ago",
-  "ens ECMWF ens: using the last good run, fetched 5.7 h ago",
-  "ens ICON ens: using the last good run, fetched 5.7 h ago",
+  "RRFS trips: using the last good run, fetched 0.5 h ago",
+  "GFS: using the last good run, fetched 0.5 h ago",
+  "ECMWF: using the last good run, fetched 0.4 h ago",
+  "ICON: using the last good run, fetched 0.4 h ago",
+  "ens GFS ens: using the last good run, fetched 6.1 h ago",
+  "ens ECMWF ens: using the last good run, fetched 6.1 h ago",
+  "ens ICON ens: using the last good run, fetched 6.1 h ago",
   "NWS AFD: ok",
   "clouds HRRR: ok (ncep_hrrr_conus)",
   "clouds RRFS: ok (ncep_rrfs_conus)",
-  "clouds ECMWF: ok (ecmwf_ifs025)",
-  "clouds ICON: ok (icon_global)",
+  "clouds ECMWF: using the last good run, fetched 0.4 h ago",
+  "clouds ICON: using the last good run, fetched 0.4 h ago",
   "wind: GFS and ICON use ECMWF's winds where RRFS and ECMWF overlap"
  ],
  "sources": [
@@ -29726,7 +29722,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-11-03T17:00+00:00",
-   "fetched": "2026-11-03T19:14+00:00",
+   "fetched": "2026-11-03T19:43+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -29736,7 +29732,7 @@
    "id": "ncep_rrfs_conus",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-03T19:15+00:00",
+   "fetched": "2026-11-03T19:43+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -29747,7 +29743,8 @@
    "status": "ok",
    "run": null,
    "fetched": "2026-11-03T19:16+00:00",
-   "url": "https://open-meteo.com/en/docs"
+   "url": "https://open-meteo.com/en/docs",
+   "note": "cached, fetched 0 h ago"
   },
   {
    "name": "ECMWF",
@@ -29757,7 +29754,8 @@
    "status": "ok",
    "run": "2026-11-03T06:00+00:00",
    "fetched": "2026-11-03T19:17+00:00",
-   "url": "https://open-meteo.com/en/docs"
+   "url": "https://open-meteo.com/en/docs",
+   "note": "cached, fetched 0 h ago"
   },
   {
    "name": "ICON",
@@ -29767,7 +29765,8 @@
    "status": "ok",
    "run": null,
    "fetched": "2026-11-03T19:17+00:00",
-   "url": "https://open-meteo.com/en/docs"
+   "url": "https://open-meteo.com/en/docs",
+   "note": "cached, fetched 0 h ago"
   },
   {
    "name": "GFS ens",
@@ -29808,8 +29807,8 @@
    "provider": "NWS",
    "id": "AFD SGX",
    "status": "ok",
-   "run": "2026-11-03T10:32:00+00:00",
-   "fetched": "2026-11-03T19:19+00:00",
+   "run": "2026-11-03T19:24:00+00:00",
+   "fetched": "2026-11-03T19:43+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   },
   {
@@ -29819,44 +29818,42 @@
    "id": "cloud_cover_mid/high",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-03T19:19+00:00",
+   "fetched": "2026-11-03T19:43+00:00",
    "url": "https://open-meteo.com/en/docs"
   }
  ],
  "nws": {
-  "issued": "2026-11-03T10:32:00+00:00",
-  "synopsis": "Fair and cool weather will continue through Thursday. Except there is a slight chance of showers mainly in southwest San Diego County tonight. High pressure aloft and offshore flow will bring gradually warmer and dry weather Thursday into the weekend. For this weekend, temperatures will climb well above normal, especially near the coast, and offshore breezes and locally stronger Santa Ana winds are likely for foothills and some inland valleys.",
+  "issued": "2026-11-03T19:24:00+00:00",
+  "synopsis": "Quiet weather with slightly below normal temperatures through Wednesday and gusty winds over the coastal waters. Warmer and drier weather returns late week, with well-above-normal temperatures and weak to moderate Santa Ana winds for the weekend.",
   "systems": [
-   "A low pressure trough zipping west to east through northern CA will bring more high clouds today and more low clouds tonight into Wednesday.",
-   "This trough will also enhance onshore winds in the coastal waters, the mountains, and the deserts mainly this evening.",
-   "The trough exits to the east but it is followed by only timid high pressure and some very weak offshore flow.",
-   "A high pressure ridge over the West Coast amplifies on Friday and Saturday."
+   "The thermal ridge axis remains over SoCal today, but high clouds will inhibit some of the afternoon peak heating.",
+   "The ridge axis slides eastward quickly today as a deepening low off the coast advances towards Northern California.",
+   "As this system moves inland this evening and the gradient tightens, gusty onshore winds will develop over the coastal waters, with a Small Craft Advisory currently in place.",
+   "Tonight as this low moves in, an deepening marine layer across much of San Diego County will support some localized light rainfall early Wednesday morning for far southern SD County."
   ],
   "bullets": [
-   "Fair and cool weather will continue through Thursday",
-   "Except there is a slight chance of showers mainly in southwest San Diego County tonight",
-   "High pressure aloft and offshore flow will bring warmer and dry weather Thursday into the weekend",
-   "For this weekend, temperatures will climb well above normal, especially near the coast, and offshore breezes\u2026",
-   "A low pressure trough zipping west to east through northern CA will bring more high clouds today and more low\u2026"
+   "Quiet weather with slightly below normal temperatures through Wednesday and gusty winds over the coastal\u2026",
+   "Warmer and drier weather returns late week, with well-above-normal temperatures and weak to moderate Santa\u2026",
+   "Thermal ridge axis remains over SoCal today, but high clouds will inhibit some of the afternoon peak heating",
+   "Ridge axis slides eastward today as a deepening low off the coast advances towards Northern California",
+   "As this system moves inland this evening and the gradient tightens, gusty onshore winds will develop over the\u2026"
   ],
   "summary": {
    "pattern": [
-    "This trough will also enhance onshore winds in the coastal waters, the mountains",
-    "Trough exits to the east but it is followed by only timid high pressure and some very weak offshore flow",
-    "High pressure aloft and offshore flow will bring warmer and dry weather Thursday into the weekend"
+    "Thermal ridge axis remains over SoCal today",
+    "Ridge axis slides eastward today as a deepening low off the coast advances towards Northern California"
    ],
    "flying": [
-    "Fair and cool weather will continue through Thursday",
-    "Except there is a slight chance of showers mainly in southwest San Diego County tonight",
-    "It's a clear and tranquil morning"
+    "Quiet weather with slightly below normal temperatures through Wednesday and gusty winds over the coastal waters",
+    "Warmer and drier weather returns late week",
+    "Current visible satellite shows high clouds streaming in from the north while low clouds 30 miles off the coastline continue to scatter out"
    ],
    "by": "rules"
   },
   "aviation": "031030...Widespread VFR conditions expected through late this afternoon, with SCT to BKN clouds AOA 20kft at times through late Tue. SCT-BKN clouds around 3000 to 5000 ft MSL move into San Diego Co and south Orange/Riverside counties after 00Z Wed. Likely (60+% chance) these will be above 3000 ft for the most part, but dips to 2500-3000 ft MSL are possible, especially in southern SD County. Areas of -DZ/-RA are likely for coastal San Diego Co after 06Z Wed, most likely in south county, but aren't expected to lead to any decrease in vis. Clouds start to scatter out around 15Z Wed.",
-  "advisories": "CA...None. PZ...Small Craft Advisory from 1 PM this afternoon to 4 AM PST Wednesday for Waters from San Mateo Point to the Mexican Border Extending 10 to 60 nm out including San Clemente Island. &&",
+  "advisories": "CA...None. PZ...Small Craft Advisory until 4 AM PST Wednesday for Waters from San Mateo Point to the Mexican Border Extending 10 to 60 nm out including San Clemente Island. &&",
   "flags": [
-   "Offshore / Santa Ana",
-   "Showers"
+   "Offshore / Santa Ana"
   ],
   "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
  },
@@ -29993,6 +29990,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": true,
      "base": 3.56,
      "adj": [],
      "hours": {
@@ -30156,17 +30154,13 @@
       }
      },
      "cloud": {
-      "okta": 3,
-      "cover": 0.34,
+      "okta": 2,
+      "cover": 0.3,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
        "HRRR": [
         0.3,
-        0.0
-       ],
-       "RRFS": [
-        0.42,
         0.0
        ]
       }
@@ -30182,6 +30176,7 @@
      ],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": true,
      "base": 4.27,
      "adj": [
       [
@@ -30372,17 +30367,13 @@
       }
      },
      "cloud": {
-      "okta": 3,
-      "cover": 0.35,
+      "okta": 2,
+      "cover": 0.31,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
        "HRRR": [
         0.31,
-        0.0
-       ],
-       "RRFS": [
-        0.43,
         0.0
        ]
       }
@@ -30398,6 +30389,7 @@
      ],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": true,
      "base": 3.95,
      "adj": [
       [
@@ -30585,16 +30577,12 @@
      },
      "cloud": {
       "okta": 2,
-      "cover": 0.29,
+      "cover": 0.24,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
        "HRRR": [
         0.24,
-        0.0
-       ],
-       "RRFS": [
-        0.39,
         0.0
        ]
       }
@@ -30610,6 +30598,7 @@
      ],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 3.02,
      "adj": [
       [
@@ -30798,16 +30787,12 @@
      },
      "cloud": {
       "okta": 6,
-      "cover": 0.69,
+      "cover": 0.76,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
        "HRRR": [
         0.76,
-        0.0
-       ],
-       "RRFS": [
-        0.56,
         0.0
        ]
       }
@@ -30823,6 +30808,7 @@
      ],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 3.6,
      "adj": [
       [
@@ -31004,16 +30990,12 @@
      },
      "cloud": {
       "okta": 6,
-      "cover": 0.77,
+      "cover": 0.81,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
        "HRRR": [
         0.81,
-        0.0
-       ],
-       "RRFS": [
-        0.7,
         0.0
        ]
       }
@@ -31027,6 +31009,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 3.99,
      "adj": [
       [
@@ -31225,10 +31208,6 @@
        "HRRR": [
         0.27,
         0.0
-       ],
-       "RRFS": [
-        0.25,
-        0.0
        ]
       }
      },
@@ -31241,6 +31220,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 3.3,
      "adj": [
       [
@@ -31445,10 +31425,6 @@
        "HRRR": [
         0.29,
         0.0
-       ],
-       "RRFS": [
-        0.29,
-        0.0
        ]
       }
      },
@@ -31463,6 +31439,7 @@
      ],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": true,
      "base": 3.0,
      "adj": [],
      "hours": {
@@ -31659,16 +31636,12 @@
      "launch_name": "Horse",
      "cloud": {
       "okta": 2,
-      "cover": 0.27,
+      "cover": 0.22,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
        "HRRR": [
         0.22,
-        0.0
-       ],
-       "RRFS": [
-        0.35,
         0.0
        ]
       }
@@ -31682,6 +31655,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": true,
      "base": 2.8,
      "adj": [
       [
@@ -31879,16 +31853,12 @@
      },
      "cloud": {
       "okta": 7,
-      "cover": 0.83,
+      "cover": 0.82,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
        "HRRR": [
         0.82,
-        0.0
-       ],
-       "RRFS": [
-        0.86,
         0.0
        ]
       }
@@ -31902,6 +31872,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 3.57,
      "adj": [
       [
@@ -32096,16 +32067,12 @@
      "launch_name": "Skyport",
      "cloud": {
       "okta": 0,
-      "cover": 0.04,
+      "cover": 0.0,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
        "HRRR": [
         0.0,
-        0.0
-       ],
-       "RRFS": [
-        0.12,
         0.0
        ]
       }
@@ -32121,6 +32088,7 @@
      ],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 1.0,
      "adj": [],
      "hours": {
@@ -32321,10 +32289,6 @@
        "HRRR": [
         0.0,
         0.0
-       ],
-       "RRFS": [
-        0.0,
-        0.0
        ]
       }
      },
@@ -32402,6 +32366,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.11,
+     "good_glass": true,
      "base": 2.81,
      "adj": [],
      "hours": {
@@ -32568,18 +32533,14 @@
       }
      },
      "cloud": {
-      "okta": 1,
-      "cover": 0.15,
-      "sun_loss": 0.03,
+      "okta": 2,
+      "cover": 0.23,
+      "sun_loss": 0.05,
       "agree": 0.0,
       "models": {
        "HRRR": [
         0.23,
         0.05
-       ],
-       "RRFS": [
-        0.0,
-        0.0
        ]
       }
      },
@@ -32594,6 +32555,7 @@
      ],
      "xc": true,
      "rain_p": 0.02,
+     "good_glass": true,
      "base": 4.57,
      "adj": [
       [
@@ -32770,18 +32732,14 @@
       }
      },
      "cloud": {
-      "okta": 2,
-      "cover": 0.28,
-      "sun_loss": 0.06,
+      "okta": 3,
+      "cover": 0.42,
+      "sun_loss": 0.09,
       "agree": 0.0,
       "models": {
        "HRRR": [
         0.42,
         0.09
-       ],
-       "RRFS": [
-        0.0,
-        0.0
        ]
       }
      },
@@ -32796,6 +32754,7 @@
      ],
      "xc": true,
      "rain_p": 0.04,
+     "good_glass": false,
      "base": 3.98,
      "adj": [],
      "hours": {
@@ -32974,17 +32933,13 @@
      },
      "cloud": {
       "okta": 1,
-      "cover": 0.12,
-      "sun_loss": 0.02,
+      "cover": 0.18,
+      "sun_loss": 0.03,
       "agree": 0.0,
       "models": {
        "HRRR": [
         0.18,
         0.03
-       ],
-       "RRFS": [
-        0.0,
-        0.0
        ]
       }
      },
@@ -32999,6 +32954,7 @@
      ],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 3.2,
      "adj": [],
      "hours": {
@@ -33191,10 +33147,6 @@
        "HRRR": [
         0.0,
         0.0
-       ],
-       "RRFS": [
-        0.0,
-        0.0
        ]
       }
      },
@@ -33207,6 +33159,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 3.47,
      "adj": [],
      "hours": {
@@ -33389,10 +33342,6 @@
        "HRRR": [
         0.0,
         0.0
-       ],
-       "RRFS": [
-        0.0,
-        0.0
        ]
       }
      },
@@ -33407,6 +33356,7 @@
      ],
      "xc": false,
      "rain_p": 0.08,
+     "good_glass": true,
      "base": 3.99,
      "adj": [
       [
@@ -33597,16 +33547,12 @@
      "cloud": {
       "okta": 0,
       "cover": 0.0,
-      "sun_loss": 0.04,
+      "sun_loss": 0.06,
       "agree": 0.0,
       "models": {
        "HRRR": [
         0.0,
         0.06
-       ],
-       "RRFS": [
-        0.0,
-        0.0
        ]
       }
      },
@@ -33621,6 +33567,7 @@
      ],
      "xc": false,
      "rain_p": 0.04,
+     "good_glass": true,
      "base": 3.57,
      "adj": [
       [
@@ -33814,16 +33761,12 @@
      "cloud": {
       "okta": 0,
       "cover": 0.0,
-      "sun_loss": 0.06,
+      "sun_loss": 0.09,
       "agree": 0.0,
       "models": {
        "HRRR": [
         0.0,
         0.09
-       ],
-       "RRFS": [
-        0.0,
-        0.0
        ]
       }
      },
@@ -33836,6 +33779,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 1.47,
      "adj": [],
      "hours": {
@@ -34024,16 +33968,12 @@
      "launch_name": "Horse",
      "cloud": {
       "okta": 1,
-      "cover": 0.08,
+      "cover": 0.12,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
        "HRRR": [
         0.12,
-        0.0
-       ],
-       "RRFS": [
-        0.0,
         0.0
        ]
       }
@@ -34047,6 +33987,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 1.85,
      "adj": [
       [
@@ -34250,10 +34191,6 @@
        "HRRR": [
         0.0,
         0.0
-       ],
-       "RRFS": [
-        0.0,
-        0.0
        ]
       }
      },
@@ -34266,6 +34203,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 3.77,
      "adj": [
       [
@@ -34463,10 +34401,6 @@
        "HRRR": [
         0.0,
         0.0
-       ],
-       "RRFS": [
-        0.0,
-        0.0
        ]
       }
      },
@@ -34481,6 +34415,7 @@
      ],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 1.0,
      "adj": [],
      "hours": {
@@ -34679,10 +34614,6 @@
        "HRRR": [
         0.0,
         0.0
-       ],
-       "RRFS": [
-        0.0,
-        0.0
        ]
       }
      },
@@ -34737,15 +34668,15 @@
      }
     }
    },
-   "nws_rain": false,
+   "nws_rain": true,
    "best": "lb",
    "best_main": "lb",
    "headline": "XC at Little Black \u00b7 also Blossom",
    "why": null,
    "rain_p": 0.04,
    "cloud": {
-    "okta": 1,
-    "sun_loss": 0.03,
+    "okta": 2,
+    "sun_loss": 0.04,
     "agree": 0.0,
     "level": null,
     "weak": true
@@ -34760,6 +34691,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": true,
      "base": 2.64,
      "adj": [],
      "hours": {
@@ -34908,15 +34840,11 @@
       }
      },
      "cloud": {
-      "okta": 2,
-      "cover": 0.21,
+      "okta": 0,
+      "cover": 0.06,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.29,
-        0.0
-       ],
        "ECMWF": [
         0.07,
         0.0
@@ -34938,6 +34866,7 @@
      ],
      "xc": true,
      "rain_p": 0.0,
+     "good_glass": true,
      "base": 4.31,
      "adj": [],
      "hours": {
@@ -35098,15 +35027,11 @@
       }
      },
      "cloud": {
-      "okta": 1,
-      "cover": 0.19,
+      "okta": 0,
+      "cover": 0.05,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.25,
-        0.0
-       ],
        "ECMWF": [
         0.06,
         0.0
@@ -35128,6 +35053,7 @@
      ],
      "xc": true,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 4.33,
      "adj": [],
      "hours": {
@@ -35282,15 +35208,11 @@
       }
      },
      "cloud": {
-      "okta": 2,
-      "cover": 0.2,
+      "okta": 0,
+      "cover": 0.02,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.29,
-        0.0
-       ],
        "ECMWF": [
         0.02,
         0.0
@@ -35312,6 +35234,7 @@
      ],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 2.47,
      "adj": [],
      "hours": {
@@ -35476,14 +35399,10 @@
      },
      "cloud": {
       "okta": 3,
-      "cover": 0.38,
+      "cover": 0.32,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.4,
-        0.0
-       ],
        "ECMWF": [
         0.3,
         0.0
@@ -35503,6 +35422,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 4.31,
      "adj": [
       [
@@ -35671,15 +35591,11 @@
       }
      },
      "cloud": {
-      "okta": 3,
-      "cover": 0.35,
+      "okta": 2,
+      "cover": 0.3,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.37,
-        0.0
-       ],
        "ECMWF": [
         0.28,
         0.0
@@ -35699,6 +35615,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 4.59,
      "adj": [
       [
@@ -35869,15 +35786,11 @@
       }
      },
      "cloud": {
-      "okta": 2,
-      "cover": 0.22,
+      "okta": 0,
+      "cover": 0.03,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.32,
-        0.0
-       ],
        "ECMWF": [
         0.04,
         0.0
@@ -35897,6 +35810,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 4.46,
      "adj": [
       [
@@ -36067,15 +35981,11 @@
       }
      },
      "cloud": {
-      "okta": 2,
-      "cover": 0.21,
+      "okta": 0,
+      "cover": 0.03,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.3,
-        0.0
-       ],
        "ECMWF": [
         0.04,
         0.0
@@ -36097,6 +36007,7 @@
      ],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 1.93,
      "adj": [],
      "hours": {
@@ -36268,15 +36179,11 @@
      },
      "launch_name": "Horse",
      "cloud": {
-      "okta": 1,
-      "cover": 0.18,
+      "okta": 0,
+      "cover": 0.03,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.26,
-        0.0
-       ],
        "ECMWF": [
         0.04,
         0.0
@@ -36296,6 +36203,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 3.06,
      "adj": [
       [
@@ -36464,15 +36372,11 @@
       }
      },
      "cloud": {
-      "okta": 3,
-      "cover": 0.37,
+      "okta": 4,
+      "cover": 0.5,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.31,
-        0.0
-       ],
        "ECMWF": [
         0.51,
         0.0
@@ -36492,6 +36396,7 @@
      "tags": [],
      "xc": true,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 4.16,
      "adj": [],
      "hours": {
@@ -36650,15 +36555,11 @@
      },
      "launch_name": "Skyport",
      "cloud": {
-      "okta": 3,
-      "cover": 0.43,
+      "okta": 4,
+      "cover": 0.45,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.43,
-        0.0
-       ],
        "ECMWF": [
         0.37,
         0.0
@@ -36680,15 +36581,12 @@
      ],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 2.93,
      "adj": [
       [
-       "little sun (mid/high cloud)",
-       -0.1
-      ],
-      [
        "off season: 2 at most",
-       -0.8
+       -0.9
       ],
       [
        "wind 20\u201345\u00b0 off launch",
@@ -36863,15 +36761,11 @@
      },
      "launch_name": "Walt's Point",
      "cloud": {
-      "okta": 5,
-      "cover": 0.62,
+      "okta": 1,
+      "cover": 0.1,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.88,
-        0.0
-       ],
        "ECMWF": [
         0.02,
         0.0
@@ -36940,7 +36834,7 @@
    "why": null,
    "rain_p": 0.0,
    "cloud": {
-    "okta": 2,
+    "okta": 1,
     "sun_loss": 0.0,
     "agree": 0.0,
     "level": null,
@@ -36956,6 +36850,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.02,
+     "good_glass": true,
      "base": 2.9,
      "adj": [],
      "hours": {
@@ -37112,10 +37007,6 @@
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.0,
-        0.0
-       ],
        "ECMWF": [
         0.0,
         0.0
@@ -37135,6 +37026,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.01,
+     "good_glass": true,
      "base": 3.67,
      "adj": [
       [
@@ -37309,10 +37201,6 @@
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.0,
-        0.0
-       ],
        "ECMWF": [
         0.0,
         0.0
@@ -37334,6 +37222,7 @@
      ],
      "xc": true,
      "rain_p": 0.02,
+     "good_glass": false,
      "base": 3.93,
      "adj": [],
      "hours": {
@@ -37500,14 +37389,10 @@
      },
      "cloud": {
       "okta": 0,
-      "cover": 0.0,
+      "cover": 0.01,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.0,
-        0.0
-       ],
        "ECMWF": [
         0.0,
         0.0
@@ -37530,6 +37415,7 @@
      ],
      "xc": false,
      "rain_p": 0.01,
+     "good_glass": false,
      "base": 2.07,
      "adj": [
       [
@@ -37707,14 +37593,10 @@
      },
      "cloud": {
       "okta": 0,
-      "cover": 0.0,
+      "cover": 0.01,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.0,
-        0.0
-       ],
        "ECMWF": [
         0.01,
         0.0
@@ -37736,6 +37618,7 @@
      ],
      "xc": false,
      "rain_p": 0.02,
+     "good_glass": false,
      "base": 2.15,
      "adj": [
       [
@@ -37901,14 +37784,10 @@
      },
      "cloud": {
       "okta": 0,
-      "cover": 0.01,
+      "cover": 0.04,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.0,
-        0.0
-       ],
        "ECMWF": [
         0.01,
         0.0
@@ -37930,6 +37809,7 @@
      ],
      "xc": true,
      "rain_p": 0.01,
+     "good_glass": false,
      "base": 4.2,
      "adj": [
       [
@@ -38100,14 +37980,10 @@
      },
      "cloud": {
       "okta": 0,
-      "cover": 0.01,
+      "cover": 0.04,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.0,
-        0.0
-       ],
        "ECMWF": [
         0.0,
         0.0
@@ -38127,6 +38003,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.01,
+     "good_glass": false,
      "base": 4.59,
      "adj": [
       [
@@ -38301,14 +38178,10 @@
      },
      "cloud": {
       "okta": 0,
-      "cover": 0.01,
+      "cover": 0.04,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.0,
-        0.0
-       ],
        "ECMWF": [
         0.0,
         0.0
@@ -38330,6 +38203,7 @@
      ],
      "xc": false,
      "rain_p": 0.01,
+     "good_glass": false,
      "base": 1.0,
      "adj": [],
      "hours": {
@@ -38502,14 +38376,10 @@
      "launch_name": "Horse",
      "cloud": {
       "okta": 0,
-      "cover": 0.02,
+      "cover": 0.06,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.0,
-        0.0
-       ],
        "ECMWF": [
         0.0,
         0.0
@@ -38531,6 +38401,7 @@
      ],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 1.0,
      "adj": [],
      "hours": {
@@ -38707,10 +38578,6 @@
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.0,
-        0.0
-       ],
        "ECMWF": [
         0.0,
         0.0
@@ -38730,6 +38597,7 @@
      "tags": [],
      "xc": true,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 4.26,
      "adj": [],
      "hours": {
@@ -38898,10 +38766,6 @@
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.04,
-        0.0
-       ],
        "ECMWF": [
         0.05,
         0.0
@@ -38923,15 +38787,12 @@
      ],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 2.51,
      "adj": [
       [
-       "little sun (mid/high cloud)",
-       -0.1
-      ],
-      [
        "off season: 2 at most",
-       -0.4
+       -0.5
       ],
       [
        "wind 20\u201345\u00b0 off launch",
@@ -39106,15 +38967,11 @@
      },
      "launch_name": "Paiute",
      "cloud": {
-      "okta": 5,
-      "cover": 0.65,
+      "okta": 2,
+      "cover": 0.21,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
-       "RRFS": [
-        0.88,
-        0.0
-       ],
        "ECMWF": [
         0.41,
         0.0
@@ -39194,6 +39051,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": true,
      "base": 2.9,
      "adj": [],
      "hours": {
@@ -39349,6 +39207,7 @@
      ],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 5.0,
      "adj": [
       [
@@ -39533,6 +39392,7 @@
      ],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 1.0,
      "adj": [],
      "hours": {
@@ -39704,6 +39564,7 @@
      ],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 1.0,
      "adj": [],
      "hours": {
@@ -39871,6 +39732,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 2.43,
      "adj": [
       [
@@ -40040,6 +39902,7 @@
      ],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 1.0,
      "adj": [],
      "hours": {
@@ -40211,6 +40074,7 @@
      ],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 1.0,
      "adj": [],
      "hours": {
@@ -40378,6 +40242,7 @@
      ],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 1.0,
      "adj": [],
      "hours": {
@@ -40549,6 +40414,7 @@
      ],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 1.0,
      "adj": [],
      "hours": {
@@ -40718,6 +40584,7 @@
      "tags": [],
      "xc": true,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 4.97,
      "adj": [
       [
@@ -40885,6 +40752,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 2.4,
      "adj": [
       [
@@ -41109,6 +40977,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.02,
+     "good_glass": true,
      "base": 2.99,
      "adj": [],
      "hours": {
@@ -41263,6 +41132,7 @@
      ],
      "xc": false,
      "rain_p": 0.01,
+     "good_glass": true,
      "base": 4.42,
      "adj": [
       [
@@ -41435,6 +41305,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.02,
+     "good_glass": false,
      "base": 1.0,
      "adj": [],
      "hours": {
@@ -41602,6 +41473,7 @@
      ],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 3.2,
      "adj": [],
      "hours": {
@@ -41755,6 +41627,7 @@
      "tags": [],
      "xc": true,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 4.55,
      "adj": [
       [
@@ -41921,6 +41794,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.01,
+     "good_glass": false,
      "base": 5.0,
      "adj": [
       [
@@ -42098,6 +41972,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.02,
+     "good_glass": false,
      "base": 5.0,
      "adj": [
       [
@@ -42269,6 +42144,7 @@
      ],
      "xc": false,
      "rain_p": 0.01,
+     "good_glass": false,
      "base": 1.0,
      "adj": [],
      "hours": {
@@ -42438,6 +42314,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 1.0,
      "adj": [],
      "hours": {
@@ -42608,6 +42485,7 @@
      ],
      "xc": true,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 4.53,
      "adj": [
       [
@@ -42779,6 +42657,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 2.89,
      "adj": [
       [
@@ -42999,6 +42878,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.02,
+     "good_glass": true,
      "base": 2.71,
      "adj": [],
      "hours": {
@@ -43150,6 +43030,7 @@
      ],
      "xc": true,
      "rain_p": 0.02,
+     "good_glass": false,
      "base": 5.0,
      "adj": [
       [
@@ -43323,6 +43204,7 @@
      ],
      "xc": true,
      "rain_p": 0.02,
+     "good_glass": true,
      "base": 5.0,
      "adj": [
       [
@@ -43492,6 +43374,7 @@
      ],
      "xc": false,
      "rain_p": 0.02,
+     "good_glass": false,
      "base": 3.2,
      "adj": [],
      "hours": {
@@ -43649,6 +43532,7 @@
      ],
      "xc": true,
      "rain_p": 0.02,
+     "good_glass": false,
      "base": 4.53,
      "adj": [
       [
@@ -43814,6 +43698,7 @@
      ],
      "xc": true,
      "rain_p": 0.01,
+     "good_glass": false,
      "base": 4.44,
      "adj": [
       [
@@ -43981,6 +43866,7 @@
      ],
      "xc": true,
      "rain_p": 0.02,
+     "good_glass": false,
      "base": 4.7,
      "adj": [
       [
@@ -44151,6 +44037,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.02,
+     "good_glass": false,
      "base": 1.8,
      "adj": [
       [
@@ -44320,6 +44207,7 @@
      "tags": [],
      "xc": true,
      "rain_p": 0.02,
+     "good_glass": false,
      "base": 5.0,
      "adj": [
       [
@@ -44476,6 +44364,7 @@
      "tags": [],
      "xc": true,
      "rain_p": 0.0,
+     "good_glass": false,
      "base": 4.67,
      "adj": [
       [
@@ -44644,6 +44533,7 @@
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
+     "good_glass": true,
      "base": 3.11,
      "adj": [
       [
