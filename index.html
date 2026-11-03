@@ -792,14 +792,12 @@ function dayBoxes(d) {
   const mLow = (m) => (m.why || []).some((w) => w === "lid" || w === "weak") || (m.w != null && 1.4 * m.w - 1.1 < 0.5);
   const mWindy = (m) => (m.why || []).some((w) => ["windy", "gusty", "aloft", "strong"].includes(w))
     || (m.wind && (m.wind[1] >= 10 || m.wind[2] > 18)) || (m.aloft && m.aloft[1] >= 13);
-  /* each box: full glow when likely or strong, dim when possible or mild; good news dims in easily, bad news
-     needs more to glow fully */
+  /* on or off; only XC and rain also have a dim "possible" state. Optimistic: good news lights up when any home
+     site has it, a warning only when most do and the models agree */
   const xc = who((c) => c.xc);
   const xcMaybe = who((c) => !c.xc && ((c.p_xc || 0) >= 0.3 || used(c).some((m) => m.r >= 3.5)));
-  const upFull = who((c) => (c.xc || c.rating >= 3.5) && climb(c) >= 1.2);
   const upDim = who((c) => c.rating >= 3 && climb(c) >= 1.2);
   const glass = who((c) => (c.tags || []).includes("glass-off") || c.label === "Glass-off");
-  const glassFull = who((c) => ((c.tags || []).includes("glass-off") || c.label === "Glass-off") && c.good_glass);
   const low = who((c) => (c.why || []).some((w) => w === "lid" || w === "weak") || climb(c) < 0.5);
   const lidOn = !upDim.length && low.length >= most;
   const windy = who((c) => (c.tags || []).includes("windy") || (c.why || []).some((w) => ["windy", "gusty", "aloft", "strong"].includes(w)));
@@ -808,16 +806,16 @@ function dayBoxes(d) {
   const lv = (full, dim) => (full ? 2 : dim ? 1 : 0);
   const b = (l, cls, inner, tip) => `<span class="g ${cls}${l ? " on" : ""}${l === 1 ? " dim" : ""}" title="${esc(tip)}">${inner}</span>`;
   const names = (a) => a.join(", ");
-  const xcL = lv(xc.length, xcMaybe.length), upL = lv(upFull.length, upDim.length), glL = lv(glassFull.length, glass.length);
-  const lidL = lv(lidOn && agree(low, mLow), lidOn), wL = lv(windOn && agree(windy, mWindy), windOn);
+  const xcL = lv(xc.length, xcMaybe.length), upL = lv(upDim.length, 0), glL = lv(glass.length, 0);
+  const lidL = lv(lidOn && agree(low, mLow), 0), wL = lv(windOn && agree(windy, mWindy), 0);
   return `<span class="sig">${
     b(xcL, "xc", "XC", xcL ? `XC: ${names(xcL === 2 ? xc : xcMaybe)}${xcL === 1 ? " (some models)" : ""}` : "XC: not this day")}${
-    b(glL, "glass", SIG.glass, glL ? `Glass-off: ${names(glL === 2 ? glassFull : glass)}${glL === 1 ? " (light or short)" : ""}` : "Glass-off: not this day")}${
-    b(upL, "up", SIG.up, upL ? `${upL === 2 ? "XC height and good climbs" : "Good local height and climbs"}: ${names(upL === 2 ? upFull : upDim)}` : "Good height and climbs: not this day")}<span class="sig-gap" aria-hidden="true"></span>${
-    b(lidL, "lid", SIG.lid, lidL ? `Low lid / inversion, weak thermals: ${names(low)}${lidL === 1 ? " (models split)" : ""}` : "Low lid: no")}${
-    b(wL, "wind", SIG.windy, wL ? `Windy: ${names(windy)}${wL === 1 ? " (models split)" : ""}` : "Windy: no")}${
-    b(lv(rp >= 0.6, rp >= 0.3), "rain", DROP, `Rain: ${Math.round(rp * 100)}% of model runs`)}${
-    b(lv(ok >= 7, ok >= 5), "cloud", `<i class="ic" aria-hidden="true">${ICON.cloud}\uFE0E</i>`, d.cloud ? `Cloud: mid/high ${ok}/8` : "Cloud: clear")}</span>`;
+    b(glL, "glass", SIG.glass, glL ? `Glass-off: ${names(glass)}` : "Glass-off: not this day")}${
+    b(upL, "up", SIG.up, upL ? `Good height and climbs: ${names(upDim)}` : "Good height and climbs: not this day")}<span class="sig-gap" aria-hidden="true"></span>${
+    b(lidL, "lid", SIG.lid, lidL ? `Low lid / inversion, weak thermals: ${names(low)}` : "Low lid: no")}${
+    b(wL, "wind", SIG.windy, wL ? `Windy: ${names(windy)}` : "Windy: no")}${
+    b(lv(rp >= 0.6, rp >= 0.3), "rain", DROP, `Rain: ${Math.round(rp * 100)}% of model runs${rp >= 0.3 && rp < 0.6 ? " (possible)" : ""}`)}${
+    b(lv(ok >= 6, 0), "cloud", `<i class="ic" aria-hidden="true">${ICON.cloud}\uFE0E</i>`, d.cloud ? `Cloud: mid/high ${ok}/8` : "Cloud: clear")}</span>`;
 }
 /* trend since about a day ago: an arrow when the shown number changed */
 const trendHtml = (c) => "";   // trend arrows switched off
