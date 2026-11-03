@@ -646,6 +646,10 @@ details.day > summary.hd .sum .sc .xcmark, :root[data-skin="glossy"] details.day
 
 /* the day type (Santa Ana, switch day, post-frontal ...) gets its own row under the day boxes, only when there is one */
 details.day > summary.hd .notes > .sig { flex: 0 0 100%; }
+
+/* the day's level in words, coloured red to blue (text, no background); yellow and orange a shade darker to read */
+.dword { font-size: .72rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; align-self: center; margin-left: 4px;
+  color: color-mix(in srgb, var(--dc) 78%, #000); }
 </style>
 </head>
 <body>
@@ -899,7 +903,7 @@ function render(data) {
     const mods = dayModels(d) ? `Models: ${dayModels(d)}${runAt ? ` (${esc(fmtTime(runAt).toLowerCase())}${d.frozen_at ? " final" : ""})` : ""}` : "";
     return `<details class="day" id="day-${i}" data-date="${esc(d.date)}" style="--qc:${cardCol}"${open ? " open" : ""}>
       <summary class="hd"><span class="band">
-        <span class="when"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small>${bm ? `<span class="ddot" style="--dc:var(${QSTOP[dayLvl]})" title="${esc(`${tripBetter(d, dayLvl) ? `${DAY_WORD[dayLvl].replace(/ day$/, "")} in SD` : DAY_WORD[dayLvl]} (best of Little Black, Blossom and Elsinore)`)}" role="img" aria-label="${esc(DAY_WORD[dayLvl])}"></span>` : ""}</span>
+        <span class="when"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small>${bm ? `<span class="dword" style="--dc:var(${QSTOP[dayLvl]})" title="best of Little Black, Blossom and Elsinore">${tripBetter(d, dayLvl) ? `${DAY_WORD[dayLvl].replace(/ day$/, "")} in SD` : DAY_WORD[dayLvl]}</span>` : ""}</span>
         <span class="exp" aria-hidden="true"><i class="chev"></i></span></span>
         <span class="notes">${dayBoxes(d)}${regimeHtml(d.regime)}${((d.regime && d.regime.also) || []).map((a) => regimeHtml({ type: a.type, agree: a.agree, weak: true })).join("")}</span>
         <span class="sum">${daySummary(d, big, other)}${watchPill(d)}</span>
