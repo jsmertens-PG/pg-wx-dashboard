@@ -654,9 +654,6 @@ details.day > summary.hd .notes > .sig { flex: 0 0 100%; }
 /* spacing: day boxes, then (if any) the day type a little apart, then the sites close under it */
 details.day > summary.hd .notes { row-gap: 12px; }
 details.day > summary.hd .notes:has(> .rx) + .sum { margin-top: -4px; }
-
-/* three good boxes, a small gap, three bad ones */
-.sig .sig-gap { width: 6px; flex: none; }
 </style>
 </head>
 <body>
@@ -784,7 +781,7 @@ function dayBoxes(d) {
     b(xc.length, "xc", "XC", xc.length ? `XC: ${xc.join(", ")}` : "XC: not this day")}${
     b(glass.length, "glass", SIG.glass, glass.length ? `Glass-off: ${glass.join(", ")}` : "Glass-off: not this day")}${
     lidOn ? b(true, "lid", SIG.lid, `Low lid / weak thermals: ${low.join(", ")}`)
-          : b(good.length, "up", SIG.up, good.length ? `Good height and climbs: ${good.join(", ")}` : "Height and climbs: nothing special")}<span class="sig-gap" aria-hidden="true"></span>${
+          : b(good.length, "up", SIG.up, good.length ? `Good height and climbs: ${good.join(", ")}` : "Height and climbs: nothing special")}${
     b(windy.length >= most, "wind", SIG.windy, windy.length >= most ? `Windy: ${windy.join(", ")}` : "Windy: no")}${
     b(rain, "rain", DROP, `Rain: ${Math.round((d.rain_p || 0) * 100)}% of model runs`)}${
     b(cloud, "cloud", `<i class="ic" aria-hidden="true">${ICON.cloud}\uFE0E</i>`, d.cloud ? `Cloud: mid/high ${d.cloud.okta}/8` : "Cloud: clear")}</span>`;
