@@ -610,6 +610,9 @@ header.top { position: relative; }
 .srow .mstrip em { position: absolute; bottom: calc(100% + 2px); font-size: 8.5px; line-height: 1; font-weight: 600; font-style: normal; color: var(--muted); white-space: nowrap; }
 .srow .mstrip i.none { box-shadow: inset 0 0 0 1px rgba(38,48,58,.35); opacity: .7; }
 
+
+/* touch tooltip */
+.tip { position: fixed; z-index: 50; background: #26303a; color: #fff; font-size: .78rem; line-height: 1.35; padding: 6px 9px; border-radius: 6px; box-shadow: 0 4px 14px rgba(0,0,0,.25); pointer-events: none; }
 </style>
 </head>
 <body>
@@ -1172,6 +1175,38 @@ if (seed) { render(JSON.parse(seed)); $("#reload").hidden = true; }
 else load();
 $("#reload").addEventListener("click", load);
 
+})();
+
+/* touch screens have no hover: tap (or, inside a button or a day header, press and hold) shows an element's tooltip */
+(() => {
+  if (!window.matchMedia || !matchMedia("(hover: none)").matches) return;
+  const tip = document.createElement("div"); tip.className = "tip"; tip.hidden = true; document.body.appendChild(tip);
+  let hideT = null, holdT = null, held = false;
+  const show = (el) => {
+    const t = el.getAttribute("title") || el.dataset.tip; if (!t) return;
+    if (el.getAttribute("title")) { el.dataset.tip = t; el.removeAttribute("title"); }
+    tip.textContent = t; tip.hidden = false;
+    const r = el.getBoundingClientRect(), w = Math.min(280, window.innerWidth - 16);
+    tip.style.maxWidth = w + "px";
+    const x = Math.max(8, Math.min(window.innerWidth - tip.offsetWidth - 8, r.left + r.width / 2 - tip.offsetWidth / 2));
+    const y = r.top - tip.offsetHeight - 8 > 4 ? r.top - tip.offsetHeight - 8 : r.bottom + 8;
+    tip.style.left = x + "px"; tip.style.top = y + "px";
+    clearTimeout(hideT); hideT = setTimeout(() => (tip.hidden = true), 3500);
+  };
+  const target = (e) => e.target.closest && e.target.closest("[title], [data-tip]");
+  const inControl = (el) => el.closest("summary, button, a");
+  document.addEventListener("touchstart", (e) => {
+    held = false; const el = target(e); if (!el || !inControl(el)) return;
+    holdT = setTimeout(() => { held = true; show(el); }, 450);
+  }, { passive: true });
+  ["touchend", "touchmove", "touchcancel"].forEach((ev) => document.addEventListener(ev, () => clearTimeout(holdT), { passive: true }));
+  document.addEventListener("click", (e) => {
+    if (held) { e.preventDefault(); e.stopPropagation(); held = false; return; }   // a long press shows the tip, not a click
+    const el = target(e);
+    if (el && !inControl(el)) { show(el); return; }
+    tip.hidden = true;
+  }, true);
+  window.addEventListener("scroll", () => (tip.hidden = true), { passive: true });
 })();
 </script>
 </body>
