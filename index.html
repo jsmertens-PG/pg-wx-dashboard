@@ -984,8 +984,38 @@ function sitePills(c) {
   /* good news and Elsinore's switch: glass-off when a decent one is expected, the switch time (or no switch) */
   (c.tags || []).filter((t) => /^glass-off$|switch|no launch window/.test(t))
     .forEach((t) => out.push(`<span class="rx">${t === "glass-off" ? '<i class="ic" aria-hidden="true">☼\uFE0E</i>' : ico("Switch day")}${esc(t)}</span>`));
-  return out.join("");
+  /* every chip explains itself: hover on a computer, tap on a phone */
+  return out.map((x) => {
+    const txt = x.replace(/<i[^>]*>.*?<\/i>/g, "").replace(/<[^>]+>/g, "").trim();
+    const tip = chipTip(txt);
+    return tip ? x.replace('<span class="rx', `<span title="${esc(tip)}" class="rx`) : x;
+  }).join("");
 }
+const CHIP_TIPS = [
+  [/% rain/, "Share of model runs with rain at the site"],
+  [/cloud/, "Mid/high cloud cover: it takes sun and thermals away"],
+  [/over the back/, "Wind from behind the launch in part of the window"],
+  [/^cross wind/, "Launch wind 20-45° off the launch direction"],
+  [/wrong direction/, "Launch wind more than 45° off: 2 at most"],
+  [/^gusty/, "Gusts over 12 mph on launch"],
+  [/too windy aloft/, "Wind at the top of lift too strong for this site"],
+  [/too windy|blown out/, "Too much wind on launch"],
+  [/strong wind aloft/, "Wind at the top of lift over 20 mph"],
+  [/wrong flow aloft/, "Wind aloft from a direction that kills this site"],
+  [/weak thermals/, "Weak climbs (thermal strength under 1 m/s)"],
+  [/low lid/, "Lift tops out only a little above launch"],
+  [/too light/, "Too little wind to soar"],
+  [/strong on launch/, "Launch wind above the site's range"],
+  [/^NW$/, "NW wind of 5 mph or more at the top of lift through the window"],
+  [/not calm/, "Owens needs almost no wind"],
+  [/off season/, "Outside the site's season: 2 at most"],
+  [/glass-off/, "A decent glass-off is likely in the last 3 hours before sunset"],
+  [/no switch/, "Elsinore: no west switch in the forecast"],
+  [/late switch/, "Elsinore: the west switch comes late (after 4 pm)"],
+  [/no launch window/, "Elsinore: no launchable wind before the switch"],
+  [/switch ~/, "Elsinore: when the west wind switch is expected"],
+];
+const chipTip = (t) => (CHIP_TIPS.find(([re]) => re.test(t)) || [null, ""])[1];
 /* the site card's mini hour strip (9 am-6 pm, window outlined): only for a site that works, i.e. a score of
    2.5+ or at least two hours in a row at 2.5+ */
 function miniStrip(c) {
@@ -1203,7 +1233,10 @@ $("#reload").addEventListener("click", load);
   document.addEventListener("click", (e) => {
     if (held) { e.preventDefault(); e.stopPropagation(); held = false; return; }   // a long press shows the tip, not a click
     const el = target(e);
-    if (el && !inControl(el)) { show(el); return; }
+    if (el && (!inControl(el) || el.matches(".srow .rx"))) {     // a chip on a site card: explain it, don't toggle the card
+      if (inControl(el)) { e.preventDefault(); e.stopPropagation(); }
+      show(el); return;
+    }
     tip.hidden = true;
   }, true);
   window.addEventListener("scroll", () => (tip.hidden = true), { passive: true });
