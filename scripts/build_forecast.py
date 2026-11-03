@@ -1228,7 +1228,10 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "tw13": h13["tw"] if h13 else None,
         "wind_1pm": wind_1pm, "win": [w0, w1],
         "wind_now": wind_now, "wind_later": wind_later,
-        "rating": rating, "local": local, "windy_share": windy_share, "xc_day": xc_day, "label": label, "codes": codes, "when": when,
+        "rating": rating, "local": local, "windy_share": windy_share,
+        # share of the window with a NW wind (293-338 deg) of 5 mph or more at the top of lift (site rule "nw_nick")
+        "nw_share": (sum(1 for _, sc in win if sc.get("tw") and wrap_in(sc["tw"][0], 293, 338) and sc["tw"][1] * 1.15078 >= 5)
+                     / len(win)) if win else 0.0, "xc_day": xc_day, "label": label, "codes": codes, "when": when,
         "postfrontal": postfrontal, "glass": glass_ok, "glass_hours": glass_hours,
         "gwin": [gwin[0][0], gwin[-1][0]] if gwin else None, "sunset": sunset_h,
         "start": hours[k][0], "top": peak_show if peak_show is not None else med("usable_show", xblk), "base": med("base"), "wstar": med("wstar", xblk),
@@ -1871,6 +1874,11 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                     r0 = rating; rating = max(1.0, rating - 1.0); note_adj("wind at top of lift over 30 mph", r0)
                 elif tw_mph is not None and tw_mph > 20:
                     r0 = rating; rating = max(1.0, rating - 0.5); note_adj("wind at top of lift over 20 mph", r0)
+            # NW at the top of lift through the window (Little Black, Blossom): -0.3
+            if s.get("nw_nick") and D:
+                nws_ = blend({k: a.get("nw_share", 0.0) for k, a in D.items()})
+                if nws_ >= 0.5:
+                    r0 = rating; rating = max(1.0, rating - s["nw_nick"]); note_adj("NW aloft", r0)
             # calm sites (Owens): big air only works with almost no wind. Wind at the top of lift over the first
             # limit, or on launch over launch_mph: 2 at most; over the second limit at the top: a no-go
             calm = s.get("calm")
