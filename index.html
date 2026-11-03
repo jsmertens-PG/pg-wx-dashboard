@@ -657,6 +657,13 @@ details.day > summary.hd .notes:has(> .rx) + .sum { margin-top: -4px; }
 
 /* good boxes (XC, glass-off, thermals), a small gap, then the bad ones (lid, windy, rain, cloud) */
 .sig .sig-gap { width: 6px; flex: none; }
+
+/* XC tag everywhere in the glassy style of the first layer */
+.xcmark, :root[data-skin="glossy"] .xcmark { background: transparent !important; background-image: none !important; color: #26303a !important; border: 0 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 2px 6px -2px rgba(20,32,56,.16), 0 0 0 1px rgba(20,32,56,.10) !important;
+  font-weight: 700; letter-spacing: .03em; border-radius: 5px; }
+/* site cards: the chips start on their own row under the name and label */
+.srow .nmw .spills { display: flex !important; flex: 0 0 100%; flex-wrap: wrap; gap: 4px; margin-top: 1px; }
 </style>
 </head>
 <body>
