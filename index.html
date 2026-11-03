@@ -630,6 +630,11 @@ details.day > summary.hd .sum { margin-top: 3px; }
 .sig .g.glass.on { border-color: #d9a400; color: #b98a00; box-shadow: 0 0 10px rgba(241,199,43,.6); }
 .sig .g.wind.on, .sig .g.rain.on, .sig .g.cloud.on { background: #26303a; border-color: #26303a; color: #fff; }
 .srow .spills .rx .ic-svg { width: 13px; height: 13px; }
+
+/* first layer: the XC tag next to a site name looks like the site-card chips (light, glassy) */
+details.day > summary.hd .sum .sc .xcmark, :root[data-skin="glossy"] details.day > summary.hd .sum .sc .xcmark {
+  background: rgba(255,255,255,.8) !important; background-image: none !important; color: #26303a !important; box-shadow: 0 0 0 1px rgba(20,30,40,.16);
+  font-size: .6rem; font-weight: 700; letter-spacing: .03em; padding: 2px 6px; border-radius: 5px; }
 </style>
 </head>
 <body>
