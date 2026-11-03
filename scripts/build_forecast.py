@@ -1032,6 +1032,8 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     gwin = [(h, s) for h, s in hours if h >= math.floor(sunset_h) - 2]
     glass_hours = [h for h, s in gwin if s["glass"]]
     glass_ok = len(glass_hours) >= 2
+    gw = [s["lw"] for h, s in gwin if h in glass_hours and s["lw"] is not None]
+    good_glass = glass_ok and len(gw) >= 2 and all(6 <= w <= 12 for w in gw)
     early_rain = sum(s["pr"] for h, s in hours if h <= 11)
     window_rain = sum(s["pr"] for s in blk)
     cold = sum(1 for s in blk if s["cold"]) >= 2
@@ -1153,8 +1155,6 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         # convergence and switch sites have no glass-off, except a launch marked glass_off (Horse: a light W-SW
         # evening breeze on its west face)
         if style not in ("convergence", "switch") or site.get("glass_off"):
-            gw = [x["lw"] for h, x in gwin if h in glass_hours and x["lw"] is not None]
-            good_glass = glass_ok and len(gw) >= 2 and all(6 <= w <= 12 for w in gw)
             glass_r = 3.0 if good_glass else (2.4 if glass_ok else (1.8 if glass_hours else 1.0))
             if glass_r > rating:
                 rating = glass_r
@@ -1242,7 +1242,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         # share of the window with a NW wind (293-338 deg) of 5 mph or more at the top of lift (site rule "nw_nick")
         "nw_share": (sum(1 for _, sc in win if sc.get("tw") and wrap_in(sc["tw"][0], 293, 338) and sc["tw"][1] * 1.15078 >= 5)
                      / len(win)) if win else 0.0, "xc_day": xc_day, "label": label, "codes": codes, "when": when,
-        "postfrontal": postfrontal, "glass": glass_ok, "glass_hours": glass_hours,
+        "postfrontal": postfrontal, "glass": glass_ok, "good_glass": good_glass, "glass_hours": glass_hours,
         "gwin": [gwin[0][0], gwin[-1][0]] if gwin else None, "sunset": sunset_h,
         "start": hours[k][0], "top": peak_show if peak_show is not None else med("usable_show", xblk), "base": med("base"), "wstar": med("wstar", xblk),
         "climb": med("climb", xblk), "lw": med("lw"), "ld": med("ld"),
@@ -2051,6 +2051,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             lead_view = dict(lead, label=label, top=top if top is not None else lead.get("top"), shower_p=shower_p) if lead else None
             drow["sites"][s["id"]] = {
                 "rating": round(rating, 2), "label": label, "tags": tags, "xc": xc, "rain_p": round(shower_p, 2),
+                "good_glass": bool(lead and lead.get("good_glass")),
                 "base": round(base_r, 2), "adj": adj,
                 "hours": {str(h): round(blend({m: a["hr"][h] for m, a in D.items() if h in (a.get("hr") or {})}), 1)
                           for h in range(9, 19) if any(h in (a.get("hr") or {}) for a in D.values())},

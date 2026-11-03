@@ -629,6 +629,11 @@ details.day > summary.hd .sum { margin-top: 3px; }
 .sig .g.lid.on { border-color: #d64545; box-shadow: 0 0 0 2px rgba(214,69,69,.2), 0 0 12px rgba(214,69,69,.55); }   /* bad news glows red */
 .sig .g.glass.on { border-color: #3aa457; color: #b98a00; box-shadow: 0 0 0 2px rgba(58,164,87,.22), 0 0 12px rgba(58,164,87,.6); }   /* good news glows green; the sun stays sun-coloured */
 .sig .g.wind.on, .sig .g.rain.on, .sig .g.cloud.on { border-color: #d64545; color: #c23434; box-shadow: 0 0 0 2px rgba(214,69,69,.2), 0 0 12px rgba(214,69,69,.55); }
+/* possible / mild: a softer, dashed version of the same glow */
+.sig .g.on.dim { opacity: .75; border-style: dashed; box-shadow: 0 0 0 1px rgba(0,0,0,0), 0 0 6px color-mix(in srgb, currentColor 35%, transparent); }
+.sig .g.xc.on.dim { background: transparent; color: #2f8f4a; border-color: #3aa457; }
+.sig .g.up.on.dim, .sig .g.glass.on.dim { box-shadow: 0 0 6px rgba(58,164,87,.45); }
+.sig .g.lid.on.dim, .sig .g.wind.on.dim, .sig .g.rain.on.dim, .sig .g.cloud.on.dim { box-shadow: 0 0 6px rgba(214,69,69,.45); }
 .srow .spills .rx .ic-svg { width: 13px; height: 13px; }
 
 /* "glassy" chips, like glass-off on the site cards: no fill, a light inner edge and a soft shadow. Used for the
@@ -780,21 +785,39 @@ function dayBoxes(d) {
   const who = (f) => loc.filter(([, c]) => f(c)).map(([n]) => n);
   const climb = (c) => (c.wstar != null ? Math.max(0, (c.core || 1.4) * c.wstar - (c.sink || 1.1)) : 0);
   const most = Math.max(2, Math.ceil(loc.length / 2));
-  const xc = who((c) => c.xc), good = who((c) => c.rating >= 3 && climb(c) >= 1.2);
+  /* the models behind a site's score (HRRR, RRFS ... as used), and the share of them that show something */
+  const used = (c) => Object.values(c.diag || {}).filter((m) => m.used);
+  const share = (c, f) => { const m = used(c); return m.length ? m.filter(f).length / m.length : 0; };
+  const agree = (names, f) => names.length && names.every((n) => share(loc.find(([x]) => x === n)[1], f) >= 0.6);
+  const mLow = (m) => (m.why || []).some((w) => w === "lid" || w === "weak") || (m.w != null && 1.4 * m.w - 1.1 < 0.5);
+  const mWindy = (m) => (m.why || []).some((w) => ["windy", "gusty", "aloft", "strong"].includes(w))
+    || (m.wind && (m.wind[1] >= 10 || m.wind[2] > 18)) || (m.aloft && m.aloft[1] >= 13);
+  /* each box: full glow when likely or strong, dim when possible or mild; good news dims in easily, bad news
+     needs more to glow fully */
+  const xc = who((c) => c.xc);
+  const xcMaybe = who((c) => !c.xc && ((c.p_xc || 0) >= 0.3 || used(c).some((m) => m.r >= 3.5)));
+  const upFull = who((c) => (c.xc || c.rating >= 3.5) && climb(c) >= 1.2);
+  const upDim = who((c) => c.rating >= 3 && climb(c) >= 1.2);
+  const glass = who((c) => (c.tags || []).includes("glass-off") || c.label === "Glass-off");
+  const glassFull = who((c) => ((c.tags || []).includes("glass-off") || c.label === "Glass-off") && c.good_glass);
   const low = who((c) => (c.why || []).some((w) => w === "lid" || w === "weak") || climb(c) < 0.5);
-  const glass = who((c) => (c.tags || []).includes("glass-off"));
+  const lidOn = !upDim.length && low.length >= most;
   const windy = who((c) => (c.tags || []).includes("windy") || (c.why || []).some((w) => ["windy", "gusty", "aloft", "strong"].includes(w)));
-  const rain = (d.rain_p || 0) >= 0.3, cloud = !!(d.cloud && d.cloud.okta >= 5);
-  const lidOn = !good.length && low.length >= most;
-  const b = (on, cls, inner, tip) => `<span class="g ${cls}${on ? " on" : ""}" title="${esc(tip)}">${inner}</span>`;
+  const windOn = windy.length >= most;
+  const rp = d.rain_p || 0, ok = d.cloud ? d.cloud.okta : 0;
+  const lv = (full, dim) => (full ? 2 : dim ? 1 : 0);
+  const b = (l, cls, inner, tip) => `<span class="g ${cls}${l ? " on" : ""}${l === 1 ? " dim" : ""}" title="${esc(tip)}">${inner}</span>`;
+  const names = (a) => a.join(", ");
+  const xcL = lv(xc.length, xcMaybe.length), upL = lv(upFull.length, upDim.length), glL = lv(glassFull.length, glass.length);
+  const lidL = lv(lidOn && agree(low, mLow), lidOn), wL = lv(windOn && agree(windy, mWindy), windOn);
   return `<span class="sig">${
-    b(xc.length, "xc", "XC", xc.length ? `XC: ${xc.join(", ")}` : "XC: not this day")}${
-    b(glass.length, "glass", SIG.glass, glass.length ? `Glass-off: ${glass.join(", ")}` : "Glass-off: not this day")}${
-    b(good.length, "up", SIG.up, good.length ? `Good height and climbs: ${good.join(", ")}` : "Good height and climbs: not this day")}<span class="sig-gap" aria-hidden="true"></span>${
-    b(lidOn, "lid", SIG.lid, lidOn ? `Low lid / inversion, weak thermals: ${low.join(", ")}` : "Low lid: no")}${
-    b(windy.length >= most, "wind", SIG.windy, windy.length >= most ? `Windy: ${windy.join(", ")}` : "Windy: no")}${
-    b(rain, "rain", DROP, `Rain: ${Math.round((d.rain_p || 0) * 100)}% of model runs`)}${
-    b(cloud, "cloud", `<i class="ic" aria-hidden="true">${ICON.cloud}\uFE0E</i>`, d.cloud ? `Cloud: mid/high ${d.cloud.okta}/8` : "Cloud: clear")}</span>`;
+    b(xcL, "xc", "XC", xcL ? `XC: ${names(xcL === 2 ? xc : xcMaybe)}${xcL === 1 ? " (some models)" : ""}` : "XC: not this day")}${
+    b(glL, "glass", SIG.glass, glL ? `Glass-off: ${names(glL === 2 ? glassFull : glass)}${glL === 1 ? " (light or short)" : ""}` : "Glass-off: not this day")}${
+    b(upL, "up", SIG.up, upL ? `${upL === 2 ? "XC height and good climbs" : "Good local height and climbs"}: ${names(upL === 2 ? upFull : upDim)}` : "Good height and climbs: not this day")}<span class="sig-gap" aria-hidden="true"></span>${
+    b(lidL, "lid", SIG.lid, lidL ? `Low lid / inversion, weak thermals: ${names(low)}${lidL === 1 ? " (models split)" : ""}` : "Low lid: no")}${
+    b(wL, "wind", SIG.windy, wL ? `Windy: ${names(windy)}${wL === 1 ? " (models split)" : ""}` : "Windy: no")}${
+    b(lv(rp >= 0.6, rp >= 0.3), "rain", DROP, `Rain: ${Math.round(rp * 100)}% of model runs`)}${
+    b(lv(ok >= 7, ok >= 5), "cloud", `<i class="ic" aria-hidden="true">${ICON.cloud}\uFE0E</i>`, d.cloud ? `Cloud: mid/high ${ok}/8` : "Cloud: clear")}</span>`;
 }
 /* trend since about a day ago: an arrow when the shown number changed */
 const trendHtml = (c) => "";   // trend arrows switched off
