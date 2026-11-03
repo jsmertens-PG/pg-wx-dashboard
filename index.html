@@ -639,6 +639,10 @@ details.day > summary.hd .notes > .rx:not(.strong), details.day > summary.hd .no
   box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 2px 6px -2px rgba(20,32,56,.16), 0 0 0 1px rgba(20,32,56,.10) !important; }
 details.day > summary.hd .sum .sc .xcmark, :root[data-skin="glossy"] details.day > summary.hd .sum .sc .xcmark {
   font-size: .6rem; font-weight: 700; letter-spacing: .03em; padding: 2px 6px; border-radius: 5px; }
+
+/* the day's level as a plain dot, red to blue (the words on tap or hover) */
+.ddot { display: inline-block; width: 14px; height: 14px; border-radius: 50%; background: var(--dc); align-self: center; flex: none;
+  box-shadow: 0 0 0 2px rgba(255,255,255,.75), 0 1px 3px rgba(20,32,56,.3); margin-left: 4px; }
 </style>
 </head>
 <body>
@@ -892,7 +896,7 @@ function render(data) {
     const mods = dayModels(d) ? `Models: ${dayModels(d)}${runAt ? ` (${esc(fmtTime(runAt).toLowerCase())}${d.frozen_at ? " final" : ""})` : ""}` : "";
     return `<details class="day" id="day-${i}" data-date="${esc(d.date)}" style="--qc:${cardCol}"${open ? " open" : ""}>
       <summary class="hd"><span class="band">
-        <span class="when"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small>${bm ? `<span class="dchip${DAY_LT.has(dayLvl) ? " lt" : ""}" title="best of Little Black, Blossom and Elsinore">${tripBetter(d, dayLvl) ? `${DAY_WORD[dayLvl].replace(/ day$/, "")} in SD` : DAY_WORD[dayLvl]}</span>` : ""}</span>
+        <span class="when"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small>${bm ? `<span class="ddot" style="--dc:var(${QSTOP[dayLvl]})" title="${esc(`${tripBetter(d, dayLvl) ? `${DAY_WORD[dayLvl].replace(/ day$/, "")} in SD` : DAY_WORD[dayLvl]} (best of Little Black, Blossom and Elsinore)`)}" role="img" aria-label="${esc(DAY_WORD[dayLvl])}"></span>` : ""}</span>
         <span class="exp" aria-hidden="true"><i class="chev"></i></span></span>
         <span class="notes">${dayBoxes(d)}${regimeHtml(d.regime)}${((d.regime && d.regime.also) || []).map((a) => regimeHtml({ type: a.type, agree: a.agree, weak: true })).join("")}</span>
         <span class="sum">${daySummary(d, big, other)}${watchPill(d)}</span>
