@@ -973,7 +973,7 @@ function sitePills(c) {
   const SHORT = [[/20–45° off launch/, "cross wind"], [/more than 45° off launch/, "wrong direction"],
     [/gusts over 18/, "too windy"], [/gusts over 12/, "gusty"], [/top of lift over \d+ mph: no-go/, "too windy aloft"],
     [/top of lift over/, "strong wind aloft"], [/blown out/, "blown out"], [/not calm/, "not calm"],
-    [/off season/, "off season"], [/NW aloft/, "NW"]];
+    [/over the back aloft/, "over the back aloft"], [/off season/, "off season"], [/NW aloft/, "NW"]];
   const seen = new Set(out.map((x) => x.replace(/<i[^>]*>.*?<\/i>/g, "").replace(/<[^>]+>/g, "").trim().toLowerCase()));
   adj.filter(([t]) => !/rain|sun|4 at most$/.test(t) || /off launch|blown|calm|season/.test(t)).forEach(([t]) => {
     const s = (SHORT.find(([re]) => re.test(t)) || [null, t])[1];
@@ -996,6 +996,7 @@ function sitePills(c) {
 const CHIP_TIPS = [
   [/% rain/, "Share of model runs with rain at the site"],
   [/cloud/, "Mid/high cloud cover: it takes sun and thermals away"],
+  [/over the back aloft/, "Wind at the top of lift from behind the launch, 10 mph+, through most of the window: 2 at most"],
   [/over the back/, "Wind from behind the launch in part of the window"],
   [/^cross wind/, "Launch wind 20-45° off the launch direction"],
   [/wrong direction/, "Launch wind more than 45° off: 2 at most"],

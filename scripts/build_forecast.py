@@ -1229,6 +1229,11 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "wind_1pm": wind_1pm, "win": [w0, w1],
         "wind_now": wind_now, "wind_later": wind_later,
         "rating": rating, "local": local, "windy_share": windy_share,
+        # share of the window with wind at the top of lift from behind the launch (outside its directions and its
+        # cross sectors) at 10 mph or more: "over the back aloft"
+        "otb_aloft_share": (sum(1 for _, sc in win if sc.get("tw") and sc["tw"][1] * 1.15078 >= 10 and not dir_ok(site, sc["tw"][0])
+                                and not any(wrap_in(sc["tw"][0], c[0], c[1]) for c in site.get("cross", [])))
+                            / len(win)) if win else 0.0,
         # share of the window with a sustained breeze: 10 mph+ on launch or 13 mph+ at the top of lift ("windy" chip)
         "breezy_share": (sum(1 for _, sc in win if (sc.get("lw") or 0) >= 10 or (sc.get("tw") and sc["tw"][1] * 1.15078 >= 13))
                          / len(win)) if win else 0.0,
@@ -1877,6 +1882,11 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                     r0 = rating; rating = max(1.0, rating - 1.0); note_adj("wind at top of lift over 30 mph", r0)
                 elif tw_mph is not None and tw_mph > 20:
                     r0 = rating; rating = max(1.0, rating - 0.5); note_adj("wind at top of lift over 20 mph", r0)
+            # wind at the top of lift from behind the launch, 10 mph+, through most of the window (Santa Ana over
+            # the ridge: rotor and a blown-out or cross launch, even when the surface wind looks light): 2 at most
+            if s.get("style") in ("thermal", "window") and D:
+                if blend({k: a.get("otb_aloft_share", 0.0) for k, a in D.items()}) >= 0.5 and rating > 2.0:
+                    r0 = rating; rating = 2.0; note_adj("over the back aloft: 2 at most", r0)
             # NW at the top of lift through the window (Little Black, Blossom): -0.3
             if s.get("nw_nick") and D:
                 nws_ = blend({k: a.get("nw_share", 0.0) for k, a in D.items()})
