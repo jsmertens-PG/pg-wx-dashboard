@@ -2077,7 +2077,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                              "why": v["codes"][:3], "used": k in D} for k, v in cell.get("all", D).items()},
             }
         # merge per-launch results back into their site: show the better launch of the day
-        merged = {}
+        merged, per_launch = {}, {}
         for s in sites:
             c = drow["sites"].get(s["id"])
             if not c:
@@ -2089,8 +2089,16 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                     c["note"] = f"{s['launch_name']}: {c['note']}"
                 else:
                     c["note"] = s["launch_name"]
+            per_launch.setdefault(pid, []).append(c)
             if pid not in merged or c["rating"] > merged[pid]["rating"]:
                 merged[pid] = c
+        # a site with launches facing different ways (Laguna / Horse) is never "over the back" as a whole:
+        # that warning only stays when the wind is behind every one of its launches
+        for pid, cs in per_launch.items():
+            if len(cs) > 1 and pid in merged and not all("otb" in (x.get("why") or []) for x in cs):
+                m = merged[pid]
+                merged[pid] = dict(m, why=[w for w in (m.get("why") or []) if w != "otb"],
+                                   when={k: v for k, v in (m.get("when") or {}).items() if k != "otb"})
         drow["sites"] = merged
         if drow["sites"]:
             main = [k for k in drow["sites"] if next(x for x in (parents or sites) if x["id"] == k).get("tier") == "main"] or list(drow["sites"])
