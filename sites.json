@@ -634,7 +634,7 @@
           "why": "the border"
         }
       ],
-      "note": "Convergence sites: Horse faces west, Laguna faces east over the desert, Fuzz is flown on the same convergence. Horse and Laguna are scored on their own and the better one is shown. The rating only says whether the setup is there; where and when the convergence sits, and the morning winds, are for you to check.",
+      "note": "Convergence sites: Horse faces west, Laguna faces east over the desert, Fuzz is flown on the same convergence. Horse and Laguna are scored on their own and the better one is shown. Horse can also have a glass-off in a light W-SW evening breeze; Laguna has none. The rating only says whether the setup is there; where and when the convergence sits, and the morning winds, are for you to check.",
       "sp": [
         {
           "page": "scal",
@@ -652,6 +652,7 @@
       "launches": [
         {
           "name": "Horse",
+          "glass_off": true,
           "lat": 32.7747,
           "lon": -116.477,
           "launch_ft": 4540,

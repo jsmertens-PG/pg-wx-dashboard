@@ -1150,7 +1150,9 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
             best_h, _r, sc = ranked[0]
             peak = h4 if h4 is not None else sum(x[2]["peak_top"] for x in ranked) / len(ranked)
             xc_now = sc["xc_s"] > 0 and rating >= 3.5
-        if style not in ("convergence", "switch"):
+        # convergence and switch sites have no glass-off, except a launch marked glass_off (Horse: a light W-SW
+        # evening breeze on its west face)
+        if style not in ("convergence", "switch") or site.get("glass_off"):
             gw = [x["lw"] for h, x in gwin if h in glass_hours and x["lw"] is not None]
             good_glass = glass_ok and len(gw) >= 2 and all(6 <= w <= 12 for w in gw)
             glass_r = 3.0 if good_glass else (2.4 if glass_ok else (1.8 if glass_hours else 1.0))
@@ -1951,7 +1953,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             tags = []
             if lead and lead.get("switch_tag"):
                 tags.append(lead["switch_tag"])
-            if lead and lead["glass"] and label in ("Thermal", "Marginal", "XC") and not ridge and lead.get("style") != "convergence":
+            if lead and lead["glass"] and label in ("Thermal", "Marginal", "XC") and not ridge and (lead.get("style") != "convergence" or s.get("glass_off")):
                 tags.append("glass-off")
             # a warning only (no points): windy through most of the window, whatever the direction (not Torrey,
             # which needs the wind)
@@ -2053,7 +2055,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                 "hours": {str(h): round(blend({m: a["hr"][h] for m, a in D.items() if h in (a.get("hr") or {})}), 1)
                           for h in range(9, 19) if any(h in (a.get("hr") or {}) for a in D.values())},
                 "win": (lead.get("win") if lead else None) or s.get("window"),
-                "gwin": lead.get("gwin") if lead and lead.get("glass") and not ridge and lead.get("style") not in ("convergence", "switch") else None,
+                "gwin": lead.get("gwin") if lead and lead.get("glass") and not ridge and (lead.get("style") not in ("convergence", "switch") or s.get("glass_off")) else None,
                 "note": note_for(s, lead_view, xc),
                 "p_fly": round(p_fly, 2), "p_xc": round(p_xc, 2),
                 "agree": factors[-1]["v"], "models": {k: round(v, 1) for k, v in det_r.items()},
@@ -2099,6 +2101,11 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                 m = merged[pid]
                 merged[pid] = dict(m, why=[w for w in (m.get("why") or []) if w != "otb"],
                                    when={k: v for k, v in (m.get("when") or {}).items() if k != "otb"})
+        # a glass-off at one launch (Horse) shows on the site even when another launch (Laguna) is the better one by day
+        for pid, cs in per_launch.items():
+            g = next((x for x in cs if "glass-off" in (x.get("tags") or [])), None)
+            if g and pid in merged and "glass-off" not in (merged[pid].get("tags") or []):
+                merged[pid] = dict(merged[pid], tags=list(merged[pid].get("tags") or []) + ["glass-off"], gwin=g.get("gwin"))
         drow["sites"] = merged
         if drow["sites"]:
             main = [k for k in drow["sites"] if next(x for x in (parents or sites) if x["id"] == k).get("tier") == "main"] or list(drow["sites"])
