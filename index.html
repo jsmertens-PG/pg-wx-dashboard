@@ -663,7 +663,7 @@ details.day > summary.hd .notes:has(> .rx) + .sum { margin-top: -4px; }
   box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 2px 6px -2px rgba(20,32,56,.16), 0 0 0 1px rgba(20,32,56,.10) !important;
   font-weight: 700; letter-spacing: .03em; border-radius: 5px; }
 /* site cards: the chips start on their own row under the name and label */
-.srow .nmw .spills { display: flex !important; flex: 0 0 100%; flex-wrap: wrap; gap: 4px; margin-top: 1px; }
+.srow > .spills { display: flex !important; grid-column: 1 / -1; flex-wrap: wrap; gap: 4px; margin-top: 1px; }
 </style>
 </head>
 <body>
@@ -1068,6 +1068,16 @@ function sitePills(c) {
     out.push(`<span class="rx">${ico("windy")}windy</span>`);
   (c.tags || []).filter((t) => /^glass-off$|switch|no launch window/.test(t))
     .forEach((t) => out.push(`<span class="rx">${t === "glass-off" ? SIG.glass : ico("Switch day")}${esc(t)}</span>`));
+  /* good news first, then warnings, then what takes points off, the worst last */
+  const rank = (x) => {
+    const t = x.replace(/<[^>]+>/g, " ").toLowerCase();
+    if (/no launch window/.test(t)) return 4;
+    if (/glass-off|switch/.test(t) && !/no switch/.test(t)) return 0;
+    if (/ strong|rx strong/.test(x.slice(0, 30)) || /too windy|blown out|wrong direction|no switch/.test(t)) return 3;
+    if (/cross wind|nw|gusty|aloft|not calm|off season|over the back/.test(t)) return 2;
+    return 1;
+  };
+  out.sort((a, b) => rank(a) - rank(b));
   /* every chip explains itself: hover on a computer, tap on a phone */
   return out.map((x) => {
     const txt = x.replace(/<i[^>]*>.*?<\/i>/g, "").replace(/<[^>]+>/g, "").trim();
@@ -1122,8 +1132,8 @@ function siteRow(d, s, i, kind) {
   if (!c) return `<div class="srow ${kind}"><span class="nm">${esc(name)}</span><span class="muted">no data</span></div>`;
   const pills = sitePills(c);
   return `<button type="button" class="srow ${kind}" style="--rc:${qv(c.rating)}" data-site="${s.id}" data-day="${i}" aria-expanded="false">
-    <span class="nmrow"><span class="nmw"><span class="nm">${esc(name)}</span>${styleLab(c) ? `<span class="lab" style="color:${qv(c.rating)}">${esc(styleLab(c))}</span>` : ""}${pills ? `<span class="spills">${pills}</span>` : ""}</span><span class="dscore sm" style="--rc:${qv(c.rating)}"><span class="dsl">Score:</span><b>${(Math.max(1, Math.min(5, Math.round(c.rating * 2) / 2))).toFixed(1).replace(".0", "")}</b><small>/5</small></span></span>
-    <span class="tx"><span class="facts">${siteFacts(c)}</span></span>${miniStrip(c)}
+    <span class="nmrow"><span class="nmw"><span class="nm">${esc(name)}</span>${styleLab(c) ? `<span class="lab" style="color:${qv(c.rating)}">${esc(styleLab(c))}</span>` : ""}</span><span class="dscore sm" style="--rc:${qv(c.rating)}"><span class="dsl">Score:</span><b>${(Math.max(1, Math.min(5, Math.round(c.rating * 2) / 2))).toFixed(1).replace(".0", "")}</b><small>/5</small></span></span>
+    ${pills ? `<span class="spills">${pills}</span>` : ""}<span class="tx"><span class="facts">${siteFacts(c)}</span></span>${miniStrip(c)}
     <span class="exp sm" aria-hidden="true"><span class="chev"></span></span>
   </button>`;
 }
