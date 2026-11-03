@@ -970,7 +970,7 @@ function sitePills(c) {
   const SHORT = [[/20–45° off launch/, "cross wind"], [/more than 45° off launch/, "wrong direction"],
     [/gusts over 18/, "too windy"], [/gusts over 12/, "gusty"], [/top of lift over \d+ mph: no-go/, "too windy aloft"],
     [/top of lift over/, "strong wind aloft"], [/blown out/, "blown out"], [/not calm/, "not calm"],
-    [/off season/, "off season"], [/awkward drift/, "awkward drift"]];
+    [/off season/, "off season"]];
   const seen = new Set(out.map((x) => x.replace(/<i[^>]*>.*?<\/i>/g, "").replace(/<[^>]+>/g, "").trim().toLowerCase()));
   adj.filter(([t]) => !/rain|sun|4 at most$/.test(t) || /off launch|blown|calm|season/.test(t)).forEach(([t]) => {
     const s = (SHORT.find(([re]) => re.test(t)) || [null, t])[1];
