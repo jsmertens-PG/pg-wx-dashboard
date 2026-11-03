@@ -613,6 +613,23 @@ header.top { position: relative; }
 
 /* touch tooltip */
 .tip { position: fixed; z-index: 50; background: #26303a; color: #fff; font-size: .78rem; line-height: 1.35; padding: 6px 9px; border-radius: 6px; box-shadow: 0 4px 14px rgba(0,0,0,.25); pointer-events: none; }
+
+/* day boxes: line 2 of every day card, always six, lit when they apply */
+details.day > summary.hd .notes { margin-top: -3px; }
+details.day > summary.hd .sum { margin-top: 3px; }
+.sig { display: inline-flex; flex-wrap: nowrap; gap: 4px; margin-right: 2px; }
+.sig .g { height: 24px; min-width: 24px; padding: 0 4px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;
+  background: #fff; border: 1.25px solid color-mix(in srgb, #26303a 35%, transparent); color: #26303a; font-size: .66rem; font-weight: 800; letter-spacing: .04em;
+  opacity: .28; filter: grayscale(1); box-sizing: border-box; }
+.sig .g .ic-svg { width: 15px; height: 15px; }
+.sig .g .ic { font-style: normal; font-size: .95rem; line-height: 1; }
+.sig .g.on { opacity: 1; filter: none; }
+.sig .g.xc.on { background: #3aa457; border-color: #2f8f4a; color: #fff; box-shadow: 0 0 0 2px rgba(58,164,87,.25), 0 0 10px rgba(58,164,87,.6); }
+.sig .g.up.on { border-color: #3aa457; box-shadow: 0 0 0 2px rgba(58,164,87,.22), 0 0 12px rgba(58,164,87,.6); }
+.sig .g.lid.on { border-color: #ee8a1c; box-shadow: 0 0 0 2px rgba(238,138,28,.2), 0 0 10px rgba(238,138,28,.5); }
+.sig .g.glass.on { border-color: #d9a400; color: #b98a00; box-shadow: 0 0 10px rgba(241,199,43,.6); }
+.sig .g.wind.on, .sig .g.rain.on, .sig .g.cloud.on { background: #26303a; border-color: #26303a; color: #fff; }
+.srow .spills .rx .ic-svg { width: 13px; height: 13px; }
 </style>
 </head>
 <body>
@@ -714,7 +731,37 @@ const ICON = { "Front": "≋", "Pre-frontal": "↗", "Post-frontal": "★", "San
   cloud: "☁", warn: "⚠" };
 /* the rain drop is drawn, so it stays one colour on every phone (the emoji is always blue) */
 const DROP = '<svg class="ic-svg" viewBox="0 0 12 16" aria-hidden="true"><path d="M6 1 C6 1 1.2 7 1.2 10.2 A4.8 4.8 0 0 0 10.8 10.2 C10.8 7 6 1 6 1 Z" fill="currentColor"/></svg>';
-const ico = (k) => (k === "rain" ? DROP : `<i class="ic" aria-hidden="true">${ICON[k]}\uFE0E</i>`);
+const ico = (k) => (k === "rain" ? DROP : SIG[k] || `<i class="ic" aria-hidden="true">${ICON[k]}\uFE0E</i>`);
+/* the day boxes' symbols; the same ones mark the matching chips on the site cards */
+const SIG = {
+  up: '<svg class="ic-svg" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5 L13.5 7.5 H10 V14.5 H6 V7.5 H2.5 Z" fill="#3aa457"/></svg>',
+  lid: '<svg class="ic-svg" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2" width="12" height="2.2" rx="1" fill="currentColor"/><path d="M8 6 L11.5 9.6 H9.4 V14.5 H6.6 V9.6 H4.5 Z" fill="#ee8a1c"/></svg>',
+  windy: '<svg class="ic-svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 4.5 L5 3.5 L8 5 L13.5 3.8"/><path d="M11.5 2.4 L13.8 3.8 L11.8 5.6"/><path d="M1 8.5 L4 7.6 L7 9.3 L10 7.8 L14.5 8.2"/><path d="M12.6 6.6 L14.8 8.2 L12.6 9.9"/><path d="M2 12.6 L6 11.6 L9 13.2 L12.5 12"/><path d="M10.6 10.6 L12.8 12 L10.9 13.7"/></svg>',
+  glass: '<i class="ic" aria-hidden="true">☼\uFE0E</i>',
+};
+/* the day boxes: always the same six in the same place, lit by the home sites (Little Black, Blossom, Elsinore).
+   Good news lights up when any of them has it, a warning when most of them do; tap or hover says where. */
+function dayBoxes(d) {
+  const loc = [["lb", "Little Black"], ["blossom", "Blossom"], ["elsinore", "Elsinore"]].filter(([k]) => d.sites[k]).map(([k, n]) => [n, d.sites[k]]);
+  const who = (f) => loc.filter(([, c]) => f(c)).map(([n]) => n);
+  const climb = (c) => (c.wstar != null ? Math.max(0, (c.core || 1.4) * c.wstar - (c.sink || 1.1)) : 0);
+  const most = Math.max(2, Math.ceil(loc.length / 2));
+  const xc = who((c) => c.xc), good = who((c) => c.rating >= 3 && climb(c) >= 1.2);
+  const low = who((c) => (c.why || []).some((w) => w === "lid" || w === "weak") || climb(c) < 0.5);
+  const glass = who((c) => (c.tags || []).includes("glass-off"));
+  const windy = who((c) => (c.tags || []).includes("windy") || (c.why || []).some((w) => ["windy", "gusty", "aloft", "strong"].includes(w)));
+  const rain = (d.rain_p || 0) >= 0.3, cloud = !!(d.cloud && d.cloud.okta >= 5);
+  const lidOn = !good.length && low.length >= most;
+  const b = (on, cls, inner, tip) => `<span class="g ${cls}${on ? " on" : ""}" title="${esc(tip)}">${inner}</span>`;
+  return `<span class="sig">${
+    b(xc.length, "xc", "XC", xc.length ? `XC: ${xc.join(", ")}` : "XC: not this day")}${
+    lidOn ? b(true, "lid", SIG.lid, `Low lid / weak thermals: ${low.join(", ")}`)
+          : b(good.length, "up", SIG.up, good.length ? `Good height and climbs: ${good.join(", ")}` : "Height and climbs: nothing special")}${
+    b(glass.length, "glass", SIG.glass, glass.length ? `Glass-off: ${glass.join(", ")}` : "Glass-off: not this day")}${
+    b(windy.length >= most, "wind", SIG.windy, windy.length >= most ? `Windy: ${windy.join(", ")}` : "Windy: no")}${
+    b(rain, "rain", DROP, `Rain: ${Math.round((d.rain_p || 0) * 100)}% of model runs`)}${
+    b(cloud, "cloud", `<i class="ic" aria-hidden="true">${ICON.cloud}\uFE0E</i>`, d.cloud ? `Cloud: mid/high ${d.cloud.okta}/8` : "Cloud: clear")}</span>`;
+}
 /* trend since about a day ago: an arrow when the shown number changed */
 const trendHtml = (c) => "";   // trend arrows switched off
 const trendHtmlOld = (c) => {
@@ -838,7 +885,7 @@ function render(data) {
       <summary class="hd"><span class="band">
         <span class="when"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small>${bm ? `<span class="dchip${DAY_LT.has(dayLvl) ? " lt" : ""}" title="best of Little Black, Blossom and Elsinore">${tripBetter(d, dayLvl) ? `${DAY_WORD[dayLvl].replace(/ day$/, "")} in SD` : DAY_WORD[dayLvl]}</span>` : ""}</span>
         <span class="exp" aria-hidden="true"><i class="chev"></i></span></span>
-        ${(() => { const n = regimeHtml(d.regime) + ((d.regime && d.regime.also) || []).map((a) => regimeHtml({ type: a.type, agree: a.agree, weak: true })).join("") + rainPill(d) + cloudPill(d) + (d.why && !(/rain|shower/i.test(d.why) && rainPill(d)) ? `<span class="rx rx-why">${ico("warn")}${esc(d.why)}</span>` : ""); return n ? `<span class="notes">${n}</span>` : ""; })()}
+        <span class="notes">${dayBoxes(d)}${regimeHtml(d.regime)}${((d.regime && d.regime.also) || []).map((a) => regimeHtml({ type: a.type, agree: a.agree, weak: true })).join("")}</span>
         <span class="sum">${daySummary(d, big, other)}${watchPill(d)}</span>
         ${mods ? `<span class="mods">${mods}</span>` : ""}
       </summary>
@@ -967,7 +1014,7 @@ function sitePills(c) {
   const when = c.when || {};
   const SAME = { gusty: /gust/, aloft: /top of lift/, windy: /too windy|blown/, cross: /off launch/ };   // no pill twice
   (c.why || []).filter((k) => WHY_TXT[k] && !/rain|showers|cape/.test(k) && !(SAME[k] && adj.some(([t]) => SAME[k].test(t)))).slice(0, Object.keys(when).length ? 4 : 2)
-    .forEach((k) => out.push(`<span class="rx">${ico("warn")}${esc(WHY_TXT[k])}${when[k] ? ` <span class="dv">${esc(when[k])}</span>` : ""}</span>`));
+    .forEach((k) => out.push(`<span class="rx">${ico(k === "lid" || k === "weak" ? "lid" : k === "windy" || k === "gusty" ? "windy" : "warn")}${esc(WHY_TXT[k])}${when[k] ? ` <span class="dv">${esc(when[k])}</span>` : ""}</span>`));
   /* deductions as short chips (the full wording and the points stay in the detail view); the ones that only
      cap a 5 at 4 don't get a chip */
   const SHORT = [[/20–45° off launch/, "cross wind"], [/more than 45° off launch/, "wrong direction"],
@@ -979,11 +1026,11 @@ function sitePills(c) {
     const s = (SHORT.find(([re]) => re.test(t)) || [null, t])[1];
     if (seen.has(s.toLowerCase())) return;
     seen.add(s.toLowerCase());
-    out.push(`<span class="rx">${ico("warn")}${esc(s)}</span>`);
+    out.push(`<span class="rx">${ico(/gusty|windy|blown/.test(s) ? "windy" : "warn")}${esc(s)}</span>`);
   });
   /* good news and Elsinore's switch: glass-off when a decent one is expected, the switch time (or no switch) */
   if ((c.tags || []).includes("windy") && ![...seen].some((x) => /too windy|blown out|strong wind aloft/.test(x)))
-    out.push(`<span class="rx">${ico("warn")}windy</span>`);
+    out.push(`<span class="rx">${ico("windy")}windy</span>`);
   (c.tags || []).filter((t) => /^glass-off$|switch|no launch window/.test(t))
     .forEach((t) => out.push(`<span class="rx">${t === "glass-off" ? '<i class="ic" aria-hidden="true">☼\uFE0E</i>' : ico("Switch day")}${esc(t)}</span>`));
   /* every chip explains itself: hover on a computer, tap on a phone */
@@ -1237,7 +1284,7 @@ $("#reload").addEventListener("click", load);
   document.addEventListener("click", (e) => {
     if (held) { e.preventDefault(); e.stopPropagation(); held = false; return; }   // a long press shows the tip, not a click
     const el = target(e);
-    if (el && (!inControl(el) || el.matches(".srow .rx"))) {     // a chip on a site card: explain it, don't toggle the card
+    if (el && (!inControl(el) || el.matches(".srow .rx, .sig .g"))) {     // a chip on a site card: explain it, don't toggle the card
       if (inControl(el)) { e.preventDefault(); e.stopPropagation(); }
       show(el); return;
     }
