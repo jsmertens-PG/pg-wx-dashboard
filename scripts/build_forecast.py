@@ -1229,6 +1229,9 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "wind_1pm": wind_1pm, "win": [w0, w1],
         "wind_now": wind_now, "wind_later": wind_later,
         "rating": rating, "local": local, "windy_share": windy_share,
+        # share of the window with a sustained breeze: 10 mph+ on launch or 13 mph+ at the top of lift ("windy" chip)
+        "breezy_share": (sum(1 for _, sc in win if (sc.get("lw") or 0) >= 10 or (sc.get("tw") and sc["tw"][1] * 1.15078 >= 13))
+                         / len(win)) if win else 0.0,
         # share of the window with a NW wind (293-338 deg) of 5 mph or more at the top of lift (site rule "nw_nick")
         "nw_share": (sum(1 for _, sc in win if sc.get("tw") and wrap_in(sc["tw"][0], 293, 338) and sc["tw"][1] * 1.15078 >= 5)
                      / len(win)) if win else 0.0, "xc_day": xc_day, "label": label, "codes": codes, "when": when,
@@ -1940,6 +1943,10 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                 tags.append(lead["switch_tag"])
             if lead and lead["glass"] and label in ("Thermal", "Marginal", "XC") and not ridge and lead.get("style") != "convergence":
                 tags.append("glass-off")
+            # a warning only (no points): windy through most of the window, whatever the direction (not Torrey,
+            # which needs the wind)
+            if not ridge and D and blend({k: a.get("breezy_share", 0.0) for k, a in D.items()}) >= 0.6:
+                tags.append("windy")
             spread = (max(det_r.values()) - min(det_r.values())) if len(det_r) > 1 else 0
 
             # key values: median across the regular models (directions from the lead model)

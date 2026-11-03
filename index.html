@@ -982,6 +982,8 @@ function sitePills(c) {
     out.push(`<span class="rx">${ico("warn")}${esc(s)}</span>`);
   });
   /* good news and Elsinore's switch: glass-off when a decent one is expected, the switch time (or no switch) */
+  if ((c.tags || []).includes("windy") && ![...seen].some((x) => /too windy|blown out|strong wind aloft/.test(x)))
+    out.push(`<span class="rx">${ico("warn")}windy</span>`);
   (c.tags || []).filter((t) => /^glass-off$|switch|no launch window/.test(t))
     .forEach((t) => out.push(`<span class="rx">${t === "glass-off" ? '<i class="ic" aria-hidden="true">☼\uFE0E</i>' : ico("Switch day")}${esc(t)}</span>`));
   /* every chip explains itself: hover on a computer, tap on a phone */
@@ -1000,6 +1002,7 @@ const CHIP_TIPS = [
   [/^gusty/, "Gusts over 12 mph on launch"],
   [/too windy aloft/, "Wind at the top of lift too strong for this site"],
   [/too windy|blown out/, "Too much wind on launch"],
+  [/^windy$/, "Sustained wind through the window: 10 mph+ on launch or 13 mph+ at the top of lift"],
   [/strong wind aloft/, "Wind at the top of lift over 20 mph"],
   [/wrong flow aloft/, "Wind aloft from a direction that kills this site"],
   [/weak thermals/, "Weak climbs (thermal strength under 1 m/s)"],
