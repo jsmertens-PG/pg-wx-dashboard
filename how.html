@@ -67,8 +67,8 @@ svg { width:100%; height:auto; display:block; }
 <h1>What this is <span>and how it works</span></h1>
 </header>
 <section class="how lead">
-<p><b>SD Flying Radar is a quick daily read of SoCal flying for the next 7 days.</b> It reads the weather models the way an experienced pilot reads the usual weather tools and the NWS, and turns them into one score per site and day, so you see at a glance which day and which site deserve a closer look.</p>
-<p><b>Optimistic by design:</b> a score says how good the day <i>can</i> be from the numbers. It is tuned by hand against pilots' favourite weather tools and local pilots' reads, not against flights. Little Black, Blossom, Elsinore and Torrey are calibrated this way; the other sites are educated guesses. It never replaces your own check of the real forecast and conditions on launch.</p>
+<p><b>A quick read of SoCal flying for the next 7 days:</b> one score per site and day, so you see which day and which site deserve a closer look.</p>
+<p><b>Optimistic on purpose:</b> it shows how good a day <i>can</i> be. Little Black, Blossom, Elsinore and Torrey are tuned against pilots' usual weather tools and local reads; the other sites are educated guesses. Always check the real forecast and conditions on launch.</p>
 </section>
 
 <h2>Reading the page</h2>
@@ -80,50 +80,49 @@ svg { width:100%; height:auto; display:block; }
   <span class="chip"><i style="background:var(--q4)"></i>4 XC</span>
   <span class="chip"><i style="background:var(--q5)"></i>5 Hammerday</span>
 </div>
-<p><b>Day card.</b> The words next to the date, coloured red to blue (No-go, Marginal, Site flying, XC day, Hammerday), answer one question: <i>is it a good local thermal day?</i> They are the best of Little Black, Blossom and Elsinore; when a trip area is better they read e.g. "No-go in SD". Below it, always in the same place, six boxes that light up: three good ones, <b>XC</b>, <b>glass-off</b> and <b>good height and climbs</b> (green arrow), then four bad ones, <b>low lid / inversion</b> (orange arrow under a lid; never on together with the green arrow), <b>windy</b>, <b>rain</b> and <b>cloud</b>. Good news lights up when any of the three home sites has it, a warning when most of them do; tap or hover a box to see where. Then the day type (front, post-frontal, Santa Ana …, with the share of models that agree), and the sites worth a look: on no-go and marginal days the best three, on better days every San Diego site at 2.5 or more, plus a trip area when it reaches the day's level.</p>
-<p><b>Site card</b> (tap a day). Score, label, warnings, glass-off and Elsinore's switch on the first line; then the height of lift, the launch wind and the wind at the top of lift.</p>
-<p><b>Detail</b> (tap a site). The hour strip from 9 am to 6 pm with the flying window (solid bracket) and glass-off (dashed bracket), the bars that made the score, the points it lost, and what the models say that is <i>not</i> in the score: how well they agree and the chance of flying and of XC from the ensembles.</p>
-<p><b>Today</b> keeps updating about every two hours; the <b>Archive</b> at the bottom of the main page keeps each day's midday read.</p>
+<p><b>Day.</b> The coloured word next to the date is the local thermal day at Little Black, Blossom and Elsinore. "… in SD" means a trip area is better that day.</p>
+<p><b>Boxes</b> light up when they apply; tap one to see which sites. Good: <b>XC</b>, <b>glass-off</b>, <b>good height</b>. Bad: <b>low lid</b>, <b>windy</b>, <b>rain</b>, <b>cloud</b>.</p>
+<p>Below them: the day type (post-frontal, Santa Ana …, with how many models agree) and the sites worth a look. Tap the day to open it.</p>
+<p><b>Site card.</b> Score, type of flying (Thermal, Cross-country, Ridge soaring, Glass-off), chips from good to bad (tap one for what it means), height of lift, wind on launch and at the top of lift, and the hours from 9 am to 6 pm. Tap the card for what made the score and how sure the models are.</p>
+<p><b>Updates</b> hourly through the day. The Archive at the bottom of the main page keeps each day's midday read.</p>
 </section>
 
-<h2>How a score is made</h2>
+<h2>What the score means</h2>
 <section class="how">
-<p><b>1. The flying window.</b> Three hours, placed each day where the lift is best (height first, thermal strength second, never the wind), somewhere between 10 am and the start of glass-off.</p>
-<p><b>2. Height and strength in that window.</b> Height is the top of usable lift, as the usual soaring forecasts show it, read at the launch and at points over the terrain around it (see the charts below): the four best readings, at most two from one point. It is scored on each site's own scale, e.g. Little Black 1,800 ft a good local day, 2,300 ft XC, 3,500 ft great. Strength is shown as the <b>climb rate</b> in the core: 1.4 × W* minus a paraglider's sink of 1.1 m/s.</p>
-<p><b>3. Deductions,</b> the same everywhere:</p>
+<p><b>It rates the best 3 hours</b> between 10 am and the evening. Glass-off, the last 3 hours before sunset, is rated on its own and can lift a day to 3.</p>
+<p><b>Height</b> is the top of usable lift over the launch and the hills around it (maps below). <b>Climb</b> is what you can expect in a good core.</p>
+<p><b>Points off,</b> the same at every site:</p>
 <table class="rules">
-  <tr><th>Rain</th><td>30% of model runs wet −0.5 · 45% −1 · 60% −1.5 · NWS showers −0.5 more · rain through the window: no-go</td></tr>
-  <tr><th>Mid/high cloud</th><td>5/8 −0.25 · 6/8 −0.75 · 7/8 −1.25 · 8/8 −1.75 (half when the sun still gets through)</td></tr>
-  <tr><th>Gusts on launch</th><td>over 12 mph −0.5 · over 18 mph too windy</td></tr>
-  <tr><th>Launch direction</th><td>light wind (4g8 or less): any direction · within 20° of the face: fine · 20–45° off −0.5 · more than 45° off: 2 at most · over the back: that hour doesn't count</td></tr>
-  <tr><th>Wind at top of lift</th><td>over 20 mph −0.5 · over 30 mph −1 · from behind the launch at 10 mph or more through most of the window (e.g. a Santa Ana over the ridge): 2 at most · Little Black and Blossom: NW at 5 mph or more through most of the window −0.3</td></tr>
+  <tr><th>Rain</th><td>30% of model runs wet −0.5 · 45% −1 · 60% −1.5 · rain all window: no-go</td></tr>
+  <tr><th>High cloud</th><td>from 5/8: −0.25, up to −1.75 at 8/8</td></tr>
+  <tr><th>Gusts</th><td>over 12 mph −0.5 · over 18 mph too windy</td></tr>
+  <tr><th>Launch wind</th><td>light (4g8 or less): any direction · 20–45° off −0.5 · more than 45° off: 2 at most</td></tr>
+  <tr><th>Wind at top of lift</th><td>over 20 mph −0.5 · over 30 mph −1 · over the back most of the window: 2 at most · NW at Little Black and Blossom −0.3</td></tr>
 </table>
-<p>A <b>windy</b> chip (no points) warns of a sustained breeze through most of the window, whatever its direction: 10 mph or more on launch or 13 mph or more at the top of lift.</p>
-<p><b>4. XC and Hammerday.</b> XC needs the site's XC height, workable winds and a climb rate of at least 0.5 m/s. A <b>5</b> needs the site's great height, wind into launch and no deductions at all; otherwise 4 is the top.</p>
-<p><b>5. Glass-off.</b> The last 3 hours before sunset are rated on their own (3 at most). If that beats the day, the site shows "Glass-off".</p>
+<p><b>XC</b> needs the site's XC height, workable wind and a real climb. A <b>5</b> needs great height and nothing taken off. The <b>windy</b> chip warns of a steady breeze most of the window (10 mph on launch or 13 at the top); it takes no points.</p>
 </section>
 
 <h2>Sites with their own rules</h2>
 <section class="how">
-<p><b>Torrey</b> is a ridge: wind decides. A forecast 8 mph from WSW–WNW is soarable (the real wind is usually a bit stronger), 6–8 mph is marginal, under 6 mph usually not flyable. Cloud and a chance of showers don't count, a likely-wet day does (45% of runs −1, 60% −1.5). Over 20 mph or gusts over 25 is too windy; blown out a quarter of the day caps it at 3, half the day at 1.5. Straight south or north is a no-go. A 4 needs a steady WSW–WNW in the afternoon; a thermal day there takes the full deductions.</p>
-<p><b>Elsinore</b> needs an east launch wind or calm, then the west switch; the card says when the switch comes (or "no switch"). It keeps an 11 am–4 pm window.</p>
-<p><b>Laguna / Horse / Fuzz</b> is a convergence site: each launch is scored on its own and it needs the convergence to rate above 2. Horse can also get a glass-off: a light W to SW breeze on its west face in the last hours before sunset, the same rule as at the other sites. Laguna faces east and gets none.</p>
-<p><b>Trip areas (experimental):</b> Santa Barbara / Ojai and Owens Valley are rated as areas: each main launch on its own, the best one counts, and height is read over the launches and the terrain between them. Owens is only for big, calm days: wind at the top of lift over 10 mph or over 8 mph on launch makes it 2 at most, over 15 mph at the top is a no-go, and outside its season it shows 2 at most.</p>
+<p><b>Torrey:</b> wind decides. A forecast 8 mph from WSW–WNW is soarable, 6–8 marginal, under 6 too light, over 20 too windy. Rain only counts when it's likely.</p>
+<p><b>Elsinore:</b> needs east wind or calm, then the west switch. The card says when it switches, or "no switch".</p>
+<p><b>Laguna / Horse / Fuzz:</b> rates above 2 only when the convergence is there. Horse can also glass off in a light W–SW evening breeze; Laguna can't. The card shows the better launch.</p>
+<p><b>Trip areas (experimental):</b> Santa Barbara / Ojai and Owens; the best launch counts. Owens is for big, calm days only: over 10 mph at the top of lift or 8 on launch makes it 2 at most.</p>
 </section>
 
 <h2>Models</h2>
 <section class="how">
-<p>HRRR (counted twice) and RRFS while HRRR covers the day, then RRFS (twice) with GFS, ECMWF and ICON, then the global models alone. On the RRFS days the wind comes from RRFS and ECMWF only: GFS and ICON count for lift, not for wind. The ensembles give the chance of flying and of XC. The NWS San Diego discussion adds showers and the day summary. The main page lists every source with its run time.</p>
+<p>The first 2–3 days use HRRR and RRFS, then RRFS with ECMWF, GFS and ICON. Days 5–7 run on global models only, so expect them to change. The main page lists every source and its run time.</p>
 </section>
 
 <h2>What it doesn't know</h2>
 <section class="how">
-<p>Real-time observations, local wind effects beyond the rules above, turbulence and rotor, overdevelopment, site closures, permits and airspace. The day type isn't scored, nor is the direction of the wind aloft (except NW at Little Black and Blossom). Five to seven days out it runs on global models only, so expect those days to move.</p>
+<p>Live observations, local effects, turbulence and rotor, overdevelopment, closures, permits and airspace.</p>
 </section>
 
 <h2 id="sites">Where the radar measures</h2>
 <section class="intro">
-<p>The wind always comes from the launch itself. For the height of lift, most sites also look at points around the launch, because the best climbs are often over the hills behind it, not right above take-off.</p>
+<p>Wind is read at the launch. Height is also read at points around it, because the best climbs are often over the hills behind launch.</p>
 <div class="key"><span><i class="k-pt"></i>height point (a dot under a launch: the launch itself is measured too)</span><span>wedges sit on the launch, where the wind is measured:</span><span><i class="k-g"></i>preferred wind (within 20° of the launch face)</span><span><i class="k-y"></i>accepted / cross wind</span><span>dashed rings every 10 km, north up</span></div>
 </section>
 
