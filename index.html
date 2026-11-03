@@ -650,6 +650,10 @@ details.day > summary.hd .notes > .sig { flex: 0 0 100%; }
 /* the day's level in words, coloured red to blue (text, no background); yellow and orange a shade darker to read */
 .dword { font-size: .72rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; align-self: center; margin-left: 4px;
   color: color-mix(in srgb, var(--dc) 78%, #000); }
+
+/* spacing: day boxes, then (if any) the day type a little apart, then the sites close under it */
+details.day > summary.hd .notes { row-gap: 12px; }
+details.day > summary.hd .notes:has(> .rx) + .sum { margin-top: -4px; }
 </style>
 </head>
 <body>
