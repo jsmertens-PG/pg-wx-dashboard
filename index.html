@@ -643,6 +643,9 @@ details.day > summary.hd .sum .sc .xcmark, :root[data-skin="glossy"] details.day
 /* the day's level as a plain dot, red to blue (the words on tap or hover) */
 .ddot { display: inline-block; width: 14px; height: 14px; border-radius: 50%; background: var(--dc); align-self: center; flex: none;
   box-shadow: 0 0 0 2px rgba(255,255,255,.75), 0 1px 3px rgba(20,32,56,.3); margin-left: 4px; }
+
+/* the day type (Santa Ana, switch day, post-frontal ...) gets its own row under the day boxes, only when there is one */
+details.day > summary.hd .notes > .sig { flex: 0 0 100%; }
 </style>
 </head>
 <body>
