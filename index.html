@@ -577,6 +577,8 @@ details.day[data-date] { border-left: 1px solid rgba(15,25,40,.18) !important; }
 
 /* day pills: a site name never wraps; on a narrow phone a row may hold three */
 details.day > summary.hd .sum .sc, details.day > summary.hd .sum .sc.sc { white-space: nowrap; min-height: 30px; padding: 3px 10px !important; font-size: .9rem; }
+/* trip areas on a day San Diego is flyable: a size smaller */
+details.day > summary.hd .sum .sc.sc.trip { font-size: .76rem; min-height: 26px; padding: 2px 9px !important; align-self: center; }
 
 /* site cards: warnings and notes on the first row, right after the name and label */
 .srow .nmw { flex-wrap: wrap; align-items: center; row-gap: 4px; flex: 1 1 0; min-width: 0; }
@@ -1036,7 +1038,7 @@ function daySummary(d, big, other) {
   shown.sort(order);
   return shown.map((s) => {
     const c = d.sites[s.id];
-    return `<span class="sc" style="--rc:${qv(c.rating)}"><span class="sc-t"><b>${esc(siteName(s))}</b>${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span><span class="sc-bar"><i style="width:${Math.max(6, Math.min(100, c.rating * 20))}%"></i></span></span>`;
+    return `<span class="sc${sdOk && TRIP_IDS.has(s.id) ? " trip" : ""}" style="--rc:${qv(c.rating)}"><span class="sc-t"><b>${esc(siteName(s))}</b>${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span><span class="sc-bar"><i style="width:${Math.max(6, Math.min(100, c.rating * 20))}%"></i></span></span>`;
   }).join("");
 }
 let openDays = new Set();
