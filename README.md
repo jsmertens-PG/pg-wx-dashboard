@@ -46,7 +46,7 @@ While HRRR covers a day, HRRR ×2 and RRFS ×1 set the rating (weighted mean, `H
 
 ## Tuning
 
-`sites.json` holds every launch's coordinates, elevation, wind window, limits and three ceilings (MSL) that scale the height bars: `ok_ft` (a decent local day, half bar), `xc_top_ft` (XC starts, three-quarter bar) and `xc_top_ft + xc_span_ft` (a great XC day, full bar). They are on the top-of-usable-lift scale the usual soaring forecasts shows, e.g. Little Black 1,800 / 2,300 / 3,500 ft and Blossom 2,500 / 3,500 / 4,500 ft. `gust_mph` (15 inland, 24 at Torrey) is where gusts start to cost; 5 mph above it is close to a no-go. **The values are starting estimates. Check the coordinates and elevations against the SDHGPA guide and your tracks.** The quickest improvement after that is comparing the radar with days you actually flew, then adjusting the limits.
+`sites.json` holds every launch's coordinates, elevation, wind window, limits and three ceilings (MSL) that scale the height bars: `ok_ft` (a decent local day, half bar), `xc_top_ft` (XC starts, three-quarter bar) and `xc_top_ft + xc_span_ft` (a great XC day, full bar). They are on the top-of-usable-lift scale the usual soaring forecasts shows, e.g. Little Black 1,800 / 2,300 / 3,500 ft and Blossom 2,500 / 3,500 / 4,500 ft. `gust_mph` (15 inland, 24 at Torrey) is where gusts start to cost; 5 mph above it is close to a no-go. **The values are starting estimates. Check the coordinates and elevations against local pilots' knowledge and your tracks.** The quickest improvement after that is comparing the radar with days you actually flew, then adjusting the limits.
 
 Run locally:
 
@@ -66,7 +66,7 @@ python scripts/compare_flights.py --igc ~/logbook/igc           # your own IGC f
 python scripts/compare_flights.py --csv flights.csv --out report.md
 ```
 
-The CSV takes one flight per row with `date, site` and any of `max_alt_ft, dist_km, dist_mi, duration_min, pilot`, so it can be filled from XContest day lists, club reports or notes. Each day at a site gets an observed 1–5 score on the site's own scale (height, distance, duration); days without flights are skipped.
+The CSV takes one flight per row with `date, site` and any of `max_alt_ft, dist_km, dist_mi, duration_min, pilot`, so it can be filled from flight logs, pilots' reports or notes. Each day at a site gets an observed 1–5 score on the site's own scale (height, distance, duration); days without flights are skipped.
 
 ## Known limits
 

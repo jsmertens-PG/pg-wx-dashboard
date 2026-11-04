@@ -3,8 +3,8 @@
 
 Flights come from either or both of:
   --igc DIR     a folder of IGC files (searched recursively), e.g. your logbook
-  --csv FILE    a CSV with one flight per row, filled from any source (XContest day lists,
-                club reports, notes). Columns (header row required; extra columns ignored):
+  --csv FILE    a CSV with one flight per row, filled from any source (flight logs,
+                pilots' reports, notes). Columns (header row required; extra columns ignored):
                     date      YYYY-MM-DD
                     site      radar site id (lb, blossom, elsinore, torrey, lagunahorse, marshall,
                               otay, soboba, santabarbara) or a site name / short name
