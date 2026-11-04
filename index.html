@@ -679,6 +679,12 @@ details.day > summary.hd .notes:has(> .rx) + .sum { margin-top: -4px; }
   font-weight: 700; letter-spacing: .03em; border-radius: 5px; }
 /* site cards: the chips start on their own row under the name and label */
 .srow > .spills { display: flex !important; grid-column: 1 / -1; flex-wrap: wrap; gap: 4px; margin-top: 1px; }
+/* the weather overview: a light, quiet card, clearly apart from the heavier day cards */
+#story.day, :root[data-skin="glossy"] #story.day { background: rgba(255,255,255,.72) !important; background-image: none !important;
+  border: 1px solid rgba(20,32,56,.08) !important; box-shadow: 0 1px 3px -1px rgba(20,32,56,.08) !important; }
+#story.day > .hd, :root[data-skin="glossy"] #story.day > .hd { background: transparent !important; background-image: none !important; border-bottom-color: rgba(20,32,56,.08) !important; }
+#story .wsec, :root[data-skin="glossy"] #story .wsec { background: rgba(240,243,246,.8) !important; border-color: rgba(20,32,56,.08) !important; }
+#story.day > .hd .exp { box-shadow: none !important; border: 1px solid rgba(20,32,56,.12) !important; background: transparent !important; }
 </style>
 </head>
 <body>
