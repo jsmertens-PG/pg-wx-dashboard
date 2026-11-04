@@ -1017,7 +1017,7 @@ const tripBetter = (d, lvl) => Object.entries(d.sites || {}).some(([k, c]) => TR
 function daySummary(d, big, other) {
   /* one level for the chip and the list: the best of Little Black, Blossom and Elsinore, rounded.
      Bad days (1-2): the best three sites. Better days (3+): every San Diego site at 2.5 or more, plus the
-     trips that reach the day's level; at least three either way. Best first. */
+     trips that reach the day's level; three to six, always with the better of Little Black and Blossom. Best first. */
   const all = big.concat(other).filter((s) => d.sites[s.id]).sort((a, b) => d.sites[b.id].rating - d.sites[a.id].rating);
   if (!all.length) return `<span class="sx">no data</span>`;
   const r = (s) => d.sites[s.id].rating;
@@ -1026,6 +1026,10 @@ function daySummary(d, big, other) {
     : all.filter((s) => (TRIP_IDS.has(s.id) ? Math.round(r(s)) >= dayLvl : r(s) >= 2.5));
   for (const s of all) { if (shown.length >= 3) break; if (!shown.includes(s)) shown.push(s); }
   shown.sort((a, b) => r(b) - r(a));
+  shown = shown.slice(0, 6);   // 3 to 6 sites
+  /* always the better of Little Black and Blossom (in place of the weakest one if the list is full) */
+  const home = all.find((s) => s.id === "lb" || s.id === "blossom");
+  if (home && !shown.includes(home)) { if (shown.length >= 6) shown.pop(); shown.push(home); shown.sort((a, b) => r(b) - r(a)); }
   return shown.map((s) => {
     const c = d.sites[s.id];
     return `<span class="sc" style="--rc:${qv(c.rating)}"><span class="sc-t"><b>${esc(siteName(s))}</b>${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span><span class="sc-bar"><i style="width:${Math.max(6, Math.min(100, c.rating * 20))}%"></i></span></span>`;
