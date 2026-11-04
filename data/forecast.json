@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-04T16:13+00:00",
+ "generated": "2026-11-04T16:41+00:00",
  "sample": false,
  "calib": {
   "2026-11-04": {
@@ -29698,20 +29698,20 @@
  },
  "log": [
   "HRRR: ok (ncep_hrrr_conus), surface heat flux (6500 values)",
-  "HRRR trips: using the last good run, fetched 2.7 h ago",
+  "HRRR trips: using the last good run, fetched 3.2 h ago",
   "RRFS: ok (ncep_rrfs_conus), surface heat flux (5980 values)",
-  "RRFS: ok (ncep_rrfs_conus), surface heat flux (2070 values)",
-  "GFS: using the last good run, fetched 2.7 h ago",
-  "ECMWF: using the last good run, fetched 2.7 h ago",
-  "ICON: using the last good run, fetched 2.7 h ago",
-  "ens GFS ens: using the last good run, fetched 2.6 h ago",
-  "ens ECMWF ens: using the last good run, fetched 2.6 h ago",
-  "ens ICON ens: using the last good run, fetched 2.6 h ago",
+  "RRFS trips: using the last good run, fetched 0.5 h ago",
+  "GFS: using the last good run, fetched 3.2 h ago",
+  "ECMWF: using the last good run, fetched 3.1 h ago",
+  "ICON: using the last good run, fetched 3.1 h ago",
+  "ens GFS ens: using the last good run, fetched 3.1 h ago",
+  "ens ECMWF ens: using the last good run, fetched 3.0 h ago",
+  "ens ICON ens: using the last good run, fetched 3.0 h ago",
   "NWS AFD: ok",
   "clouds HRRR: ok (ncep_hrrr_conus)",
   "clouds RRFS: ok (ncep_rrfs_conus)",
-  "clouds ECMWF: using the last good run, fetched 2.6 h ago",
-  "clouds ICON: using the last good run, fetched 2.6 h ago",
+  "clouds ECMWF: using the last good run, fetched 3.0 h ago",
+  "clouds ICON: using the last good run, fetched 3.0 h ago",
   "wind: GFS and ICON use ECMWF's winds where RRFS and ECMWF overlap"
  ],
  "sources": [
@@ -29722,7 +29722,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-11-04T14:00+00:00",
-   "fetched": "2026-11-04T16:12+00:00",
+   "fetched": "2026-11-04T16:39+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -29732,7 +29732,7 @@
    "id": "ncep_rrfs_conus",
    "status": "ok",
    "run": "2026-11-04T06:00+00:00",
-   "fetched": "2026-11-04T16:12+00:00",
+   "fetched": "2026-11-04T16:39+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -29808,7 +29808,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-11-04T12:12:00+00:00",
-   "fetched": "2026-11-04T16:12+00:00",
+   "fetched": "2026-11-04T16:39+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   },
   {
@@ -29818,7 +29818,7 @@
    "id": "cloud_cover_mid/high",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-04T16:13+00:00",
+   "fetched": "2026-11-04T16:41+00:00",
    "url": "https://open-meteo.com/en/docs"
   }
  ],
@@ -29935,7 +29935,7 @@
    "lz_ft": 600,
    "kind": "thermal",
    "xc_top_ft": 3000,
-   "note": "SW-facing bowl across Otay Lakes Rd from Skydive San Diego. Non-permitted, not an SDHGPA site: coordinate with the DZ, never land at the DZ, no north wind at all. Ridge plus thermal site flying; a few hundred feet over launch is a good day, XC on great days. Under the SAN approach (3,500 ft), not part of the rating. Launch and LZ heights are estimates."
+   "note": "SW-facing bowl across Otay Lakes Rd from Skydive San Diego. Non-permitted, not a club site: coordinate with the DZ, never land at the DZ, no north wind at all. Ridge plus thermal site flying; a few hundred feet over launch is a good day, XC on great days. Under the SAN approach (3,500 ft), not part of the rating. Launch and LZ heights are estimates."
   },
   {
    "id": "lagunahorse",
