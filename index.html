@@ -1025,11 +1025,15 @@ function daySummary(d, big, other) {
   let shown = dayLvl <= 2 ? all.slice(0, 3)
     : all.filter((s) => (TRIP_IDS.has(s.id) ? Math.round(r(s)) >= dayLvl : r(s) >= 2.5));
   for (const s of all) { if (shown.length >= 3) break; if (!shown.includes(s)) shown.push(s); }
+  /* best first, but when San Diego has a site at 2.5+ the trip areas come after the San Diego sites */
+  const sdOk = all.some((s) => !TRIP_IDS.has(s.id) && r(s) >= 2.5);
+  const order = (a, b) => (sdOk ? TRIP_IDS.has(a.id) - TRIP_IDS.has(b.id) : 0) || r(b) - r(a);
   shown.sort((a, b) => r(b) - r(a));
   shown = shown.slice(0, 6);   // 3 to 6 sites
   /* always the better of Little Black and Blossom (in place of the weakest one if the list is full) */
   const home = all.find((s) => s.id === "lb" || s.id === "blossom");
   if (home && !shown.includes(home)) { if (shown.length >= 6) shown.pop(); shown.push(home); shown.sort((a, b) => r(b) - r(a)); }
+  shown.sort(order);
   return shown.map((s) => {
     const c = d.sites[s.id];
     return `<span class="sc" style="--rc:${qv(c.rating)}"><span class="sc-t"><b>${esc(siteName(s))}</b>${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span><span class="sc-bar"><i style="width:${Math.max(6, Math.min(100, c.rating * 20))}%"></i></span></span>`;
