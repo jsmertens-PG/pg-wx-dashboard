@@ -701,7 +701,7 @@ details.day > summary.hd .notes:has(> .rx) + .sum { margin-top: -4px; }
   <section class="days" id="arch" aria-label="Archive" hidden></section>
   <div class="qlegend" aria-label="Rating colours">
     <span class="qbar"></span>
-    <span class="qlab"><span>1 no go</span><span>2 marginal</span><span>3 local</span><span>4 XC</span><span>5 Hammerday</span></span>
+    <span class="qlab"><span>1 no go</span><span>2 marginal</span><span>3 local</span><span>4 XC</span><span>5 Great XC day</span></span>
   </div>
 
 
@@ -1009,7 +1009,7 @@ const siteName = (s) => (s.id === "lb" ? "Little Black" : s.short);
 const SD_SITES = new Set(["torrey", "lb", "blossom", "otay", "lagunahorse", "elsinore"]);   // San Diego sites + Elsinore (a home site): always listed
 const DAY_COLOUR = true;    // the day colour shows as a stripe on the left edge; the cards stay silver
 const DAY_SITES = new Set(["lb", "blossom", "elsinore"]);
-const DAY_WORD = { 1: "No-go day", 2: "Marginal day", 3: "Site flying", 4: "XC day", 5: "Hammerday" };
+const DAY_WORD = { 1: "No-go day", 2: "Marginal day", 3: "Site flying", 4: "XC day", 5: "Great XC day" };
 const DAY_LT = new Set([2, 3]);   // light chip colours (orange, yellow) take dark text   // the sites that set a day's colour
 const TRIP_IDS = new Set(["soboba", "marshall", "santabarbara", "owens"]);
 /* the day chip is about San Diego; when a trip area is better than that, the chip says so ("No-go in SD") */
