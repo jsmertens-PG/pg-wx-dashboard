@@ -34,7 +34,7 @@ DAYS = 7
 HOURS = range(9, 19)          # local hours considered for flying
 WINDOW = 3                    # hours in the "best window"
 FT = 3.28084
-UA = "sd-xc-radar (personal paragliding forecast; github.com)"
+UA = "sd-flying-radar (paragliding forecast)"
 
 # Open-Meteo model ids change occasionally, so each model lists fallbacks.
 DET_MODELS = {

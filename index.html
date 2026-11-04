@@ -891,7 +891,7 @@ function render(data) {
   $("#procAt").textContent = `processed ${fmtWhen(data.generated)}`;
   const ageH = (Date.now() - new Date(data.generated)) / 3600000, warn = [];
   if (data.sample) warn.push("This page shows <b>sample data</b> to demonstrate the layout. Real forecasts appear after the GitHub Action runs.");
-  if (ageH > 8) warn.push(`The forecast is <b>${Math.round(ageH)} hours old</b>. The scheduled update may have failed: check the Actions tab on GitHub.`);
+  if (ageH > 8) warn.push(`The forecast is <b>${Math.round(ageH)} hours old</b>. The scheduled update may have failed.`);
   const failed = src.filter((s) => s.status === "failed");
   $("#warn").innerHTML = warn.length ? `<div class="banner">${warn.map((w) => `<span>${w}</span>`).join("")}</div>` : "";
   /* minor source hiccups go to the bottom of the page, not the top */
@@ -1300,8 +1300,15 @@ let y0 = null;
 $("#sheet").addEventListener("touchstart", (e) => { y0 = $("#sheet").scrollTop <= 0 ? e.touches[0].clientY : null; }, { passive: true });
 $("#sheet").addEventListener("touchend", (e) => { if (y0 != null && e.changedTouches[0].clientY - y0 > 70) closeSheet(); y0 = null; }, { passive: true });
 
-/* "Start new forecast run" opens the workflow page of this repo (works on <user>.github.io/<repo>/) */
-if (location.hostname.endsWith(".github.io")) {
+/* "Start new forecast run" opens the workflow page of this repo; only for the owner: open the page once with
+   ?admin (or ?admin=0 to switch it off again), everyone else never sees it */
+let ADMIN = false;
+try {
+  const q = new URLSearchParams(location.search).get("admin");
+  if (q != null) localStorage.setItem("radarAdmin", q === "0" ? "0" : "1");
+  ADMIN = localStorage.getItem("radarAdmin") === "1";
+} catch (e) { /* no storage: no button */ }
+if (ADMIN && location.hostname.endsWith(".github.io")) {
   const user = location.hostname.split(".")[0], repo = location.pathname.split("/").filter(Boolean)[0];
   if (user && repo) { const a = $("#runNow"); a.href = `https://github.com/${user}/${repo}/actions/workflows/forecast.yml`; a.hidden = false; }
 }
