@@ -463,12 +463,21 @@ class OffshoreNoGo(unittest.TestCase):
     def test_offshore_hour_is_no_go(self):
         for sid in ("blossom", "lb", "otay"):
             site = self._site(sid)
-            elev = site["lz_ft"] / bf.FT
+            elev = site.get("model_ground_ft", site["lz_ft"]) / bf.FT
             sc = bf.score_hour(site, self._hour(16.0), 0, bf.DET_LEVELS, elev)
             self.assertIn("offshore", sc["codes"], sid)
             self.assertEqual(sc["q"], 0.0, sid)
 
     def test_light_offshore_is_not_vetoed(self):
         site = self._site("blossom")
-        sc = bf.score_hour(site, self._hour(5.0), 0, bf.DET_LEVELS, site["lz_ft"] / bf.FT)
+        sc = bf.score_hour(site, self._hour(4.0), 0, bf.DET_LEVELS, site.get("model_ground_ft", site["lz_ft"]) / bf.FT)
         self.assertNotIn("offshore", sc["codes"])
+
+    def test_steady_six_to_eight_offshore_is_no_go(self):
+        site = self._site("blossom")
+        sc = bf.score_hour(site, self._hour(6.0), 0, bf.DET_LEVELS, site.get("model_ground_ft", site["lz_ft"]) / bf.FT)   # 6 kt = 7 mph
+        self.assertIn("offshore", sc["codes"])
+
+    def test_blossom_read_at_launch(self):
+        site = self._site("blossom")
+        self.assertEqual(site["model_ground_ft"], site["launch_ft"])     # top landing: models asked for launch height

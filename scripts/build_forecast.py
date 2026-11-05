@@ -879,7 +879,7 @@ def score_hour(site, hr, i, levels, elev_m):
             launch_pts = 0.8 * (launch_pts or 0.0) if gcat == 1 else 0.0
             good_launch = False
     # offshore through the flying layer: this hour is a no-go however the valley wind looks
-    if off_mph is not None and off_mph >= onog.get("mph", 12):
+    if off_mph is not None and off_mph >= onog.get("mph", 6):
         q = 0.0; codes.append("offshore"); launch = "offshore aloft"
     # wind aloft: strength and direction
     if a_max is not None and a_max > site["aloft_max_kt"]:
@@ -1257,7 +1257,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
                                 and not any(wrap_in(sc["tw"][0], c[0], c[1]) for c in site.get("cross", [])))
                             / len(win)) if win else 0.0,
         # share of the window with offshore wind at the site's "offshore_nogo" speed or more below its top_ft
-        "offshore_share": (sum(1 for _, sc in win if (sc.get("offshore") or 0) >= site["offshore_nogo"].get("mph", 12))
+        "offshore_share": (sum(1 for _, sc in win if (sc.get("offshore") or 0) >= site["offshore_nogo"].get("mph", 6))
                            / len(win)) if win and site.get("offshore_nogo") else 0.0,
         # share of the window with a sustained breeze: 10 mph+ on launch or 13 mph+ at the top of lift ("windy" chip)
         "breezy_share": (sum(1 for _, sc in win if (sc.get("lw") or 0) >= 10 or (sc.get("tw") and sc["tw"][1] * 1.15078 >= 13))
@@ -1917,7 +1917,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             onog = s.get("offshore_nogo")
             if onog and D and blend({k: a.get("offshore_share", 0.0) for k, a in D.items()}) >= 0.5:
                 r0 = rating; rating = 1.0
-                note_adj(f"offshore {onog.get('mph', 12)}+ mph below {onog.get('top_ft', 4000):,} ft: no-go", r0)
+                note_adj(f"offshore {onog.get('mph', 6)}+ mph below {onog.get('top_ft', 4000):,} ft: no-go", r0)
             # NW to N at the top of lift through the window (Little Black, Blossom): -0.3
             if s.get("nw_nick") and D:
                 nws_ = blend({k: a.get("nw_share", 0.0) for k, a in D.items()})
