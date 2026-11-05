@@ -1239,8 +1239,8 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         # share of the window with a sustained breeze: 10 mph+ on launch or 13 mph+ at the top of lift ("windy" chip)
         "breezy_share": (sum(1 for _, sc in win if (sc.get("lw") or 0) >= 10 or (sc.get("tw") and sc["tw"][1] * 1.15078 >= 13))
                          / len(win)) if win else 0.0,
-        # share of the window with a NW wind (293-338 deg) of 5 mph or more at the top of lift (site rule "nw_nick")
-        "nw_share": (sum(1 for _, sc in win if sc.get("tw") and wrap_in(sc["tw"][0], 293, 338) and sc["tw"][1] * 1.15078 >= 5)
+        # share of the window with a NW to N wind (293-15 deg) of 5 mph or more at the top of lift (site rule "nw_nick")
+        "nw_share": (sum(1 for _, sc in win if sc.get("tw") and wrap_in(sc["tw"][0], 293, 15) and sc["tw"][1] * 1.15078 >= 5)
                      / len(win)) if win else 0.0, "xc_day": xc_day, "label": label, "codes": codes, "when": when,
         "postfrontal": postfrontal, "glass": glass_ok, "good_glass": good_glass, "glass_hours": glass_hours,
         "gwin": [gwin[0][0], gwin[-1][0]] if gwin else None, "sunset": sunset_h,
@@ -1889,11 +1889,11 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             if s.get("style") in ("thermal", "window") and D:
                 if blend({k: a.get("otb_aloft_share", 0.0) for k, a in D.items()}) >= 0.5 and rating > 2.0:
                     r0 = rating; rating = 2.0; note_adj("over the back aloft: 2 at most", r0)
-            # NW at the top of lift through the window (Little Black, Blossom): -0.3
+            # NW to N at the top of lift through the window (Little Black, Blossom): -0.3
             if s.get("nw_nick") and D:
                 nws_ = blend({k: a.get("nw_share", 0.0) for k, a in D.items()})
                 if nws_ >= 0.5:
-                    r0 = rating; rating = max(1.0, rating - s["nw_nick"]); note_adj("NW aloft", r0)
+                    r0 = rating; rating = max(1.0, rating - s["nw_nick"]); note_adj("NW to N aloft", r0)
             # calm sites (Owens): big air only works with almost no wind. Wind at the top of lift over the first
             # limit, or on launch over launch_mph: 2 at most; over the second limit at the top: a no-go
             calm = s.get("calm")

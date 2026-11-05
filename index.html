@@ -1104,7 +1104,7 @@ function sitePills(c) {
   const SHORT = [[/20–45° off launch/, "cross wind"], [/more than 45° off launch/, "wrong direction"],
     [/gusts over 18/, "too windy"], [/gusts over 12/, "gusty"], [/top of lift over \d+ mph: no-go/, "too windy aloft"],
     [/top of lift over/, "strong wind aloft"], [/blown out/, "blown out"], [/not calm/, "not calm"],
-    [/over the back aloft/, "over the back aloft"], [/off season/, "off season"], [/NW aloft/, "NW"]];
+    [/over the back aloft/, "over the back aloft"], [/off season/, "off season"], [/NW to N aloft/, "NW–N"]];
   const seen = new Set(out.map((x) => x.replace(/<i[^>]*>.*?<\/i>/g, "").replace(/<[^>]+>/g, "").trim().toLowerCase()));
   adj.filter(([t]) => !/rain|sun|4 at most$/.test(t) || /off launch|blown|calm|season/.test(t)).forEach(([t]) => {
     const s = (SHORT.find(([re]) => re.test(t)) || [null, t])[1];
@@ -1151,7 +1151,7 @@ const CHIP_TIPS = [
   [/low lid/, "Lift tops out only a little above launch"],
   [/too light/, "Too little wind to soar"],
   [/strong on launch/, "Launch wind above the site's range"],
-  [/^NW$/, "NW wind of 5 mph or more at the top of lift through the window"],
+  [/^NW–N$/, "NW to N wind of 5 mph or more at the top of lift through most of the window: −0.3"],
   [/not calm/, "Owens needs almost no wind"],
   [/off season/, "Outside the site's season: 2 at most"],
   [/glass-off/, "A decent glass-off is likely in the last 3 hours before sunset"],
