@@ -719,6 +719,14 @@ html body #story.day.day.day{background:transparent!important;border:0!important
   html body details.day:not(#story) > summary.hd .sum{align-self:start;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))!important;gap:8px!important;margin-bottom:16px!important}
   html body details.day:not(#story) > summary.hd .sum .sc.sc.sc{font-size:.88rem!important;min-height:34px!important}
   html body details.day:not(#story) .band .mods{font-size:.64rem!important} }
+
+/* site cards inside an opened day: quiet white too, the score as a coloured accent bar and a light tint */
+html body details.day:not(#story) .list .srow.srow{background:color-mix(in srgb,var(--rc) 10%,#fff)!important;background-image:none!important;border-radius:10px!important;
+  box-shadow:inset 4px 0 0 var(--rc), 0 0 0 1px #e6e9ee!important}
+html body details.day:not(#story) .list .srow.srow .exp{box-shadow:none!important;background:transparent!important;border:0!important}
+html body details.day:not(#story) .list .srow.srow[aria-expanded="true"]{background:color-mix(in srgb,var(--rc) 14%,#fff)!important}
+html body details.day:not(#story) .list .srow.srow .spills .rx{background:#fff!important;box-shadow:0 0 0 1px #e6e9ee!important}
+html body details.day:not(#story) .list{background:#f8f9fb}
 </style>
 </head>
 <body>
