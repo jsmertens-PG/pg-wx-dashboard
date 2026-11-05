@@ -745,6 +745,16 @@ html body details.day:not(#story) > summary.hd .sum .sc.sc.sc .xcmark{padding:0 
   html body details.day:not(#story) > summary.hd .sig .g.g{height:26px!important;min-width:26px!important}
   html body details.day:not(#story) > summary.hd .sig{gap:5px!important}
 }
+
+/* computer: sites sized to their names (no grid, no empty space in a pill); the right side starts at the top,
+   the signals just below the top of the day name */
+@media (min-width:700px){
+  html body details.day:not(#story) > summary.hd{align-content:start!important}
+  html body details.day:not(#story) > summary.hd .notes{align-self:start!important;padding-top:20px!important}
+  html body details.day:not(#story) > summary.hd .sum{display:flex!important;flex-wrap:wrap!important;gap:10px!important}
+  html body details.day:not(#story) > summary.hd .sum .sc.sc.sc{justify-content:center!important}
+  html body details.day:not(#story) > summary.hd .sum .sc.sc.sc .sc-t{width:auto!important;gap:8px!important}
+}
 </style>
 </head>
 <body>
