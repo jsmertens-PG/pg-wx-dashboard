@@ -685,6 +685,35 @@ details.day > summary.hd .notes:has(> .rx) + .sum { margin-top: -4px; }
 #story.day > .hd, :root[data-skin="glossy"] #story.day > .hd { background: transparent !important; background-image: none !important; border-bottom-color: rgba(20,32,56,.08) !important; }
 #story .wsec, :root[data-skin="glossy"] #story .wsec { background: rgba(240,243,246,.8) !important; border-color: rgba(20,32,56,.08) !important; }
 #story.day > .hd .exp { box-shadow: none !important; border: 1px solid rgba(20,32,56,.12) !important; background: transparent !important; }
+
+/* ===== layout: quiet white cards; the day in a side column with a verdict-coloured accent bar, models at its
+   foot; signals, day type and sites on the right, sites in an even grid ===== */
+body{background:#f3f5f8}
+html body details.day:not(#story){background:#fff!important;background-image:none!important;border:1px solid #e3e7ec!important;box-shadow:0 1px 2px rgba(16,24,40,.06)!important;border-radius:12px!important;overflow:hidden}
+html body details.day:not(#story) > summary.hd{background:transparent!important;background-image:none!important;display:grid!important;grid-template-columns:88px minmax(0,1fr)!important;column-gap:12px!important;row-gap:8px!important;position:relative;padding:0!important;border:0!important}
+html body details.day:not(#story) > summary.hd .band{grid-column:1;grid-row:1 / span 3;align-self:stretch;display:flex!important;flex-direction:column;justify-content:space-between;gap:8px;padding:12px 6px 12px 16px;margin:0!important;box-shadow:inset 4px 0 0 var(--dc), inset -1px 0 0 #eef0f3}
+html body details.day:not(#story) .band .when{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:1px!important;white-space:normal!important}
+html body details.day:not(#story) .band .when .dn{font-size:1.5rem!important;line-height:1.05}
+html body details.day:not(#story) .band .when small{font-size:.74rem!important;margin:0!important}
+html body details.day:not(#story) .band .when .dword{font-size:.95rem!important;font-weight:800!important;margin:6px 0 0!important;line-height:1.15;white-space:normal!important}
+html body details.day:not(#story) .band .mods{display:block!important;font-size:.6rem!important;line-height:1.35;color:#98a2b3!important;margin:0!important;text-align:left!important;letter-spacing:0;white-space:normal!important;overflow-wrap:anywhere;max-width:100%}
+html body details.day:not(#story) .band .exp{position:absolute!important;right:8px;top:10px;border:0!important;background:transparent!important;box-shadow:none!important;width:22px!important}
+html body details.day:not(#story) > summary.hd .notes{grid-column:2;grid-row:1;padding:12px 32px 0 0!important;margin:0!important}
+html body details.day:not(#story) > summary.hd .sum{grid-column:2;grid-row:2;margin:0 0 12px!important;padding-right:12px;display:grid!important;grid-template-columns:repeat(auto-fill,minmax(118px,1fr))!important;gap:6px!important}
+html body details.day:not(#story) > summary.hd .sum .sc.sc.sc{min-height:32px!important;font-size:.78rem!important;padding:2px 8px!important;justify-content:center!important;min-width:0;border-radius:8px!important;
+  background:color-mix(in srgb,var(--rc) 42%,#fff)!important;background-image:none!important;border:0!important;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--rc) 60%,#fff)!important}
+html body details.day:not(#story) > summary.hd .sum .sc.sc.sc.trip{min-height:32px!important;font-size:.7rem!important}
+html body details.day:not(#story) > summary.hd .sum .sc.sc.sc .sc-t{width:100%;justify-content:space-between;align-items:center!important;min-width:0;gap:4px!important}
+html body details.day:not(#story) > summary.hd .sum .sc.sc.sc{align-items:center!important}
+html body details.day:not(#story) > summary.hd .sum .sc.sc.sc.long{grid-column:span 2}
+html body details.day:not(#story) > summary.hd .sum .sc.sc.sc .sc-t b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html body details.day:not(#story) > summary.hd .sum .sc.sc.sc .xcmark{font-size:.54rem!important;padding:1px 4px!important}
+html body details.day:not(#story) > summary.hd .sig .g.g{height:22px!important;min-width:22px!important;padding:0 3px!important}
+html body details.day:not(#story) > summary.hd .sig{gap:3px!important}
+html body details.day:not(#story) > summary.hd .sig .g.g:not(.on){background:transparent!important;border-color:#e6e9ee!important;opacity:.55}
+html body details.day:not(#story)[open] > summary.hd{border-bottom:1px solid #eef0f3!important}
+html body #story.day.day.day{background:transparent!important;border:0!important;box-shadow:none!important}
+@media (min-width:700px){ html body details.day:not(#story) > summary.hd{grid-template-columns:120px minmax(0,1fr)!important} html body details.day:not(#story) > summary.hd .sum .sc.sc.sc{font-size:.86rem!important} }
 </style>
 </head>
 <body>
@@ -955,14 +984,14 @@ function render(data) {
     const open = openDays.has(d.date);
     /* which models and which run: today's final run once frozen, otherwise the latest run */
     const runAt = d.frozen_at || data.generated;
-    const mods = dayModels(d) ? `Models: ${dayModels(d)}${runAt ? ` (${esc(fmtTime(runAt).toLowerCase())}${d.frozen_at ? " final" : ""})` : ""}` : "";
-    return `<details class="day" id="day-${i}" data-date="${esc(d.date)}" style="--qc:${cardCol}"${open ? " open" : ""}>
+    const mods = dayModels(d) ? `${dayModels(d)}${runAt ? `<br>${esc(fmtTime(runAt).toLowerCase())}${d.frozen_at ? " final" : ""}` : ""}` : "";
+    return `<details class="day" id="day-${i}" data-date="${esc(d.date)}" style="--qc:${cardCol};--dc:var(${QSTOP[dayLvl] || "--muted"})"${open ? " open" : ""}>
       <summary class="hd"><span class="band">
         <span class="when"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small>${bm ? `<span class="dword" style="--dc:var(${QSTOP[dayLvl]})" title="best of Little Black, Blossom and Elsinore">${tripBetter(d, dayLvl) ? `${DAY_WORD[dayLvl].replace(/ day$/, "")} in SD` : DAY_WORD[dayLvl]}</span>` : ""}</span>
+        ${mods ? `<span class="mods">${mods}</span>` : ""}
         <span class="exp" aria-hidden="true"><i class="chev"></i></span></span>
         <span class="notes">${dayBoxes(d)}${regimeHtml(d.regime)}${((d.regime && d.regime.also) || []).map((a) => regimeHtml({ type: a.type, agree: a.agree, weak: true })).join("")}</span>
         <span class="sum">${daySummary(d, big, other)}${watchPill(d)}</span>
-        ${mods ? `<span class="mods">${mods}</span>` : ""}
       </summary>
       ${d._flown && d._flown.length ? `<div class="flown"><b>Flown:</b> ${d._flown.map((f) => esc(f)).join(" · ")}</div>` : ""}
       <div class="list">
@@ -1056,7 +1085,7 @@ function daySummary(d, big, other) {
   shown.sort(order);
   return shown.map((s) => {
     const c = d.sites[s.id];
-    return `<span class="sc${sdOk && TRIP_IDS.has(s.id) ? " trip" : ""}" style="--rc:${qv(c.rating)}"><span class="sc-t"><b>${esc(siteName(s))}</b>${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span><span class="sc-bar"><i style="width:${Math.max(6, Math.min(100, c.rating * 20))}%"></i></span></span>`;
+    return `<span class="sc${sdOk && TRIP_IDS.has(s.id) ? " trip" : ""}${siteName(s).length > 14 ? " long" : ""}" style="--rc:${qv(c.rating)}"><span class="sc-t"><b>${esc(siteName(s))}</b>${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span><span class="sc-bar"><i style="width:${Math.max(6, Math.min(100, c.rating * 20))}%"></i></span></span>`;
   }).join("");
 }
 let openDays = new Set();
