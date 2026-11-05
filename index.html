@@ -755,6 +755,9 @@ html body details.day:not(#story) > summary.hd .sum .sc.sc.sc .xcmark{padding:0 
   html body details.day:not(#story) > summary.hd .sum .sc.sc.sc{justify-content:center!important}
   html body details.day:not(#story) > summary.hd .sum .sc.sc.sc .sc-t{width:auto!important;gap:8px!important}
 }
+
+/* computer: the day-type warnings get their own row under the signals */
+@media (min-width:700px){ html body details.day:not(#story) > summary.hd .notes > .sig.sig{flex:0 0 100%!important;margin-right:0!important} html body details.day:not(#story) > summary.hd .notes{row-gap:12px!important} }
 </style>
 </head>
 <body>
