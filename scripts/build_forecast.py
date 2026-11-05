@@ -1913,7 +1913,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                 if blend({k: a.get("otb_aloft_share", 0.0) for k, a in D.items()}) >= 0.5 and rating > 2.0:
                     r0 = rating; rating = 2.0; note_adj("over the back aloft: 2 at most", r0)
             # offshore (Santa Ana) through the flying layer for most of the window: a no-go, even when the top of
-            # lift is lower and the valley wind looks fine (LB, Blossom, Otay, Whale's V: "offshore_nogo")
+            # lift is lower and the valley wind looks fine (LB, Blossom, Otay, Whale's V; N-E at Soboba and Marshall: "offshore_nogo")
             onog = s.get("offshore_nogo")
             if onog and D and blend({k: a.get("offshore_share", 0.0) for k, a in D.items()}) >= 0.5:
                 r0 = rating; rating = 1.0
