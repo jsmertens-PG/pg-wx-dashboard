@@ -763,6 +763,11 @@ html body details.day:not(#story) > summary.hd .sum .sc.sc.sc .xcmark{padding:0 
 html body details.day:not(#story) .list{background:#eef1f4!important;padding:10px!important;display:flex;flex-direction:column;gap:10px}
 html body details.day:not(#story) .list .srow.srow{background:#fff!important;margin:0!important;box-shadow:inset 5px 0 0 var(--rc), 0 0 0 1px #dfe3e8, 0 2px 4px -2px rgba(16,24,40,.12)!important;border-top:0!important}
 html body details.day:not(#story) .list .srow.srow[aria-expanded="true"]{background:#fff!important}
+
+/* an opened site: its colour stripe runs on down the detail, card and detail read as one piece */
+html body details.day:not(#story) .list .det.det{margin:-10px 0 0!important;border:0!important;border-radius:0 0 10px 10px!important;background:#fff!important;
+  box-shadow:inset 5px 0 0 var(--rc), 0 0 0 1px #dfe3e8, 0 2px 4px -2px rgba(16,24,40,.12)!important;padding-left:22px!important}
+html body details.day:not(#story) .list .srow.srow[aria-expanded="true"]{border-radius:10px 10px 0 0!important;box-shadow:inset 5px 0 0 var(--rc), 0 0 0 1px #dfe3e8!important}
 </style>
 </head>
 <body>
@@ -1066,6 +1071,7 @@ function render(data) {
     b.setAttribute("aria-expanded", "true");        // the mini strip hides while the site is open
     det.innerHTML = detail(DAYKEY[i], BY[b.dataset.site], true);
     b.after(det);                                   // open right under the site
+    det.style.setProperty("--rc", b.style.getPropertyValue("--rc"));   // the site's colour stripe runs down the detail
     det.hidden = false;
     morphStrip(from, det);
     const r = det.getBoundingClientRect();
