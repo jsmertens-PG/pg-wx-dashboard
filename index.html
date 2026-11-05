@@ -1041,7 +1041,7 @@ function render(data) {
     const mods = dayModels(d) ? `${dayModels(d)}${runAt ? `<br>${esc(fmtTime(runAt).toLowerCase())}${d.frozen_at ? " final" : ""}` : ""}` : "";
     return `<details class="day" id="day-${i}" data-date="${esc(d.date)}" style="--qc:${cardCol};--dc:var(${QSTOP[dayLvl] || "--muted"})"${open ? " open" : ""}>
       <summary class="hd"><span class="band">
-        <span class="when"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small>${bm ? `<span class="dword" style="--dc:var(${QSTOP[dayLvl]})" title="best of Little Black, Blossom and Elsinore">${tripBetter(d, dayLvl) ? `${DAY_WORD[dayLvl].replace(/ day$/, "")} in SD` : DAY_WORD[dayLvl]}</span>` : ""}</span>
+        <span class="when"><span class="dn">${esc(L.short)}</span>${L.rel ? `<small class="rel">(${esc(L.rel)})</small>` : ""}<small>${esc(L.date)}</small>${bm ? `<span class="dword" style="--dc:var(${QSTOP[dayLvl]})" title="best of Little Black, Blossom and Elsinore">${DAY_WORD[dayLvl]}</span>` : ""}</span>
         ${mods ? `<span class="mods">${mods}</span>` : ""}
         <span class="exp" aria-hidden="true"><i class="chev"></i></span></span>
         <span class="notes">${dayBoxes(d)}${regimeHtml(d.regime)}${((d.regime && d.regime.also) || []).map((a) => regimeHtml({ type: a.type, agree: a.agree, weak: true })).join("")}</span>
@@ -1113,7 +1113,7 @@ const siteName = (s) => (s.id === "lb" ? "Little Black" : s.short);
 const SD_SITES = new Set(["torrey", "lb", "blossom", "otay", "lagunahorse", "elsinore"]);   // San Diego sites + Elsinore (a home site): always listed
 const DAY_COLOUR = true;    // the day colour shows as a stripe on the left edge; the cards stay silver
 const DAY_SITES = new Set(["lb", "blossom", "elsinore"]);
-const DAY_WORD = { 1: "No-go day", 2: "Marginal day", 3: "Site flying", 4: "XC day", 5: "Great XC day" };
+const DAY_WORD = { 1: "No-go", 2: "Marginal", 3: "Site fly", 4: "XC day", 5: "XC day" };
 const DAY_LT = new Set([2, 3]);   // light chip colours (orange, yellow) take dark text   // the sites that set a day's colour
 const TRIP_IDS = new Set(["soboba", "marshall", "santabarbara", "owens"]);
 /* the day chip is about San Diego; when a trip area is better than that, the chip says so ("No-go in SD") */
