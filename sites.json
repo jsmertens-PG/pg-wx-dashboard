@@ -1,5 +1,5 @@
 {
-  "_note": "Starting values to check against local pilots' knowledge and your own tracks. Directions are where the wind blows FROM (degrees). Launch wind in mph, wind aloft in knots. 'aloft_bad' is the range of wind-aloft directions that kills the site (offshore, over the back). 'routes' are XC directions (degrees you fly TOWARD) with a short description; 'blocked' are directions where drift takes you into airspace, sea or the border. Positions, launch and LZ heights come from the soaringpredictor.info site pages. Models are asked for the forecast at the LZ height (lz_ft), so thermals start from the valley ground. A site with 'launches' is scored per launch and shows the better one. 'ok_ft' / 'xc_top_ft' / 'xc_top_ft'+'xc_span_ft' are the ceilings (MSL) for an OK local day, the start of XC, and a great XC day; they scale the height bars. 'gust_mph' is where gusts start to hurt (fully bad 5 mph above). 'style' sets how a day is rated (1-5): 'window' = the best single hour inside 'window' (local hours) decides, plus glass-off; 'thermal' = best two hours inside 'window'; 'convergence' = XC only, local flying caps at 2; 'ridge' = ridge soaring up to 3, thermal day 4-5. 'model_ground_ft' (optional) is the height the models are asked for instead of the LZ, for launches above a marine layer. 'otb_mph' (default 5) is the wind from behind launch that counts as over the back. 'switch' style (Elsinore): needs a launchable hour before the west wind arrives; the height over the range during the switch is capped by the height at the 'inland' site in the 3 hours after it; no switch or a switch after 4 pm caps at 3. 'xc_bad_aloft' (optional): wind-aloft directions FROM ('from', degrees) that make an XC harder at 'min_kt' or more (drift into airspace or bad terrain); shown as 'tag', and 'nick' (optional) takes that much off the rating. Heights (ok_ft, xc_top_ft, xc_span_ft) are on the 'top of usable lift' scale the usual soaring forecasts shows (no best-thermal bonus): LB, Blossom and Elsinore set from Jerome's calls (Oct 2026), the others converted from earlier values (0.65 x height above model ground) and still to be checked. 'launch_wind': 'surface' judges launch on the 10 m wind at the site's grid point instead of the free-air wind at launch height; 'light_mph' (switch style): wind under this from any direction is launchable; 'aloft_bad_min_kt': wind speed at which 'aloft_bad' starts to hurt. tier 'watch': rated but hidden (no row, not in card colour or best site) unless it reaches 4.5; 'season_months': outside these months the rating is capped at 2. 'sp_veto_ft' (Owens): if other soaring forecasts's ceiling (launch + above launch) stays below this MSL height at all of the site's 'sp' launches, the rating is capped at 4 (it can't light up). 'height_points' (Elsinore): the height is the highest top of usable lift over these points each hour, using the models' own grid-cell values (as the usual soaring forecasts shows them), instead of the site's own point; Elsinore's are over the hills west of the lake and across the Inland Empire toward Soboba, never over the lake (falsely low in the high-res models).",
+  "_note": "Starting values to check against local pilots' knowledge and your own tracks. Directions are where the wind blows FROM (degrees). Launch wind in mph, wind aloft in knots. 'aloft_bad' is the range of wind-aloft directions that kills the site (offshore, over the back). 'routes' are XC directions (degrees you fly TOWARD) with a short description; 'blocked' are directions where drift takes you into airspace, sea or the border. Positions, launch and LZ heights come from the soaringpredictor.info site pages. Models are asked for the forecast at the LZ height (lz_ft), so thermals start from the valley ground. A site with 'launches' is scored per launch and shows the better one. 'ok_ft' / 'xc_top_ft' / 'xc_top_ft'+'xc_span_ft' are the ceilings (MSL) for an OK local day, the start of XC, and a great XC day; they scale the height bars. 'gust_mph' is where gusts start to hurt (fully bad 5 mph above). 'style' sets how a day is rated (1-5): 'window' = the best single hour inside 'window' (local hours) decides, plus glass-off; 'thermal' = best two hours inside 'window'; 'convergence' = XC only, local flying caps at 2; 'ridge' = ridge soaring up to 3, thermal day 4-5. 'model_ground_ft' (optional) is the height the models are asked for instead of the LZ, for launches above a marine layer. 'otb_mph' (default 5) is the wind from behind launch that counts as over the back. 'switch' style (Elsinore): needs a launchable hour before the west wind arrives; the height over the range during the switch is capped by the height at the 'inland' site in the 3 hours after it; no switch or a switch after 4 pm caps at 3. 'xc_bad_aloft' (optional): wind-aloft directions FROM ('from', degrees) that make an XC harder at 'min_kt' or more (drift into airspace or bad terrain); shown as 'tag', and 'nick' (optional) takes that much off the rating. Heights (ok_ft, xc_top_ft, xc_span_ft) are on the 'top of usable lift' scale the usual soaring forecasts shows (no best-thermal bonus): LB, Blossom and Elsinore set from Jerome's calls (Oct 2026), the others converted from earlier values (0.65 x height above model ground) and still to be checked. 'launch_wind': 'surface' judges launch on the 10 m wind at the site's grid point instead of the free-air wind at launch height; 'light_mph' (switch style): wind under this from any direction is launchable; 'aloft_bad_min_kt': wind speed at which 'aloft_bad' starts to hurt. tier 'watch': rated but hidden (no row, not in card colour or best site) unless it reaches 4.5; 'season_months': outside these months the rating is capped at 2. 'sp_veto_ft' (Owens): if other soaring forecasts's ceiling (launch + above launch) stays below this MSL height at all of the site's 'sp' launches, the rating is capped at 4 (it can't light up). 'height_points' (Elsinore): the height is the highest top of usable lift over these points each hour, using the models' own grid-cell values (as the usual soaring forecasts shows them), instead of the site's own point; Elsinore's are over the hills west of the lake and across the Inland Empire toward Soboba, never over the lake (falsely low in the high-res models). 'offshore_nogo' (optional): a no-go when, through most of the window, the wind from 'from' (degrees, offshore) blows at 'mph' or more anywhere between launch and 'top_ft' MSL (or the top of lift if higher), e.g. a Santa Ana at 4,000 ft over LB or Blossom even when lift only reaches 3,000 ft.",
   "sites": [
     {
       "id": "torrey",
@@ -176,7 +176,15 @@
           "lon": -117.22973
         }
       ],
-      "nw_nick": 0.3
+      "nw_nick": 0.3,
+      "offshore_nogo": {
+        "from": [
+          10,
+          130
+        ],
+        "top_ft": 4000,
+        "mph": 12
+      }
     },
     {
       "id": "blossom",
@@ -270,7 +278,15 @@
           "cross-N"
         ]
       ],
-      "nw_nick": 0.3
+      "nw_nick": 0.3,
+      "offshore_nogo": {
+        "from": [
+          10,
+          130
+        ],
+        "top_ft": 4000,
+        "mph": 12
+      }
     },
     {
       "id": "elsinore",
@@ -530,7 +546,15 @@
           "lat": 32.57401,
           "lon": -117.0009
         }
-      ]
+      ],
+      "offshore_nogo": {
+        "from": [
+          10,
+          130
+        ],
+        "top_ft": 4000,
+        "mph": 12
+      }
     },
     {
       "id": "whalesv",
@@ -601,7 +625,15 @@
           "lon": -116.99369
         }
       ],
-      "face": 225
+      "face": 225,
+      "offshore_nogo": {
+        "from": [
+          10,
+          130
+        ],
+        "top_ft": 4000,
+        "mph": 12
+      }
     },
     {
       "id": "lagunahorse",

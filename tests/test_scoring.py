@@ -430,3 +430,45 @@ class TripAreasWithoutEnsembles(unittest.TestCase):
         ens_data = [None if (s.get("_hpoint") or s.get("parent") in bf.SLOW_PARENTS) else d for s, d in zip(sites, ens_data)]
         res = bf.build(sites, det, {"GFS ens": ("s", ens_data, None)}, bf.sample_nws(), [], sample=True, parents=parents)
         self.assertTrue(res["days"])
+
+
+class OffshoreNoGo(unittest.TestCase):
+    """Santa Ana above a low top: valley wind looks fine, NE honks at 4,000 ft -> no-go hour (LB/Blossom/Otay)."""
+
+    @staticmethod
+    def _site(sid):
+        sites = json.loads((ROOT / "sites.json").read_text())["sites"]
+        return next(s for s in sites if s.get("id") == sid)
+
+    @staticmethod
+    def _hour(ne_kt):
+        # valley floor: light WSW upslope; from 975 hPa up: NE flow of ne_kt; mixing to about 3,000 ft
+        hr = {"time": ["2026-11-06T12:00"], "temperature_2m": [24.0], "dew_point_2m": [-2.0],
+              "precipitation": [0.0], "cape": [0.0], "shortwave_radiation": [550.0],
+              "wind_speed_10m": [4.0], "wind_direction_10m": [245.0], "wind_gusts_10m": [6.0],
+              "boundary_layer_height": [700.0]}
+        temps = {1000: 26, 975: 23, 950: 21, 925: 19.5, 900: 18.5, 850: 16, 800: 13, 700: 6, 600: -2, 500: -12}
+        for L, T in temps.items():
+            hr[f"temperature_{L}hPa"] = [T]
+            hr[f"geopotential_height_{L}hPa"] = [bf.STD_HEIGHT_M[L]]
+            hr[f"wind_speed_{L}hPa"] = [ne_kt if L <= 975 else 3.0]
+            hr[f"wind_direction_{L}hPa"] = [45.0]
+        return hr
+
+    def test_sector_max(self):
+        pts = [(200, 20, 4, 245), (760, 18, 15, 45), (1460, 15, 20, 45)]
+        self.assertAlmostEqual(bf.sector_max(pts, 457, 1220, 10, 130), 15 + (20 - 15) * (1220 - 760) / 700, places=0)
+        self.assertEqual(bf.sector_max(pts, 200, 210, 10, 130), 0.0)
+
+    def test_offshore_hour_is_no_go(self):
+        for sid in ("blossom", "lb", "otay"):
+            site = self._site(sid)
+            elev = site["lz_ft"] / bf.FT
+            sc = bf.score_hour(site, self._hour(16.0), 0, bf.DET_LEVELS, elev)
+            self.assertIn("offshore", sc["codes"], sid)
+            self.assertEqual(sc["q"], 0.0, sid)
+
+    def test_light_offshore_is_not_vetoed(self):
+        site = self._site("blossom")
+        sc = bf.score_hour(site, self._hour(5.0), 0, bf.DET_LEVELS, site["lz_ft"] / bf.FT)
+        self.assertNotIn("offshore", sc["codes"])

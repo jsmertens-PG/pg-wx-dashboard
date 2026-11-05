@@ -659,12 +659,23 @@ def layer_wind(pts, z_lo, z_hi):
     return max(s for s, _ in samples), math.hypot(u, v), (math.degrees(math.atan2(u, v)) + 360) % 360
 
 
+def sector_max(pts, z_lo, z_hi, d_lo, d_hi, n=8):
+    """Strongest wind (kt) from directions d_lo..d_hi anywhere between two heights (0 if none)."""
+    zs = [z_lo + (z_hi - z_lo) * k / n for k in range(n + 1)] if z_hi > z_lo else [z_lo]
+    best = 0.0
+    for z in zs:
+        s, d = interp_wind(pts, z)
+        if s is not None and d is not None and wrap_in(d, d_lo, d_hi):
+            best = max(best, s)
+    return best
+
+
 # ---------------------------------------------------------------- scoring
 REASON_TEXT = {
     "rain": "rain or storms", "showers": "showers around", "cape": "overdevelopment risk",
     "otb": "over the back", "windy": "blown out", "strong": "strong on launch",
     "light": "too light to soar", "aloft": "strong wind aloft", "aloftdir": "wrong wind aloft",
-    "lid": "low lid", "weak": "weak thermals", "cross": "cross wind", "gusty": "gusty",
+    "offshore": "offshore (Santa Ana) aloft", "lid": "low lid", "weak": "weak thermals", "cross": "cross wind", "gusty": "gusty",
 }
 GUST_WARN_MPH, GUST_NOGO_MPH = 12, 18          # thermal sites: gusty from 12 mph, too windy from 18 mph
 SINK = 1.1   # paraglider sink rate in a thermal turn, m/s (about 1.0-1.2)
@@ -797,6 +808,11 @@ def score_hour(site, hr, i, levels, elev_m):
         lg_mph = lw_mph * max(gust_f, vt.get("gust", 1.3))
     a_max, a_spd, a_dir = layer_wind(pts, launch_m + 150, max(launch_m + 600, usable_show))
     tw_spd, tw_dir = interp_wind(pts, max(usable_show, launch_m + 150))
+    # offshore through the flying layer (site rule "offshore_nogo"): strongest wind from the offshore sector
+    # between launch and top_ft (or the top of lift if higher), in mph. Catches a Santa Ana above a low top.
+    onog = site.get("offshore_nogo")
+    off_mph = (sector_max(pts, launch_m, max(onog.get("top_ft", 4000) / FT, usable_show), *onog["from"]) * 1.15078
+               if onog else None)
 
     codes, q = [], 1.0
     launch = None
@@ -862,6 +878,9 @@ def score_hour(site, hr, i, levels, elev_m):
             # a gusty but otherwise fine hour still mostly counts on the launch-wind bar (0.8); too windy = 0
             launch_pts = 0.8 * (launch_pts or 0.0) if gcat == 1 else 0.0
             good_launch = False
+    # offshore through the flying layer: this hour is a no-go however the valley wind looks
+    if off_mph is not None and off_mph >= onog.get("mph", 12):
+        q = 0.0; codes.append("offshore"); launch = "offshore aloft"
     # wind aloft: strength and direction
     if a_max is not None and a_max > site["aloft_max_kt"]:
         if site["kind"] in ("ridge", "convergence"):
@@ -938,7 +957,8 @@ def score_hour(site, hr, i, levels, elev_m):
             "off": (angdiff(ld, site_face(site)) if site_face(site) is not None and ld is not None
                     and lw_mph is not None and not light and (site["kind"] != "ridge" or lw_mph > 4) else None),
             "lw": lw_mph, "ld": ld, "lg": lg_mph, "a_max": a_max, "tw": (tw_dir, tw_spd) if tw_spd is not None else None, "a_spd": a_spd, "a_dir": a_dir,
-            "pr": pr, "cape": cape, "codes": codes + (["venturi"] if venturi else []), "pts": pts_h}
+            "pr": pr, "cape": cape, "codes": codes + (["venturi"] if venturi else []), "pts": pts_h,
+            "offshore": off_mph}
 
 
 def ceil_level(site, ft):
@@ -1236,6 +1256,9 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "otb_aloft_share": (sum(1 for _, sc in win if sc.get("tw") and sc["tw"][1] * 1.15078 >= 10 and not dir_ok(site, sc["tw"][0])
                                 and not any(wrap_in(sc["tw"][0], c[0], c[1]) for c in site.get("cross", [])))
                             / len(win)) if win else 0.0,
+        # share of the window with offshore wind at the site's "offshore_nogo" speed or more below its top_ft
+        "offshore_share": (sum(1 for _, sc in win if (sc.get("offshore") or 0) >= site["offshore_nogo"].get("mph", 12))
+                           / len(win)) if win and site.get("offshore_nogo") else 0.0,
         # share of the window with a sustained breeze: 10 mph+ on launch or 13 mph+ at the top of lift ("windy" chip)
         "breezy_share": (sum(1 for _, sc in win if (sc.get("lw") or 0) >= 10 or (sc.get("tw") and sc["tw"][1] * 1.15078 >= 13))
                          / len(win)) if win else 0.0,
@@ -1889,6 +1912,12 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
             if s.get("style") in ("thermal", "window") and D:
                 if blend({k: a.get("otb_aloft_share", 0.0) for k, a in D.items()}) >= 0.5 and rating > 2.0:
                     r0 = rating; rating = 2.0; note_adj("over the back aloft: 2 at most", r0)
+            # offshore (Santa Ana) through the flying layer for most of the window: a no-go, even when the top of
+            # lift is lower and the valley wind looks fine (LB, Blossom, Otay, Whale's V: "offshore_nogo")
+            onog = s.get("offshore_nogo")
+            if onog and D and blend({k: a.get("offshore_share", 0.0) for k, a in D.items()}) >= 0.5:
+                r0 = rating; rating = 1.0
+                note_adj(f"offshore {onog.get('mph', 12)}+ mph below {onog.get('top_ft', 4000):,} ft: no-go", r0)
             # NW to N at the top of lift through the window (Little Black, Blossom): -0.3
             if s.get("nw_nick") and D:
                 nws_ = blend({k: a.get("nw_share", 0.0) for k, a in D.items()})
