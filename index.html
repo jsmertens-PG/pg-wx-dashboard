@@ -1067,7 +1067,7 @@ document.addEventListener("toggle", (e) => {
   try { sessionStorage.setItem("radar-open", JSON.stringify([...openDays])); } catch (err) {}
 }, true);
 /* second level: what made the site's number, in one line, plus the weather pills that hold for this site */
-const WHY_TXT = { otb: "over the back", cross: "cross wind", windy: "blown out", strong: "strong on launch", gusty: "gusty",
+const WHY_TXT = { offshore: "offshore flow aloft", otb: "over the back", cross: "cross wind", windy: "blown out", strong: "strong on launch", gusty: "gusty",
   lid: "low lid", weak: "weak thermals", aloft: "strong wind aloft", light: "too light", aloftdir: "wrong flow aloft" };
 const COMPASS = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
 /* "SSW 4g12" -> an arrow pointing where the wind blows (like a wind map) and the speed */
@@ -1096,7 +1096,7 @@ function sitePills(c) {
   if ((c.cloud && c.cloud.okta >= 5) || cc < 0) out.push(`<span class="rx${cc < 0 ? " strong" : ""}">${ico("cloud")}${c.cloud ? c.cloud.okta + "/8 " : ""}cloud${dv(cc)}</span>`);
   /* warnings; Torrey shows all of them across its flying day, with when they show up (am, midday, pm) */
   const when = c.when || {};
-  const SAME = { gusty: /gust/, aloft: /top of lift/, windy: /too windy|blown/, cross: /off launch/ };   // no pill twice
+  const SAME = { offshore: /^offshore/, gusty: /gust/, aloft: /top of lift/, windy: /too windy|blown/, cross: /off launch/ };   // no pill twice
   (c.why || []).filter((k) => WHY_TXT[k] && !/rain|showers|cape/.test(k) && !(SAME[k] && adj.some(([t]) => SAME[k].test(t)))).slice(0, Object.keys(when).length ? 4 : 2)
     .forEach((k) => out.push(`<span class="rx">${ico(k === "lid" || k === "weak" ? "lid" : k === "windy" || k === "gusty" ? "windy" : "warn")}${esc(WHY_TXT[k])}${when[k] ? ` <span class="dv">${esc(when[k])}</span>` : ""}</span>`));
   /* deductions as short chips (the full wording and the points stay in the detail view); the ones that only
@@ -1104,7 +1104,7 @@ function sitePills(c) {
   const SHORT = [[/20–45° off launch/, "cross wind"], [/more than 45° off launch/, "wrong direction"],
     [/gusts over 18/, "too windy"], [/gusts over 12/, "gusty"], [/top of lift over \d+ mph: no-go/, "too windy aloft"],
     [/top of lift over/, "strong wind aloft"], [/blown out/, "blown out"], [/not calm/, "not calm"],
-    [/over the back aloft/, "over the back aloft"], [/off season/, "off season"], [/NW to N aloft/, "NW–N"]];
+    [/over the back aloft/, "over the back aloft"], [/off season/, "off season"], [/NW to N aloft/, "NW–N"], [/^offshore .*no-go/, "offshore flow aloft"]];
   const seen = new Set(out.map((x) => x.replace(/<i[^>]*>.*?<\/i>/g, "").replace(/<[^>]+>/g, "").trim().toLowerCase()));
   adj.filter(([t]) => !/rain|sun|4 at most$/.test(t) || /off launch|blown|calm|season/.test(t)).forEach(([t]) => {
     const s = (SHORT.find(([re]) => re.test(t)) || [null, t])[1];
@@ -1122,7 +1122,7 @@ function sitePills(c) {
     const t = x.replace(/<[^>]+>/g, " ").toLowerCase();
     if (/no launch window/.test(t)) return 4;
     if (/glass-off|switch/.test(t) && !/no switch/.test(t)) return 0;
-    if (/ strong|rx strong/.test(x.slice(0, 30)) || /too windy|blown out|wrong direction|no switch/.test(t)) return 3;
+    if (/ strong|rx strong/.test(x.slice(0, 30)) || /too windy|blown out|wrong direction|no switch|offshore/.test(t)) return 3;
     if (/cross wind|nw|gusty|aloft|not calm|off season|over the back/.test(t)) return 2;
     return 1;
   };
@@ -1136,6 +1136,7 @@ function sitePills(c) {
 }
 const CHIP_TIPS = [
   [/% rain/, "Share of model runs with rain at the site"],
+  [/offshore flow aloft/, "East (offshore) wind of 6 mph or more below about 4,000 ft through most of the window: no-go"],
   [/cloud/, "Mid/high cloud cover: it takes sun and thermals away"],
   [/over the back aloft/, "Wind at the top of lift from behind the launch, 10 mph+, through most of the window: 2 at most"],
   [/over the back/, "Wind from behind the launch in part of the window"],
