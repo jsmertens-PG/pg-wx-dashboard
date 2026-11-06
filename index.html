@@ -777,6 +777,9 @@ html body details.day:not(#story)::before{content:"";position:absolute;left:0;to
 html, html body { background: #dde2e8 !important; background-image: none !important; }
 /* the white cards lift off the grey: a crisper edge and a soft shadow */
 html body details.day:not(#story){border-color:#d5dbe2!important;box-shadow:0 1px 2px rgba(16,24,40,.08),0 4px 12px -4px rgba(16,24,40,.12)!important}
+
+/* site cards in an opened day: a quiet tint of their own score colour, so neighbours separate easily */
+html body details.day:not(#story) .list .srow.srow, html body details.day:not(#story) .list .srow.srow[aria-expanded="true"], html body details.day:not(#story) .list .det.det{background:color-mix(in srgb,var(--rc) 13%,#fff)!important}
 </style>
 </head>
 <body>
