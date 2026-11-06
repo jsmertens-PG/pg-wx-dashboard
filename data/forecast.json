@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-06T19:21+00:00",
+ "generated": "2026-11-06T20:09+00:00",
  "sample": false,
  "calib": {
   "2026-11-06": {
@@ -29675,7 +29675,7 @@
    }
   }
  },
- "overview": "Weak offshore now \u00b7 trough now \u00b7 santa ana now",
+ "overview": "Santa Ana now \u00b7 santa ana now",
  "models": {
   "HRRR": "ncep_hrrr_conus",
   "RRFS": "ncep_rrfs_conus",
@@ -29698,23 +29698,20 @@
  },
  "log": [
   "HRRR: ok (ncep_hrrr_conus), surface heat flux (6500 values)",
-  "HRRR: ok (ncep_hrrr_conus), surface heat flux (2250 values)",
+  "HRRR trips: using the last good run, fetched 0.9 h ago",
   "RRFS: ok (ncep_rrfs_conus), surface heat flux (8372 values)",
-  "RRFS trips: using the last good run, fetched 3.2 h ago",
-  "GFS: ok (gfs_global), surface heat flux (13728 values)",
-  "GFS: ok (gfs_global), surface heat flux (4752 values)",
-  "ECMWF: ok (ecmwf_ifs025), surface heat flux (0 values)",
-  "ECMWF: ok (ecmwf_ifs025), surface heat flux (0 values)",
-  "ICON: ok (icon_global), surface heat flux (13364 values)",
-  "ICON: ok (icon_global), surface heat flux (4626 values)",
-  "ens GFS ens: using the last good run, fetched 5.8 h ago",
-  "ens ECMWF ens: using the last good run, fetched 2.1 h ago",
-  "ens ICON ens: using the last good run, fetched 3.2 h ago",
+  "RRFS trips: using the last good run, fetched 4.0 h ago",
+  "GFS: using the last good run, fetched 0.9 h ago",
+  "ECMWF: using the last good run, fetched 0.8 h ago",
+  "ICON: using the last good run, fetched 0.8 h ago",
+  "ens GFS ens: using the last good run, fetched 6.6 h ago",
+  "ens ECMWF ens: using the last good run, fetched 2.9 h ago",
+  "ens ICON ens: using the last good run, fetched 4.0 h ago",
   "NWS AFD: ok",
   "clouds HRRR: ok (ncep_hrrr_conus)",
   "clouds RRFS: ok (ncep_rrfs_conus)",
-  "clouds ECMWF: ok (ecmwf_ifs025)",
-  "clouds ICON: ok (icon_global)",
+  "clouds ECMWF: using the last good run, fetched 0.8 h ago",
+  "clouds ICON: using the last good run, fetched 0.8 h ago",
   "wind: GFS and ICON use ECMWF's winds where RRFS and ECMWF overlap"
  ],
  "sources": [
@@ -29725,7 +29722,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-11-06T17:00+00:00",
-   "fetched": "2026-11-06T19:16+00:00",
+   "fetched": "2026-11-06T20:07+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -29734,8 +29731,8 @@
    "provider": "Open-Meteo",
    "id": "ncep_rrfs_conus",
    "status": "ok",
-   "run": "2026-11-06T12:00+00:00",
-   "fetched": "2026-11-06T19:16+00:00",
+   "run": null,
+   "fetched": "2026-11-06T20:08+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -29746,7 +29743,8 @@
    "status": "ok",
    "run": null,
    "fetched": "2026-11-06T19:17+00:00",
-   "url": "https://open-meteo.com/en/docs"
+   "url": "https://open-meteo.com/en/docs",
+   "note": "cached, fetched 1 h ago"
   },
   {
    "name": "ECMWF",
@@ -29756,7 +29754,8 @@
    "status": "ok",
    "run": "2026-11-06T06:00+00:00",
    "fetched": "2026-11-06T19:19+00:00",
-   "url": "https://open-meteo.com/en/docs"
+   "url": "https://open-meteo.com/en/docs",
+   "note": "cached, fetched 1 h ago"
   },
   {
    "name": "ICON",
@@ -29766,7 +29765,8 @@
    "status": "ok",
    "run": null,
    "fetched": "2026-11-06T19:19+00:00",
-   "url": "https://open-meteo.com/en/docs"
+   "url": "https://open-meteo.com/en/docs",
+   "note": "cached, fetched 1 h ago"
   },
   {
    "name": "GFS ens",
@@ -29777,7 +29777,7 @@
    "run": null,
    "fetched": "2026-11-06T13:32+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api",
-   "note": "cached, fetched 6 h ago"
+   "note": "cached, fetched 7 h ago"
   },
   {
    "name": "ECMWF ens",
@@ -29788,7 +29788,7 @@
    "run": null,
    "fetched": "2026-11-06T17:13+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api",
-   "note": "cached, fetched 2 h ago"
+   "note": "cached, fetched 3 h ago"
   },
   {
    "name": "ICON ens",
@@ -29799,7 +29799,7 @@
    "run": null,
    "fetched": "2026-11-06T16:08+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api",
-   "note": "cached, fetched 3 h ago"
+   "note": "cached, fetched 4 h ago"
   },
   {
    "name": "NWS San Diego forecast discussion",
@@ -29807,8 +29807,8 @@
    "provider": "NWS",
    "id": "AFD SGX",
    "status": "ok",
-   "run": "2026-11-06T17:48:00+00:00",
-   "fetched": "2026-11-06T19:21+00:00",
+   "run": "2026-11-06T19:38:00+00:00",
+   "fetched": "2026-11-06T20:08+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   },
   {
@@ -29818,36 +29818,36 @@
    "id": "cloud_cover_mid/high",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-06T19:21+00:00",
+   "fetched": "2026-11-06T20:09+00:00",
    "url": "https://open-meteo.com/en/docs"
   }
  ],
  "nws": {
-  "issued": "2026-11-06T17:48:00+00:00",
-  "synopsis": "Warm and dry through early next week. Weak to moderate offshore flow today and Saturday will weaken for Sunday through Wednesday. A slow cooling trend begins Monday, with more substantial cooling and increasing precipitation chances late next week.",
+  "issued": "2026-11-06T19:38:00+00:00",
+  "synopsis": "Santa Ana winds will continue through the weekend along and west of the mountains. This will bring well above average temperatures to these areas with Sunday being the warmest day overall. Winds weaken into next week as high pressure moves into the area, keeping temperatures above normal. A weather system may near the area by later next week, bringing cooler weather with a chance for rain.",
   "systems": [
-   "Skies are clear this morning under weak offshore flow.",
-   "So far offshore winds remain fairly weak with isolated gusts 25-30 mph in the Cajon Pass.",
-   "Surface pressure gradients are trending stronger offshore to the Great Basin, but are weak to the Mojave Desert (-1.8 mb SAN-DAG).",
-   "Expect gradients and winds to strengthen as the upper trough continues to dig south - peaking at around 25-35 mph with local gusts to 40 mph in the wind-prone passes, canyons, and coastal mountain slopes later this morning into the afternoon."
+   "Santa Ana winds at this lunch hour continue to be fairly weak and confined to coastal foothills and adjacent valleys.",
+   "This is due to an area of low pressure that is beginning to form over the Great Basin, which will continue to push to the southeast over Arizona this weekend, becoming a closed low.",
+   "Warmer than normal temperatures look to stick around as model guidance shows an area of high pressure maintaining its strength over the region into the middle of next week.",
+   "The forecast becomes more uncertain by the latter half of next week as a troughing pattern becomes more apparent over the NE Pacific."
   ],
   "bullets": [
-   "Warm and dry through early next week",
-   "Weak to moderate offshore flow today and Saturday will weaken for Sunday through Wednesday",
-   "A slow cooling trend begins Monday, with more substantial cooling and increasing precipitation chances late\u2026",
-   "Skies are clear this morning under weak offshore flow",
-   "So far offshore winds remain fairly weak with isolated gusts 25-30 mph in the Cajon Pass"
+   "Santa Ana winds will continue through weekend along and west of the mountains",
+   "This will bring well above average temperatures to these areas with Sunday being the warmest day overall",
+   "Winds weaken into next week as high pressure moves into the area, keeping temperatures above normal",
+   "A weather system may near the area by later next week, bringing cooler weather with a chance for rain",
+   "Santa Ana winds at this lunch hour continue to be fairly weak and confined to coastal foothills and adjacent\u2026"
   ],
   "summary": {
    "pattern": [
-    "Skies are clear this morning under weak offshore flow",
-    "So far offshore winds remain fairly weak with isolated gusts 25-30 mph in the Cajon Pass",
-    "Weak to moderate offshore flow today and Saturday will weaken for Sunday through Wednesday"
+    "Details on where and when this system nears the area is still in question",
+    "Winds weaken into next week as high pressure moves into the area",
+    "A weather system may near the area by later next week"
    ],
    "flying": [
-    "Warm and dry through early next week",
-    "A slow cooling trend begins Monday",
-    "Not much change in wind strength for the northern areas expected"
+    "Santa Ana winds will continue through weekend along and west of the mountains",
+    "This will bring well above average temperatures to these areas with Sunday being the warmest day overall",
+    "Santa Ana winds at this lunch hour continue to be fairly weak and confined to coastal foothills and adjacent valleys"
    ],
    "by": "rules"
   },
@@ -38308,7 +38308,7 @@
       {
        "k": "Wind 1 pm",
        "v": "SE 2g6",
-       "sub": "later WNW 9g10",
+       "sub": "later WNW 9g10 \u00b7 cross-WNW",
        "q": 0.2
       },
       {
@@ -44935,5 +44935,5 @@
    }
   }
  ],
- "trend_ref": "2026-11-05T23:03+00:00"
+ "trend_ref": "2026-11-05T23:59+00:00"
 }
