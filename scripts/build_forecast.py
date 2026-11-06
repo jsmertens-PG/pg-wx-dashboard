@@ -1898,16 +1898,18 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                 if g18 >= 0.5:
                     r0 = rating; rating = min(rating, 1.4); note_adj("gusts over 18 mph: too windy", r0)
                 elif g12 >= 0.5:
-                    r0 = rating; rating = max(1.0, rating - 0.5); note_adj("gusts over 12 mph", r0)
-            # wind at the top of lift (we tolerate more up there than on launch): over 20 mph costs half a
-            # point, over 30 mph a full point
+                    r0 = rating; rating = max(1.0, rating - 1.0); note_adj("gusts over 12 mph", r0)
+            # wind at the top of lift: over 15 mph costs half a point, over 20 mph a full point, over 25 mph
+            # is too windy
             tws = [(a["top_wind"], model_weight(k, D)) for k, a in D.items() if a.get("top_wind") is not None]
             tw_mph = wmedian(tws) if tws else None
             if s.get("kind") not in ("ridge", "convergence") and D:
-                if tw_mph is not None and tw_mph > 30:
-                    r0 = rating; rating = max(1.0, rating - 1.0); note_adj("wind at top of lift over 30 mph", r0)
+                if tw_mph is not None and tw_mph > 25:
+                    r0 = rating; rating = min(rating, 1.4); note_adj("wind at top of lift over 25 mph: too windy", r0)
                 elif tw_mph is not None and tw_mph > 20:
-                    r0 = rating; rating = max(1.0, rating - 0.5); note_adj("wind at top of lift over 20 mph", r0)
+                    r0 = rating; rating = max(1.0, rating - 1.0); note_adj("wind at top of lift over 20 mph", r0)
+                elif tw_mph is not None and tw_mph > 15:
+                    r0 = rating; rating = max(1.0, rating - 0.5); note_adj("wind at top of lift over 15 mph", r0)
             # wind at the top of lift from behind the launch, 10 mph+, through most of the window (Santa Ana over
             # the ridge: rotor and a blown-out or cross launch, even when the surface wind looks light): 2 at most
             if s.get("style") in ("thermal", "window") and D:
@@ -1942,7 +1944,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                 if oc >= 1.5:
                     r0 = rating; rating = min(rating, 2.0); note_adj("wind more than 45° off launch: 2 at most", r0)
                 elif oc >= 0.5:
-                    r0 = rating; rating = max(1.0, rating - 0.5); note_adj("wind 20–45° off launch", r0)
+                    r0 = rating; rating = max(1.0, rating - 1.0); note_adj("wind 20–45° off launch", r0)
             # a 5 is a clean day: any deduction above (rain, cloud, gusts, wind, direction) makes it a 4 at most
             if rating >= 4.5 and any(v < 0 for _, v in adj):
                 r0 = rating; rating = 4.24; note_adj("a 5 needs a clean day: 4 at most", r0)
@@ -2045,6 +2047,26 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                  "sub": " · ".join(f"{k} {v:.1f}" for k, v in det_r.items()),
                  "q": round(clamp(1 - spread / 2.5), 2)},
             ]
+            # the two wind bars show exactly what that row took off the score: full (blue) = nothing,
+            # -0.5 green, -1 yellow, -2 orange, a cap or too windy red
+            if not ridge:
+                def bar_from(pts_by, caps):
+                    pts, capped = 0.0, False
+                    for lab, _ in adj:
+                        if any(c in lab for c in caps):
+                            capped = True
+                        else:
+                            pts += sum(v for k_, v in pts_by.items() if k_ in lab)
+                    return 0.2 if capped else round(max(0.2, 1 - 0.4 * pts), 2)
+                lq = bar_from({"gusts over 12": 1, "20–45° off": 1, "not into launch": 0.5},
+                              ("gusts over 18", "more than 45° off", "not calm"))
+                aq = bar_from({"top of lift over 15": 0.5, "top of lift over 20": 1, "NW to N aloft": 0.5},
+                              ("top of lift over 25", "over the back aloft", "offshore"))
+                for f in factors:
+                    if f["k"] == "Wind 1 pm":
+                        f["q"] = round(min(f["q"], lq), 2)
+                    elif f["k"] == "Wind aloft" and s.get("kind") != "convergence":
+                        f["q"] = aq
             if ridge:
                 factors[0]["q"] = round(clamp((agl_ft or 0) / 1200), 2)
                 factors = [f for f in factors if f["k"] != "Wind aloft"]

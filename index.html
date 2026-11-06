@@ -1190,7 +1190,7 @@ function sitePills(c) {
   /* deductions as short chips (the full wording and the points stay in the detail view); the ones that only
      cap a 5 at 4 don't get a chip */
   const SHORT = [[/20–45° off launch/, "cross wind"], [/more than 45° off launch/, "wrong direction"],
-    [/gusts over 18/, "too windy"], [/gusts over 12/, "gusty"], [/top of lift over \d+ mph: no-go/, "too windy aloft"],
+    [/gusts over 18/, "too windy"], [/gusts over 12/, "gusty"], [/top of lift over \d+ mph: (no-go|too windy)/, "too windy aloft"],
     [/top of lift over/, "strong wind aloft"], [/blown out/, "blown out"], [/not calm/, "not calm"],
     [/over the back aloft/, "over the back aloft"], [/off season/, "off season"], [/NW to N aloft/, "NW–N"], [/^offshore .*no-go/, "offshore flow aloft"]];
   const seen = new Set(out.map((x) => x.replace(/<i[^>]*>.*?<\/i>/g, "").replace(/<[^>]+>/g, "").trim().toLowerCase()));
@@ -1234,7 +1234,7 @@ const CHIP_TIPS = [
   [/too windy aloft/, "Wind at the top of lift too strong for this site"],
   [/too windy|blown out/, "Too much wind on launch"],
   [/^windy$/, "Sustained wind through the window: 10 mph+ on launch or 13 mph+ at the top of lift"],
-  [/strong wind aloft/, "Wind at the top of lift over 20 mph"],
+  [/strong wind aloft/, "Wind at the top of lift over 15 mph: −0.5, over 20 mph: −1"],
   [/wrong flow aloft/, "Wind aloft from a direction that kills this site"],
   [/weak thermals/, "Weak climbs (thermal strength under 1 m/s)"],
   [/low lid/, "Lift tops out only a little above launch"],
