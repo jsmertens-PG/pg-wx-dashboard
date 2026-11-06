@@ -690,7 +690,7 @@ details.day > summary.hd .notes:has(> .rx) + .sum { margin-top: -4px; }
    foot; signals, day type and sites on the right, sites in an even grid ===== */
 body{background:#f3f5f8}
 html body details.day:not(#story){background:#fff!important;background-image:none!important;border:1px solid #e3e7ec!important;box-shadow:0 1px 2px rgba(16,24,40,.06)!important;border-radius:12px!important;overflow:hidden}
-html body details.day:not(#story) > summary.hd{background:transparent!important;background-image:none!important;display:grid!important;grid-template-columns:88px minmax(0,1fr)!important;column-gap:12px!important;row-gap:8px!important;position:relative;padding:0!important;border:0!important}
+html body details.day:not(#story) > summary.hd{background:transparent!important;background-image:none!important;display:grid!important;grid-template-columns:96px minmax(0,1fr)!important;column-gap:12px!important;row-gap:8px!important;position:relative;padding:0!important;border:0!important}
 html body details.day:not(#story) > summary.hd .band{grid-column:1;grid-row:1 / span 3;align-self:stretch;display:flex!important;flex-direction:column;justify-content:space-between;gap:8px;padding:12px 6px 12px 16px;margin:0!important;box-shadow:inset -1px 0 0 #eef0f3}
 html body details.day:not(#story) .band .when{align-self:stretch!important;margin:0!important;width:100%;text-align:left!important;justify-content:flex-start!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:1px!important;white-space:normal!important}
 html body details.day:not(#story) .band .when .dn{font-size:1.5rem!important;line-height:1.05}
@@ -772,6 +772,9 @@ html body details.day:not(#story) .list .srow.srow[aria-expanded="true"]{border-
 /* the day's colour bar runs the full height of the card, down past the last site when the day is open */
 html body details.day:not(#story){position:relative}
 html body details.day:not(#story)::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--dc);z-index:2;pointer-events:none}
+
+/* page background a clear step greyer than the white cards */
+html, html body { background: #e6eaef !important; background-image: none !important; }
 </style>
 </head>
 <body>
