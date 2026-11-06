@@ -780,6 +780,13 @@ html body details.day:not(#story){border-color:#d5dbe2!important;box-shadow:0 1p
 
 /* site cards in an opened day: a quiet tint of their own score colour, so neighbours separate easily */
 html body details.day:not(#story) .list .srow.srow, html body details.day:not(#story) .list .srow.srow[aria-expanded="true"], html body details.day:not(#story) .list .det.det{background:color-mix(in srgb,var(--rc) 13%,#fff)!important}
+
+/* site groups: a tiny grey label with a thin line, on the first layer and in an opened day */
+html body details.day > summary.hd .sum .sgrp, html body details.day .list .sgrp {
+  grid-column: 1 / -1; flex: 0 0 100%; display: flex; align-items: center; gap: 8px;
+  font-size: .58rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #98a2b3; line-height: 1; margin: 2px 0 -1px; }
+html body details.day > summary.hd .sum .sgrp::after, html body details.day .list .sgrp::after { content: ""; flex: 1; height: 1px; background: #e4e7ec; }
+html body details.day .list .sgrp { margin: 4px 2px -2px; font-size: .62rem; }
 </style>
 </head>
 <body>
@@ -1036,6 +1043,14 @@ function render(data) {
   };
   /* day cards */
   const TRIPS = new Set(["soboba", "marshall", "santabarbara", "owens"]);
+  /* an opened day: Torrey on top, then the San Diego mountain sites in the usual order, then the trips */
+  const everySite = big.concat(other);
+  const TRIP_ORDER = ["soboba", "marshall", "santabarbara", "owens"];
+  const listSites = {
+    coast: everySite.filter((s) => s.id === "torrey"),
+    mtn: everySite.filter((s) => s.id !== "torrey" && !TRIPS.has(s.id)),
+    trips: TRIP_ORDER.map((id) => everySite.find((s) => s.id === id)).filter(Boolean),
+  };
   const cardFor = (d, i) => {
     DAYKEY[i] = d;
     const L = dayLabel(d.date);
@@ -1061,8 +1076,11 @@ function render(data) {
       </summary>
       ${d._flown && d._flown.length ? `<div class="flown"><b>Flown:</b> ${d._flown.map((f) => esc(f)).join(" · ")}</div>` : ""}
       <div class="list">
-        ${big.map((s) => siteRow(d, s, i, "")).join("")}
-        ${other.map((s) => siteRow(d, s, i, "")).join("")}${watchSites.map((s) => siteRow(d, s, i, "")).join("")}
+        ${listSites.coast.map((s) => siteRow(d, s, i, "")).join("")}
+        <div class="sgrp">SD mountain</div>
+        ${listSites.mtn.map((s) => siteRow(d, s, i, "")).join("")}
+        <div class="sgrp">Trips</div>
+        ${listSites.trips.map((s) => siteRow(d, s, i, "")).join("")}${watchSites.map((s) => siteRow(d, s, i, "")).join("")}
       </div>
       <div class="det" id="det-${i}" hidden></div>
       ${mods ? `<span class="mods mods-b">${mods}</span>` : ""}
@@ -1131,29 +1149,24 @@ const TRIP_IDS = new Set(["soboba", "marshall", "santabarbara", "owens"]);
 /* the day chip is about San Diego; when a trip area is better than that, the chip says so ("No-go in SD") */
 const tripBetter = (d, lvl) => Object.entries(d.sites || {}).some(([k, c]) => TRIP_IDS.has(k) && c && c.rating != null && Math.round(c.rating) > lvl);
 function daySummary(d, big, other) {
-  /* one level for the chip and the list: the best of Little Black, Blossom and Elsinore, rounded.
-     Bad days (1-2): the best three sites. Better days (3+): every San Diego site at 2.5 or more, plus the
-     trips that reach the day's level; three to six, always with the better of Little Black and Blossom. Best first. */
-  const all = big.concat(other).filter((s) => d.sites[s.id]).sort((a, b) => d.sites[b.id].rating - d.sites[a.id].rating);
+  /* two groups, each under a small grey label: the best four San Diego mountain sites (always with the better
+     of Little Black and Blossom), then Torrey (always) and the best trip area when it is good (2.5+). */
+  const all = big.concat(other).filter((s) => d.sites[s.id]);
   if (!all.length) return `<span class="sx">no data</span>`;
   const r = (s) => d.sites[s.id].rating;
-  const dayLvl = Math.round(Math.max(0, ...all.filter((s) => DAY_SITES.has(s.id)).map(r)));
-  let shown = dayLvl <= 2 ? all.slice(0, 3)
-    : all.filter((s) => (TRIP_IDS.has(s.id) ? Math.round(r(s)) >= dayLvl : r(s) >= 2.5));
-  for (const s of all) { if (shown.length >= 3) break; if (!shown.includes(s)) shown.push(s); }
-  /* best first, but when San Diego has a site at 2.5+ the trip areas come after the San Diego sites */
-  const sdOk = all.some((s) => !TRIP_IDS.has(s.id) && r(s) >= 2.5);
-  const order = (a, b) => (sdOk ? TRIP_IDS.has(a.id) - TRIP_IDS.has(b.id) : 0) || r(b) - r(a);
-  shown.sort((a, b) => r(b) - r(a));
-  shown = shown.slice(0, 6);   // 3 to 6 sites
-  /* always the better of Little Black and Blossom (in place of the weakest one if the list is full) */
-  const home = all.find((s) => s.id === "lb" || s.id === "blossom");
-  if (home && !shown.includes(home)) { if (shown.length >= 6) shown.pop(); shown.push(home); shown.sort((a, b) => r(b) - r(a)); }
-  shown.sort(order);
-  return shown.map((s) => {
+  const byR = (a, b) => r(b) - r(a);
+  const mtn = all.filter((s) => s.id !== "torrey" && !TRIP_IDS.has(s.id)).sort(byR);
+  const top = mtn.slice(0, 4);
+  const home = mtn.find((s) => s.id === "lb" || s.id === "blossom");
+  if (home && !top.includes(home)) { top.pop(); top.push(home); top.sort(byR); }
+  const trip = all.filter((s) => TRIP_IDS.has(s.id)).sort(byR)[0];
+  const coast = all.filter((s) => s.id === "torrey").concat(trip && r(trip) >= 2.5 ? [trip] : []);
+  const pill = (s) => {
     const c = d.sites[s.id];
-    return `<span class="sc${sdOk && TRIP_IDS.has(s.id) ? " trip" : ""}" style="--rc:${qv(c.rating)}"><span class="sc-t"><b>${esc(siteName(s))}</b>${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span><span class="sc-bar"><i style="width:${Math.max(6, Math.min(100, c.rating * 20))}%"></i></span></span>`;
-  }).join("");
+    return `<span class="sc" style="--rc:${qv(c.rating)}"><span class="sc-t"><b>${esc(siteName(s))}</b>${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span><span class="sc-bar"><i style="width:${Math.max(6, Math.min(100, c.rating * 20))}%"></i></span></span>`;
+  };
+  const grp = (label, list) => (list.length ? `<span class="sgrp">${label}</span>${list.map(pill).join("")}` : "");
+  return grp("SD mountain", top) + grp("Coastal &amp; trips", coast);
 }
 let openDays = new Set();
 try { openDays = new Set(JSON.parse(sessionStorage.getItem("radar-open") || "[]")); } catch (e) {}
