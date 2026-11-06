@@ -679,7 +679,7 @@ REASON_TEXT = {
 }
 GUST_WARN_MPH, GUST_NOGO_MPH = 12, 18          # thermal sites: gusty from 12 mph, too windy from 18 mph
 SINK = 1.1   # paraglider sink rate in a thermal turn, m/s (about 1.0-1.2)
-XC_MIN_CLIMB = 0.5   # XC needs at least this climb rate (m/s) in the core: a low bar
+XC_MIN_CLIMB = 1.0   # XC needs at least this climb rate (m/s) in the core
 CORE = 1.4   # a pilot climbs in the core: about 1.4 x W* (the area-average updraft), so climb = CORE*W* - SINK
 LIGHT_MPH, LIGHT_GUST_MPH = 4, 8   # at the thermal sites a launch wind this light (4g8 or less) does not
                 # count, whatever its direction:
@@ -915,7 +915,8 @@ def score_hour(site, hr, i, levels, elev_m):
     if site["kind"] != "ridge":
         ok_agl = max(300.0, (site.get("ok_ft", site["launch_ft"] + 2000) - site["launch_ft"]) / FT)
         lift = clamp((agl - 100) / (ok_agl - 100))
-        strength = clamp((wstar - 0.8) / (1.6 - 0.8))
+        # thermal strength from the climb rate, linear: 0 m/s none, 1 m/s half, 2 m/s and more full
+        strength = clamp((CORE * wstar - SINK) / 2.0)
         q *= 0.15 + 0.85 * lift * (0.4 + 0.6 * strength)
         if agl < 200:
             codes.append("lid")
