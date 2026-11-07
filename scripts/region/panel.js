@@ -71,7 +71,7 @@ function panelSVG(data, di = 0) {
   });
   // wind: ground and 5k ft; arrow shows where the wind blows, colour = speed (mph on tap)
   side(yW, 2 * ch, 'Wind');
-  [['G', 'sfc', 'ground (10 m)'], ['5k', 'w5k', '5,000 ft']].forEach(([lab, key, name], r) => {
+  [['5k', 'w5k', '5,000 ft'], ['G', 'sfc', 'ground (10 m)']].forEach(([lab, key, name], r) => {
     const y = yW + r * ch;
     o.push(`<text x="${L - 22}" y="${y + 17}" text-anchor="middle" font-size="14">${lab}</text>`);
     cols.forEach((c, k) => {
