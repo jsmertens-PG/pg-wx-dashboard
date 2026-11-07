@@ -1185,7 +1185,9 @@ function morphStrip(from, det) {
 }
 const chipHtml = (c, prefix) => `<span class="chip"><i style="background:${qv(c.rating)}"></i>${prefix ? `<span class="muted">${esc(prefix)}</span> ` : ""}${r1(c.rating)}${c.xc ? ' <span class="xcmark">XC</span>' : ""}</span>`;
 const styleLab = (c) => c.xc ? "Cross-country" : (c.label === "XC" ? "" : c.label);
-const labelHtml = (c) => `<span class="label">${styleLab(c) ? `<span class="lab" style="color:${qv(c.rating)}">${esc(styleLab(c))}</span>` : ""}</span>`;
+/* "Ridge soaring" (Torrey) reads green; every other label keeps the score colour */
+const labCol = (c) => (c.label === "Ridge soaring" && !c.xc ? "#1f9d55" : qv(c.rating));
+const labelHtml = (c) => `<span class="label">${styleLab(c) ? `<span class="lab" style="color:${labCol(c)}">${esc(styleLab(c))}</span>` : ""}</span>`;
 const bar = (r, thin) => `<span class="bar${thin ? " thin" : ""}"><i style="width:${Math.max(4, Math.min(100, r * 20))}%;background:${qv(r)}"></i></span>`;
 
 /* in the rows, altitudes wait for a tap: keep XC directions and reasons, drop "thermals to 3,000 ft" */
@@ -1342,7 +1344,7 @@ function windTable(c) {
   return `<div class="hwt"><span></span>${HH.map((h) => `<span class="hh">${hlab(h)}</span>`).join("")}<span class="ml">score</span>${HH.map((h) => {
       const v = hrs[String(h)];
       return `<span class="hc" style="background:${v != null ? qgrad(v) : "var(--sunk)"}"></span>`;
-    }).join("")}<span class="ml" title="average of ${Object.keys(hm).map((m) => (m === "ECMWF" ? "EC" : m)).join(", ")}">avg</span>${HH.map((h) => {
+    }).join("")}<span class="ml" title="average of ${Object.keys(hm).map((m) => (m === "ECMWF" ? "EC" : m)).join(", ")}"></span>${HH.map((h) => {
       /* one row: wind averaged across the models (mean speed and gust, vector-mean direction); each model in the tooltip */
       const ws = Object.entries(hm).map(([m, w]) => [m, w[String(h)]]).filter(([, w]) => w && w[1] != null);
       if (!ws.length) return wcell(null).replace('class="wc', `class="wc${hrs[String(h)] == null ? " late" : ""}`);
@@ -1358,6 +1360,24 @@ function windTable(c) {
       const tip = ws.map(([m, w]) => `${m === "ECMWF" ? "EC" : m} ${w[1]}${w[2] != null && w[2] > w[1] ? "g" + w[2] : ""}`).join(" · ");
       return cell.replace(/ title="[^"]*"/, ` title="${tip} mph"`).replace('class="wc', `class="wc${hrs[String(h)] == null ? " late" : ""}`);
     }).join("")}</div>`;
+}
+/* Torrey's third level: launch wind per model, one row each (the card shows their average) */
+function modelWindTable(c) {
+  const hm = c.hwind_m && Object.keys(c.hwind_m).length ? c.hwind_m : null;
+  if (!hm) return "";
+  const hrs = c.hours || {};
+  const HH = Array.from({ length: 10 }, (_, k) => 9 + k);
+  const hlab = (h) => (h === 9 ? "9a" : h === 18 ? "6p" : h === 12 ? "12" : h > 12 ? `${h - 12}p` : `${h}a`);
+  const wcell = (w) => {
+    if (!w || w[1] == null) return `<span class="wc"><i></i><b>&nbsp;<small>&nbsp;</small></b></span>`;
+    const g = w[2] != null && w[2] > w[1] ? w[2] : null;
+    const cls = w[1] >= 20 || (g || 0) >= 20 ? " hi" : w[1] < 4 ? " lo" : "";
+    return `<span class="wc${cls}" title="${w[1]}${g ? "g" + g : ""} mph">${w[0] != null ? `<i style="transform:rotate(${(w[0] + 180) % 360}deg)"><svg viewBox="0 0 10 12" aria-hidden="true"><path d="M5 0.5 L9.2 11 L5 8.4 L0.8 11 Z"/></svg></i>` : "<i></i>"}<b>${w[1]}<small>${g ? `g${g}` : "&nbsp;"}</small></b></span>`;
+  };
+  return `<div class="hwt"><span></span>${HH.map((h) => `<span class="hh">${hlab(h)}</span>`).join("")}<span class="ml">score</span>${HH.map((h) => {
+      const v = hrs[String(h)];
+      return `<span class="hc" style="background:${v != null ? qgrad(v) : "var(--sunk)"}"></span>`;
+    }).join("")}${Object.entries(hm).map(([m, ws]) => `<span class="ml">${m === "ECMWF" ? "EC" : m}</span>${HH.map((h) => wcell(ws[String(h)]).replace('class="wc', `class="wc${hrs[String(h)] == null ? " late" : ""}`)).join("")}`).join("")}</div>`;
 }
 function miniStrip(c) {
   const hrs = c.hours || {}, win = c.win || [];
@@ -1377,7 +1397,7 @@ function siteRow(d, s, i, kind) {
   if (!c) return `<div class="srow ${kind}"><span class="nm">${esc(name)}</span><span class="muted">no data</span></div>`;
   const pills = sitePills(c);
   return `<button type="button" class="srow ${kind}" style="--rc:${qv(c.rating)}" data-site="${s.id}" data-day="${i}" aria-expanded="false">
-    <span class="nmrow"><span class="nmw"><span class="nm">${esc(name)}</span>${styleLab(c) ? `<span class="lab" style="color:${qv(c.rating)}">${esc(styleLab(c))}</span>` : ""}</span><span class="dscore sm" style="--rc:${qv(c.rating)}"><span class="dsl">Score:</span><b>${(Math.max(1, Math.min(5, Math.round(c.rating * 2) / 2))).toFixed(1).replace(".0", "")}</b><small>/5</small></span></span>
+    <span class="nmrow"><span class="nmw"><span class="nm">${esc(name)}</span>${styleLab(c) ? `<span class="lab" style="color:${labCol(c)}">${esc(styleLab(c))}</span>` : ""}</span><span class="dscore sm" style="--rc:${qv(c.rating)}"><span class="dsl">Score:</span><b>${(Math.max(1, Math.min(5, Math.round(c.rating * 2) / 2))).toFixed(1).replace(".0", "")}</b><small>/5</small></span></span>
     ${pills ? `<span class="spills">${pills}</span>` : ""}<span class="tx"><span class="facts">${siteFacts(c)}</span></span>${c.hwind_m && Object.keys(c.hwind_m).length ? `<span class="wtab">${windTable(c)}</span>` : miniStrip(c)}
     <span class="exp sm" aria-hidden="true"><span class="chev"></span></span>
   </button>`;
@@ -1430,7 +1450,7 @@ function detail(d, s, inline) {
       <h3 style="font-size:1.1rem;font-family:var(--font-body);font-weight:600">${esc(s.name)} <span class="muted" style="font-size:.9rem;font-weight:500">${r1(c.rating)}/5</span></h3>${labelHtml(c)}</div>
     ${c.note && !/thermals/i.test(c.note) ? `<p class="note">${esc(c.note)}</p>` : ""}`;
   return `${head}
-    ${hourStrip ? `<div class="dsec"><span class="dh">Hour by hour</span>${hourStrip}</div>` : ""}
+    ${hourStrip ? `<div class="dsec"><span class="dh">Hour by hour</span>${hourStrip}</div>` : hm ? `<div class="dsec"><span class="dh">Launch wind by model</span>${modelWindTable(c)}</div>` : ""}
     <div class="dsec"><span class="dh">What made the score</span>
       <div class="factors">${rows}</div>
       ${steps ? `<div class="steps">${steps}</div>` : ""}</div>
