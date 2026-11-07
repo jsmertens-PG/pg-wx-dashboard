@@ -820,6 +820,8 @@ html body details.day:not(#story) > summary.hd .sum .sc.sc.sc, html body details
 .srow .wtab .hwt .wc b small { display: block; text-align: center; }
 .srow .wtab .hwt .wc b { font-size: .6rem; }
 .hwt .wc.late { opacity: .45; }   /* after sunset: wind only, greyed */
+.hwt .wc i { display: block; width: 10px; height: 12px; margin-bottom: 1px; }
+.hwt .wc i svg { display: block; width: 100%; height: 100%; fill: currentColor; }
 </style>
 </head>
 <body>
@@ -1317,7 +1319,7 @@ function windTable(c) {
     if (!w || w[1] == null) return `<span class="wc"></span>`;
     const g = w[2] != null && w[2] > w[1] ? w[2] : null;
     const cls = w[1] >= 20 || (g || 0) >= 20 ? " hi" : w[1] < 4 ? " lo" : "";
-    return `<span class="wc${cls}" title="${w[1]}${g ? "g" + g : ""} mph">${w[0] != null ? `<i style="transform:rotate(${(w[0] + 180) % 360}deg)">↑</i>` : ""}<b>${w[1]}${g ? `<small>g${g}</small>` : ""}</b></span>`;
+    return `<span class="wc${cls}" title="${w[1]}${g ? "g" + g : ""} mph">${w[0] != null ? `<i style="transform:rotate(${(w[0] + 180) % 360}deg)"><svg viewBox="0 0 10 12" aria-hidden="true"><path d="M5 0.5 L9.2 11 L5 8.4 L0.8 11 Z"/></svg></i>` : ""}<b>${w[1]}${g ? `<small>g${g}</small>` : ""}</b></span>`;
   };
   return `<div class="hwt"><span></span>${HH.map((h) => `<span class="hh">${hlab(h)}</span>`).join("")}<span class="ml">score</span>${HH.map((h) => {
       const v = hrs[String(h)];
