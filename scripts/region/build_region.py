@@ -46,8 +46,8 @@ REGIONS = [
      "points": [("San Jacinto", 33.81, -116.68), ("Anza", 33.555, -116.67), ("Palm Springs", 33.83, -116.55)],
      # no launch: scored on its own terms (high desert-mountain lift: good days top out 8-14k ft, light wind aloft)
      "score": {"top_lo": 6000, "top_span": 7000, "climb_full": 2.5, "wind_key": "w10k", "wind_ok": 12}},
-    {"id": "marshall", "name": "Marshall", "poly": [[34.36, -117.62], [34.36, -117.02], [34.10, -117.02], [33.95, -117.10], [33.95, -117.55], [34.05, -117.62]],
-     "points": [("Marshall", 34.21, -117.30), ("Crestline", 34.24, -117.29), ("Cajon / Devore", 34.22, -117.40), ("Lytle Creek", 34.22, -117.48), ("Highland foothills", 34.15, -117.17)]},
+    {"id": "marshall", "name": "Marshall", "poly": [[34.36, -117.62], [34.36, -116.65], [34.05, -116.65], [34.05, -116.80], [33.95, -116.80], [33.95, -117.55], [34.05, -117.62]],
+     "points": [("Marshall", 34.21, -117.30), ("Crestline", 34.24, -117.29), ("Cajon / Devore", 34.22, -117.40), ("Lytle Creek", 34.22, -117.48), ("Highland foothills", 34.15, -117.17), ("San Gorgonio slopes", 34.08, -116.90)]},
     {"id": "inland_empire", "name": "Inland Empire", "poly": [[33.95, -117.55], [33.95, -116.80], [33.45, -116.80], [33.45, -117.38], [33.55, -117.55]],
      "points": [("Elsinore", 33.63, -117.37), ("Perris", 33.78, -117.23), ("Soboba", 33.80, -116.96), ("Temecula", 33.49, -117.15), ("Menifee", 33.70, -117.18)]},
 ]
