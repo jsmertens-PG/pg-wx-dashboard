@@ -55,7 +55,7 @@ const TOWNS = [['San Diego', 32.72, -117.16, 3], ['Tijuana', 32.52, -117.03, 2],
   ['Lake Elsinore', 33.68, -117.33, 1], ['Riverside', 33.95, -117.40, 2], ['San Bernardino', 34.11, -117.29, 2], ['Lake Arrowhead', 34.25, -117.19, 1], ['Hemet', 33.75, -116.97, 2], ['Borrego Springs', 33.26, -116.37, 1], ['Alpine', 32.84, -116.77, 1]];
 
 const SITES = [['Torrey Pines', 32.890, -117.252], ['Little Black', 32.988, -117.122], ['Blossom', 32.877, -116.848], ['Otay', 32.574, -116.894],
-  ["Whale's V", 32.645, -116.887, 'left'], ['Laguna', 32.86, -116.43], ['Elsinore', 33.630, -117.371], ['Soboba', 33.822, -116.959], ['Marshall', 34.210, -117.303, 'left']];
+  ["Whale's V", 32.645, -116.887, 'left'], ['Laguna', 32.934, -116.482], ['Horse / Fuzz', 32.775, -116.477], ['Elsinore', 33.630, -117.371], ['Soboba', 33.822, -116.959], ['Marshall', 34.210, -117.303, 'left']];
 
 const SUMMITS = [['Palomar Mtn', 33.363, -116.836, 6140], ['Hot Springs Mtn', 33.312, -116.582, 6533], ['Cuyamaca Pk', 32.947, -116.606, 6512],
     ['Laguna Mtns', 32.867, -116.422, 6271], ['El Cajon Mtn', 32.902, -116.807, 3675], ['Otay Mtn', 32.601, -116.846, 3566],

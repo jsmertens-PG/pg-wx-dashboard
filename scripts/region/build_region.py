@@ -37,9 +37,14 @@ REGIONS = [
      "points": [("Blossom", 32.88, -116.85), ("Ramona", 33.04, -116.87), ("Alpine", 32.84, -116.77), ("Lakeside", 32.86, -116.92), ("El Cajon Mtn", 32.90, -116.82)]},
     {"id": "south", "name": "South Bay / Border", "poly": [[32.78, -117.12], [32.78, -116.72], [32.53, -116.72], [32.54, -117.00], [32.65, -117.03], [32.80, -117.13]],
      "points": [("Otay", 32.58, -116.90), ("Whale's V", 32.65, -116.89), ("Jamul", 32.72, -116.88), ("Dulzura", 32.64, -116.78)]},
-    {"id": "mountains", "name": "Mountains", "poly": [[33.45, -116.95], [33.45, -116.50], [33.25, -116.45], [33.00, -116.40], [32.75, -116.33], [32.53, -116.35],
-        [32.53, -116.72], [32.78, -116.72], [32.78, -116.62], [32.95, -116.62], [33.10, -116.70], [33.10, -116.95]],
-     "points": [("Palomar", 33.34, -116.87), ("Julian", 33.08, -116.60), ("Cuyamaca", 32.95, -116.57), ("Laguna", 32.87, -116.43), ("Pine Valley", 32.82, -116.53)]},
+    {"id": "palomar", "name": "Palomar", "poly": [[33.45, -116.95], [33.45, -116.66], [33.22, -116.66], [33.22, -116.95]],
+     "points": [("Palomar summit", 33.36, -116.84), ("Palomar N", 33.42, -116.82), ("Palomar E", 33.33, -116.75),
+                ("Palomar S", 33.28, -116.86), ("Palomar W", 33.33, -116.92)],
+     # no launch: own score - OK once tops reach ~5k ft, good above 7k, lighter wind better
+     "score": {"top_lo": 3000, "top_span": 5000, "climb_full": 2.0, "wind_key": "w5k", "wind_ok": 10}},
+    {"id": "mountains", "name": "Mountains", "poly": [[33.45, -116.66], [33.45, -116.50], [33.25, -116.45], [33.00, -116.40], [32.75, -116.33], [32.53, -116.35],
+        [32.53, -116.72], [32.78, -116.72], [32.78, -116.62], [32.95, -116.62], [33.10, -116.70], [33.10, -116.95], [33.22, -116.95], [33.22, -116.66]],
+     "points": [("Hot Springs Mtn", 33.31, -116.58), ("Julian", 33.08, -116.60), ("Cuyamaca", 32.95, -116.57), ("Laguna", 32.93, -116.48), ("Horse / Fuzz", 32.77, -116.48)]},
     {"id": "desert", "name": "Desert", "poly": [[33.45, -116.50], [33.45, -116.08], [32.53, -116.08], [32.53, -116.35], [32.75, -116.33], [33.00, -116.40], [33.25, -116.45]],
      "points": [("Borrego Springs", 33.26, -116.37), ("Ocotillo Wells", 33.15, -116.13), ("Agua Caliente", 32.95, -116.30)]},
     {"id": "palmsj", "name": "Palm Springs / San Jacinto", "poly": [[34.05, -116.80], [34.05, -116.00], [33.45, -116.00], [33.45, -116.80]],
@@ -51,10 +56,10 @@ REGIONS = [
     {"id": "inland_empire", "name": "Inland Empire", "poly": [[33.95, -117.55], [33.95, -116.80], [33.45, -116.80], [33.45, -117.38], [33.55, -117.55]],
      "points": [("Elsinore", 33.63, -117.37), ("Perris", 33.78, -117.23), ("Soboba", 33.80, -116.96), ("Temecula", 33.49, -117.15), ("Menifee", 33.70, -117.18)]},
 ]
-LEVELS = [975, 950, 925, 900, 850, 800, 700, 600, 500]
+LEVELS = [950, 925, 850, 700, 600, 500]    # enough for the mixed-layer top; fewer variables keep the Open-Meteo budget
 STD_HEIGHT_M = {1000: 110, 975: 320, 950: 540, 925: 760, 900: 990, 850: 1460, 800: 1950, 700: 3010, 600: 4210, 500: 5570}
-SURFACE = ["temperature_2m", "dew_point_2m", "precipitation", "precipitation_probability", "cape", "shortwave_radiation",
-           "cloud_cover", "cloud_cover_low", "cloud_cover_mid", "cloud_cover_high",
+SURFACE = ["temperature_2m", "dew_point_2m", "precipitation", "cape", "shortwave_radiation",
+           "cloud_cover_low", "cloud_cover_mid", "cloud_cover_high",
            "wind_speed_10m", "wind_direction_10m", "wind_gusts_10m", "boundary_layer_height"]
 LEVEL_VARS = [f"{v}_{p}hPa" for p in LEVELS for v in ("temperature", "geopotential_height")] + \
              [f"{v}_{p}hPa" for p in (850, 700) for v in ("wind_speed", "wind_direction")]
@@ -66,6 +71,7 @@ MODELS = [("HRRR", ["ncep_hrrr_conus", "gfs_hrrr"], 3), ("RRFS", ["ncep_rrfs_con
 HIRES, GLOBAL = ("HRRR", "RRFS"), ("ECMWF", "GFS", "ICON")
 HIRES_W = {"HRRR": 2, "RRFS": 1}
 REUSE_H = 5.5                      # like the radar: global models fetched again only when older than this
+SLOW = {"palomar", "desert", "palmsj"}   # no launch: every model only every REUSE_H (like the radar's trip areas)
 MODEL_WEIGHT = {"HRRR": 3, "RRFS": 3, "ECMWF": 1, "GFS": 1, "ICON": 1}
 
 
@@ -177,7 +183,7 @@ def fetch(model, days, points=None):
             msg = str(e)
             print(f"{model}: {msg[:160]}")
             # drop optional variables and try again
-            hourly = [v for v in hourly if v not in ("sensible_heat_flux", "precipitation_probability", "boundary_layer_height")] \
+            hourly = [v for v in hourly if v not in ("sensible_heat_flux", "boundary_layer_height")] \
                 if attempt == 0 else [v for v in hourly if "geopotential" not in v]
     return None
 
@@ -240,8 +246,9 @@ def point_hour(h, i, elev_m):
     climb = max(0.0, 1.4 * wstar - 1.1)
     return {"t": t2, "td": td, "wstar": wstar, "climb": climb, "top": usable, "base": base, "cu": cu, "ctop": ctop,
             "zi": zi, "elev": elev_m, "cape": at(h, "cape", i) or 0, "rain": max(0.0, at(h, "precipitation", i) or 0),
-            "rain_p": at(h, "precipitation_probability", i),
-            "cloud": at(h, "cloud_cover", i), "cl_low": at(h, "cloud_cover_low", i),
+            "rain_p": None,
+            "cloud": max(at(h, "cloud_cover_low", i) or 0, at(h, "cloud_cover_mid", i) or 0, at(h, "cloud_cover_high", i) or 0),
+            "cl_low": at(h, "cloud_cover_low", i),
             "cl_mh": max(at(h, "cloud_cover_mid", i) or 0, at(h, "cloud_cover_high", i) or 0),
             "cl_mid": at(h, "cloud_cover_mid", i), "cl_high": at(h, "cloud_cover_high", i),
             "sfc": (at(h, "wind_direction_10m", i), at(h, "wind_speed_10m", i), at(h, "wind_gusts_10m", i)),
@@ -431,7 +438,8 @@ def main():
     os.makedirs(OUT, exist_ok=True)
     now_local = dt.datetime.now(dt.timezone.utc).astimezone(__import__("zoneinfo").ZoneInfo(TZ))
     today = now_local.date()
-    groups = [("sd", POINTS)] + [(r["id"], r["points"]) for r in REGIONS]
+    groups = [(r["id"], r["points"]) for r in REGIONS]
+    groups = [g for g in groups if g[0] not in SLOW] + [g for g in groups if g[0] in SLOW]   # fast regions first
     allpts, idx = [], {}
     for gid, pts in groups:
         idx[gid] = list(range(len(allpts), len(allpts) + len(pts)))
@@ -440,45 +448,46 @@ def main():
     models_used, debug = {}, {}
     cache_dir = os.path.join(os.path.dirname(__file__), "..", "..", "cache", "region")
     os.makedirs(cache_dir, exist_ok=True)
-    key = ",".join(f"{la},{lo}" for _, la, lo in allpts)
-    for name, ids, days in MODELS:
-        data = None
-        cpath = os.path.join(cache_dir, f"{name}.json")
-        if name in GLOBAL:     # global models update ~6-hourly: reuse a fresh enough copy (Open-Meteo budget)
+    fast = [p for gid, pts in groups if gid not in SLOW for p in pts]
+    slow = [p for gid, pts in groups if gid in SLOW for p in pts]
+
+    def get(name, ids, days, pts, tag, reuse):
+        """Fetch one model for a set of points, or reuse a cached copy younger than REUSE_H (Open-Meteo budget)."""
+        if not pts:
+            return [], None
+        cpath, key = os.path.join(cache_dir, f"{name}_{tag}.json"), ",".join(f"{la},{lo}" for _, la, lo in pts)
+        if reuse:
             try:
                 with open(cpath) as f:
                     c = json.load(f)
                 if c.get("key") == key and time.time() - c["t"] < REUSE_H * 3600:
-                    data, models_used[name] = c["data"], c["mid"]
-                    print(f"{name}: reused ({(time.time() - c['t']) / 3600:.1f} h old)")
+                    print(f"{name}/{tag}: reused ({(time.time() - c['t']) / 3600:.1f} h old)")
+                    return c["data"], c["mid"]
             except Exception:  # noqa: BLE001
-                data = None
-        for mid in ([] if data else ids):
-            data = fetch(mid, days, allpts)
-            if data and len(data) == len(allpts) and data[0].get("hourly", {}).get("temperature_2m"):
-                models_used[name] = mid
-                if name in GLOBAL:
-                    with open(cpath, "w") as f:
-                        json.dump({"t": time.time(), "mid": mid, "key": key, "data": data}, f)
-                break
-            data = None
-        if not data:
+                pass
+        for mid in ids:
+            d = fetch(mid, days, pts)
+            if d and len(d) == len(pts) and d[0].get("hourly", {}).get("temperature_2m"):
+                with open(cpath, "w") as f:
+                    json.dump({"t": time.time(), "mid": mid, "key": key, "data": d}, f)
+                return d, mid
+        return None, None
+
+    for name, ids, days in MODELS:
+        # global models: reused everywhere; HRRR/RRFS: every run for the main regions, every REUSE_H for the slow ones
+        df, mid1 = get(name, ids, days, fast, "fast", name in GLOBAL)
+        ds, mid2 = get(name, ids, days, slow, "slow", True)
+        if df is None or ds is None:
             print(f"{name}: no data")
             continue
+        data = df + ds
+        models_used[name] = mid1 or mid2
         debug[name] = sorted(k for k, v in data[0]["hourly"].items() if any(x is not None for x in v))
         for gid, _ in groups:
             build_days(data, idx[gid], today, now_local, name, acc[gid])
     sps = {r["id"]: r.get("score") for r in REGIONS}
     by = {gid: blend_days(acc[gid], sps.get(gid)) for gid, _ in groups}
     gen = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
-    sd_days = finish(by["sd"], today)
-    if not sd_days:
-        print("no region data")
-        return 1
-    with open(os.path.join(OUT, "sd.json"), "w") as f:
-        json.dump({"generated": gen, "region": "San Diego inland", "title": "SAN DIEGO",
-                   "points": [{"name": n, "lat": la, "lon": lo} for n, la, lo in POINTS], "models": models_used,
-                   "source": "https://open-meteo.com", "variables": debug, "days": sd_days}, f, indent=1)
     regs = []
     for r in REGIONS:
         regs.append({"id": r["id"], "name": r["name"], "title": r["name"].upper(), "poly": r["poly"], "own_score": bool(r.get("score")),
@@ -486,6 +495,9 @@ def main():
                      "days": finish(by[r["id"]], today)})
         for dd in regs[-1]["days"]:
             print(r["id"], dd["date"], dd["model"], json.dumps(dd["summary"]))
+    if not any(r["days"] for r in regs):
+        print("no region data")
+        return 1
     with open(os.path.join(OUT, "regions.json"), "w") as f:
         json.dump({"generated": gen, "models": models_used, "source": "https://open-meteo.com", "regions": regs}, f, separators=(",", ":"))
     return 0
