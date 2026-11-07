@@ -271,7 +271,7 @@ def mean(xs):
     return sum(xs) / len(xs) if xs else None
 
 
-GRID_FT = list(range(1000, 16001, 500))
+GRID_FT = list(range(500, 16001, 500))  # from 500 ft: the coast lifts from near sea level
 
 
 def climb_at(p, z_m):
