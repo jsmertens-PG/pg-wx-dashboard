@@ -120,6 +120,10 @@ function panelSVG(data, di = 0) {
   let kx = W - R - PANEL_CLIMB.length * 30;
   PANEL_CLIMB.forEach(([v, c]) => { o.push(`<rect x="${kx}" y="${yB + 27}" width="29" height="12" rx="2" fill="${c}"/><text x="${kx + 14.5}" y="${yB + 37}" text-anchor="middle" font-size="9" fill="${v >= 3 ? '#fff' : INK}">${v}</text>`); kx += 30; });
   o.push(`<text x="${W - R - PANEL_CLIMB.length * 30 - 6}" y="${yB + 37}" text-anchor="end" font-size="10.5" fill="${MUTED}">climb m/s</text>`);
+  // matching wind key, bottom left
+  o.push(`<text x="8" y="${yB + 37}" font-size="10.5" fill="${MUTED}">wind mph</text>`);
+  let wx = 62;
+  PANEL_WIND.forEach(([v, c]) => { o.push(`<rect x="${wx}" y="${yB + 27}" width="29" height="12" rx="2" fill="${c}"/><text x="${wx + 14.5}" y="${yB + 37}" text-anchor="middle" font-size="9" fill="${INK}">${v}</text>`); wx += 30; });
   o.push('</svg>');
   return o.join('\n');
 }
