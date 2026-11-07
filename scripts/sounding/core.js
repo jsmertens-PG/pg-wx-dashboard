@@ -257,6 +257,7 @@ function renderSVG(snd, opts = {}) {
 
   // ---- panel 1 ----
   const FC = opts.forecast;
+  const late = [];
   if (FC && isFinite(FC.median_f)) {
     const z0 = A.z0, G = 5.4;
     const lo = Math.min(FC.p10_f, FC.median_f), hi = Math.max(FC.p90_f, FC.median_f);
@@ -273,10 +274,10 @@ function renderSVG(snd, opts = {}) {
     const r100 = z => (Math.round(z * 10) * 100).toLocaleString('en-US');
     const lines = [`${FC.label === 'today' ? 'Today' : 'Tomorrow'}: high ${Math.round(FC.median_f)}°F (${Math.round(lo)}–${Math.round(hi)})`,
                    `Thermals ~${r100(tm)} ft (${r100(tLo)}–${r100(tHi)})`];
-    const bx = P1.x0 + 8, by = bot - 50, bw = 238;
-    o.push(`<rect x="${bx}" y="${by}" width="${bw}" height="40" rx="7" fill="#fff" fill-opacity="0.95" stroke="#f3c27a"/>`);
-    o.push(`<text x="${bx + 10}" y="${by + 16}" font-size="11.5" font-weight="700" fill="#b35f00">${lines[0]}</text>`);
-    o.push(`<text x="${bx + 10}" y="${by + 31}" font-size="11" fill="${INK}">${lines[1]}</text>`);
+    const bx = P1.x0 + 8, by = bot - 50, bw = Math.max(...lines.map(t => t.length)) * 7.8 + 22;
+    late.push(`<rect x="${bx}" y="${by}" width="${bw}" height="40" rx="7" fill="#fff" fill-opacity="0.8" stroke="#f3c27a"/>`);
+    late.push(`<text x="${bx + 10}" y="${by + 16}" font-size="11.5" font-weight="700" fill="#b35f00">${lines[0]}</text>`);
+    late.push(`<text x="${bx + 10}" y="${by + 31}" font-size="11" fill="${INK}">${lines[1]}</text>`);
     A.forecastTops = { median_ft: Math.round(tm * 10) * 100, low_ft: Math.round(tLo * 10) * 100, high_ft: Math.round(tHi * 10) * 100 };
   }
   for (const th of A.thermals) {
@@ -317,6 +318,8 @@ function renderSVG(snd, opts = {}) {
     o.push(`<path d="M${lx + 10} ${y}h16" stroke="${c}" stroke-width="2.4" stroke-linecap="round"/>`);
     o.push(`<text x="${lx + 32}" y="${y + 4}" fill="${INK}">${name}</text>`);
   });
+
+  o.push(...late);
 
   // ---- panel 2: lapse rate, with dry-adiabatic and standard references ----
   for (const [v, name] of [[5.4, 'dry'], [3.6, 'std']]) {
