@@ -13,6 +13,16 @@ function scoreCol(r) {
   const a = h(SCORE_COL[lo]), b = h(SCORE_COL[hi]);
   return '#' + a.map((v, k) => Math.round(v + (b[k] - v) * t).toString(16).padStart(2, '0')).join('');
 }
+// XCTherm-style single-hue heat: grey-white for nothing, deeper red for better
+const HEAT_COL = { 1: '#eceef0', 2: '#f2d3cf', 3: '#e9a199', 4: '#d9645a', 5: '#b8261f' };
+const MAPSTYLE = { palette: 'heat' };
+function heatCol(r) {
+  const x = Math.max(1, Math.min(5, r)), lo = Math.floor(x), hi = Math.min(5, lo + 1), t = x - lo;
+  const h = c => [1, 3, 5].map(k => parseInt(c.slice(k, k + 2), 16));
+  const a = h(HEAT_COL[lo]), b = h(HEAT_COL[hi]);
+  return '#' + a.map((v, k) => Math.round(v + (b[k] - v) * t).toString(16).padStart(2, '0')).join('');
+}
+const regionCol = v => v == null ? '#cbd5e1' : (MAPSTYLE.palette === 'heat' ? heatCol(v) : scoreCol(v));
 function rng(seed) { let s = seed >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
 const COAST = [[34.4, -118.6], [34.0, -118.2], [33.75, -118.05], [33.62, -117.93], [33.54, -117.79], [33.47, -117.71], [33.42, -117.62], [33.37, -117.56],
   [33.30, -117.47], [33.21, -117.40], [33.13, -117.34], [33.05, -117.30], [32.96, -117.27], [32.88, -117.255], [32.85, -117.28],
@@ -109,13 +119,14 @@ function miniMapSVG(D, day, radar) {
   const { W, H } = FM;
   const o = [`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" aria-hidden="true">`,
     `<rect width="${W}" height="${H}" fill="#f5f4f0"/>`,
-    `<polygon points="${COAST.map(P).join(' ')} -50,${H + 50} -50,-50" fill="#cfe2ee"/>`];
+    `<polygon points="${COAST.map(P).join(' ')} -50,${H + 50} -50,-50" fill="#cfe2ee"/>`,
+    `<clipPath id="mland"><polygon points="${COAST.map(P).join(' ')} ${W + 50},${H + 50} ${W + 50},-50"/></clipPath><g clip-path="url(#mland)">`];
   for (const rg of D.regions) {
     const dd = rg.days.find(x => x.date === (D.regions[0].days[day] || {}).date) || rg.days[Math.min(day, rg.days.length - 1)];
     const v = regionRate(rg, dd, radar);
-    o.push(`<polygon points="${rg.poly.map(P).join(' ')}" fill="${v != null ? scoreCol(v) : '#cbd5e1'}" fill-opacity=".6" stroke="#fff" stroke-width="8" stroke-linejoin="round"/>`);
+    o.push(`<polygon points="${rg.poly.map(P).join(' ')}" fill="${regionCol(v)}" fill-opacity="${MAPSTYLE.palette === 'heat' ? '.85' : '.6'}" stroke="${MAPSTYLE.palette === 'heat' ? '#8a8f96' : '#fff'}" stroke-width="${MAPSTYLE.palette === 'heat' ? 3 : 8}" stroke-linejoin="round"/>`);
   }
-  o.push('</svg>');
+  o.push('</g></svg>');
   return o.join('');
 }
 
@@ -155,13 +166,20 @@ function mapSVG(D, day = 0, radar = null, opts = {}) {
   o.push(`<text x="${f(fx(-116.55))}" y="${f(fy(32.57) + 14)}" font-size="10" fill="${MUTED}" letter-spacing="2">MEXICO</text>`);
   // regions: heat glow in score colours + thin white borders
   const regs = D.regions;
-  o.push(`<g opacity=".55">`);
+  const heat = MAPSTYLE.palette === 'heat';
+  if (heat) o.push(`<clipPath id="land"><polygon points="${COAST.map(P).join(' ')} ${W + 50},${H + 50} ${W + 50},-50"/></clipPath>`);
+  o.push(heat ? `<g opacity=".7" clip-path="url(#land)">` : `<g opacity=".55">`);
   for (const rg of regs) {
     const v = rate(rg, rg.days[Math.min(day, rg.days.length - 1)]);
-    o.push(`<polygon points="${rg.poly.map(P).join(' ')}" fill="${v != null ? scoreCol(v) : '#cbd5e1'}" filter="url(#soft)"/>`);
+    o.push(`<polygon points="${rg.poly.map(P).join(' ')}" fill="${regionCol(v)}"${heat ? '' : ' filter="url(#soft)"'}/>`);
   }
   o.push(`</g>`);
-  for (const rg of regs) o.push(`<polygon points="${rg.poly.map(P).join(' ')}" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-opacity=".9"/>`);
+  if (heat) o.push(`<polygon points="${BAY.map(P).join(' ')}" fill="${WATER}" stroke="${SHORE}"/>`);
+  if (heat) o.push(`<g clip-path="url(#land)">`);
+  for (const rg of regs) o.push(heat
+    ? `<polygon points="${rg.poly.map(P).join(' ')}" fill="none" stroke="#5f656d" stroke-width="1" stroke-opacity=".75" stroke-linejoin="round"/>`
+    : `<polygon points="${rg.poly.map(P).join(' ')}" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-opacity=".9"/>`);
+  if (heat) o.push(`</g>`);
   // mountains over the colours, in the chosen style
   const along = (spine, n, cb) => { for (let i = 0; i <= n; i++) {
     const t = i / n, seg = t * (spine.length - 1), k = Math.min(spine.length - 2, Math.floor(seg)), u = seg - k;
@@ -267,4 +285,4 @@ function mapSVG(D, day = 0, radar = null, opts = {}) {
   return o.join('\n');
 }
 
-if (typeof module !== 'undefined') module.exports = { mapSVG, miniMapSVG, regionRate, scoreCol, radarVerdict, BOXES, FM };
+if (typeof module !== 'undefined') module.exports = { mapSVG, miniMapSVG, regionRate, scoreCol, heatCol, MAPSTYLE, radarVerdict, BOXES, FM };

@@ -20,6 +20,8 @@ body{font-family:Inter,Roboto,-apple-system,"Segoe UI",Helvetica,Arial,sans-seri
 header{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;padding-top:max(10px,env(safe-area-inset-top));background:#fff;border-bottom:1px solid var(--line);gap:8px}
 h1{font-size:17px;margin:0;font-weight:700}
 h1 small{font-size:11px;font-weight:600;color:#b45309;background:#fef3c7;border-radius:999px;padding:2px 8px;margin-left:6px;vertical-align:2px}
+.hb{display:flex;gap:6px}
+button.back{font:inherit;font-size:13px;cursor:pointer;color:var(--muted)}
 .back{font-size:13px;color:var(--ink);text-decoration:none;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;white-space:nowrap}
 #map{flex:1;min-height:0;background:#eef1f4;padding:6px;display:flex;align-items:center;justify-content:center}
 #map > svg{display:block;border-radius:12px;box-shadow:0 1px 2px rgba(0,0,0,.05),0 8px 24px -12px rgba(0,0,0,.2)}
@@ -66,14 +68,14 @@ h1 small{font-size:11px;font-weight:600;color:#b45309;background:#fef3c7;border-
 .sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
 @media (max-width:560px){.tg{font-size:12px}.tt{font-size:12px}.tt td:nth-child(5),.tt th:nth-child(5){display:none}}
 </style></head><body>
-<header><h1>Regions<small>experimental</small></h1><a class="back" href="./">← Radar</a></header>
+<header><h1>Regions<small>experimental</small></h1><span class="hb"><button type="button" class="back" id="pal" title="Switch map colours">Heat</button><a class="back" href="./">← Radar</a></span></header>
 <div id="map"></div>
 <nav class="days" id="days"></nav>
 <div class="ov" id="ov"><div class="sheet"><div class="bar"><div class="tg"><span>Text</span><button type="button" id="tog" role="switch" aria-checked="true" aria-label="Graphic view"><i></i></button><span>Graphic</span></div><button class="x" id="x" aria-label="Close">×</button></div>
   <div id="view"></div><div class="sum" id="sum"></div>
   <div class="dnav"><button type="button" id="prev" aria-label="Previous day">‹</button><span id="dlab"></span><button type="button" id="next" aria-label="Next day">›</button></div></div></div>
 <script src="scripts/region/panel.js?v=202611070840"></script>
-<script src="scripts/region/regionmap.js?v=202611070825"></script>
+<script src="scripts/region/regionmap.js?v=202611070855"></script>
 <script>
 let RADAR = null;
 let D = null, day = 0, graphic = true, openR = null;
@@ -140,8 +142,18 @@ document.getElementById('tog').onclick = () => { graphic = !graphic; try { local
         return `<button type="button" title="${d.label} · ${(d.models || []).join(' + ')}">${typeof miniMapSVG === 'function' ? `<span class="mm">${miniMapSVG(D, i, RADAR)}</span>` : ''}<span class="dl">${wd}<b>${dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</b></span></button>`;
       }).join('');
     };
+    const bindDays = () => document.querySelectorAll('#days button').forEach((b, i) => b.onclick = () => { day = i; draw(); });
+    try { MAPSTYLE.palette = localStorage.getItem('regionsPalette') || 'heat'; } catch (e) {}
+    const pal = document.getElementById('pal');
+    const palLab = () => { pal.textContent = MAPSTYLE.palette === 'heat' ? 'Heat' : 'Radar colours'; };
+    palLab();
+    pal.onclick = () => {
+      MAPSTYLE.palette = MAPSTYLE.palette === 'heat' ? 'radar' : 'heat';
+      try { localStorage.setItem('regionsPalette', MAPSTYLE.palette); } catch (e) {}
+      palLab(); renderDays(); bindDays(); draw();
+    };
     renderDays();
-    document.querySelectorAll('#days button').forEach((b, i) => b.onclick = () => { day = i; draw(); });
+    bindDays();
     draw();
   } catch (e) { document.getElementById('map').innerHTML = '<p style="padding:20px">Could not load regions: ' + e.message + '</p>'; }
 })();
