@@ -188,23 +188,8 @@ function mapSVG(D, day = 0, radar = null) {
     o.push(`<g filter="url(#shadow)"><rect x="${f(px)}" y="${f(y - 6)}" width="${f(lw)}" height="17" rx="8.5" fill="#fff"/></g>`);
     o.push(`<text x="${f(px + lw / 2)}" y="${f(y + 6.3)}" text-anchor="middle" font-size="11.5" font-weight="700" fill="#9a3412">${n}</text>`);
   }
-  // region names across each region, small verdict / thermals line beneath; tap target = region
-  for (const rg of regs) {
-    const dd = rg.days[Math.min(day, rg.days.length - 1)], s = dd?.summary;
-    const [[la, lo], rot, fs] = NAME_AT[rg.id] || [[rg.points[0].lat, rg.points[0].lon], 0, 14];
-    const x = fx(lo), y = fy(la), name = rg.name.toUpperCase(), ls = fs * 0.28;
-    const vd = rg.own_score ? null : radarVerdict(radar, rg.id, dd?.date);
-    const th = s ? `${s.climb.toFixed(1)} m/s · ${(s.top_ft / 1000).toFixed(1)}k${s.cu && s.base_ft ? ' · cu' : ''}` : 'no thermals';
-    const sub = vd ? `${vd.label} · ${th}` : th;
-    const r2 = rot * Math.PI / 180;
-    box('region:' + rg.id, x, y, tw(name, fs, 0.66, ls), fs, rot, 'middle');
-    box('region:' + rg.id, x - Math.sin(r2) * fs * 0.95, y + Math.cos(r2) * fs * 0.95, tw(sub, 10.5) + 8, 10.5, rot, 'middle');
-    o.push(`<g class="rg" data-id="${rg.id}" style="cursor:pointer"><polygon points="${rg.poly.map(P).join(' ')}" fill="#000" fill-opacity="0"/>
-      <g transform="rotate(${rot} ${f(x)} ${f(y)})">
-        <text x="${f(x)}" y="${f(y)}" text-anchor="middle" font-size="${fs}" font-weight="700" letter-spacing="${f(ls)}" fill="${INK}" fill-opacity=".78" stroke="#fff" stroke-width="3" stroke-opacity=".75" paint-order="stroke">${name}</text>
-        <text x="${f(x)}" y="${f(y + fs * 0.95)}" text-anchor="middle" font-size="10.5" fill="#374151" stroke="#fff" stroke-width="3" stroke-opacity=".8" paint-order="stroke">${vd ? `<tspan font-weight="700">${vd.label}</tspan> · ${th}` : th}</text>
-      </g></g>`);
-  }
+  // tap targets: the whole region (names live in the panel that opens; the map shows colour only)
+  for (const rg of regs) o.push(`<g class="rg" data-id="${rg.id}" style="cursor:pointer"><polygon points="${rg.poly.map(P).join(' ')}" fill="#000" fill-opacity="0"/></g>`);
   // title card + north arrow (top right), scale bar
   const tx = W - 214;
   box('title', tx + 98, 74 - 52 * 0.15, 196, 56, 0, 'middle');
