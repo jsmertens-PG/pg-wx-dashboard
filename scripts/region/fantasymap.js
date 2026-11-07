@@ -3,7 +3,7 @@
 // towns, launches, and the soaring regions as a soft heat glow in the radar's score colours with a score badge.
 // mapSVG(D, day) -> SVG string (regions are <g class="rg" data-id=...> for click handling)
 
-const FM = { lon0: -117.85, lon1: -116.0, lat0: 32.45, lat1: 34.38, W: 800 };
+const FM = { lon0: -117.74, lon1: -116.17, lat0: 32.47, lat1: 34.37, W: 800 };
 FM.H = Math.round(FM.W * (FM.lat1 - FM.lat0) / ((FM.lon1 - FM.lon0) * Math.cos(33.2 * Math.PI / 180)));
 const fx = lo => (lo - FM.lon0) / (FM.lon1 - FM.lon0) * FM.W;
 const fy = la => (FM.lat1 - la) / (FM.lat1 - FM.lat0) * FM.H;
@@ -56,10 +56,21 @@ const TOWNS = [['San Diego', 32.72, -117.16, 3], ['Tijuana', 32.52, -117.03, 2],
   ['Lake Elsinore', 33.68, -117.33, 1], ['Riverside', 33.95, -117.40, 2], ['San Bernardino', 34.11, -117.29, 2], ['Lake Arrowhead', 34.25, -117.19, 1], ['Hemet', 33.75, -116.97, 2], ['Borrego Springs', 33.26, -116.37, 1], ['Alpine', 32.84, -116.77, 1]];
 const SITES = [['Torrey Pines', 32.890, -117.252], ['Little Black', 32.988, -117.122], ['Blossom', 32.877, -116.848], ['Otay', 32.574, -116.894],
   ["Whale's V", 32.645, -116.887, 'left'], ['Laguna', 32.86, -116.43], ['Elsinore', 33.630, -117.371], ['Soboba', 33.822, -116.959], ['Marshall', 34.210, -117.303, 'left']];
-const LABEL_AT = { coast: [32.99, -117.62], north: [33.33, -117.24], east: [32.99, -116.80], south: [32.71, -116.83],
-  mountains: [33.22, -116.80], desert: [32.98, -116.33], inland_empire: [33.86, -117.13], marshall: [34.30, -117.22] };
+const LABEL_AT = { coast: [32.99, -117.58], north: [33.33, -117.24], east: [32.99, -116.80], south: [32.71, -116.83],
+  mountains: [33.22, -116.80], desert: [32.98, -116.40], inland_empire: [33.88, -117.33], marshall: [34.05, -117.56] };
 
-function mapSVG(D, day = 0) {
+// the radar sites that colour each region (best of them that day); regions without a launch use their own score
+const REGION_SITES = { coast: ['torrey'], north: ['lb'], east: ['blossom'], south: ['otay', 'whalesv'], mountains: ['lagunahorse'],
+  inland_empire: ['elsinore', 'soboba'], marshall: ['marshall'] };
+
+function mapSVG(D, day = 0, radar = null) {
+  // radar: data/forecast.json; the colour of a region is the radar's score for its launches (shown rounded to .5 like the radar)
+  const rate = (rg, dd) => {
+    const rd = radar && dd && (radar.days || []).find(x => x.date === dd.date);
+    const vals = rd ? (REGION_SITES[rg.id] || []).map(id => rd.sites?.[id]?.rating).filter(v => v != null) : [];
+    const v = vals.length ? Math.max(...vals) : dd?.summary?.score;
+    return v == null ? null : Math.round(v * 2) / 2;
+  };
   const { W, H } = FM, f = v => v.toFixed(1), r = rng(7);
   const INK = '#4a3b2a', INK2 = '#7a6650', PAPER = '#f3e9d2';
   const o = [];
@@ -121,8 +132,8 @@ function mapSVG(D, day = 0) {
   const regs = D.regions;
   o.push(`<g opacity=".62">`);
   for (const rg of regs) {
-    const s = rg.days[Math.min(day, rg.days.length - 1)]?.summary;
-    o.push(`<polygon points="${rg.poly.map(P).join(' ')}" fill="${s ? scoreCol(s.score) : '#bbb'}" filter="url(#heat)"/>`);
+    const v = rate(rg, rg.days[Math.min(day, rg.days.length - 1)]);
+    o.push(`<polygon points="${rg.poly.map(P).join(' ')}" fill="${v != null ? scoreCol(v) : '#bbb'}" filter="url(#heat)"/>`);
   }
   o.push(`</g>`);
   for (const rg of regs) o.push(`<polygon points="${rg.poly.map(P).join(' ')}" fill="none" stroke="${INK}" stroke-width="1.1" stroke-dasharray="5 4" opacity=".55" filter="url(#pencil)"/>`);
@@ -142,12 +153,11 @@ function mapSVG(D, day = 0) {
   for (const rg of regs) {
     const dd = rg.days[Math.min(day, rg.days.length - 1)], s = dd?.summary;
     const [la, lo] = LABEL_AT[rg.id] || [rg.points[0].lat, rg.points[0].lon];
-    const x = fx(lo), y = fy(la), col = s ? scoreCol(s.score) : '#9ca3af';
+    const v = rate(rg, dd), x = fx(lo), y = fy(la), col = v != null ? scoreCol(v) : '#9ca3af';
     o.push(`<g class="rg" data-id="${rg.id}" style="cursor:pointer"><polygon points="${rg.poly.map(P).join(' ')}" fill="#000" fill-opacity="0"/>
-      <circle cx="${f(x)}" cy="${f(y)}" r="17" fill="${col}" stroke="${INK}" stroke-width="1.6" filter="url(#pencil)"/>
-      <text x="${f(x)}" y="${f(y + 6.5)}" text-anchor="middle" font-size="19" font-weight="700" font-family="'IM Fell English', Georgia, serif" fill="#fff" stroke="${INK}" stroke-width=".6">${s ? (Math.round(s.score * 2) / 2).toFixed(1).replace('.0', '') : '–'}</text>
-      <text x="${f(x + 22)}" y="${f(y - 1)}" font-size="15" font-family="'IM Fell English SC', Georgia, serif" fill="${INK}" stroke="${PAPER}" stroke-width="3.5" paint-order="stroke" letter-spacing=".5">${rg.name}</text>
-      <text x="${f(x + 22)}" y="${f(y + 14)}" font-size="14.5" fill="${INK}" stroke="${PAPER}" stroke-width="3" paint-order="stroke">${s ? `${s.climb.toFixed(1)} m/s · ${(s.top_ft / 1000).toFixed(1)}k${s.cu && s.base_ft ? ' · cu' : ''}` : 'no thermals'}</text></g>`);
+      <circle cx="${f(x)}" cy="${f(y)}" r="7" fill="${col}" stroke="${INK}" stroke-width="1.4" filter="url(#pencil)"/>
+      <text x="${f(x + 12)}" y="${f(y - 1)}" font-size="15" font-family="'IM Fell English SC', Georgia, serif" fill="${INK}" stroke="${PAPER}" stroke-width="3.5" paint-order="stroke" letter-spacing=".5">${rg.name}</text>
+      <text x="${f(x + 12)}" y="${f(y + 14)}" font-size="14.5" fill="${INK}" stroke="${PAPER}" stroke-width="3" paint-order="stroke">${s ? `${s.climb.toFixed(1)} m/s · ${(s.top_ft / 1000).toFixed(1)}k${s.cu && s.base_ft ? ' · cu' : ''}` : 'no thermals'}</text></g>`);
   }
   // ---- cartouche, compass rose, scale
   o.push(`<g transform="translate(18 ${H - 200})" filter="url(#pencil)"><rect width="232" height="58" rx="4" fill="${PAPER}" stroke="${INK}" stroke-width="1.5"/><rect x="4" y="4" width="224" height="50" rx="3" fill="none" stroke="${INK}" stroke-width=".7"/></g>`);
