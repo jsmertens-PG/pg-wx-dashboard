@@ -35,8 +35,8 @@ const tlab = t => `${Math.floor(t) > 12 ? Math.floor(t) - 12 : Math.floor(t)}:${
 function panelSVG(data, di = 0) {
   const day = data.days[di];
   // compact (inside a radar site card, phone width): whole hours 9 am - 6 pm on a narrower canvas, so the text stays readable
-  const cols = data.compact ? halfHours(day).filter(c => c.t % 1 === 0 && c.t >= 9 && c.t <= 18) : halfHours(day);
-  const W = data.compact ? 560 : 1000, L = data.compact ? 66 : 74, R = 8, cw = (W - L - R) / cols.length;
+  const cols = halfHours(day);
+  const W = 1000, L = 74, R = 8, cw = (W - L - R) / cols.length;
   const INK = '#1f2328', MUTED = '#6b7280', GRID = '#dfe2e6', GRID2 = '#b9bec5';
   // rows: from the lowest used height to well above the highest (XCTherm shows the open sky above)
   const zs = new Set();
@@ -143,7 +143,7 @@ function panelSVG(data, di = 0) {
   });
   // time axis (labels on the grid lines, every hour)
   cols.forEach((c, k) => { if (c.t % 1 === 0) o.push(`<text x="${f(X(k))}" y="${yB + 18}" text-anchor="middle" font-size="13">${tlab(c.t)}${c.t === 12 ? '' : ''}</text>`); });
-  if (!data.compact) o.push(`<text x="${f((L + W - R) / 2)}" y="${yB + 36}" text-anchor="middle" font-size="13" font-weight="700">Time (PT)</text>`);
+  o.push(`<text x="${f((L + W - R) / 2)}" y="${yB + 36}" text-anchor="middle" font-size="13" font-weight="700">Time (PT)</text>`);
   // small colour key, bottom right
   let kx = W - R - PANEL_CLIMB.length * 30;
   PANEL_CLIMB.forEach(([v, c]) => { o.push(`<rect x="${kx}" y="${yB + 27}" width="29" height="12" rx="2" fill="${c}"/><text x="${kx + 14.5}" y="${yB + 37}" text-anchor="middle" font-size="9" fill="${v >= 3 ? '#fff' : INK}">${v}</text>`); kx += 30; });
