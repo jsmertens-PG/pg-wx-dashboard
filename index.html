@@ -819,6 +819,7 @@ html body details.day:not(#story) > summary.hd .sum .sc.sc.sc, html body details
 .srow .wtab .hwt { max-width: none; }
 .srow .wtab .hwt .wc b small { display: block; text-align: center; }
 .srow .wtab .hwt .wc b { font-size: .6rem; }
+.hwt .wc.late { opacity: .45; }   /* after sunset: wind only, greyed */
 </style>
 </head>
 <body>
@@ -1321,7 +1322,7 @@ function windTable(c) {
   return `<div class="hwt"><span></span>${HH.map((h) => `<span class="hh">${hlab(h)}</span>`).join("")}<span class="ml">score</span>${HH.map((h) => {
       const v = hrs[String(h)];
       return `<span class="hc" style="background:${v != null ? qgrad(v) : "var(--sunk)"}"></span>`;
-    }).join("")}${Object.entries(hm).map(([m, ws], k) => `<span class="ml${k % 2 ? "" : " z"}">${m === "ECMWF" ? "EC" : m}</span>${HH.map((h) => wcell(ws[String(h)]).replace('class="wc', `class="wc${k % 2 ? "" : " z"}`)).join("")}`).join("")}</div>`;
+    }).join("")}${Object.entries(hm).map(([m, ws], k) => `<span class="ml${k % 2 ? "" : " z"}">${m === "ECMWF" ? "EC" : m}</span>${HH.map((h) => wcell(ws[String(h)]).replace('class="wc', `class="wc${k % 2 ? "" : " z"}${hrs[String(h)] == null ? " late" : ""}`)).join("")}`).join("")}</div>`;
 }
 function miniStrip(c) {
   const hrs = c.hours || {}, win = c.win || [];

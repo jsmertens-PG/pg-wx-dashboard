@@ -1037,8 +1037,10 @@ def pick_window(site, hours, sunset_h):
 
 def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     """Rate one day for one model run on the 1-5 scale (see 'style' in sites.json)."""
+    late = [(h, i) for h, i in idxs if h + 0.5 > sunset_h and h <= 18]   # after sunset: only the wind, for the ridge table
     idxs = [(h, i) for h, i in idxs if h + 0.5 <= sunset_h]          # nothing after sunset
     hours = [(h, score_hour(site, hr, i, levels, elev_m)) for h, i in idxs]
+    late_w = [(h, score_hour(site, hr, i, levels, elev_m)) for h, i in late] if site["kind"] == "ridge" else []
     hours = [(h, s) for h, s in hours if s is not None]
     if len(hours) < WINDOW:
         return None
@@ -1291,7 +1293,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         # launch wind each hour (direction, mph, gust mph), for the ridge site's hour strip
         "hw": {h: [round(x["ld"]) if x["ld"] is not None else None, round(x["lw"]) if x["lw"] is not None else None,
                    round(x["lg"]) if x["lg"] is not None else None]
-               for h, x in hours if 9 <= h <= 18},
+               for h, x in hours + [(h, x) for h, x in late_w if x is not None] if 9 <= h <= 18},
         "xc_block": sum(1 for h, s in win if s["xc_block"]) >= max(1, len(win) // 2) if win else False,
         "pr": sum(s["pr"] for _, s in hours), "pr_win": window_rain,
         "wet_f": (sum(1 for _, s in win if s["pr"] >= WET_MM) / len(win)) if win else 0.0, "cape": max(s["cape"] for _, s in hours),
