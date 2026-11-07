@@ -210,98 +210,15 @@ function prettyTitle(t) {
 }
 
 
-// ---------- heatmap + notes panel (alternative to lapse/wind plots) ----------
-function lerpColor(stops, v) {
-  if (v <= stops[0][0]) return stops[0][1];
-  for (let i = 1; i < stops.length; i++) if (v <= stops[i][0]) {
-    const [a, ca] = stops[i - 1], [b, cb] = stops[i], t = (v - a) / (b - a);
-    const h = c => [1, 3, 5].map(k => parseInt(c.slice(k, k + 2), 16));
-    const A = h(ca), B = h(cb);
-    return '#' + A.map((x, k) => Math.round(x + (B[k] - x) * t).toString(16).padStart(2, '0')).join('');
-  }
-  return stops[stops.length - 1][1];
-}
-const LAPSE_STOPS = [[-3, '#2c5aa0'], [0, '#8fb8de'], [2.5, '#e8edf2'], [4, '#fde3a7'], [5.4, '#f4874b'], [7, '#c0392b']];
-const WIND_STOPS = [[0, '#f3faf0'], [6, '#cdebc2'], [10, '#fde68a'], [15, '#fb923c'], [20, '#e11d48'], [30, '#7e22ce']];
-const lum = c => { const h = [1, 3, 5].map(k => parseInt(c.slice(k, k + 2), 16)); return 0.299 * h[0] + 0.587 * h[1] + 0.114 * h[2]; };
-
-function heatmapPanel(o, lv, A, FC, g) {
-  const { x0, x1, top, bot, Y, f, INK, MUTED, EDGE, C, r100 } = g;
-  const cL = [x0, x0 + 64], cW = [x0 + 70, x0 + 150], cN = [x0 + 160, x1];
-  const zTop = 18;
-  // column headers
-  o.push(`<text x="${cL[0]}" y="${top - 9}" font-size="12.5" font-weight="600" fill="${INK}">Stability</text>`);
-  o.push(`<text x="${cW[0]}" y="${top - 9}" font-size="12.5" font-weight="600" fill="${INK}">Wind (kt)</text>`);
-  o.push(`<text x="${cN[0]}" y="${top - 9}" font-size="12.5" font-weight="600" fill="${INK}">What stands out</text>`);
-  const zs = lv.map(l => l.z), zmin = zs[0];
-  for (let k = 0; k < zTop; k++) {
-    const za = Math.max(k, zmin), zb = k + 1;
-    if (zb <= zmin) continue;
-    const y0 = Y(zb), y1 = Y(za), h = y1 - y0;
-    // lapse over the band, and the minimum sub-layer lapse (to catch thin inversions)
-    const Ta = interp(lv, 't', za), Tb = interp(lv, 't', zb);
-    const lr = -(Tb - Ta) / (zb - za);
-    // flag an inversion only if some 200 ft sub-layer warms by >= 0.5 °F
-    let minLr = lr;
-    for (let z = za; z < zb - 0.19; z += 0.2) { const v = -(interp(lv, 't', z + 0.2) - interp(lv, 't', z)) / 0.2; if (v < minLr) minLr = v; }
-    if (minLr > -2.5) minLr = Math.max(minLr, 0);
-    const lcol = lerpColor(LAPSE_STOPS, minLr < 0 ? Math.min(lr, minLr) : lr);
-    o.push(`<rect x="${cL[0]}" y="${f(y0)}" width="${cL[1] - cL[0]}" height="${f(h - 1)}" rx="3" fill="${lcol}"/>`);
-    if (isFinite(lr) && h > 14) o.push(`<text x="${(cL[0] + cL[1]) / 2}" y="${f(y0 + h / 2 + 4)}" text-anchor="middle" font-size="10" font-weight="${minLr < 0 ? 700 : 500}" fill="${lum(lcol) < 140 ? '#fff' : INK}">${minLr < 0 ? 'inv' : lr.toFixed(1)}</text>`);
-    // wind: vector mean of levels in the band
-    const inb = lv.filter(l => l.z >= za && l.z < zb && isFinite(l.spd) && isFinite(l.dir));
-    if (inb.length) {
-      let u = 0, v = 0, sp = 0;
-      for (const l of inb) { const r = l.dir * Math.PI / 180; u += -l.spd * Math.sin(r); v += -l.spd * Math.cos(r); sp += l.spd; }
-      u /= inb.length; v /= inb.length; sp /= inb.length;
-      const dir = (Math.atan2(-u, -v) * 180 / Math.PI + 360) % 360;
-      const wcol = lerpColor(WIND_STOPS, sp), tc = lum(wcol) < 140 ? '#fff' : INK;
-      o.push(`<rect x="${cW[0]}" y="${f(y0)}" width="${cW[1] - cW[0]}" height="${f(h - 1)}" rx="3" fill="${wcol}"/>`);
-      if (h > 14) {
-        const cx = cW[0] + 14, cy = y0 + h / 2;
-        o.push(`<g transform="translate(${cx} ${f(cy)}) rotate(${((dir + 180) % 360).toFixed(0)})"><path d="M0 5V-5M-3 -2L0 -5L3 -2" fill="none" stroke="${tc}" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></g>`);
-        o.push(`<text x="${cx + 10}" y="${f(cy + 4)}" font-size="10.5" font-weight="600" fill="${tc}">${Math.round(sp)}<tspan font-weight="400" font-size="9.5" dx="3">${String(Math.round(dir) % 360).padStart(3, '0')}°</tspan></text>`);
-      }
-    }
-  }
-  // ---- notes: auto-generated, placed at their altitude ----
-  const notes = [];
-  if (FC && A.forecastTops) notes.push({ z: A.forecastTops.median_ft / 1000, c: '#e07b00', t: `Thermal tops ~${A.forecastTops.median_ft.toLocaleString('en-US')} ft`, s: `at ${Math.round(FC.median_f)}°F; ${A.forecastTops.low_ft.toLocaleString('en-US')}–${A.forecastTops.high_ft.toLocaleString('en-US')} ft range` });
-  if (A.cb) notes.push({ z: A.cb.z, c: C.cloud, t: `Cloudbase ${r100(A.cb.z)} ft`, s: FC && FC.p90_f < A.cb.trigger ? `needs ~${Math.round(A.cb.trigger)}°F: likely blue` : `trigger ~${Math.round(A.cb.trigger)}°F` });
-  // inversions (>= 1 °F warming), from 100 ft steps
-  let inv = null;
-  for (let z = zmin; z < zTop; z += 0.1) {
-    const d = interp(lv, 't', z + 0.1) - interp(lv, 't', z);
+// inversions: layers where temperature rises with height by >= 1 °F
+function findInversions(lv, zTop) {
+  const out = []; let inv = null; const z0 = lv[0].z;
+  for (let z = z0; z < zTop; z += 0.05) {
+    const d = interp(lv, 't', z + 0.05) - interp(lv, 't', z);
     if (d > 0) { if (!inv) inv = { a: z, t0: interp(lv, 't', z) }; }
-    else if (inv) { const dt = interp(lv, 't', z) - inv.t0; if (dt >= 1) notes.push({ z: inv.a, c: '#2c5aa0', t: `Inversion ${r100(inv.a)}–${r100(z)} ft`, s: `+${Math.round(dt)}°F, caps weak thermals` }); inv = null; }
+    else if (inv) { const dt = interp(lv, 't', z) - inv.t0; if (dt >= 1) out.push({ a: inv.a, b: z, dt }); inv = null; }
   }
-  // freezing level
-  for (let z = zmin; z < zTop; z += 0.05) if (interp(lv, 't', z) <= 32) { notes.push({ z, c: MUTED, t: `Freezing level ${r100(z)} ft`, s: '' }); break; }
-  // first height with wind >= 15 kt
-  const strong = lv.find(l => isFinite(l.spd) && l.spd >= 15 && l.z <= zTop);
-  if (strong) notes.push({ z: strong.z, c: '#e11d48', t: `Wind ≥15 kt above ${r100(strong.z)} ft`, s: `${String(Math.round(strong.dir) % 360).padStart(3, '0')}° at ${Math.round(strong.spd)} kt` });
-  // lay out: keep at their altitude, push apart to avoid overlap
-  notes.sort((a, b) => b.z - a.z);
-  let lastY = top - 4;
-  for (const n of notes) {
-    const yz = Y(Math.min(n.z, zTop));
-    const y = Math.min(Math.max(yz, lastY + 30), bot - 18);
-    lastY = y;
-    o.push(`<path d="M${cW[1] + 2} ${f(yz)}H${cN[0] - 6}L${cN[0]} ${f(y)}" fill="none" stroke="${n.c}" stroke-width="1.2" opacity="0.8"/>`);
-    o.push(`<circle cx="${cW[1] + 2}" cy="${f(yz)}" r="2.2" fill="${n.c}"/>`);
-    o.push(`<text x="${cN[0] + 4}" y="${f(y + 1)}" font-size="12" font-weight="650" fill="${n.c === MUTED ? INK : n.c}">${n.t}</text>`);
-    if (n.s) o.push(`<text x="${cN[0] + 4}" y="${f(y + 15)}" font-size="10.5" fill="${MUTED}">${n.s}</text>`);
-  }
-  // colour keys under the strips
-  const key = (x, w, stops, lo, hi, label) => {
-    const id = 'k' + Math.round(x);
-    o.push(`<defs><linearGradient id="${id}">${stops.map(([v, c]) => `<stop offset="${((v - lo) / (hi - lo) * 100).toFixed(0)}%" stop-color="${c}"/>`).join('')}</linearGradient></defs>`);
-    o.push(`<rect x="${x}" y="${bot + 10}" width="${w}" height="8" rx="2" fill="url(#${id})"/>`);
-    o.push(`<text x="${x}" y="${bot + 30}" font-size="9.5">${label[0]}</text><text x="${x + w}" y="${bot + 30}" font-size="9.5" text-anchor="end">${label[1]}</text>`);
-  };
-  key(cL[0], cL[1] - cL[0], LAPSE_STOPS, -3, 7, ['inv', 'dry']);
-  key(cW[0], cW[1] - cW[0], WIND_STOPS, 0, 30, ['0', '30 kt']);
-  o.push(`<text x="${cN[0] + 4}" y="${bot + 30}" font-size="9.5">Stability: °F lost per 1000 ft (5.4 = dry, inv = warming)</text>`);
+  return out;
 }
 
 function renderSVG(snd, opts = {}) {
@@ -309,142 +226,141 @@ function renderSVG(snd, opts = {}) {
   const lv = snd.levels;
   const A = analyze(lv, opts);
   const FC = opts.forecast && isFinite(opts.forecast.median_f) ? opts.forecast : null;
-  const HM = opts.layout === 'heatmap';
-  const W = 800, Hh = 640, top = 84, bot = 584, ZMAX = 18;
-  const dense = lv.filter(l => l.z < ZMAX).length > 150;
-  const maxSpd = Math.max(0, ...lv.filter(l => l.z <= ZMAX && isFinite(l.spd)).map(l => l.spd));
-  const P1 = { x0: 46, x1: 362, lo: -20, hi: 100 };
-  const P2 = { x0: 380, x1: 530, lo: -2, hi: 6 };
-  const P3 = { x0: 548, x1: 780, lo: 0, hi: Math.max(30, Math.ceil(maxSpd / 10) * 10), gutter: 72 };
-  P3.d0 = P3.x0 + P3.gutter;               // wind data area starts after the label column
+  const W = 800, Hh = 600, top = 84, bot = 546;
+  const dense = lv.filter(l => l.z < 18).length > 150;
+  const z0 = A.z0, G = 5.4;
+  const lo = FC ? Math.min(FC.p10_f, FC.median_f) : lv[0].t, hi = FC ? Math.max(FC.p90_f, FC.median_f) : lv[0].t + 10;
+  // ---- zoom to what matters for flying ----
+  const tHiTop = A.topFor(hi);
+  const ZMAX = Math.min(18, Math.max(8, Math.ceil(Math.max(A.cb ? A.cb.z : 0, tHiTop, ...A.thermals.map(t => Math.min(t.top, 18))) + 2.5)));
+  const tAtTop = interp(lv, 't', Math.min(ZMAX, lv[lv.length - 1].z));
+  const XLO = Math.floor((Math.min(tAtTop, A.cb ? A.cb.t : 99) - 2) / 10) * 10;
+  const XHI = Math.ceil((Math.max(...A.thermals.map(t => t.ts), hi, lv[0].t) + 3) / 10) * 10;
+  const P1 = { x0: 46, x1: 636, lo: XLO, hi: XHI };
+  const WC = { x0: 714, x1: 790 };   // wind text column
   const Y = z => bot - (z / ZMAX) * (bot - top);
-  const X = (P, v) => (P.d0 || P.x0) + (v - P.lo) / (P.hi - P.lo) * (P.x1 - (P.d0 || P.x0));
+  const X = v => P1.x0 + (v - P1.lo) / (P1.hi - P1.lo) * (P1.x1 - P1.x0);
   const f = v => v.toFixed(1);
-  const INK = '#111827', MUTED = '#6b7280', GRID = '#e5e7eb', PANEL = '#fafbfc', EDGE = '#d1d5db';
-  const FCOL = '#e07b00';
+  const INK = '#111827', MUTED = '#6b7280', GRID = '#e5e7eb', PANEL = '#fafbfc', EDGE = '#d1d5db', FCOL = '#e07b00', INVC = '#3b6fd8';
   const r100 = z => (Math.round(z * 10) * 100).toLocaleString('en-US');
+  const k1 = z => (Math.round(z * 10) / 10).toFixed(1) + 'k';
   const o = [];
   o.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${Hh}" font-family="Inter, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" fill="${MUTED}">`);
   o.push(`<rect width="${W}" height="${Hh}" fill="#fff"/>`);
-  o.push('<defs>' + [P1, P2, P3].map((P, i) =>
-    `<clipPath id="c${i}"><rect x="${P.d0 || P.x0}" y="${top}" width="${P.x1 - (P.d0 || P.x0)}" height="${bot - top}"/></clipPath>`).join('') + '</defs>');
-  const poly = (pts, color, clip, opt = {}) => {
+  o.push(`<defs><clipPath id="c0"><rect x="${P1.x0}" y="${top}" width="${P1.x1 - P1.x0}" height="${bot - top}"/></clipPath></defs>`);
+  const poly = (pts, color, opt = {}) => {
     const segs = [[]];
     for (const p of pts) { if (!isFinite(p[0]) || !isFinite(p[1])) { segs.push([]); continue; } segs[segs.length - 1].push(p); }
     return segs.filter(q => q.length > 1).map(q => (opt.simp ? simplify(q, opt.simp) : q)).map(q =>
-      `<polyline clip-path="url(#${clip})" fill="none" stroke="${color}" stroke-width="${opt.w || 2}" stroke-linejoin="round" stroke-linecap="round"${opt.dash ? ` stroke-dasharray="${opt.dash}"` : ''}${opt.op ? ` opacity="${opt.op}"` : ''} points="${q.map(p => f(p[0]) + ',' + f(p[1])).join(' ')}"/>`).join('');
+      `<polyline clip-path="url(#c0)" fill="none" stroke="${color}" stroke-width="${opt.w || 2}" stroke-linejoin="round" stroke-linecap="round"${opt.dash ? ` stroke-dasharray="${opt.dash}"` : ''}${opt.op ? ` opacity="${opt.op}"` : ''} points="${q.map(p => f(p[0]) + ',' + f(p[1])).join(' ')}"/>`).join('');
   };
   const L = lv.filter(l => l.z <= ZMAX + 1);
+  const invs = findInversions(lv, ZMAX);
 
-  // ---- header (all text lives here, off the plots) ----
+  // ---- header ----
   const pt = prettyTitle(snd.title);
   o.push(`<text x="${P1.x0}" y="24" font-size="16" font-weight="700" fill="${INK}">${pt.main}<tspan dx="8" font-size="12.5" font-weight="500" fill="${MUTED}">${pt.sub}</tspan></text>`);
   if (FC) {
-    const tm = A.topFor(FC.median_f), lo = Math.min(FC.p10_f, FC.median_f), hi = Math.max(FC.p90_f, FC.median_f);
-    A.forecastTops = { median_ft: Math.round(tm * 10) * 100, low_ft: Math.round(A.topFor(lo) * 10) * 100, high_ft: Math.round(A.topFor(hi) * 10) * 100 };
-    o.push(`<text x="${P3.x1}" y="24" text-anchor="end" font-size="13" font-weight="700" fill="${FCOL}">${FC.label === 'today' ? 'Today' : 'Tomorrow'}: high ${Math.round(FC.median_f)}°F <tspan font-weight="500">(${Math.round(lo)}–${Math.round(hi)})</tspan> → thermals ~${r100(tm)} ft <tspan font-weight="500">(${r100(A.topFor(lo))}–${r100(A.topFor(hi))})</tspan></text>`);
+    const tm = A.topFor(FC.median_f), tl = A.topFor(lo);
+    A.forecastTops = { median_ft: Math.round(tm * 10) * 100, low_ft: Math.round(tl * 10) * 100, high_ft: Math.round(tHiTop * 10) * 100 };
+    o.push(`<text x="${WC.x1}" y="24" text-anchor="end" font-size="13" font-weight="700" fill="${FCOL}">${FC.label === 'today' ? 'Today' : 'Tomorrow'}: high ${Math.round(FC.median_f)}°F <tspan font-weight="500">(${Math.round(lo)}–${Math.round(hi)})</tspan> → thermals ~${r100(tm)} ft <tspan font-weight="500">(${r100(tl)}–${r100(tHiTop)})</tspan></text>`);
   }
-  // legend row
   const lg = [['Temperature', C.temp, 2.4], ['Dew point', C.dew, 2.4], ['Cloudbase', C.cloud, 2.4], ['Thermals', C.thermal, 1.6]]
     .concat(FC ? [['Forecast high', FCOL, 3.2]] : []);
   let lx = P1.x0;
   for (const [name, c, w] of lg) {
-    o.push(`<path d="M${lx} 45h16" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>`);
-    o.push(`<text x="${lx + 22}" y="49" fill="${INK}">${name}</text>`);
+    o.push(`<path d="M${lx} 45h16" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/><text x="${lx + 22}" y="49" fill="${INK}">${name}</text>`);
     lx += 30 + name.length * 6.3;
   }
-  if (FC) { o.push(`<rect x="${lx}" y="40" width="16" height="10" rx="2" fill="${FCOL}" fill-opacity="0.22"/><text x="${lx + 22}" y="49" fill="${INK}">Likely range</text>`); lx += 100; }
-  if (A.cb) o.push(`<text x="${P3.x1}" y="49" text-anchor="end" font-weight="600" fill="${C.cloud}">Cloudbase ${r100(A.cb.z)} ft · trigger ${Math.round(A.cb.trigger)}°F</text>`);
+  if (FC) { o.push(`<rect x="${lx}" y="40" width="16" height="10" rx="2" fill="${FCOL}" fill-opacity="0.22"/><text x="${lx + 22}" y="49" fill="${INK}">Likely range</text>`); lx += 104; }
+  if (invs.length) { o.push(`<rect x="${lx}" y="40" width="16" height="10" rx="2" fill="${INVC}" fill-opacity="0.16"/><text x="${lx + 22}" y="49" fill="${INK}">Inversion</text>`); lx += 84; }
+  const facts = [];
+  if (A.cb) facts.push(`<tspan fill="${C.cloud}" font-weight="600">Cloudbase ${r100(A.cb.z)} ft</tspan> (trigger ${Math.round(A.cb.trigger)}°F)`);
+  for (const v of invs.slice(0, 2)) facts.push(`<tspan fill="${INVC}" font-weight="600">Inversion ${r100(v.a)}–${r100(v.b)} ft</tspan> (+${Math.round(v.dt)}°F)`);
+  o.push(`<text x="${P1.x0}" y="70" fill="${INK}">${facts.join('<tspan fill="#9ca3af" dx="10">·</tspan><tspan dx="10"></tspan>')}</text>`);
 
-  // ---- panels ----
-  const panel = (P, xt, xlabel, title, first) => {
-    const xa = P.d0 || P.x0;
-    o.push(`<rect x="${P.x0}" y="${top}" width="${P.x1 - P.x0}" height="${bot - top}" rx="6" fill="${PANEL}" stroke="${EDGE}"/>`);
-    if (P.gutter) o.push(`<path d="M${xa} ${top}V${bot}" stroke="${EDGE}"/>`);
-    for (let z = 3; z < ZMAX; z += 3) o.push(`<path d="M${xa} ${f(Y(z))}H${P.x1}" stroke="${GRID}"/>`);
-    for (const t of xt.slice(1, -1)) o.push(`<path d="M${f(X(P, t))} ${top}V${bot}" stroke="${GRID}"/>`);
-    for (const t of xt) o.push(`<text x="${f(X(P, t))}" y="${bot + 28}" text-anchor="middle">${t}</text>`);
-    if (first) for (let z = 0; z <= ZMAX; z += 3) o.push(`<text x="${P.x0 - 8}" y="${f(Y(z) + 4)}" text-anchor="end">${z}${z === ZMAX ? 'k' : ''}</text>`);
-    o.push(`<text x="${f((xa + P.x1) / 2)}" y="${bot + 45}" text-anchor="middle">${xlabel}</text>`);
-    if (title) o.push(`<text x="${P.x0 + 2}" y="${top - 9}" font-size="12.5" font-weight="600" fill="${INK}">${title}</text>`);
-  };
-  panel(P1, [-20, 0, 20, 40, 60, 80, 100], 'Temperature (°F)', 'Temperature &amp; thermals', true);
-  if (!HM) panel(P2, [-2, 0, 2, 4, 6], 'Lapse (°F / 1000 ft)', 'Lapse rate', false);
-  if (!HM) panel(P3, P3.hi <= 30 ? [0, 10, 20, 30] : Array.from({ length: P3.hi / 10 + 1 }, (_, i) => i * 10), 'Wind speed (kt)', 'Wind', false);
-  o.push(`<text x="13" y="${f((top + bot) / 2)}" transform="rotate(-90 13 ${f((top + bot) / 2)})" text-anchor="middle">Altitude MSL (1000 ft)</text>`);
+  // ---- main panel ----
+  o.push(`<rect x="${P1.x0}" y="${top}" width="${P1.x1 - P1.x0}" height="${bot - top}" rx="6" fill="${PANEL}" stroke="${EDGE}"/>`);
+  const zstep = ZMAX <= 12 ? 1 : 2;
+  for (let z = zstep; z < ZMAX; z += zstep) o.push(`<path d="M${P1.x0} ${f(Y(z))}H${P1.x1}" stroke="${GRID}"/>`);
+  for (let t = XLO + 10; t < XHI; t += 10) o.push(`<path d="M${f(X(t))} ${top}V${bot}" stroke="${GRID}"/>`);
+  for (let t = XLO; t <= XHI; t += 10) o.push(`<text x="${f(X(t))}" y="${bot + 30}" text-anchor="middle">${t}</text>`);
+  for (let z = 0; z <= ZMAX; z += zstep) o.push(`<text x="${P1.x0 - 8}" y="${f(Y(z) + 4)}" text-anchor="end">${z}${z ? 'k' : ''}</text>`);
+  o.push(`<text x="${f((P1.x0 + P1.x1) / 2)}" y="${bot + 47}" text-anchor="middle">Temperature (°F)</text>`);
+  o.push(`<text x="13" y="${f((top + bot) / 2)}" transform="rotate(-90 13 ${f((top + bot) / 2)})" text-anchor="middle">Altitude MSL (ft)</text>`);
 
-  // ---- panel 1 ----
-  const G = 5.4, z0 = A.z0;
+  // inversions: shaded bands
+  for (const v of invs) o.push(`<rect x="${P1.x0}" y="${f(Y(v.b))}" width="${P1.x1 - P1.x0}" height="${f(Math.max(2, Y(v.a) - Y(v.b)))}" fill="${INVC}" fill-opacity="0.12"/>`);
+
   if (FC) {
-    const lo = Math.min(FC.p10_f, FC.median_f), hi = Math.max(FC.p90_f, FC.median_f);
-    const tLo = A.topFor(lo), tHi = A.topFor(hi);
-    const band = [[hi, z0], [hi - G * (tHi - z0), tHi]];
-    for (let z = tHi - 0.05; z > tLo; z -= 0.05) band.push([interp(lv, 't', z) + A.EXCESS, z]);
+    const tLo = A.topFor(lo);
+    const band = [[hi, z0], [hi - G * (tHiTop - z0), tHiTop]];
+    for (let z = tHiTop - 0.02; z > tLo; z -= 0.02) band.push([interp(lv, 't', z) + A.EXCESS, z]);
     band.push([lo - G * (tLo - z0), tLo], [lo, z0]);
-    o.push(`<polygon clip-path="url(#c0)" points="${band.map(([t, z]) => f(X(P1, t)) + ',' + f(Y(z))).join(' ')}" fill="${FCOL}" fill-opacity="0.22"/>`);
+    o.push(`<polygon clip-path="url(#c0)" points="${band.map(([t, z]) => f(X(t)) + ',' + f(Y(z))).join(' ')}" fill="${FCOL}" fill-opacity="0.2"/>`);
   }
-  const strip = [];   // thermal start temperatures, in a strip just under the frame
+  const strip = [];
   for (const th of A.thermals) {
-    if (FC && Math.abs(th.ts - FC.median_f) < 2.5) continue;
-    o.push(poly([[X(P1, th.ts), Y(th.z0)], [X(P1, th.ttop), Y(th.top)]], C.thermal, 'c0', { w: 1.5, op: 0.85 }));
-    const tx = X(P1, th.ttop), ty = Y(th.top);
-    if (ty > top + 4) o.push(`<circle cx="${f(tx)}" cy="${f(ty)}" r="2.4" fill="${C.thermal}"/>`);
+    if (FC && Math.abs(th.ts - FC.median_f) < 2) continue;
+    o.push(poly([[X(th.ts), Y(th.z0)], [X(th.ttop), Y(th.top)]], C.thermal, { w: 1.6, op: 0.9 }));
+    if (th.top < ZMAX) o.push(`<circle cx="${f(X(th.ttop))}" cy="${f(Y(th.top))}" r="2.8" fill="${C.thermal}"/>`);
     strip.push([th.ts, false]);
   }
+  const tags = [];   // right-axis tags: [z, text, colour]
   if (A.cb) {
     const pts = [];
-    for (let z = z0; z < A.cb.z; z += 0.1) pts.push([X(P1, A.parcelTd(z)), Y(z)]);
-    pts.push([X(P1, A.cb.t), Y(A.cb.z)]);
-    o.push(poly(pts, C.cloud, 'c0', { simp: 0.6, w: 1.6 }));
-    o.push(poly([[P1.x0, Y(A.cb.z)], [P1.x1, Y(A.cb.z)]], C.cloud, 'c0', { w: 1.3, dash: '6 4' }));
-    o.push(`<circle cx="${f(X(P1, A.cb.t))}" cy="${f(Y(A.cb.z))}" r="3.2" fill="#fff" stroke="${C.cloud}" stroke-width="1.6"/>`);
-    // tag on the axis instead of text on the plot
-    const yc = Y(A.cb.z);
-    o.push(`<rect x="${P1.x1 + 1}" y="${f(yc - 7)}" width="16" height="14" rx="3" fill="${C.cloud}"/><text x="${P1.x1 + 9}" y="${f(yc + 3.5)}" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">CB</text>`);
+    for (let z = z0; z < A.cb.z; z += 0.05) pts.push([X(A.parcelTd(z)), Y(z)]);
+    pts.push([X(A.cb.t), Y(A.cb.z)]);
+    o.push(poly(pts, C.cloud, { simp: 0.5, w: 1.8 }));
+    o.push(poly([[P1.x0, Y(A.cb.z)], [P1.x1, Y(A.cb.z)]], C.cloud, { w: 1.4, dash: '7 5' }));
+    o.push(`<circle cx="${f(X(A.cb.t))}" cy="${f(Y(A.cb.z))}" r="3.6" fill="#fff" stroke="${C.cloud}" stroke-width="1.8"/>`);
+    if (A.cb.z <= ZMAX) tags.push([A.cb.z, 'CB ' + k1(A.cb.z), C.cloud]);
   }
-  o.push(poly(L.map(l => [X(P1, l.td), Y(l.z)]), C.dew, 'c0', { simp: dense ? 1.2 : 0, w: 2.2 }));
-  o.push(poly(L.map(l => [X(P1, l.t), Y(l.z)]), C.temp, 'c0', { simp: dense ? 1.2 : 0, w: 2.2 }));
+  o.push(poly(L.map(l => [X(l.td), Y(l.z)]), C.dew, { simp: dense ? 1.6 : 0, w: 2.4 }));
+  o.push(poly(L.map(l => [X(l.t), Y(l.z)]), C.temp, { simp: dense ? 1.6 : 0, w: 2.4 }));
   if (FC) {
     const tm = A.topFor(FC.median_f);
-    o.push(poly([[X(P1, FC.median_f), Y(z0)], [X(P1, FC.median_f - G * (tm - z0)), Y(tm)]], FCOL, 'c0', { w: 3.4 }));
-    o.push(`<circle cx="${f(X(P1, FC.median_f - G * (tm - z0)))}" cy="${f(Y(tm))}" r="4.2" fill="${FCOL}" stroke="#fff" stroke-width="1.6"/>`);
-    // thermal-top tag on the left axis, like the cloudbase tag
+    o.push(poly([[X(FC.median_f), Y(z0)], [X(FC.median_f - G * (tm - z0)), Y(tm)]], FCOL, { w: 3.6 }));
+    o.push(`<circle cx="${f(X(FC.median_f - G * (tm - z0)))}" cy="${f(Y(tm))}" r="4.6" fill="${FCOL}" stroke="#fff" stroke-width="1.8"/>`);
+    tags.push([tm, 'Top ' + k1(tm), FCOL]);
     strip.push([FC.median_f, true]);
   }
-  // start-temperature strip: skip labels that would collide
-  strip.sort((a, b) => (b[1] - a[1]) || ((Math.round(a[0]) % 10 ? 1 : 0) - (Math.round(b[0]) % 10 ? 1 : 0)));
+  for (const v of invs) tags.push([(v.a + v.b) / 2, 'INV', INVC]);
+  // start-temperature labels under the frame
+  strip.sort((a, b) => b[1] - a[1]);
   const used = [];
   for (const [t, bold] of strip) {
-    const x = X(P1, t);
-    if (x < P1.x0 + 6 || x > P1.x1 - 6) continue;
-    if (used.some(u => Math.abs(u - x) < 18)) continue;
+    const x = X(t);
+    if (x < P1.x0 + 8 || x > P1.x1 - 8 || used.some(u => Math.abs(u - x) < 22)) continue;
     used.push(x);
-    o.push(`<text x="${f(x)}" y="${bot + 13}" text-anchor="middle" font-size="${bold ? 11.5 : 10}" font-weight="${bold ? 800 : 600}" fill="${bold ? FCOL : '#d08a00'}">${Math.round(t)}</text>`);
+    o.push(`<text x="${f(x)}" y="${bot + 14}" text-anchor="middle" font-size="${bold ? 12 : 10.5}" font-weight="${bold ? 800 : 600}" fill="${bold ? FCOL : '#d08a00'}">${Math.round(t)}°</text>`);
+  }
+  // right-axis tags, nudged apart
+  tags.sort((a, b) => b[0] - a[0]);
+  let lastY = -1e9;
+  for (const [z, txt, c] of tags) {
+    const yz = Y(z); let y = Math.max(yz, lastY + 17); lastY = y;
+    const w = txt.length * 6.4 + 10;
+    o.push(`<path d="M${P1.x1} ${f(yz)}L${P1.x1 + 5} ${f(y)}" stroke="${c}" stroke-width="1.2"/>`);
+    o.push(`<rect x="${P1.x1 + 5}" y="${f(y - 7.5)}" width="${f(w)}" height="15" rx="3.5" fill="${c}"/>`);
+    o.push(`<text x="${f(P1.x1 + 5 + w / 2)}" y="${f(y + 3.8)}" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">${txt}</text>`);
   }
 
-  if (HM) heatmapPanel(o, lv, A, FC, { x0: 380, x1: 780, top, bot, Y, f, INK, MUTED, EDGE, PANEL, GRID, C, r100 });
-  else {
-  // ---- panel 2: lapse rate, references labelled above the panel ----
-  for (const [v, name] of [[3.6, 'std'], [5.4, 'dry']]) {
-    o.push(`<path d="M${f(X(P2, v))} ${top}V${bot}" stroke="${MUTED}" stroke-width="1" stroke-dasharray="3 3" opacity="0.6"/>`);
-    o.push(`<text x="${f(X(P2, v))}" y="${top - 9}" text-anchor="middle" font-size="9.5">${name}</text>`);
-  }
-  o.push(poly(A.lapse.filter(p => p.z <= ZMAX + 1).map(p => [X(P2, p.v), Y(p.z)]), C.lapse, 'c1', { w: 1.8 }));
-
-  // ---- panel 3: wind, labels in their own column ----
-  const W3 = L.filter(l => isFinite(l.spd));
-  o.push(poly(W3.map(l => [X(P3, l.spd), Y(l.z)]), C.wind, 'c2', { simp: dense ? 1.2 : 0, w: 2 }));
-  let lab = W3.filter(l => isFinite(l.dir) && l.z <= ZMAX - 0.4);
-  if (dense) { const t = []; for (const l of lab) if (!t.length || l.z - t[t.length - 1].z >= 1.0) t.push(l); lab = t; }
-  let lastY = 1e9;
-  for (const l of lab) {
+  // ---- wind as text ----
+  o.push(`<text x="${WC.x0}" y="${top - 9}" font-size="12.5" font-weight="600" fill="${INK}">Wind</text>`);
+  let W3 = L.filter(l => isFinite(l.spd) && isFinite(l.dir) && l.z <= ZMAX);
+  const step = ZMAX <= 12 ? 0.5 : 1.0;
+  if (dense) { const t = []; for (const l of W3) if (!t.length || l.z - t[t.length - 1].z >= step) t.push(l); W3 = t; }
+  let wy = 1e9;
+  for (const l of W3) {
     const y = Y(l.z);
-    if (lastY - y < 12) continue;
-    lastY = y;
-    const dir = Math.round(l.dir) % 360 || 360, ax = P3.x0 + 11;
-    o.push(`<g transform="translate(${ax} ${f(y)}) rotate(${(dir + 180) % 360})"><path d="M0 5V-5M-3 -2L0 -5L3 -2" fill="none" stroke="${INK}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></g>`);
-    o.push(`<text x="${ax + 9}" y="${f(y + 4)}" font-size="10.5" fill="${INK}">${String(dir).padStart(3, '0')}<tspan fill="${MUTED}">@</tspan>${Math.round(l.spd)}</text>`);
-  }
+    if (wy - y < 15) continue;
+    wy = y;
+    const dir = Math.round(l.dir) % 360 || 360, sp = Math.round(l.spd);
+    const col = sp >= 20 ? '#dc2626' : sp >= 15 ? '#ea580c' : INK;
+    o.push(`<path d="M${WC.x0 - 8} ${f(y)}h4" stroke="${EDGE}"/>`);
+    o.push(`<g transform="translate(${WC.x0 + 6} ${f(y)}) rotate(${(dir + 180) % 360})"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="${col}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>`);
+    o.push(`<text x="${WC.x0 + 16}" y="${f(y + 4)}" font-size="11.5" font-weight="650" fill="${col}">${sp}<tspan font-size="9.5" font-weight="500" fill="${MUTED}" dx="2">kt</tspan><tspan font-size="10.5" font-weight="500" fill="${MUTED}" dx="6">${String(dir).padStart(3, '0')}°</tspan></text>`);
   }
   o.push('</svg>');
   return { svg: o.join('\n'), analysis: A };
