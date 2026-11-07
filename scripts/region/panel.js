@@ -115,16 +115,15 @@ function panelSVG(data, di = 0) {
       o.push(`<text x="${f(X(k) + cw / 2)}" y="${y + rh / 2 + 4.5}" text-anchor="middle" font-size="12.5" fill="${v >= 3 ? '#fff' : INK}">${v.toFixed(1)}</text>`);
     });
   });
-  // quiet reference lines: the region's launches, or its peak
-  let prevFt = -1e9, lx = L + 6;
-  marks.forEach(m => {
-    if (m.ft < zmin || m.ft > zmax) return;
-    const y = yG + (zmax - m.ft) / 500 * rh;
-    lx = m.ft - prevFt < 300 ? lx : L + 6;
-    const lab = `${m.kind === 'peak' ? '▲ ' : ''}${m.name} ${m.ft.toLocaleString('en-US')}'`;
-    o.push(`<path d="M${L} ${f(y)}H${W - R}" stroke="#b5651d" stroke-width="1.2" stroke-dasharray="6 5" opacity=".55"/>`);
-    o.push(`<text x="${f(lx)}" y="${f(y - 4)}" font-size="11" font-weight="600" fill="#9a5418" opacity=".85" paint-order="stroke" stroke="#fff" stroke-width="3" stroke-linejoin="round">${lab}</text>`);
-    lx += lab.length * 6.3 + 14; prevFt = m.ft;
+  // quiet reference lines: the region's launches, or its peak (close ones share one label, at the right where evenings are empty)
+  const ms = marks.filter(m => m.ft >= zmin && m.ft <= zmax).sort((p, q) => p.ft - q.ft);
+  const yOf = ft => yG + (zmax - ft) / 500 * rh;
+  ms.forEach(m => o.push(`<path d="M${L} ${f(yOf(m.ft))}H${W - R}" stroke="#b5651d" stroke-width="1.2" stroke-dasharray="6 5" opacity=".55"/>`));
+  const groups = [];
+  ms.forEach(m => { const g = groups[groups.length - 1]; if (g && m.ft - g[g.length - 1].ft < 300) g.push(m); else groups.push([m]); });
+  groups.forEach(g => {
+    const lab = g.map(m => `${m.kind === 'peak' ? '▲ ' : ''}${m.name} ${m.ft.toLocaleString('en-US')}'`).join(' · ');
+    o.push(`<text x="${W - R - 6}" text-anchor="end" y="${f(yOf(g[g.length - 1].ft) - 4)}" font-size="11" font-weight="600" fill="#9a5418" opacity=".85" paint-order="stroke" stroke="#fff" stroke-width="3" stroke-linejoin="round">${lab}</text>`);
   });
   // time axis (labels on the grid lines, every hour)
   cols.forEach((c, k) => { if (c.t % 1 === 0) o.push(`<text x="${f(X(k))}" y="${yB + 18}" text-anchor="middle" font-size="13">${tlab(c.t)}${c.t === 12 ? '' : ''}</text>`); });
