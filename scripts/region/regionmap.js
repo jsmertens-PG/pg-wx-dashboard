@@ -161,6 +161,17 @@ function mapSVG(D, day = 0, radar = null) {
   }
   o.push(`</g>`);
   for (const rg of regs) o.push(`<polygon points="${rg.poly.map(P).join(' ')}" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-opacity=".9"/>`);
+  // mountains over the colours: a darker relief tint along every range, then the range names
+  const rr = rng(11);
+  o.push(`<g fill="#4a3f2c" opacity=".17" filter="url(#relief)">`);
+  for (const [spine, size, n] of RANGES) {
+    for (let i = 0; i <= n * 2; i++) {
+      const t = i / (n * 2), seg = t * (spine.length - 1), k = Math.min(spine.length - 2, Math.floor(seg)), u = seg - k;
+      const la = spine[k][0] + (spine[k + 1][0] - spine[k][0]) * u, lo = spine[k][1] + (spine[k + 1][1] - spine[k][1]) * u;
+      o.push(`<circle cx="${f(fx(lo))}" cy="${f(fy(la))}" r="${f(size * (1.25 + rr() * 0.5))}"/>`);
+    }
+  }
+  o.push(`</g>`);
   // priority: launches, then towns, then route labels, then summit labels (lower ones are skipped if they would touch)
   for (const [n, la, lo, side] of SITES) {
     const x = fx(lo), y = fy(la), lw = tw(n, 11.5, 0.6) + 12, px = side === 'left' ? x - 12 - lw : x + 12;
@@ -188,7 +199,7 @@ function mapSVG(D, day = 0, radar = null) {
     const sw = tw(n + ' ' + ft.toLocaleString('en-US') + "'", 9);
     if (clashes(x + 6, y + 3, sw, 9, 'start', ['site', 'town', 'shield']) || clashes(x, y + 2, 9, 9, 'middle', ['site', 'town', 'shield'])) continue;
     box('summit', x + 6, y + 3, sw, 9); box('summit', x, y + 2, 9, 9, 0, 'middle');
-    o.push(`<path d="M${f(x)} ${f(y - 4)} l3.6 6.2 h-7.2 z" fill="#8b8579"/>`);
+    o.push(`<path d="M${f(x)} ${f(y - 4.5)} l4.2 7 h-8.4 z" fill="#5b5141"/>`);
     o.push(`<text x="${f(x + 6)}" y="${f(y + 3)}" font-size="9" fill="#6b6457" stroke="${LAND}" stroke-width="2.5" paint-order="stroke">${n} ${ft.toLocaleString('en-US')}′</text>`);
   }
   // towns
@@ -205,6 +216,22 @@ function mapSVG(D, day = 0, radar = null) {
       <path d="M${f(x - 5)} ${f(y - 6)} q5 -5 10 0 M${f(x - 4.5)} ${f(y - 6)} L${f(x)} ${f(y - 1)} L${f(x + 4.5)} ${f(y - 6)}" fill="none" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></g>`);
     o.push(`<g filter="url(#shadow)"><rect x="${f(px)}" y="${f(y - 6)}" width="${f(lw)}" height="17" rx="8.5" fill="#fff"/></g>`);
     o.push(`<text x="${f(px + lw / 2)}" y="${f(y + 6.3)}" text-anchor="middle" font-size="11.5" font-weight="700" fill="#9a3412">${n}</text>`);
+  }
+  // range names (atlas style); a rotated label is checked with its bounding box
+  const RANGE_NAMES = [['SANTA ANA MTNS', 33.66, -117.52, -58], ['SAN BERNARDINO MTNS', 34.30, -116.93, -4], ['SAN JACINTO MTNS', 33.70, -116.63, -62],
+    ['SANTA ROSA MTNS', 33.47, -116.31, -42], ['LAGUNA MTNS', 32.70, -116.41, -80], ['PALOMAR MTN', 33.40, -116.93, -30], ['CUYAMACA MTNS', 33.00, -116.53, -70]];
+  const OFFS = [[0, 0]];
+  for (const d of [0.03, 0.06, 0.09, 0.12]) for (const [a1, b1] of [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, -1], [1, -1], [-1, 1]]) OFFS.push([a1 * d, b1 * d]);
+  for (const [n, la0, lo0, rot] of RANGE_NAMES) {
+    const w = tw(n, 10, 0.62, 2.2), h = 10, a = Math.abs(rot) * Math.PI / 180;
+    const bw = w * Math.cos(a) + h * Math.sin(a), bh = w * Math.sin(a) + h * Math.cos(a);
+    const spot = OFFS.map(([dla, dlo]) => [fx(lo0 + dlo), fy(la0 + dla)]).find(([x, y]) =>
+      x - bw / 2 > 6 && x + bw / 2 < W - 6 && y - bh / 2 > 6 && y + bh / 2 < H - 6 &&
+      !clashes(x, y + bh * 0.35, bw, bh, 'middle', ['site', 'town', 'shield', 'summit', 'title', 'compass', 'range']));
+    if (!spot) continue;
+    const [x, y] = spot;
+    box('range', x, y + bh * 0.35, bw, bh, 0, 'middle');
+    o.push(`<text x="${f(x)}" y="${f(y + 3.5)}" transform="rotate(${rot} ${f(x)} ${f(y)})" text-anchor="middle" font-size="10" font-style="italic" font-weight="600" letter-spacing="2.2" fill="#5b5141" stroke="#fff" stroke-width="2.5" stroke-opacity=".6" paint-order="stroke">${n}</text>`);
   }
   // tap targets: the whole region (names live in the panel that opens; the map shows colour only)
   for (const rg of regs) o.push(`<g class="rg" data-id="${rg.id}" style="cursor:pointer"><polygon points="${rg.poly.map(P).join(' ')}" fill="#000" fill-opacity="0"/></g>`);
