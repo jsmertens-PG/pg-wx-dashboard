@@ -3,7 +3,7 @@
 // panelSVG(data, dayIndex) -> SVG string; panelText(data, dayIndex) -> HTML. data = data/region/sd.json
 
 const PANEL_CLIMB = [[0, '#fde3bd'], [0.5, '#fff44f'], [1, '#14ef8f'], [1.5, '#62c9a4'], [2, '#16cbd3'], [2.5, '#6c98ec'], [3, '#1f3bff'], [3.5, '#0b1aa8']];
-const PANEL_WIND = [[0, '#c9e8f5'], [4, '#a6def0'], [8, '#86e0e6'], [12, '#7fd4c0'], [16, '#93c99d'], [20, '#b7c882'], [25, '#e2bd6a'], [30, '#e8876b']];
+const PANEL_WIND = [[0, '#cfeaf6'], [5, '#9fdcec'], [10, '#93d9a6'], [15, '#f4dc45'], [20, '#f07f1f'], [25, '#df3f2a'], [30, '#a51d18']];   // 15 yellow, 20 deep orange
 const pick = (scale, v) => { let c = scale[0][1]; for (const [k, col] of scale) if (v >= k - 1e-9) c = col; return c; };
 const OKTA = ['#ffffff', '#ececec', '#e0e0e0', '#cdcdcd', '#bdbdbd', '#a3a3a3', '#8c8c8c', '#727272', '#5c5c5c'];
 
@@ -135,7 +135,7 @@ function panelSVG(data, di = 0) {
   // wind key, right above the wind rows
   let wx = W - R - PANEL_WIND.length * 30;
   o.push(`<text x="${wx - 6}" y="${yW - 5}" text-anchor="end" font-size="10.5" fill="${MUTED}">wind mph</text>`);
-  PANEL_WIND.forEach(([v, c]) => { o.push(`<rect x="${wx}" y="${yW - 15}" width="29" height="12" rx="2" fill="${c}"/><text x="${wx + 14.5}" y="${yW - 5}" text-anchor="middle" font-size="9" fill="${INK}">${v}</text>`); wx += 30; });
+  PANEL_WIND.forEach(([v, c]) => { o.push(`<rect x="${wx}" y="${yW - 15}" width="29" height="12" rx="2" fill="${c}"/><text x="${wx + 14.5}" y="${yW - 5}" text-anchor="middle" font-size="9" fill="${v >= 25 ? '#fff' : INK}">${v}</text>`); wx += 30; });
   o.push('</svg>');
   return o.join('\n');
 }
