@@ -1,7 +1,7 @@
 {
   "title": "nkx_1200Z_07_Nov_2026",
   "source": "https://weather.uwyo.edu/wsgi/sounding?datetime=2026-11-07%2012:00:00&id=72293&type=TEXT:LIST&src=UNKNOWN",
-  "fetched": "2026-11-07T17:36Z",
+  "fetched": "2026-11-07T18:00Z",
   "surface_ft": 440,
   "surface_temp_f": 58,
   "surface_dewpoint_f": 38,
@@ -24,7 +24,7 @@
     "lon": -117.12,
     "window": "10:00-17:00 local",
     "source": "https://open-meteo.com/en/docs/ensemble-api",
-    "fetched": "2026-11-07T17:36Z",
+    "fetched": "2026-11-07T18:00Z",
     "thermal_tops": {
       "median_ft": 6300,
       "low_ft": 2500,

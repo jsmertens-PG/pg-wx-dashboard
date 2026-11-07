@@ -5,7 +5,8 @@
   "lon": -117.12,
   "obs": "2026-11-07T12:00Z",
   "file": "stations/NKX_latest.txt",
-  "levels": 3828
+  "levels": 3828,
+  "v": 2
  },
  "VBG": {
   "name": "Vandenberg",
@@ -13,7 +14,8 @@
   "lon": -120.57,
   "obs": "2026-11-07T12:00Z",
   "file": "stations/VBG_latest.txt",
-  "levels": 105
+  "levels": 105,
+  "v": 2
  },
  "VEF": {
   "name": "Las Vegas",
@@ -21,6 +23,7 @@
   "lon": -115.18,
   "obs": "2026-11-07T12:00Z",
   "file": "stations/VEF_latest.txt",
-  "levels": 5344
+  "levels": 5344,
+  "v": 2
  }
 }

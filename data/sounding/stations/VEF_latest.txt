@@ -1,5 +1,6 @@
 # source: https://weather.uwyo.edu/wsgi/sounding?datetime=2026-11-07%2012:00:00&id=72388&type=TEXT:LIST&src=UNKNOWN
-# fetched: 2026-11-07T17:36Z
+# fetched: 2026-11-07T18:00Z
+72388 VEF Las Vegas Observations at 12Z 07 Nov 2026
 
 
 
