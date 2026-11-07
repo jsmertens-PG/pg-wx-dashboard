@@ -56,8 +56,9 @@ const TOWNS = [['San Diego', 32.72, -117.16, 3], ['Tijuana', 32.52, -117.03, 2],
   ['Lake Elsinore', 33.68, -117.33, 1], ['Riverside', 33.95, -117.40, 2], ['San Bernardino', 34.11, -117.29, 2], ['Lake Arrowhead', 34.25, -117.19, 1], ['Hemet', 33.75, -116.97, 2], ['Borrego Springs', 33.26, -116.37, 1], ['Alpine', 32.84, -116.77, 1]];
 const SITES = [['Torrey Pines', 32.890, -117.252], ['Little Black', 32.988, -117.122], ['Blossom', 32.877, -116.848], ['Otay', 32.574, -116.894],
   ["Whale's V", 32.645, -116.887, 'left'], ['Laguna', 32.86, -116.43], ['Elsinore', 33.630, -117.371], ['Soboba', 33.822, -116.959], ['Marshall', 34.210, -117.303, 'left']];
+const LABEL_LEFT = { desert: true };
 const LABEL_AT = { coast: [32.99, -117.58], north: [33.33, -117.24], east: [32.99, -116.80], south: [32.71, -116.83],
-  mountains: [33.22, -116.80], desert: [32.98, -116.40], inland_empire: [33.88, -117.33], marshall: [34.05, -117.56] };
+  mountains: [33.22, -116.80], desert: [32.98, -116.26], inland_empire: [33.88, -117.33], marshall: [34.05, -117.56] };
 
 // the radar sites that colour each region (best of them that day); regions without a launch use their own score
 const REGION_SITES = { coast: ['torrey'], north: ['lb'], east: ['blossom'], south: ['otay', 'whalesv'], mountains: ['lagunahorse'],
@@ -107,7 +108,7 @@ function mapSVG(D, day = 0, radar = null) {
     if (lo < -116.42 + (la - 32.6) * 0.12) continue;
     o.push(`<circle cx="${f(fx(lo))}" cy="${f(fy(la))}" r="${(0.5 + r() * 0.7).toFixed(2)}" fill="${INK2}" opacity=".45"/>`);
   }
-  o.push(`<text x="${f(fx(-116.24))}" y="${f(fy(33.30))}" font-size="17" fill="${INK2}" font-family="'IM Fell English SC', Georgia, serif" text-anchor="middle" letter-spacing="2" transform="rotate(-8 ${f(fx(-116.24))} ${f(fy(33.30))})">Anza-Borrego</text>`);
+  o.push(`<text x="${f(fx(-116.36))}" y="${f(fy(33.33))}" font-size="17" fill="${INK2}" font-family="'IM Fell English SC', Georgia, serif" text-anchor="middle" letter-spacing="2" transform="rotate(-8 ${f(fx(-116.36))} ${f(fy(33.33))})">Anza-Borrego</text>`);
   // ---- freeways: double pencil lines with a little shield
   for (const [num, pts, at] of ROADS) {
     const d = pts.map(P).join(' ');
@@ -142,7 +143,8 @@ function mapSVG(D, day = 0, radar = null) {
     const x = fx(lo), y = fy(la);
     o.push(sz >= 3 ? `<g filter="url(#pencil)"><rect x="${f(x - 6)}" y="${f(y - 5)}" width="12" height="9" fill="${PAPER}" stroke="${INK}"/><path d="M${f(x - 6)} ${f(y - 5)}v-4h3v2h2v-2h2v2h2v-2h3v4" fill="none" stroke="${INK}"/></g>`
       : `<circle cx="${f(x)}" cy="${f(y)}" r="${sz + 1.5}" fill="${PAPER}" stroke="${INK}" stroke-width="1.2"/><circle cx="${f(x)}" cy="${f(y)}" r="1.2" fill="${INK}"/>`);
-    o.push(`<text x="${f(x + 8)}" y="${f(y + 5)}" font-size="${12 + sz * 2}" fill="${INK}" stroke="${PAPER}" stroke-width="3" paint-order="stroke">${n}</text>`);
+    const left = x > W - 130;
+    o.push(`<text x="${f(left ? x - 8 : x + 8)}" y="${f(y + 5)}" text-anchor="${left ? 'end' : 'start'}" font-size="${12 + sz * 2}" fill="${INK}" stroke="${PAPER}" stroke-width="3" paint-order="stroke">${n}</text>`);
   }
   for (const [n, la, lo, side] of SITES) {
     const x = fx(lo), y = fy(la);
@@ -156,8 +158,8 @@ function mapSVG(D, day = 0, radar = null) {
     const v = rate(rg, dd), x = fx(lo), y = fy(la), col = v != null ? scoreCol(v) : '#9ca3af';
     o.push(`<g class="rg" data-id="${rg.id}" style="cursor:pointer"><polygon points="${rg.poly.map(P).join(' ')}" fill="#000" fill-opacity="0"/>
       <circle cx="${f(x)}" cy="${f(y)}" r="7" fill="${col}" stroke="${INK}" stroke-width="1.4" filter="url(#pencil)"/>
-      <text x="${f(x + 12)}" y="${f(y - 1)}" font-size="15" font-family="'IM Fell English SC', Georgia, serif" fill="${INK}" stroke="${PAPER}" stroke-width="3.5" paint-order="stroke" letter-spacing=".5">${rg.name}</text>
-      <text x="${f(x + 12)}" y="${f(y + 14)}" font-size="14.5" fill="${INK}" stroke="${PAPER}" stroke-width="3" paint-order="stroke">${s ? `${s.climb.toFixed(1)} m/s · ${(s.top_ft / 1000).toFixed(1)}k${s.cu && s.base_ft ? ' · cu' : ''}` : 'no thermals'}</text></g>`);
+      <text x="${f(LABEL_LEFT[rg.id] ? x - 12 : x + 12)}" y="${f(y - 1)}" text-anchor="${LABEL_LEFT[rg.id] ? 'end' : 'start'}" font-size="15" font-family="'IM Fell English SC', Georgia, serif" fill="${INK}" stroke="${PAPER}" stroke-width="3.5" paint-order="stroke" letter-spacing=".5">${rg.name}</text>
+      <text x="${f(LABEL_LEFT[rg.id] ? x - 12 : x + 12)}" y="${f(y + 14)}" text-anchor="${LABEL_LEFT[rg.id] ? 'end' : 'start'}" font-size="14.5" fill="${INK}" stroke="${PAPER}" stroke-width="3" paint-order="stroke">${s ? `${s.climb.toFixed(1)} m/s · ${(s.top_ft / 1000).toFixed(1)}k${s.cu && s.base_ft ? ' · cu' : ''}` : 'no thermals'}</text></g>`);
   }
   // ---- cartouche, compass rose, scale
   o.push(`<g transform="translate(18 ${H - 200})" filter="url(#pencil)"><rect width="232" height="58" rx="4" fill="${PAPER}" stroke="${INK}" stroke-width="1.5"/><rect x="4" y="4" width="224" height="50" rx="3" fill="none" stroke="${INK}" stroke-width=".7"/></g>`);
