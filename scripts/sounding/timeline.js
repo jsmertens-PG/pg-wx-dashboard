@@ -55,21 +55,44 @@ function timelineSVG({ now = new Date(), shown = null, fetched = null } = {}) {
     .tl-rise { animation: tlrise 6s linear infinite; }
     @media (prefers-reduced-motion: reduce) { .tl-bob, .tl-rise { animation: none } }
   </style>`);
+  // generic F-35-style side profile, nose left, ~62 units long
+  const jet = (x, y, sc, col) => `<g transform="translate(${x} ${y}) scale(${sc})">
+      <path d="M48 3 L53 -7 L57.5 -7 L57 3 Z" fill="${col}"/>
+      <path d="M0 7 Q7 3.4 17 3 L23 1.8 Q28 -0.4 33 1.8 L44 3 L57 3.2 L62 4.6 L62 7.6 L57 8.6 L9 9.4 Q3 9 0 7 Z" fill="${col}"/>
+      <path d="M15.5 3.3 Q21 -0.6 27.5 1.9 L23.5 3.4 Z" fill="#475569"/>
+      <path d="M27 7.2 L45 11.6 L51 11.6 L47 7.4 Z" fill="${col}" opacity="0.85"/>
+      <path d="M52 6.2 L61 9.8 L63.5 9.2 L58.5 5.6 Z" fill="${col}" opacity="0.85"/>
+      <rect x="61.5" y="4.6" width="3" height="3" rx="0.6" fill="#64748b"/>
+    </g>`;
   o.push(`<g transform="translate(10 4)">
-    <rect x="0" y="4" width="136" height="148" rx="10" fill="#eef4fb"/>
-    <circle cx="118" cy="26" r="7" fill="#fde68a"/>
-    <path d="M0 134 Q34 128 68 132 T136 130 V142 a10 10 0 0 1 -10 10 H10 a10 10 0 0 1 -10 -10Z" fill="#d9e7c9"/>
-    <path d="M4 132 Q20 118 36 132 Z" fill="#cbd5e1"/>
-    <rect x="112" y="108" width="5" height="26" fill="#cbd5e1"/><rect x="108" y="102" width="13" height="7" rx="2" fill="#94a3b8"/>
-    <g class="${flying ? 'tl-rise' : 'tl-bob'}">
-      <path d="M68 52 Q66 66 69 80" fill="none" stroke="#64748b" stroke-width="0.9"/>
-      <ellipse cx="68" cy="36" rx="13" ry="16" fill="#fff" stroke="#cbd5e1"/>
-      <ellipse cx="63" cy="30" rx="3.5" ry="5" fill="#f1f5f9"/>
-      <rect x="65" y="80" width="7" height="5" rx="1" fill="${ACC}"/>
+    <clipPath id="scn"><rect x="0" y="4" width="136" height="148" rx="10"/></clipPath>
+    <g clip-path="url(#scn)">
+      <rect x="0" y="4" width="136" height="148" fill="#eef4fb"/>
+      <circle cx="122" cy="24" r="6.5" fill="#fde68a"/>
+      <g opacity="0.9">${jet(84, 36, 0.42, '#94a3b8')}</g>
+      <path d="M112 41 h22" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3 3"/>
+      <path d="M0 116 Q34 110 68 114 T136 112 V152 H0 Z" fill="#d9e7c9"/>
+      <path d="M2 118 Q22 92 44 118 Z" fill="#b9c3cf"/><rect x="2" y="117" width="42" height="9" fill="#b9c3cf"/>
+      <rect x="14" y="117" width="18" height="9" fill="#8a96a5"/>
+      <path d="M8 118 Q22 98 38 118" fill="none" stroke="#a5b0bd" stroke-width="1"/>
+      <rect x="117" y="86" width="5" height="40" fill="#b9c3cf"/><rect x="112" y="79" width="15" height="8" rx="2" fill="#8a96a5"/>
+      <rect x="114" y="81" width="11" height="3.5" fill="#bfdbfe"/>
+      <path d="M126 78 v-7" stroke="#8a96a5"/><path d="M126 71 l6 1.8 -6 1.8 z" fill="#ef4444"/>
+      <rect x="0" y="134" width="136" height="12" fill="#9aa3ad"/>
+      <path d="M6 140h10M26 140h10M46 140h10M66 140h10M86 140h10M106 140h10M126 140h10" stroke="#fff" stroke-width="1.4"/>
+      ${jet(56, 124, 0.95, '#7b8794')}
+      <g class="${flying ? 'tl-rise' : 'tl-bob'}">
+        <path d="M45 68 Q43.5 80 46 92" fill="none" stroke="#64748b" stroke-width="0.8"/>
+        <ellipse cx="45" cy="55" rx="10.5" ry="13" fill="#fff" stroke="#cbd5e1"/>
+        <ellipse cx="41" cy="50" rx="3" ry="4" fill="#f1f5f9"/>
+        <rect x="42.5" y="92" width="6" height="4" rx="1" fill="${ACC}"/>
+      </g>
+      <g transform="translate(45 132) scale(0.6) translate(-69 -142)">
+        ${marine(52, false)}
+        ${marine(86, true)}
+      </g>
     </g>
-    ${marine(52, false)}
-    ${marine(86, true)}
-    <text x="68" y="17" text-anchor="middle" font-size="9.5" font-weight="700" fill="${INK}">MCAS Miramar</text>
+    <text x="68" y="18" text-anchor="middle" font-size="9.5" font-weight="700" fill="${INK}">MCAS Miramar</text>
   </g>`);
 
   // ---- timeline ----
