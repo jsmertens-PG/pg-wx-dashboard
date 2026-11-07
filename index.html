@@ -915,7 +915,7 @@ html body details.day:not(#story) > summary.hd .sum .sc.sc.sc, html body details
 <div class="scrim" id="scrim" hidden></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Site details" hidden></div>
 <script id="seed" type="application/json"></script>
-<script src="scripts/region/panel.js?v=202611071010"></script>
+<script src="scripts/region/panel.js?v=202611071020"></script>
 <script>
 (() => {
 "use strict";
@@ -1440,7 +1440,7 @@ function thermPanel(d, s, c) {
   const di = r ? r.days.findIndex((x) => x.date === d.date) : -1;
   if (di < 0) return "";
   try {
-    return `<div class="therm">${panelSVG({ generated: REGIONS_D.generated, region: r.name, days: r.days, marks: r.marks, floor_ft: r.floor_ft, compact: true, win: c.win }, di)}</div>`;
+    return `<div class="therm">${panelSVG({ generated: REGIONS_D.generated, region: r.name, days: r.days, marks: r.marks, floor_ft: r.floor_ft, compact: true, win: c.style === "ridge" ? null : c.win }, di)}</div>`;
   } catch (e) { return ""; }
 }
 

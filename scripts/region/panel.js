@@ -44,7 +44,7 @@ function panelSVG(data, di = 0) {
   const marks = data.marks || [];
   const zmin = data.floor_ft != null ? Math.max(0, Math.min(data.floor_ft, zs.size ? Math.min(...zs) : 1e9))
     : Math.max(500, (zs.size ? Math.min(...zs) : 2000) - 500);
-  const zmax = Math.max(8000, (zs.size ? Math.max(...zs) : 6000) + 2500, ...marks.map(m => Math.ceil((m.ft + 1000) / 500) * 500));
+  const zmax = Math.max(data.compact ? 4000 : 8000, (zs.size ? Math.max(...zs) : 6000) + 2500, ...marks.map(m => Math.ceil((m.ft + 1000) / 500) * 500));
   const rows = []; for (let z = zmax; z >= zmin; z -= 500) rows.push(z);
   const rh = 24, ch = 25;
   const nW = (data.windRows || [0, 0]).length;
