@@ -23,6 +23,28 @@ POINTS = [  # inland San Diego, where the thermal flying happens
     ("Julian", 33.08, -116.60), ("Jamul", 32.72, -116.88), ("Poway", 32.98, -117.03),
     ("El Cajon Mtn", 32.90, -116.82),
 ]
+
+# regions for the experimental map page: polygon [lat, lon] and representative points (name, lat, lon)
+REGIONS = [
+    {"id": "coast", "name": "Coast", "poly": [[33.30, -117.52], [33.30, -117.30], [33.10, -117.25], [32.95, -117.18], [32.80, -117.13],
+        [32.65, -117.03], [32.54, -117.00], [32.53, -117.20], [32.70, -117.32], [32.95, -117.34], [33.15, -117.45]],
+     "points": [("Torrey Pines", 32.89, -117.25), ("Del Mar", 32.96, -117.25), ("Carlsbad", 33.13, -117.31), ("Point Loma", 32.72, -117.23)]},
+    {"id": "north", "name": "North inland", "poly": [[33.45, -117.38], [33.45, -116.95], [33.05, -116.95], [32.88, -116.98], [32.88, -117.15],
+        [32.95, -117.18], [33.10, -117.25], [33.30, -117.30]],
+     "points": [("Little Black", 32.99, -117.12), ("Escondido", 33.12, -117.08), ("Valley Center", 33.22, -117.03), ("San Marcos", 33.14, -117.17), ("Fallbrook", 33.38, -117.25)]},
+    {"id": "east", "name": "East County", "poly": [[33.10, -116.95], [33.10, -116.70], [32.95, -116.62], [32.78, -116.62], [32.78, -117.12],
+        [32.80, -117.13], [32.88, -117.15], [32.88, -116.98], [33.05, -116.95]],
+     "points": [("Blossom", 32.88, -116.85), ("Ramona", 33.04, -116.87), ("Alpine", 32.84, -116.77), ("Lakeside", 32.86, -116.92), ("El Cajon Mtn", 32.90, -116.82)]},
+    {"id": "south", "name": "South Bay / border", "poly": [[32.78, -117.12], [32.78, -116.72], [32.53, -116.72], [32.54, -117.00], [32.65, -117.03], [32.80, -117.13]],
+     "points": [("Otay", 32.58, -116.90), ("Whale's V", 32.65, -116.89), ("Jamul", 32.72, -116.88), ("Dulzura", 32.64, -116.78)]},
+    {"id": "mountains", "name": "Mountains", "poly": [[33.45, -116.95], [33.45, -116.50], [33.25, -116.45], [33.00, -116.40], [32.75, -116.33], [32.53, -116.35],
+        [32.53, -116.72], [32.78, -116.72], [32.78, -116.62], [32.95, -116.62], [33.10, -116.70], [33.10, -116.95]],
+     "points": [("Palomar", 33.34, -116.87), ("Julian", 33.08, -116.60), ("Cuyamaca", 32.95, -116.57), ("Laguna", 32.87, -116.43), ("Pine Valley", 32.82, -116.53)]},
+    {"id": "desert", "name": "Desert", "poly": [[33.45, -116.50], [33.45, -116.08], [32.53, -116.08], [32.53, -116.35], [32.75, -116.33], [33.00, -116.40], [33.25, -116.45]],
+     "points": [("Borrego Springs", 33.26, -116.37), ("Ocotillo Wells", 33.15, -116.13), ("Agua Caliente", 32.95, -116.30)]},
+    {"id": "inland_empire", "name": "Elsinore / Perris", "poly": [[33.95, -117.55], [33.95, -116.80], [33.45, -116.80], [33.45, -117.38], [33.55, -117.55]],
+     "points": [("Elsinore", 33.63, -117.37), ("Perris", 33.78, -117.23), ("Soboba", 33.80, -116.96), ("Temecula", 33.49, -117.15), ("Menifee", 33.70, -117.18)]},
+]
 LEVELS = [975, 950, 925, 900, 850, 800, 700, 600, 500]
 STD_HEIGHT_M = {1000: 110, 975: 320, 950: 540, 925: 760, 900: 990, 850: 1460, 800: 1950, 700: 3010, 600: 4210, 500: 5570}
 SURFACE = ["temperature_2m", "dew_point_2m", "precipitation", "precipitation_probability", "cape", "shortwave_radiation",
@@ -48,11 +70,12 @@ def http_json(url, tries=3):
     raise last
 
 
-def fetch(model, days):
+def fetch(model, days, points=None):
+    points = points or POINTS
     """Return list of per-point Open-Meteo replies, dropping variables the model lacks."""
     hourly = SURFACE + ["sensible_heat_flux"] + LEVEL_VARS
     for attempt in range(3):
-        q = {"latitude": ",".join(str(p[1]) for p in POINTS), "longitude": ",".join(str(p[2]) for p in POINTS),
+        q = {"latitude": ",".join(str(p[1]) for p in points), "longitude": ",".join(str(p[2]) for p in points),
              "hourly": ",".join(hourly), "models": model, "timezone": TZ, "forecast_days": days, "wind_speed_unit": "mph"}
         try:
             d = http_json("https://api.open-meteo.com/v1/forecast?" + urllib.parse.urlencode(q))
@@ -259,40 +282,28 @@ def summarize(hours):
             "w5k": w[len(w) // 2]["w5k"], "high_f": max(v["t_f"] for v in good.values())}
 
 
-def main():
-    os.makedirs(OUT, exist_ok=True)
-    now_local = dt.datetime.now(dt.timezone.utc).astimezone(__import__("zoneinfo").ZoneInfo(TZ))
-    today = now_local.date()
-    by_day, models_used, debug = {}, {}, {}
-    for name, ids, days in MODELS:
-        data = None
-        for mid in ids:
-            data = fetch(mid, days)
-            if data and data[0].get("hourly", {}).get("temperature_2m"):
-                models_used[name] = mid
-                break
-            data = None
-        if not data:
-            print(f"{name}: no data")
+def build_days(data, idx, today, now_local, name, by_day):
+    """Fill by_day {date: day} for the points at positions idx of a multi-point reply."""
+    times = data[0]["hourly"]["time"]
+    for i, t in enumerate(times):
+        d, hh = t[:10], int(t[11:13])
+        if hh not in HOURS:
             continue
-        debug[name] = sorted(k for k, v in data[0]["hourly"].items() if any(x is not None for x in v))
-        times = data[0]["hourly"]["time"]
-        for i, t in enumerate(times):
-            d, hh = t[:10], int(t[11:13])
-            if hh not in HOURS:
-                continue
-            k = (dt.date.fromisoformat(d) - today).days
-            if k < 0 or k > 3 or (k == 0 and now_local.hour >= 19):   # after 7 pm today is over
-                continue
-            if d in by_day and by_day[d]["model"] != name:
-                continue        # HRRR wins for the days it covers
-            if name == "HRRR" and k > 1:
-                continue
-            ps = [point_hour(p["hourly"], i, p.get("elevation") or 300) for p in data]
-            rh = region_hour(ps)
-            if rh:
-                rh["score"] = score(rh)
-                by_day.setdefault(d, {"date": d, "model": name, "hours": {}})["hours"][str(hh)] = rh
+        k = (dt.date.fromisoformat(d) - today).days
+        if k < 0 or k > 3 or (k == 0 and now_local.hour >= 19):   # after 7 pm today is over
+            continue
+        if d in by_day and by_day[d]["model"] != name:
+            continue        # HRRR wins for the days it covers
+        if name == "HRRR" and k > 1:
+            continue
+        ps = [point_hour(data[j]["hourly"], i, data[j].get("elevation") or 300) for j in idx]
+        rh = region_hour(ps)
+        if rh:
+            rh["score"] = score(rh)
+            by_day.setdefault(d, {"date": d, "model": name, "hours": {}})["hours"][str(hh)] = rh
+
+
+def finish(by_day, today):
     days = []
     for d in sorted(by_day):
         day = by_day[d]
@@ -300,16 +311,52 @@ def main():
         day["label"] = ["Today", "Tomorrow"][k] if k < 2 else dt.date.fromisoformat(d).strftime("%A")
         day["summary"] = summarize({int(h): v for h, v in day["hours"].items()})
         days.append(day)
-    if not days:
+    return days
+
+
+def main():
+    os.makedirs(OUT, exist_ok=True)
+    now_local = dt.datetime.now(dt.timezone.utc).astimezone(__import__("zoneinfo").ZoneInfo(TZ))
+    today = now_local.date()
+    groups = [("sd", POINTS)] + [(r["id"], r["points"]) for r in REGIONS]
+    allpts, idx = [], {}
+    for gid, pts in groups:
+        idx[gid] = list(range(len(allpts), len(allpts) + len(pts)))
+        allpts += pts
+    by = {gid: {} for gid, _ in groups}
+    models_used, debug = {}, {}
+    for name, ids, days in MODELS:
+        data = None
+        for mid in ids:
+            data = fetch(mid, days, allpts)
+            if data and len(data) == len(allpts) and data[0].get("hourly", {}).get("temperature_2m"):
+                models_used[name] = mid
+                break
+            data = None
+        if not data:
+            print(f"{name}: no data")
+            continue
+        debug[name] = sorted(k for k, v in data[0]["hourly"].items() if any(x is not None for x in v))
+        for gid, _ in groups:
+            build_days(data, idx[gid], today, now_local, name, by[gid])
+    gen = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
+    sd_days = finish(by["sd"], today)
+    if not sd_days:
         print("no region data")
         return 1
-    out = {"generated": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "region": "San Diego inland",
-           "points": [{"name": n, "lat": la, "lon": lo} for n, la, lo in POINTS], "models": models_used,
-           "source": "https://open-meteo.com", "variables": debug, "days": days}
     with open(os.path.join(OUT, "sd.json"), "w") as f:
-        json.dump(out, f, indent=1)
-    for dd in days:
-        print(dd["date"], dd["model"], json.dumps(dd["summary"]))
+        json.dump({"generated": gen, "region": "San Diego inland", "title": "SAN DIEGO",
+                   "points": [{"name": n, "lat": la, "lon": lo} for n, la, lo in POINTS], "models": models_used,
+                   "source": "https://open-meteo.com", "variables": debug, "days": sd_days}, f, indent=1)
+    regs = []
+    for r in REGIONS:
+        regs.append({"id": r["id"], "name": r["name"], "title": r["name"].upper(), "poly": r["poly"],
+                     "points": [{"name": n, "lat": la, "lon": lo} for n, la, lo in r["points"]],
+                     "days": finish(by[r["id"]], today)})
+        for dd in regs[-1]["days"]:
+            print(r["id"], dd["date"], dd["model"], json.dumps(dd["summary"]))
+    with open(os.path.join(OUT, "regions.json"), "w") as f:
+        json.dump({"generated": gen, "models": models_used, "source": "https://open-meteo.com", "regions": regs}, f, separators=(",", ":"))
     return 0
 
 

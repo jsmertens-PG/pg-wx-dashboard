@@ -52,7 +52,7 @@ a{color:#2563eb}
     const show = i => {
       cur = i;
       tog.setAttribute('aria-checked', String(graphic));
-      document.getElementById('panel').innerHTML = graphic ? panelSVG(d, i) : `<div style="padding:0 8px 6px"><div style="padding:14px 6px 0;font-weight:800;font-size:22px">SAN DIEGO</div>${panelText(d, i)}</div>`;
+      document.getElementById('panel').innerHTML = graphic ? panelSVG(d, i) : `<div style="padding:0 8px 6px"><div style="padding:14px 6px 0;font-weight:800;font-size:22px">${d.title || "SAN DIEGO"}</div>${panelText(d, i)}</div>`;
       tabs.querySelectorAll('button').forEach((b, k) => b.setAttribute('aria-pressed', String(k === i)));
       const s = d.days[i].summary;
       document.getElementById('sum').innerHTML = s ? `<b>Best ${s.window[0] > 12 ? s.window[0] - 12 : s.window[0]}–${s.window[1] + 1 > 12 ? s.window[1] + 1 - 12 : s.window[1] + 1} ${s.window[1] + 1 >= 12 ? 'pm' : 'am'}:</b> climbs ~${s.climb.toFixed(1)} m/s, usable to ~${s.top_ft.toLocaleString('en-US')} ft${s.cu && s.base_ft ? `, cumulus from ${s.base_ft.toLocaleString('en-US')} ft` : ', blue'}${s.w5k && s.w5k[1] != null ? `; wind at 5k ft ${dir(s.w5k[0])} ${s.w5k[1]} mph` : ''}. High ${s.high_f}°F.` : 'No thermals forecast.';

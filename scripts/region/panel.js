@@ -52,7 +52,7 @@ function panelSVG(data, di = 0) {
   o.push(`<rect width="${W}" height="${Hh}" fill="#fff"/>`);
   // header (as XCTherm: region, date, model + run on the right)
   const d = new Date(day.date + 'T12:00:00');
-  o.push(`<text x="6" y="30" font-size="30" font-weight="800" letter-spacing="-.01em">SAN DIEGO</text>`);
+  o.push(`<text x="6" y="30" font-size="30" font-weight="800" letter-spacing="-.01em">${data.title || "SAN DIEGO"}</text>`);
   o.push(`<text x="7" y="54" font-size="17" fill="#374151">${d.toLocaleDateString('en-US', { weekday: 'short' })} ${d.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}</text>`);
   const gen = new Date(data.generated.replace('Z', ':00Z'));
   o.push(`<text x="${W - R}" y="54" text-anchor="end" font-size="15" font-style="italic" fill="#374151">${day.model} · ${gen.toLocaleDateString('en-US', { timeZone: 'America/Los_Angeles', month: '2-digit', day: '2-digit', year: 'numeric' })} ${gen.toLocaleTimeString('en-US', { timeZone: 'America/Los_Angeles', hour: 'numeric', minute: '2-digit' })} PT</text>`);
