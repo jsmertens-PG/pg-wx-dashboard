@@ -725,7 +725,9 @@ html body details.day:not(#story) .list .srow.srow{background:color-mix(in srgb,
   box-shadow:inset 4px 0 0 var(--rc), 0 0 0 1px #e6e9ee!important}
 html body details.day:not(#story) .list .srow.srow .exp{box-shadow:none!important;background:transparent!important;border:0!important}
 html body details.day:not(#story) .list .srow.srow[aria-expanded="true"]{background:color-mix(in srgb,var(--rc) 14%,#fff)!important}
-html body details.day:not(#story) .list .srow.srow .spills .rx{background:#fff!important;box-shadow:0 0 0 1px #e6e9ee!important}
+html body details.day:not(#story) .list .srow.srow .spills .rx:not(.strong){background:#fff!important;box-shadow:0 0 0 1px #e6e9ee!important}
+/* strong pills (e.g. a cloud deck that takes points off) stay dark with white text, so they never turn white on white */
+html body details.day:not(#story) .list .srow.srow .spills .rx.strong{background:#26303a!important;color:#fff!important;box-shadow:none!important}
 html body details.day:not(#story) .list{background:#fff}
 
 /* phone: day-type pills smaller than the site names so two fit side by side; site pills hug their text */
