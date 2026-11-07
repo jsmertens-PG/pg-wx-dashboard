@@ -11,6 +11,8 @@ body{font-family:Inter,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-seri
 header{display:flex;align-items:center;justify-content:space-between;margin:2px 2px 12px}
 h1{font-size:19px;font-weight:700;margin:0;letter-spacing:-.01em}
 .back{font-size:13px;color:var(--ink);text-decoration:none;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px}
+.tl{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:0 0 10px}
+.tl svg{width:100%;height:auto;display:block}
 #plot{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px -12px rgba(0,0,0,.12);padding:4px}
 #plot svg{width:100%;height:auto;display:block}
 .seg{display:inline-flex;background:#fff;border:1px solid var(--line);border-radius:999px;padding:3px;margin:0 0 10px}
@@ -23,12 +25,14 @@ h1{font-size:19px;font-weight:700;margin:0;letter-spacing:-.01em}
 a{color:#2563eb}
 </style></head><body><div class="wrap">
 <header><h1>NKX sounding</h1><a class="back" href="./">← Radar</a></header>
+<div id="tl" class="tl"></div>
 <div id="plot">Loading…</div>
 <div class="stats" id="stats"></div>
 <p class="note" id="src"></p>
 <p class="note">Cloudbase = surface dewpoint lifted at constant mixing ratio until it meets the temperature curve. Orange lines = dry adiabats (5.4 °F/1000 ft) from the surface every 5 °F, ending at the thermal top for that surface temperature. Zoomed to the flyable range. Blue bands = inversions. Bold line = forecast afternoon high at Miramar (median of the GFS, ECMWF and ICON ensembles); shaded band = 10th–90th percentile of those runs. Updated by a GitHub Action after each 00Z/12Z launch.</p>
 </div>
 <script src="scripts/sounding/core.js"></script>
+<script src="scripts/sounding/timeline.js"></script>
 <script>
 (async () => {
   try {
@@ -36,6 +40,11 @@ a{color:#2563eb}
     let forecast = null;
     try { forecast = await (await fetch('data/sounding/surface_forecast.json?' + Date.now())).json(); } catch (e) {}
     const snd = parseSounding(txt);
+    // which launch this chart shows (nominal 00Z/12Z), for the balloon timeline
+    const tm = snd.title.match(/_(\d\d)00Z_(\d\d)_(\w{3})_(\d{4})$/);
+    const shown = tm ? new Date(Date.UTC(+tm[4], ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'].indexOf(tm[3]), +tm[2], +tm[1])) : null;
+    const drawTl = () => { document.getElementById('tl').innerHTML = timelineSVG({ now: new Date(), shown }); };
+    drawTl(); setInterval(drawTl, 60000);
     const r = renderSVG(snd, { forecast }), A = r.analysis, s = snd.levels[0];
     document.getElementById('plot').innerHTML = r.svg;
     const st = [['Surface', `${Math.round(s.z*1000)} ft · ${Math.round(s.t)}°F / Td ${isFinite(s.td)?Math.round(s.td):'–'}°F`]];
