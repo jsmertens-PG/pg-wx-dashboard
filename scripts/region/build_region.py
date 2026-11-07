@@ -29,22 +29,26 @@ REGIONS = [
     {"id": "coast", "name": "Coast", "poly": [[33.30, -117.52], [33.30, -117.30], [33.10, -117.25], [32.95, -117.18], [32.80, -117.13],
         [32.65, -117.03], [32.54, -117.00], [32.53, -117.20], [32.70, -117.32], [32.95, -117.34], [33.15, -117.45]],
      "points": [("Torrey Pines", 32.89, -117.25), ("Del Mar", 32.96, -117.25), ("Carlsbad", 33.13, -117.31), ("Point Loma", 32.72, -117.23)]},
-    {"id": "north", "name": "North inland", "poly": [[33.45, -117.38], [33.45, -116.95], [33.05, -116.95], [32.88, -116.98], [32.88, -117.15],
+    {"id": "north", "name": "North County", "poly": [[33.45, -117.38], [33.45, -116.95], [33.05, -116.95], [32.88, -116.98], [32.88, -117.15],
         [32.95, -117.18], [33.10, -117.25], [33.30, -117.30]],
      "points": [("Little Black", 32.99, -117.12), ("Escondido", 33.12, -117.08), ("Valley Center", 33.22, -117.03), ("San Marcos", 33.14, -117.17), ("Fallbrook", 33.38, -117.25)]},
     {"id": "east", "name": "East County", "poly": [[33.10, -116.95], [33.10, -116.70], [32.95, -116.62], [32.78, -116.62], [32.78, -117.12],
         [32.80, -117.13], [32.88, -117.15], [32.88, -116.98], [33.05, -116.95]],
      "points": [("Blossom", 32.88, -116.85), ("Ramona", 33.04, -116.87), ("Alpine", 32.84, -116.77), ("Lakeside", 32.86, -116.92), ("El Cajon Mtn", 32.90, -116.82)]},
-    {"id": "south", "name": "Border hills", "poly": [[32.78, -117.12], [32.78, -116.72], [32.53, -116.72], [32.54, -117.00], [32.65, -117.03], [32.80, -117.13]],
+    {"id": "south", "name": "South Bay / Border", "poly": [[32.78, -117.12], [32.78, -116.72], [32.53, -116.72], [32.54, -117.00], [32.65, -117.03], [32.80, -117.13]],
      "points": [("Otay", 32.58, -116.90), ("Whale's V", 32.65, -116.89), ("Jamul", 32.72, -116.88), ("Dulzura", 32.64, -116.78)]},
     {"id": "mountains", "name": "Mountains", "poly": [[33.45, -116.95], [33.45, -116.50], [33.25, -116.45], [33.00, -116.40], [32.75, -116.33], [32.53, -116.35],
         [32.53, -116.72], [32.78, -116.72], [32.78, -116.62], [32.95, -116.62], [33.10, -116.70], [33.10, -116.95]],
      "points": [("Palomar", 33.34, -116.87), ("Julian", 33.08, -116.60), ("Cuyamaca", 32.95, -116.57), ("Laguna", 32.87, -116.43), ("Pine Valley", 32.82, -116.53)]},
     {"id": "desert", "name": "Desert", "poly": [[33.45, -116.50], [33.45, -116.08], [32.53, -116.08], [32.53, -116.35], [32.75, -116.33], [33.00, -116.40], [33.25, -116.45]],
      "points": [("Borrego Springs", 33.26, -116.37), ("Ocotillo Wells", 33.15, -116.13), ("Agua Caliente", 32.95, -116.30)]},
-    {"id": "marshall", "name": "Marshall / Crestline", "poly": [[34.36, -117.62], [34.36, -117.02], [34.10, -117.02], [33.95, -117.10], [33.95, -117.55], [34.05, -117.62]],
+    {"id": "palmsj", "name": "Palm Springs / San Jacinto", "poly": [[34.05, -116.80], [34.05, -116.00], [33.45, -116.00], [33.45, -116.80]],
+     "points": [("San Jacinto", 33.81, -116.68), ("Anza", 33.555, -116.67), ("Palm Springs", 33.83, -116.55)],
+     # no launch: scored on its own terms (high desert-mountain lift: good days top out 8-14k ft, light wind aloft)
+     "score": {"top_lo": 6000, "top_span": 7000, "climb_full": 2.5, "wind_key": "w10k", "wind_ok": 12}},
+    {"id": "marshall", "name": "Marshall", "poly": [[34.36, -117.62], [34.36, -117.02], [34.10, -117.02], [33.95, -117.10], [33.95, -117.55], [34.05, -117.62]],
      "points": [("Marshall", 34.21, -117.30), ("Crestline", 34.24, -117.29), ("Cajon / Devore", 34.22, -117.40), ("Lytle Creek", 34.22, -117.48), ("Highland foothills", 34.15, -117.17)]},
-    {"id": "inland_empire", "name": "Elsinore / Perris", "poly": [[33.95, -117.55], [33.95, -116.80], [33.45, -116.80], [33.45, -117.38], [33.55, -117.55]],
+    {"id": "inland_empire", "name": "Inland Empire", "poly": [[33.95, -117.55], [33.95, -116.80], [33.45, -116.80], [33.45, -117.38], [33.55, -117.55]],
      "points": [("Elsinore", 33.63, -117.37), ("Perris", 33.78, -117.23), ("Soboba", 33.80, -116.96), ("Temecula", 33.49, -117.15), ("Menifee", 33.70, -117.18)]},
 ]
 LEVELS = [975, 950, 925, 900, 850, 800, 700, 600, 500]
@@ -260,7 +264,7 @@ def mean(xs):
     return sum(xs) / len(xs) if xs else None
 
 
-GRID_FT = list(range(1000, 14001, 500))
+GRID_FT = list(range(1000, 16001, 500))
 
 
 def climb_at(p, z_m):
@@ -331,14 +335,18 @@ def at_mid(p):
     return p.get("cl_mid")
 
 
-def score(hr):
-    """1-5 thermal soaring score for one hour (climb and height first; wind and rain take away)."""
+def score(hr, p=None):
+    """1-5 thermal soaring score for one hour (climb and height first; wind and rain take away).
+    p: optional per-region tuning (top_lo, top_span, climb_full, wind_key, wind_ok) for regions scored on their own terms."""
     if not hr:
         return None
-    s = 1 + 2.2 * clamp(hr["climb"] / 2.0, 0, 1) + 1.8 * clamp((hr["top_ft"] - 3000) / 5000, 0, 1)
-    w = max(hr["w5k"][1] or 0, hr["sfc"][1] or 0)
-    if w > 15:
-        s -= min(1.5, (w - 15) / 8)
+    p = p or {}
+    top_lo, top_span, climb_full = p.get("top_lo", 3000), p.get("top_span", 5000), p.get("climb_full", 2.0)
+    s = 1 + 2.2 * clamp(hr["climb"] / climb_full, 0, 1) + 1.8 * clamp((hr["top_ft"] - top_lo) / top_span, 0, 1)
+    wk, ok = p.get("wind_key"), p.get("wind_ok", 15)
+    w = max(hr["w5k"][1] or 0, hr["sfc"][1] or 0, (hr[wk][1] or 0) if wk else 0)
+    if w > ok:
+        s -= min(1.5, (w - ok) / 8)
     if (hr["rain_mm"] or 0) >= 0.3:
         s -= 1.5
     if hr["cl_mh"] > 70:
@@ -387,7 +395,7 @@ def build_days(data, idx, today, now_local, name, acc):
             acc.setdefault(d, {}).setdefault(str(hh), {})[name] = rh
 
 
-def blend_days(acc):
+def blend_days(acc, sp=None):
     """Per day: the models that cover most of the flying day decide (like the radar), blended hour by hour."""
     by_day = {}
     for d, hours in acc.items():
@@ -402,7 +410,7 @@ def blend_days(acc):
         for hh, hm in hours.items():
             rh = blend_hours({m: v for m, v in hm.items() if m in used})
             if rh:
-                rh["score"] = score(rh)
+                rh["score"] = score(rh, sp)
                 day["hours"][hh] = rh
         by_day[d] = day
     return by_day
@@ -460,7 +468,8 @@ def main():
         debug[name] = sorted(k for k, v in data[0]["hourly"].items() if any(x is not None for x in v))
         for gid, _ in groups:
             build_days(data, idx[gid], today, now_local, name, acc[gid])
-    by = {gid: blend_days(acc[gid]) for gid, _ in groups}
+    sps = {r["id"]: r.get("score") for r in REGIONS}
+    by = {gid: blend_days(acc[gid], sps.get(gid)) for gid, _ in groups}
     gen = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
     sd_days = finish(by["sd"], today)
     if not sd_days:
@@ -472,7 +481,7 @@ def main():
                    "source": "https://open-meteo.com", "variables": debug, "days": sd_days}, f, indent=1)
     regs = []
     for r in REGIONS:
-        regs.append({"id": r["id"], "name": r["name"], "title": r["name"].upper(), "poly": r["poly"],
+        regs.append({"id": r["id"], "name": r["name"], "title": r["name"].upper(), "poly": r["poly"], "own_score": bool(r.get("score")),
                      "points": [{"name": n, "lat": la, "lon": lo} for n, la, lo in r["points"]],
                      "days": finish(by[r["id"]], today)})
         for dd in regs[-1]["days"]:

@@ -44,7 +44,8 @@ function panelSVG(data, di = 0) {
   const zmax = Math.max(8000, (zs.size ? Math.max(...zs) : 6000) + 2500);
   const rows = []; for (let z = zmax; z >= zmin; z -= 500) rows.push(z);
   const rh = 24, ch = 25;
-  const yC = data.verdict ? 96 : 78, yW = yC + 3 * ch + 18, yG = yW + 2 * ch + 22;
+  const nW = (data.windRows || [0, 0]).length;
+  const yC = data.verdict ? 96 : 78, yW = yC + 3 * ch + 18, yG = yW + nW * ch + 22;
   const Hh = yG + rows.length * rh + 44;
   const X = k => L + k * cw, f = v => v.toFixed(1);
   const o = [];
@@ -75,8 +76,9 @@ function panelSVG(data, di = 0) {
     o.push(`<path d="M${L} ${y + ch}H${W - R}" stroke="${GRID}" stroke-width=".8"/>`);
   });
   // wind: ground and 5k ft; arrow shows where the wind blows, colour = speed (mph on tap)
-  side(yW, 2 * ch, 'Wind');
-  [['5k', 'w5k', '5,000 ft'], ['G', 'sfc', 'ground (10 m)']].forEach(([lab, key, name], r) => {
+  side(yW, nW * ch, 'Wind');
+  const WROWS = data.windRows || [['5k', 'w5k', '5,000 ft'], ['G', 'sfc', 'ground (10 m)']];
+  WROWS.forEach(([lab, key, name], r) => {
     const y = yW + r * ch;
     o.push(`<text x="${L - 22}" y="${y + 17}" text-anchor="middle" font-size="14">${lab}</text>`);
     cols.forEach((c, k) => {

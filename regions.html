@@ -90,7 +90,8 @@ function openRegion(r) {
   openR = r;
   const di = Math.min(day, r.days.length - 1);
   const vd = radarVerdict(RADAR, r.id, r.days[di]?.date);
-  const data = { generated: D.generated, title: r.title, region: r.name, points: r.points, days: r.days, verdict: vd };
+  const data = { generated: D.generated, title: r.title, region: r.name, points: r.points, days: r.days, verdict: vd,
+    windRows: r.id === 'palmsj' ? [['10k', 'w10k', '10,000 ft'], ['5k', 'w5k', '5,000 ft'], ['G', 'sfc', 'ground (10 m)']] : null };
   document.getElementById('tog').setAttribute('aria-checked', String(graphic));
   document.getElementById('view').innerHTML = graphic ? `<div class="scroll">${panelSVG(data, di)}</div>`
     : `<div style="padding:10px 10px 4px"><div style="font-weight:800;font-size:22px">${r.title}</div>${panelText(data, di)}</div>`;
