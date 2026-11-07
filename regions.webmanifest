@@ -1,0 +1,16 @@
+{
+  "id": "regions",
+  "name": "SD Radar Regions",
+  "short_name": "SD Regions",
+  "start_url": "regions.html",
+  "scope": "regions",
+  "display": "standalone",
+  "background_color": "#eef1f4",
+  "theme_color": "#ffffff",
+  "icons": [
+    { "src": "regions-icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "regions-icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "regions-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "regions-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
