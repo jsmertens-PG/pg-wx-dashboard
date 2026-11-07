@@ -9,43 +9,31 @@
   "trigger_temp_f": 88,
   "thermal_tops_ft": [
     {
-      "surface_f": 80,
-      "top_ft": 2400
-    },
-    {
       "surface_f": 85,
-      "top_ft": 7100
+      "top_ft": 5500
     },
     {
-      "surface_f": 90,
-      "top_ft": 9700
+      "surface_f": 91,
+      "top_ft": 9400
     },
     {
-      "surface_f": 95,
-      "top_ft": 11500
+      "surface_f": 97,
+      "top_ft": 11700
     },
     {
-      "surface_f": 100,
-      "top_ft": 12600
+      "surface_f": 103,
+      "top_ft": 13100
     },
     {
-      "surface_f": 105,
-      "top_ft": 16600
-    },
-    {
-      "surface_f": 110,
-      "top_ft": 18800
+      "surface_f": 109,
+      "top_ft": 17800
     },
     {
       "surface_f": 115,
       "top_ft": 20000
     },
     {
-      "surface_f": 120,
-      "top_ft": 20000
-    },
-    {
-      "surface_f": 125,
+      "surface_f": 121,
       "top_ft": 20000
     }
   ]

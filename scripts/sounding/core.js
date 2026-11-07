@@ -152,16 +152,17 @@ function analyze(lv, opts = {}) {
       prev = { z, d };
     }
   }
-  // thermal lines: dry adiabats from surface every 5°F
+  // thermal lines (as on Topaflyers): dry adiabats from the surface, ~6 °F apart,
+  // each ending where the rising air is only ~1.5 °F warmer than the sounding
+  const EXCESS = 1.5;
   const thermals = [];
-  const start = Math.floor(T0 / 5) * 5 + 5;
-  const n = opts.nThermals || 10;
+  const n = opts.nThermals || 7;
   for (let k = 0; k < n; k++) {
-    const Ts = start + 5 * k;
+    const Ts = Math.round(T0) + 8 + 6 * k;
     let top = null;
-    for (let z = z0 + 0.02; z <= 20; z += 0.02) {
+    for (let z = z0 + 0.05; z <= 20; z += 0.01) {
       const T = interp(lv, 't', z); if (!isFinite(T)) break;
-      if (Ts - lapseAdiabat * (z - z0) <= T) { top = z; break; }
+      if (Ts - lapseAdiabat * (z - z0) - T < EXCESS) { top = z; break; }
     }
     if (top === null) top = 20;
     thermals.push({ ts: Ts, z0, top, ttop: Ts - lapseAdiabat * (top - z0) });
@@ -169,105 +170,119 @@ function analyze(lv, opts = {}) {
   // lapse rate between levels (thinned to >= ~0.35 kft spacing)
   const dense = lv.filter(l => l.z < 18).length > 150;
   const thin = [lv[0]];
-  for (const l of lv) if (l.z - thin[thin.length - 1].z >= (dense ? 0.5 : 0.25)) thin.push(l);
+  for (const l of lv) if (l.z - thin[thin.length - 1].z >= (dense ? 0.5 : 0.03)) thin.push(l);
   const lapse = [];
   for (let i = 1; i < thin.length; i++) {
     const a = thin[i - 1], b = thin[i];
     const lr = -(b.t - a.t) / (b.z - a.z);
-    lapse.push({ z: (a.z + b.z) / 2, v: lr });
+    lapse.push({ z: a.z, v: lr });
+    if (i === thin.length - 1) lapse.push({ z: b.z, v: lr });
   }
   return { cb, thermals, lapse, parcelTd, z0 };
 }
 
 // ---------- SVG ----------
+// Layout measured from the Topaflyers 800x600 gnuplot PNG.
+const COLORS = { temp: '#d7263d', dew: '#1b998b', cloud: '#2e6fd8', thermal: '#8e44ad', lapse: '#d7263d', wind: '#d7263d' };
+
+// Ramer–Douglas–Peucker in screen space, to tame very dense soundings
+function simplify(pts, tol) {
+  if (pts.length < 3) return pts;
+  const keep = new Uint8Array(pts.length); keep[0] = keep[pts.length - 1] = 1;
+  const st = [[0, pts.length - 1]];
+  while (st.length) {
+    const [a, b] = st.pop(); let md = 0, mi = -1;
+    const [x1, y1] = pts[a], [x2, y2] = pts[b], dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy) || 1;
+    for (let i = a + 1; i < b; i++) { const d = Math.abs(dy * (pts[i][0] - x1) - dx * (pts[i][1] - y1)) / L; if (d > md) { md = d; mi = i; } }
+    if (md > tol) { keep[mi] = 1; st.push([a, mi], [mi, b]); }
+  }
+  return pts.filter((_, i) => keep[i]);
+}
+
 function renderSVG(snd, opts = {}) {
+  const C = Object.assign({}, COLORS, opts.colors || {});
   const lv = snd.levels;
   const A = analyze(lv, opts);
-  const W = 800, Hh = 600, top = 38, bot = 558, ZMAX = opts.zmax || 18;
-  const P1 = { x0: 45, x1: 340, lo: -20, hi: 100 };
-  const P2 = { x0: 377, x1: 493, lo: -2, hi: 6 };
+  const W = 800, Hh = 600, top = 39, bot = 558, ZMAX = 18;
+  const dense = lv.filter(l => l.z < ZMAX).length > 150;
   const maxSpd = Math.max(0, ...lv.filter(l => l.z <= ZMAX && isFinite(l.spd)).map(l => l.spd));
-  const P3 = { x0: 576, x1: 783, lo: 0, hi: Math.max(30, Math.ceil(maxSpd / 10) * 10) };
-  const p3ticks = P3.hi <= 30 ? [0, 5, 10, 15, 20, 25, 30] : Array.from({ length: P3.hi / 10 + 1 }, (_, i) => i * 10);
+  const P1 = { x0: 31, x1: 338, lo: -20, hi: 100 };
+  const P2 = { x0: 377, x1: 538, lo: -2, hi: 6 };
+  const P3 = { x0: 577, x1: 778, lo: 0, hi: Math.max(30, Math.ceil(maxSpd / 10) * 10) };
   const Y = z => bot - (z / ZMAX) * (bot - top);
   const X = (P, v) => P.x0 + (v - P.lo) / (P.hi - P.lo) * (P.x1 - P.x0);
-  const font = 'font-family="Arial, Helvetica, sans-serif"';
-  let o = [];
-  o.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${Hh}" ${font} font-size="12">`);
+  const o = [];
+  o.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${Hh}" font-family="Arial, Helvetica, sans-serif" font-size="13" font-style="italic" fill="#000">`);
   o.push(`<rect width="${W}" height="${Hh}" fill="#fff"/>`);
   o.push('<defs>' + [P1, P2, P3].map((P, i) =>
     `<clipPath id="c${i}"><rect x="${P.x0}" y="${top}" width="${P.x1 - P.x0}" height="${bot - top}"/></clipPath>`).join('') + '</defs>');
-  const poly = (pts, color, clip, w = 1) => {
-    // split on NaN
-    let segs = [[]];
+  const poly = (pts, color, clip, simp = 0) => {
+    const segs = [[]];
     for (const p of pts) { if (!isFinite(p[0]) || !isFinite(p[1])) { segs.push([]); continue; } segs[segs.length - 1].push(p); }
-    return segs.filter(s => s.length > 1).map(s =>
-      `<polyline clip-path="url(#${clip})" fill="none" stroke="${color}" stroke-width="${w}" points="${s.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ')}"/>`).join('');
+    return segs.filter(q => q.length > 1).map(q => (simp ? simplify(q, simp) : q)).map(q =>
+      `<polyline clip-path="url(#${clip})" fill="none" stroke="${color}" stroke-width="1.1" stroke-linejoin="round" points="${q.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ')}"/>`).join('');
   };
-  const inRange = l => l.z <= ZMAX + 0.5;
-  const L = lv.filter(inRange);
+  const L = lv.filter(l => l.z <= ZMAX + 1);
+  const T = 6; // tick length
 
-  // frames + ticks
-  const frame = (P, ticks, xlabel, yLabels) => {
+  const frame = (P, xt, xlabel, first) => {
     o.push(`<rect x="${P.x0}" y="${top}" width="${P.x1 - P.x0}" height="${bot - top}" fill="none" stroke="#000"/>`);
-    for (const t of ticks) {
-      const x = X(P, t);
-      o.push(`<line x1="${x}" y1="${bot}" x2="${x}" y2="${bot - 6}" stroke="#000"/><line x1="${x}" y1="${top}" x2="${x}" y2="${top + 6}" stroke="#000"/>`);
-      o.push(`<text x="${x}" y="${bot + 16}" text-anchor="middle">${t}</text>`);
+    for (const t of xt) {
+      const x = X(P, t).toFixed(1);
+      o.push(`<path d="M${x} ${bot}v-${T}M${x} ${top}v${T}" stroke="#000"/>`);
+      o.push(`<text x="${x}" y="${bot + 19}" text-anchor="middle">${t}</text>`);
     }
     for (let z = 0; z <= ZMAX; z += 3) {
-      const y = Y(z);
-      o.push(`<line x1="${P.x0}" y1="${y}" x2="${P.x0 + 6}" y2="${y}" stroke="#000"/><line x1="${P.x1}" y1="${y}" x2="${P.x1 - 6}" y2="${y}" stroke="#000"/>`);
-      if (yLabels) o.push(`<text x="${P.x0 - 8}" y="${y + 4}" text-anchor="end">${z}</text>`);
-      else if (z > 0 && z < ZMAX) o.push(`<text x="${P.x0 - 3}" y="${y + 4}" text-anchor="end">-</text>`);
+      const y = Y(z).toFixed(1);
+      if (z > 0 && z < ZMAX) {
+        // panel 1: inward ticks; panels 2 and 3: left ticks cross the frame (as in the original)
+        o.push(first ? `<path d="M${P.x0} ${y}h${T}M${P.x1} ${y}h-${T}" stroke="#000"/>`
+                     : `<path d="M${P.x0 - 4} ${y}h${T + 4}M${P.x1} ${y}h-${T}" stroke="#000"/>`);
+      }
+      if (first) o.push(`<text x="${P.x0 - 7}" y="${(+y + 5).toFixed(1)}" text-anchor="end">${z}</text>`);
     }
-    o.push(`<text x="${(P.x0 + P.x1) / 2}" y="${bot + 34}" text-anchor="middle" font-style="italic">${xlabel}</text>`);
+    o.push(`<text x="${((P.x0 + P.x1) / 2).toFixed(1)}" y="${bot + 37}" text-anchor="middle">${xlabel}</text>`);
   };
   frame(P1, [-20, 0, 20, 40, 60, 80, 100], 'deg F', true);
   frame(P2, [-2, 0, 2, 4, 6], 'deg F / 1000 ft', false);
-  frame(P3, p3ticks, 'wind speed (knt)', false);
-  o.push(`<text x="${(P1.x0 + P1.x1) / 2}" y="${top - 12}" text-anchor="middle" font-style="italic" font-size="13">${snd.title}</text>`);
-  o.push(`<text x="${(P2.x0 + P2.x1) / 2}" y="${top - 12}" text-anchor="middle" font-style="italic" font-size="13">Lapse Rate</text>`);
-  o.push(`<text x="${(P3.x0 + P3.x1) / 2}" y="${top - 12}" text-anchor="middle" font-style="italic" font-size="13">Wind Profile</text>`);
+  frame(P3, P3.hi <= 30 ? [0, 5, 10, 15, 20, 25, 30] : Array.from({ length: P3.hi / 10 + 1 }, (_, i) => i * 10), 'wind speed (knt)', false);
+  const head = (P, t) => o.push(`<text x="${((P.x0 + P.x1) / 2).toFixed(1)}" y="25" text-anchor="middle">${t}</text>`);
+  head(P1, snd.title); head(P2, 'Lapse Rate'); head(P3, 'Wind Profile');
 
-  // panel 1
-  const ORANGE = '#ffa500', BLUE = '#0000ff', RED = '#ff0000', GREEN = '#00e000';
+  // ---- panel 1 ----
   for (const th of A.thermals)
-    o.push(poly([[X(P1, th.ts), Y(th.z0)], [X(P1, th.ttop), Y(th.top)]], ORANGE, 'c0'));
+    o.push(poly([[X(P1, th.ts), Y(th.z0)], [X(P1, th.ttop), Y(th.top)]], C.thermal, 'c0'));
   if (A.cb) {
     const pts = [];
-    for (let z = A.z0; z <= A.cb.z; z += 0.1) pts.push([X(P1, A.parcelTd(z)), Y(z)]);
+    for (let z = A.z0; z < A.cb.z; z += 0.1) pts.push([X(P1, A.parcelTd(z)), Y(z)]);
     pts.push([X(P1, A.cb.t), Y(A.cb.z)]);
-    o.push(poly(pts, BLUE, 'c0'));
-    o.push(poly([[P1.x0, Y(A.cb.z)], [P1.x1, Y(A.cb.z)]], BLUE, 'c0'));
+    o.push(poly(pts, C.cloud, 'c0', 0.6));
+    o.push(poly([[P1.x0, Y(A.cb.z)], [P1.x1, Y(A.cb.z)]], C.cloud, 'c0'));
   }
-  o.push(poly(L.map(l => [X(P1, l.t), Y(l.z)]), RED, 'c0'));
-  o.push(poly(L.map(l => [X(P1, l.td), Y(l.z)]), GREEN, 'c0'));
-  // legend
-  const lg = [['temperature', RED], ['dew point', GREEN], ['cloudbase', BLUE], ['thermal heights', ORANGE]];
-  lg.forEach(([name, c], i) => {
-    const y = top + 14 + i * 13;
-    o.push(`<text x="${P1.x1 - 50}" y="${y + 4}" text-anchor="end" font-style="italic">${name}</text>`);
-    o.push(`<line x1="${P1.x1 - 44}" y1="${y}" x2="${P1.x1 - 8}" y2="${y}" stroke="${c}"/>`);
+  o.push(poly(L.map(l => [X(P1, l.t), Y(l.z)]), C.temp, 'c0', dense ? 1.2 : 0));
+  o.push(poly(L.map(l => [X(P1, l.td), Y(l.z)]), C.dew, 'c0', dense ? 1.2 : 0));
+  [['temperature', C.temp], ['dew point', C.dew], ['cloudbase', C.cloud], ['thermal heights', C.thermal]].forEach(([name, c], i) => {
+    const y = 51 + i * 13;
+    o.push(`<text x="283" y="${y + 5}" text-anchor="end" font-size="13">${name}</text>`);
+    o.push(`<path d="M290 ${y}h35" stroke="${c}" stroke-width="1.1"/>`);
   });
 
-  // panel 2: lapse
-  o.push(poly(A.lapse.filter(p => p.z <= ZMAX + 1).map(p => [X(P2, p.v), Y(p.z)]), RED, 'c1'));
+  // ---- panel 2: lapse rate ----
+  o.push(poly(A.lapse.filter(p => p.z <= ZMAX + 1).map(p => [X(P2, p.v), Y(p.z)]), C.lapse, 'c1'));
 
-  // panel 3: wind
-  const dense = L.length > 150;
+  // ---- panel 3: wind ----
   let W3 = L.filter(l => isFinite(l.spd));
-  if (dense) { const t = [W3[0]]; for (const l of W3) if (l.z - t[t.length - 1].z >= 0.2) t.push(l); W3 = t; }
-  o.push(poly(W3.map(l => [X(P3, l.spd), Y(l.z)]), RED, 'c2'));
+  o.push(poly(W3.map(l => [X(P3, l.spd), Y(l.z)]), C.wind, 'c2', dense ? 1.2 : 0));
+  // labels at each reported level (dense soundings: about every 1000 ft), like the original
+  let lab = W3.filter(l => isFinite(l.dir) && l.z <= ZMAX - 0.6);
+  if (dense) { const t = []; for (const l of lab) if (!t.length || l.z - t[t.length - 1].z >= 1.0) t.push(l); lab = t; }
   let lastY = 1e9;
-  for (const l of W3) {
-    if (!isFinite(l.dir) || l.z > ZMAX - 0.3) continue;
+  for (const l of lab) {
     const y = Y(l.z);
-    if (lastY - y < (dense ? 22 : 15)) continue;
+    if (lastY - y < 9) continue;
     lastY = y;
-    o.push(`<text x="${P3.x0 + 10}" y="${y + 4}" font-style="italic">${Math.round(l.dir)} @ ${Math.round(l.spd)}</text>`);
+    o.push(`<text x="${P3.x0 + 13}" y="${(y + 5).toFixed(1)}" font-size="13" textLength="" >${Math.round(l.dir) % 360 || 360} @ ${Math.round(l.spd)}</text>`.replace(' textLength=""', ''));
   }
-
   o.push('</svg>');
   return { svg: o.join('\n'), analysis: A };
 }
