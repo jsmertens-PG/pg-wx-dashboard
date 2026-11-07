@@ -1,0 +1,38 @@
+name: Update SD region panel
+
+on:
+  schedule:
+    - cron: "27 13-23,0 * * *"   # hourly through the flying day (PST 5:27 am - 4:27 pm)
+    - cron: "27 3-12/3 * * *"    # every 3 hours overnight
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: region
+  cancel-in-progress: false
+
+jobs:
+  region:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build SD region panel data
+        run: python -u scripts/region/build_region.py
+      - name: Commit data
+        run: |
+          git config user.name "forecast-bot"
+          git config user.email "forecast-bot@users.noreply.github.com"
+          git add data/region
+          git diff --cached --quiet && exit 0
+          git commit -m "Region update $(date -u +%Y-%m-%dT%H:%MZ)"
+          for i in 1 2 3; do
+            git pull --rebase -X theirs origin main && git push && exit 0
+            sleep 5
+          done
+          exit 1
