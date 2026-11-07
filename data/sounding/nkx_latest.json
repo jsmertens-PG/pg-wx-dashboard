@@ -1,0 +1,52 @@
+{
+  "title": "nkx_0000Z_07_Nov_2026",
+  "source": "https://weather.uwyo.edu/wsgi/sounding?datetime=2026-11-07%2000:00:00&id=72293&type=TEXT:LIST&src=UNKNOWN",
+  "fetched": "2026-11-07T05:05Z",
+  "surface_ft": 440,
+  "surface_temp_f": 77,
+  "surface_dewpoint_f": 51,
+  "cloudbase_ft_msl": 8700,
+  "trigger_temp_f": 88,
+  "thermal_tops_ft": [
+    {
+      "surface_f": 80,
+      "top_ft": 2400
+    },
+    {
+      "surface_f": 85,
+      "top_ft": 7100
+    },
+    {
+      "surface_f": 90,
+      "top_ft": 9700
+    },
+    {
+      "surface_f": 95,
+      "top_ft": 11500
+    },
+    {
+      "surface_f": 100,
+      "top_ft": 12600
+    },
+    {
+      "surface_f": 105,
+      "top_ft": 16600
+    },
+    {
+      "surface_f": 110,
+      "top_ft": 18800
+    },
+    {
+      "surface_f": 115,
+      "top_ft": 20000
+    },
+    {
+      "surface_f": 120,
+      "top_ft": 20000
+    },
+    {
+      "surface_f": 125,
+      "top_ft": 20000
+    }
+  ]
+}
