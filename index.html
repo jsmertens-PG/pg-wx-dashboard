@@ -1411,7 +1411,7 @@ function detail(d, s, inline) {
   const sink = c.sink || 1.1, core = c.core || 1.4, climb = c.wstar != null ? Math.max(0, core * c.wstar - sink) : null;
   const strength = climb != null && c.style !== "ridge"
     ? barRow("Climb rate", Math.max(0, Math.min(1, climb / 2.5)), `${climb.toFixed(1)} m/s`, "") : "";
-  const rows = fac.filter((f) => !isFlag(f) && !(c.hwind && f.k === "Wind 1 pm")).map((f) => barRow(f.k === "Wind 1 pm" ? "Launch wind" : f.k, f.q, f.v, f.sub, f.qs)).join("").replace(/(<\/div>)/, `$1${strength}`)
+  const rows = fac.filter((f) => !isFlag(f) && !((c.hwind || (c.hwind_avg && Object.keys(c.hwind_avg).length)) && f.k === "Wind 1 pm")).map((f) => barRow(f.k === "Wind 1 pm" ? "Launch wind" : f.k, f.q, f.v, f.sub, f.qs)).join("").replace(/(<\/div>)/, `$1${strength}`)
     + (c.rain_p != null ? barRow("Dry", 1 - c.rain_p, `${Math.round(c.rain_p * 100)}% rain`, "") : "")
     + (c.cloud ? barRow("Sun", 1 - (c.cloud.sun_loss || 0), `−${Math.round((c.cloud.sun_loss || 0) * 100)}%`, `mid/high cloud ${c.cloud.okta}/8`) : "");
   const agreeF = fac.find((f) => f.k === "Model agreement");
