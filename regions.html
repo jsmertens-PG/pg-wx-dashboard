@@ -18,10 +18,14 @@ h1 small{font-size:11px;font-weight:600;color:#b45309;background:#fef3c7;border-
 #map > svg{display:block;border-radius:12px;box-shadow:0 1px 2px rgba(0,0,0,.05),0 8px 24px -12px rgba(0,0,0,.2)}
 
 #map .rg:hover circle{stroke-width:2.6}
-.days{display:flex;gap:4px;padding:8px 8px;padding-bottom:max(8px,env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--line);overflow-x:auto}
-.days button{flex:1 1 0;min-width:0;font:inherit;font-size:13px;font-weight:600;border:1px solid var(--line);background:#fff;padding:6px 2px;border-radius:10px;color:var(--muted);text-align:center}
-.days button b{display:block;font-size:10.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.days button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.days{display:flex;gap:4px;justify-content:center;padding:8px 8px;padding-bottom:max(8px,env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--line);overflow-x:auto}
+.days button{flex:1 1 0;min-width:0;max-width:92px;font:inherit;font-size:13px;font-weight:600;border:1px solid var(--line);background:#fff;padding:4px 4px 5px;border-radius:10px;color:var(--muted);text-align:center}
+.days button b{display:block;font-size:10px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted)}
+.days button .mm{display:block;width:100%;aspect-ratio:800/1212;border-radius:6px;overflow:hidden;margin-bottom:3px;border:1px solid #e5e7eb}
+.days button .mm svg{display:block;width:100%;height:100%}
+.days button .dl{display:block;font-size:12.5px;font-weight:700;color:var(--ink);line-height:1.15}
+.days button[aria-pressed="true"]{background:#fff;color:var(--ink);border-color:var(--ink);box-shadow:0 0 0 1.5px var(--ink)}
+.days button[aria-pressed="true"] .dl{color:var(--ink)}
 /* region labels on the map */
 .rlab{background:rgba(255,255,255,.92);border-radius:8px;padding:3px 7px;box-shadow:0 1px 3px rgba(0,0,0,.18);font-size:11.5px;line-height:1.2;text-align:center;white-space:nowrap;pointer-events:none}
 .rlab b{display:block;font-size:12px}
@@ -110,10 +114,14 @@ document.getElementById('tog').onclick = () => { graphic = !graphic; try { local
     try { RADAR = await (await fetch('data/forecast.json?' + Date.now())).json(); } catch (e) { RADAR = null; }
     const n = Math.max(...D.regions.map(r => r.days.length));
     const ref = D.regions.find(r => r.days.length === n);
-    document.getElementById('days').innerHTML = ref.days.map((d, i) => {
-      const dt = new Date(d.date + 'T12:00:00');
-      return `<button type="button" title="${d.label} · ${(d.models || []).join(' + ')}">${i === 0 && d.label === 'Today' ? 'Today' : dt.toLocaleDateString('en-US', { weekday: 'short' })}<b>${dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</b></button>`;
-    }).join('');
+    const renderDays = () => {
+      document.getElementById('days').innerHTML = ref.days.map((d, i) => {
+        const dt = new Date(d.date + 'T12:00:00');
+        const wd = i === 0 && d.label === 'Today' ? 'Today' : dt.toLocaleDateString('en-US', { weekday: 'short' });
+        return `<button type="button" title="${d.label} · ${(d.models || []).join(' + ')}"><span class="mm">${miniMapSVG(D, i, RADAR)}</span><span class="dl">${wd}<b>${dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</b></span></button>`;
+      }).join('');
+    };
+    renderDays();
     document.querySelectorAll('#days button').forEach((b, i) => b.onclick = () => { day = i; draw(); });
     draw();
   } catch (e) { document.getElementById('map').innerHTML = '<p style="padding:20px">Could not load regions: ' + e.message + '</p>'; }

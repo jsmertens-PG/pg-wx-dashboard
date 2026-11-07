@@ -96,16 +96,34 @@ function clashes(x, y, w, h, anchor, kinds) {
 }
 const SANS = "Inter, 'Work Sans', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif";
 
+// a region's colour value for a day: the radar's score for its launches, or its own score where it has no launch
+function regionRate(rg, dd, radar) {
+  if (rg.own_score) return dd?.summary?.score == null ? null : Math.round(dd.summary.score * 2) / 2;
+  const vd = radarVerdict(radar, rg.id, dd?.date);
+  const v = vd ? vd.score : dd?.summary?.score;
+  return v == null ? null : Math.round(v * 2) / 2;
+}
+
+// thumbnail for the day buttons: water, coast and the regions in that day's colours
+function miniMapSVG(D, day, radar) {
+  const { W, H } = FM;
+  const o = [`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" aria-hidden="true">`,
+    `<rect width="${W}" height="${H}" fill="#f5f4f0"/>`,
+    `<polygon points="${COAST.map(P).join(' ')} -50,${H + 50} -50,-50" fill="#cfe2ee"/>`];
+  for (const rg of D.regions) {
+    const dd = rg.days.find(x => x.date === (D.regions[0].days[day] || {}).date) || rg.days[Math.min(day, rg.days.length - 1)];
+    const v = regionRate(rg, dd, radar);
+    o.push(`<polygon points="${rg.poly.map(P).join(' ')}" fill="${v != null ? scoreCol(v) : '#cbd5e1'}" fill-opacity=".9" stroke="#fff" stroke-width="10" stroke-linejoin="round"/>`);
+  }
+  o.push('</svg>');
+  return o.join('');
+}
+
 function mapSVG(D, day = 0, radar = null) {
   BOXES.length = 0;
   const { W, H } = FM, f = v => v.toFixed(1), r = rng(7);
   const LAND = '#f5f4f0', WATER = '#cfe2ee', SHORE = '#9dbdd2', INK = '#1f2937', MUTED = '#6b7280', ROAD = '#e2b36a';
-  const rate = (rg, dd) => {
-    if (rg.own_score) return dd?.summary?.score == null ? null : Math.round(dd.summary.score * 2) / 2;
-    const vd = radarVerdict(radar, rg.id, dd?.date);
-    const v = vd ? vd.score : dd?.summary?.score;
-    return v == null ? null : Math.round(v * 2) / 2;
-  };
+  const rate = (rg, dd) => regionRate(rg, dd, radar);
   const o = [];
   o.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" font-family="${SANS}" fill="${INK}">`);
   o.push(`<defs>
@@ -206,4 +224,4 @@ function mapSVG(D, day = 0, radar = null) {
   return o.join('\n');
 }
 
-if (typeof module !== 'undefined') module.exports = { mapSVG, scoreCol, radarVerdict, BOXES, FM };
+if (typeof module !== 'undefined') module.exports = { mapSVG, miniMapSVG, regionRate, scoreCol, radarVerdict, BOXES, FM };
