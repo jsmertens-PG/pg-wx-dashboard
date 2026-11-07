@@ -47,6 +47,10 @@ h1 small{font-size:11px;font-weight:600;color:#b45309;background:#fef3c7;border-
 .tg button i{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s}
 .tg button[aria-checked="true"] i{left:21px}
 .scroll svg{display:block;width:100%;height:auto}
+.dnav{display:flex;align-items:center;justify-content:center;gap:10px;padding:8px 10px 10px;border-top:1px solid var(--line)}
+.dnav button{width:44px;height:36px;border-radius:10px;border:1px solid var(--line);background:#fff;font-size:24px;line-height:1;color:var(--ink);cursor:pointer}
+.dnav button:disabled{opacity:.3;cursor:default}
+.dnav span{min-width:150px;text-align:center;font-weight:700;font-size:15px}
 .sum{font-size:13px;line-height:1.4;padding:8px 12px;border-top:1px solid var(--line);color:#374151}
 .tt{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
 .tt th{text-align:left;font-size:11px;color:var(--muted);font-weight:600;padding:6px 8px;border-bottom:1px solid var(--line)}
@@ -59,7 +63,8 @@ h1 small{font-size:11px;font-weight:600;color:#b45309;background:#fef3c7;border-
 <div id="map"></div>
 <nav class="days" id="days"></nav>
 <div class="ov" id="ov"><div class="sheet"><div class="bar"><div class="tg"><span>Text</span><button type="button" id="tog" role="switch" aria-checked="true" aria-label="Graphic view"><i></i></button><span>Graphic</span></div><button class="x" id="x" aria-label="Close">×</button></div>
-  <div id="view"></div><div class="sum" id="sum"></div></div></div>
+  <div id="view"></div><div class="sum" id="sum"></div>
+  <div class="dnav"><button type="button" id="prev" aria-label="Previous day">‹</button><span id="dlab"></span><button type="button" id="next" aria-label="Next day">›</button></div></div></div>
 <script src="scripts/region/panel.js"></script>
 <script src="scripts/region/regionmap.js"></script>
 <script>
@@ -103,8 +108,15 @@ function openRegion(r) {
   const dir = a => ['N','NE','E','SE','S','SW','W','NW'][Math.round(a / 45) % 8];
   const hh = h => (h === 12 ? '12' : h > 12 ? h - 12 : h);
   document.getElementById('sum').innerHTML = (vd ? `<b style="color:${vd.color}">●</b> <b>Radar: ${vd.site} ${vd.score.toFixed(1).replace('.0', '')}/5, ${vd.label}</b>${vd.why ? ` (${vd.why})` : ''}. Thermals: ` : '') + (s ? `<b>${r.days[di].label}, best ${hh(s.window[0])}–${hh(s.window[1] + 1)} ${s.window[1] + 1 >= 12 ? 'pm' : 'am'}:</b> climbs ~${s.climb.toFixed(1)} m/s, usable to ~${s.top_ft.toLocaleString('en-US')} ft${s.cu && s.base_ft ? `, cumulus from ${s.base_ft.toLocaleString('en-US')} ft` : ', blue'}${s.w5k && s.w5k[1] != null ? `; wind at 5k ft ${dir(s.w5k[0])} ${s.w5k[1]} mph` : ''}. Points: ${r.points.map(p => p.name).join(', ')}.` : 'No thermals forecast.');
+  const n = r.days.length, cur = r.days[di];
+  const dt = cur ? new Date(cur.date + 'T12:00:00') : null;
+  document.getElementById('dlab').textContent = dt ? `${cur.label === 'Today' || cur.label === 'Tomorrow' ? cur.label + ', ' : ''}${dt.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}` : '';
+  document.getElementById('prev').disabled = di <= 0;
+  document.getElementById('next').disabled = di >= n - 1;
   document.getElementById('ov').classList.add('open');
 }
+document.getElementById('prev').onclick = () => { if (day > 0) { day--; draw(); } };
+document.getElementById('next').onclick = () => { if (openR && day < openR.days.length - 1) { day++; draw(); } };
 document.getElementById('x').onclick = () => { document.getElementById('ov').classList.remove('open'); openR = null; };
 document.getElementById('ov').onclick = e => { if (e.target.id === 'ov') document.getElementById('x').onclick(); };
 document.getElementById('tog').onclick = () => { graphic = !graphic; try { localStorage.setItem('region_view', graphic ? 'graphic' : 'text'); } catch (e) {} if (openR) openRegion(openR); };
