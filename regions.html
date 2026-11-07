@@ -72,7 +72,7 @@ h1 small{font-size:11px;font-weight:600;color:#b45309;background:#fef3c7;border-
 <div class="ov" id="ov"><div class="sheet"><div class="bar"><div class="tg"><span>Text</span><button type="button" id="tog" role="switch" aria-checked="true" aria-label="Graphic view"><i></i></button><span>Graphic</span></div><button class="x" id="x" aria-label="Close">×</button></div>
   <div id="view"></div><div class="sum" id="sum"></div>
   <div class="dnav"><button type="button" id="prev" aria-label="Previous day">‹</button><span id="dlab"></span><button type="button" id="next" aria-label="Next day">›</button></div></div></div>
-<script src="scripts/region/panel.js?v=202611070840"></script>
+<script src="scripts/region/panel.js?v=202611070915"></script>
 <script src="scripts/region/regionmap.js?v=202611070900"></script>
 <script>
 let RADAR = null;
@@ -106,7 +106,7 @@ function openRegion(r) {
   openR = r;
   const di = Math.min(day, r.days.length - 1);
   const vd = radarVerdict(RADAR, r.id, r.days[di]?.date);
-  const data = { generated: D.generated, title: r.title, region: r.name, points: r.points, days: r.days, verdict: vd,
+  const data = { generated: D.generated, title: r.title, region: r.name, points: r.points, days: r.days, verdict: vd, marks: r.marks, floor_ft: r.floor_ft,
     windRows: r.id === 'palmsj' ? [['10k', 'w10k', '10,000 ft'], ['5k', 'w5k', '5,000 ft'], ['G', 'sfc', 'ground (10 m)']] : null };
   document.getElementById('tog').setAttribute('aria-checked', String(graphic));
   document.getElementById('view').innerHTML = graphic ? `<div class="scroll">${panelSVG(data, di)}</div>`

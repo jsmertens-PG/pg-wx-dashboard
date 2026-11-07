@@ -271,7 +271,7 @@ def mean(xs):
     return sum(xs) / len(xs) if xs else None
 
 
-GRID_FT = list(range(500, 16001, 500))  # from 500 ft: the coast lifts from near sea level
+GRID_FT = list(range(0, 16001, 500))   # key = band's lower edge; sampled mid-band, from sea level up
 
 
 def climb_at(p, z_m):
@@ -291,9 +291,9 @@ def climb_at(p, z_m):
 def region_grid(ps):
     cells = {}
     for zft in GRID_FT:
-        z = zft / FT
-        above = [p for p in ps if p["elev"] < z]
-        if len(above) < max(2, len(ps) // 2):
+        z = (zft + 250) / FT   # middle of the band zft..zft+500
+        above = [p for p in ps if p["elev"] < z]   # down to the valley floor: the lowest probe counts
+        if not above:
             continue
         cl = [p for p in above if p["cu"] and p["base"] is not None and p["base"] <= z <= (p["ctop"] or p["base"])]
         if len(cl) >= 0.4 * len(above):
@@ -434,6 +434,42 @@ def finish(by_day, today):
     return days
 
 
+# quiet reference lines in the panel: the region's launches (from the radar's sites.json), or a peak where it has none
+REGION_SITES = {"coast": ["torrey"], "north": ["lb"], "east": ["blossom"], "south": ["otay", "whalesv"], "mountains": ["lagunahorse"],
+                "inland_empire": ["elsinore", "soboba"], "marshall": ["marshall"]}
+REGION_PEAK = {"palomar": ("Palomar Mtn", 6140), "desert": ("Villager Pk", 5756), "palmsj": ("San Jacinto Pk", 10834)}
+
+
+ELEV = {}   # probe ground height (ft) from the model replies
+
+
+SHORT = {"Blossom Valley": "Blossom", "Otay Mesa": "Otay", "Lake Elsinore": "Elsinore", "Horse Canyon": "Horse"}
+
+
+def region_marks(rid):
+    if rid in REGION_PEAK:
+        n, ft = REGION_PEAK[rid]
+        return [{"name": n, "ft": ft, "kind": "peak"}]
+    try:
+        with open(os.path.join(os.path.dirname(__file__), "..", "..", "sites.json")) as f:
+            sj = json.load(f)
+    except Exception:  # noqa: BLE001
+        return []
+    sites = sj.get("sites", sj) if isinstance(sj, dict) else sj
+    out = []
+    for site in sites:
+        if site.get("id") not in REGION_SITES.get(rid, []):
+            continue
+        subs = [x for v in site.values() if isinstance(v, list) for x in v if isinstance(x, dict) and x.get("launch_ft") and x.get("name")]
+        for x in (subs or [site]):
+            out.append({"name": SHORT.get(x.get("short") or x["name"], x.get("short") or x["name"]), "ft": x["launch_ft"], "kind": "launch"})
+    seen, uniq = set(), []
+    for m in sorted(out, key=lambda m: (m["ft"], len(m["name"]))):
+        if m["ft"] not in seen:
+            seen.add(m["ft"]); uniq.append(m)
+    return uniq
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     now_local = dt.datetime.now(dt.timezone.utc).astimezone(__import__("zoneinfo").ZoneInfo(TZ))
@@ -481,6 +517,9 @@ def main():
             print(f"{name}: no data")
             continue
         data = df + ds
+        for (_, la, lo), d in zip(fast + slow, data):
+            if d.get("elevation") is not None and (la, lo) not in ELEV:
+                ELEV[(la, lo)] = round(d["elevation"] * FT)
         models_used[name] = mid1 or mid2
         debug[name] = sorted(k for k, v in data[0]["hourly"].items() if any(x is not None for x in v))
         for gid, _ in groups:
@@ -491,7 +530,9 @@ def main():
     regs = []
     for r in REGIONS:
         regs.append({"id": r["id"], "name": r["name"], "title": r["name"].upper(), "poly": r["poly"], "own_score": bool(r.get("score")),
-                     "points": [{"name": n, "lat": la, "lon": lo} for n, la, lo in r["points"]],
+                     "points": [{"name": n, "lat": la, "lon": lo, "elev_ft": ELEV.get((la, lo))} for n, la, lo in r["points"]],
+                     "floor_ft": int(min([ELEV[(la, lo)] for _, la, lo in r["points"] if ELEV.get((la, lo)) is not None] or [500]) // 500 * 500),
+                     "marks": region_marks(r["id"]),
                      "days": finish(by[r["id"]], today)})
         for dd in regs[-1]["days"]:
             print(r["id"], dd["date"], dd["model"], json.dumps(dd["summary"]))

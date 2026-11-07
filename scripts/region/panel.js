@@ -40,8 +40,10 @@ function panelSVG(data, di = 0) {
   // rows: from the lowest used height to well above the highest (XCTherm shows the open sky above)
   const zs = new Set();
   for (const c of cols) for (const z of Object.keys(c.d.grid || {})) zs.add(+z);
-  const zmin = Math.max(500, (zs.size ? Math.min(...zs) : 2000) - 500);
-  const zmax = Math.max(8000, (zs.size ? Math.max(...zs) : 6000) + 2500);
+  const marks = data.marks || [];
+  const zmin = data.floor_ft != null ? Math.max(0, Math.min(data.floor_ft, zs.size ? Math.min(...zs) : 1e9))
+    : Math.max(500, (zs.size ? Math.min(...zs) : 2000) - 500);
+  const zmax = Math.max(8000, (zs.size ? Math.max(...zs) : 6000) + 2500, ...marks.map(m => Math.ceil((m.ft + 1000) / 500) * 500));
   const rows = []; for (let z = zmax; z >= zmin; z -= 500) rows.push(z);
   const rh = 24, ch = 25;
   const nW = (data.windRows || [0, 0]).length;
@@ -112,6 +114,17 @@ function panelSVG(data, di = 0) {
       o.push(`<rect x="${f(X(k) + 1)}" y="${y + 1}" width="${f(cw - 2)}" height="${rh - 2}" rx="1.5" fill="${pick(PANEL_CLIMB, v)}"/>`);
       o.push(`<text x="${f(X(k) + cw / 2)}" y="${y + rh / 2 + 4.5}" text-anchor="middle" font-size="12.5" fill="${v >= 3 ? '#fff' : INK}">${v.toFixed(1)}</text>`);
     });
+  });
+  // quiet reference lines: the region's launches, or its peak
+  let prevFt = -1e9, lx = L + 6;
+  marks.forEach(m => {
+    if (m.ft < zmin || m.ft > zmax) return;
+    const y = yG + (zmax - m.ft) / 500 * rh;
+    lx = m.ft - prevFt < 300 ? lx : L + 6;
+    const lab = `${m.kind === 'peak' ? '▲ ' : ''}${m.name} ${m.ft.toLocaleString('en-US')}'`;
+    o.push(`<path d="M${L} ${f(y)}H${W - R}" stroke="#b5651d" stroke-width="1.2" stroke-dasharray="6 5" opacity=".55"/>`);
+    o.push(`<text x="${f(lx)}" y="${f(y - 4)}" font-size="11" font-weight="600" fill="#9a5418" opacity=".85" paint-order="stroke" stroke="#fff" stroke-width="3" stroke-linejoin="round">${lab}</text>`);
+    lx += lab.length * 6.3 + 14; prevFt = m.ft;
   });
   // time axis (labels on the grid lines, every hour)
   cols.forEach((c, k) => { if (c.t % 1 === 0) o.push(`<text x="${f(X(k))}" y="${yB + 18}" text-anchor="middle" font-size="13">${tlab(c.t)}${c.t === 12 ? '' : ''}</text>`); });
