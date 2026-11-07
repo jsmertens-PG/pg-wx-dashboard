@@ -57,10 +57,24 @@ const TOWNS = [['San Diego', 32.72, -117.16, 3], ['Tijuana', 32.52, -117.03, 2],
 const SITES = [['Torrey Pines', 32.890, -117.252], ['Little Black', 32.988, -117.122], ['Blossom', 32.877, -116.848], ['Otay', 32.574, -116.894],
   ["Whale's V", 32.645, -116.887, 'left'], ['Laguna', 32.86, -116.43], ['Elsinore', 33.630, -117.371], ['Soboba', 33.822, -116.959], ['Marshall', 34.210, -117.303, 'left']];
 const LABEL_LEFT = { desert: true };
-const LABEL_AT = { coast: [32.99, -117.58], north: [33.33, -117.24], east: [32.99, -116.80], south: [32.71, -116.83],
-  mountains: [33.22, -116.80], desert: [32.98, -116.26], inland_empire: [33.88, -117.33], marshall: [34.05, -117.56] };
+const LABEL_AT = { coast: [32.99, -117.47], north: [33.33, -117.10], east: [32.99, -116.73], south: [32.71, -116.76],
+  mountains: [33.22, -116.70], desert: [32.98, -116.30], inland_empire: [33.88, -117.20], marshall: [34.05, -117.43] };
 
 // the radar sites that colour each region (best of them that day); regions without a launch use their own score
+const SITE_NAME = { torrey: 'Torrey', lb: 'Little Black', blossom: 'Blossom', otay: 'Otay', whalesv: "Whale's V", lagunahorse: 'Laguna', elsinore: 'Elsinore', soboba: 'Soboba', marshall: 'Marshall' };
+const WHY_TXT = { offshore: 'offshore flow aloft', otb: 'over the back', cross: 'cross wind', windy: 'blown out', strong: 'strong on launch', gusty: 'gusty',
+  lid: 'low lid', weak: 'weak thermals', aloft: 'strong wind aloft', light: 'too light', aloftdir: 'wrong flow aloft', drift: 'strong drift' };
+// the radar's verdict for a region on a date: its best launch, score, label and reasons
+function radarVerdict(radar, regionId, date) {
+  const rd = radar && (radar.days || []).find(x => x.date === date);
+  if (!rd) return null;
+  const ids = (REGION_SITES[regionId] || []).filter(id => rd.sites?.[id]?.rating != null);
+  if (!ids.length) return null;
+  const id = ids.reduce((a, b) => (rd.sites[b].rating > rd.sites[a].rating ? b : a));
+  const c = rd.sites[id], v = Math.round(c.rating * 2) / 2;
+  const why = (c.why || []).map(k => WHY_TXT[k] || k).slice(0, 2).join(', ');
+  return { site: SITE_NAME[id] || id, score: v, label: c.label || '', why: v < 2.5 ? why : '', color: scoreCol(v) };
+}
 const REGION_SITES = { coast: ['torrey'], north: ['lb'], east: ['blossom'], south: ['otay', 'whalesv'], mountains: ['lagunahorse'],
   inland_empire: ['elsinore', 'soboba'], marshall: ['marshall'] };
 
@@ -172,15 +186,15 @@ function mapSVG(D, day = 0, radar = null) {
     const [la, lo] = LABEL_AT[rg.id] || [rg.points[0].lat, rg.points[0].lon];
     const v = rate(rg, dd), x = fx(lo), y = fy(la), col = v != null ? scoreCol(v) : '#9ca3af';
     o.push(`<g class="rg" data-id="${rg.id}" style="cursor:pointer"><polygon points="${rg.poly.map(P).join(' ')}" fill="#000" fill-opacity="0"/>
-      <circle cx="${f(x)}" cy="${f(y)}" r="7" fill="${col}" stroke="${INK}" stroke-width="1.4" filter="url(#pencil)"/>
-      <text x="${f(LABEL_LEFT[rg.id] ? x - 12 : x + 12)}" y="${f(y - 1)}" text-anchor="${LABEL_LEFT[rg.id] ? 'end' : 'start'}" font-size="15" font-family="'IM Fell English SC', Georgia, serif" fill="${INK}" stroke="${PAPER}" stroke-width="3.5" paint-order="stroke" letter-spacing=".5">${rg.name}</text>
-      <text x="${f(LABEL_LEFT[rg.id] ? x - 12 : x + 12)}" y="${f(y + 14)}" text-anchor="${LABEL_LEFT[rg.id] ? 'end' : 'start'}" font-size="12" fill="${INK}" stroke="${PAPER}" stroke-width="3" paint-order="stroke">${s ? `${s.climb.toFixed(1)} m/s · ${(s.top_ft / 1000).toFixed(1)}k${s.cu && s.base_ft ? ' · cu' : ''}` : 'no thermals'}</text></g>`);
+      <text x="${f(x)}" y="${f(y - 1)}" text-anchor="middle" font-size="16" font-family="'IM Fell English SC', Georgia, serif" fill="${INK}" stroke="${PAPER}" stroke-width="3.5" paint-order="stroke" letter-spacing=".5">${rg.name}</text>
+      <text x="${f(x)}" y="${f(y + 14)}" text-anchor="middle" font-size="12" fill="${INK}" stroke="${PAPER}" stroke-width="3" paint-order="stroke">${(() => { const vd = radarVerdict(radar, rg.id, dd?.date); const th = s ? `${s.climb.toFixed(1)} m/s · ${(s.top_ft / 1000).toFixed(1)}k${s.cu && s.base_ft ? ' · cu' : ''}` : 'no thermals'; return vd ? `<tspan font-weight="600">${vd.label}</tspan> · ${th}` : th; })()}</text></g>`);
   }
-  // ---- title box, north arrow, scale
-  o.push(`<g transform="translate(16 ${H - 196})"><rect width="250" height="50" fill="${PAPER}" stroke="${INK}" stroke-width="1.2"/><rect x="3" y="3" width="244" height="44" fill="none" stroke="${INK}" stroke-width=".5"/></g>`);
-  o.push(`<text x="141" y="${H - 166}" text-anchor="middle" font-size="15" font-family="'IM Fell English SC', Georgia, serif" letter-spacing="1.5">San Diego Soaring Regions</text>`);
-  o.push(`<text x="141" y="${H - 152}" text-anchor="middle" font-size="10.5" fill="${INK2}" letter-spacing=".5">${(D.regions[0].days[Math.min(day, D.regions[0].days.length - 1)]?.label || '').toUpperCase()} · COLOURS: RADAR SCORE</text>`);
-  const cx = 46, cy = H - 80;
+  // ---- title box and north arrow, top right
+  const tx = W - 214;
+  o.push(`<g transform="translate(${tx} 22)"><rect width="196" height="50" fill="${PAPER}" stroke="${INK}" stroke-width="1.2"/><rect x="3" y="3" width="190" height="44" fill="none" stroke="${INK}" stroke-width=".5"/></g>`);
+  o.push(`<text x="${tx + 98}" y="52" text-anchor="middle" font-size="18" font-family="'IM Fell English SC', Georgia, serif" letter-spacing="1.5">SD Radar Regions</text>`);
+  o.push(`<text x="${tx + 98}" y="66" text-anchor="middle" font-size="10" fill="${INK2}" letter-spacing=".5">${(D.regions[0].days[Math.min(day, D.regions[0].days.length - 1)]?.label || '').toUpperCase()} · COLOURS: RADAR SCORE</text>`);
+  const cx = W - 40, cy = 112;
   o.push(`<g transform="translate(${cx} ${cy})" stroke="${INK}" stroke-width="1"><circle r="18" fill="${PAPER}"/><path d="M0 -15 L5 6 L0 2 L-5 6 Z" fill="${INK}"/></g><text x="${cx}" y="${cy - 22}" text-anchor="middle" font-size="12" font-weight="600">N</text>`);
   const mi = 10 / 69 / Math.cos(33.2 * Math.PI / 180) / (FM.lon1 - FM.lon0) * W;   // 10 miles in px
   o.push(`<g transform="translate(${f(W - 24 - mi)} ${H - 26})"><rect width="${f(mi / 2)}" height="5" fill="${INK}"/><rect x="${f(mi / 2)}" width="${f(mi / 2)}" height="5" fill="${PAPER}" stroke="${INK}"/>
@@ -191,4 +205,4 @@ function mapSVG(D, day = 0, radar = null) {
   return o.join('\n');
 }
 
-if (typeof module !== 'undefined') module.exports = { mapSVG, scoreCol };
+if (typeof module !== 'undefined') module.exports = { mapSVG, scoreCol, radarVerdict };

@@ -57,10 +57,11 @@ LEVEL_VARS = [f"{v}_{p}hPa" for p in LEVELS for v in ("temperature", "geopotenti
 # same models and logic as the radar (scripts/build_forecast.py): HRRR + RRFS where they reach, then the
 # global models; per day: HRRR x2 + RRFS x1; RRFS-led days RRFS x2 + globals together x1; else median of globals
 MODELS = [("HRRR", ["ncep_hrrr_conus", "gfs_hrrr"], 3), ("RRFS", ["ncep_rrfs_conus", "rrfs_conus", "ncep_rrfs"], 4),
-          ("GFS", ["gfs_global", "ncep_gfs025", "gfs025"], 4), ("ECMWF", ["ecmwf_ifs025", "ecmwf_ifs"], 4),
-          ("ICON", ["icon_global", "icon_seamless"], 4)]
+          ("GFS", ["gfs_global", "ncep_gfs025", "gfs025"], 7), ("ECMWF", ["ecmwf_ifs025", "ecmwf_ifs"], 7),
+          ("ICON", ["icon_global", "icon_seamless"], 7)]
 HIRES, GLOBAL = ("HRRR", "RRFS"), ("ECMWF", "GFS", "ICON")
 HIRES_W = {"HRRR": 2, "RRFS": 1}
+REUSE_H = 5.5                      # like the radar: global models fetched again only when older than this
 MODEL_WEIGHT = {"HRRR": 3, "RRFS": 3, "ECMWF": 1, "GFS": 1, "ICON": 1}
 
 
@@ -378,7 +379,7 @@ def build_days(data, idx, today, now_local, name, acc):
         if hh not in HOURS:
             continue
         k = (dt.date.fromisoformat(d) - today).days
-        if k < 0 or k > 3 or (k == 0 and now_local.hour >= 19):   # after 7 pm today is over
+        if k < 0 or k > 6 or (k == 0 and now_local.hour >= 19):   # 7 days like the radar; after 7 pm today is over
             continue
         ps = [point_hour(data[j]["hourly"], i, data[j].get("elevation") or 300) for j in idx]
         rh = region_hour(ps)
@@ -429,12 +430,28 @@ def main():
         allpts += pts
     acc = {gid: {} for gid, _ in groups}
     models_used, debug = {}, {}
+    cache_dir = os.path.join(os.path.dirname(__file__), "..", "..", "cache", "region")
+    os.makedirs(cache_dir, exist_ok=True)
+    key = ",".join(f"{la},{lo}" for _, la, lo in allpts)
     for name, ids, days in MODELS:
         data = None
-        for mid in ids:
+        cpath = os.path.join(cache_dir, f"{name}.json")
+        if name in GLOBAL:     # global models update ~6-hourly: reuse a fresh enough copy (Open-Meteo budget)
+            try:
+                with open(cpath) as f:
+                    c = json.load(f)
+                if c.get("key") == key and time.time() - c["t"] < REUSE_H * 3600:
+                    data, models_used[name] = c["data"], c["mid"]
+                    print(f"{name}: reused ({(time.time() - c['t']) / 3600:.1f} h old)")
+            except Exception:  # noqa: BLE001
+                data = None
+        for mid in ([] if data else ids):
             data = fetch(mid, days, allpts)
             if data and len(data) == len(allpts) and data[0].get("hourly", {}).get("temperature_2m"):
                 models_used[name] = mid
+                if name in GLOBAL:
+                    with open(cpath, "w") as f:
+                        json.dump({"t": time.time(), "mid": mid, "key": key, "data": data}, f)
                 break
             data = None
         if not data:

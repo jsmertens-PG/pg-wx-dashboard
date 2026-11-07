@@ -44,7 +44,7 @@ function panelSVG(data, di = 0) {
   const zmax = Math.max(8000, (zs.size ? Math.max(...zs) : 6000) + 2500);
   const rows = []; for (let z = zmax; z >= zmin; z -= 500) rows.push(z);
   const rh = 24, ch = 25;
-  const yC = 78, yW = yC + 3 * ch + 18, yG = yW + 2 * ch + 22;
+  const yC = data.verdict ? 96 : 78, yW = yC + 3 * ch + 18, yG = yW + 2 * ch + 22;
   const Hh = yG + rows.length * rh + 44;
   const X = k => L + k * cw, f = v => v.toFixed(1);
   const o = [];
@@ -56,6 +56,11 @@ function panelSVG(data, di = 0) {
   o.push(`<text x="15" y="56" font-size="17" fill="#374151">${d.toLocaleDateString('en-US', { weekday: 'short' })} ${d.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}</text>`);
   const gen = new Date(data.generated.replace('Z', ':00Z'));
   o.push(`<text x="${W - R}" y="54" text-anchor="end" font-size="15" font-style="italic" fill="#374151">${day.model} · ${gen.toLocaleDateString('en-US', { timeZone: 'America/Los_Angeles', month: '2-digit', day: '2-digit', year: 'numeric' })} ${gen.toLocaleTimeString('en-US', { timeZone: 'America/Los_Angeles', hour: 'numeric', minute: '2-digit' })} PT</text>`);
+  if (data.verdict) {
+    const v = data.verdict;
+    o.push(`<rect x="15" y="66" width="12" height="12" rx="6" fill="${v.color}" stroke="#374151" stroke-width=".8"/>`);
+    o.push(`<text x="33" y="77" font-size="14.5" fill="${INK}"><tspan font-weight="700">Radar: ${v.site} ${v.score.toFixed(1).replace('.0', '')}/5 · ${v.label}</tspan>${v.why ? `<tspan fill="#6b7280"> · ${v.why}</tspan>` : ''}</text>`);
+  }
   const side = (y0, h, t) => o.push(`<text x="16" y="${f(y0 + h / 2)}" transform="rotate(-90 16 ${f(y0 + h / 2)})" text-anchor="middle" font-size="14" font-weight="700">${t}</text>`);
   // clouds
   side(yC, 3 * ch, 'Clouds');

@@ -88,15 +88,16 @@ function draw() {
 }
 function openRegion(r) {
   openR = r;
-  const data = { generated: D.generated, title: r.title, region: r.name, points: r.points, days: r.days };
   const di = Math.min(day, r.days.length - 1);
+  const vd = radarVerdict(RADAR, r.id, r.days[di]?.date);
+  const data = { generated: D.generated, title: r.title, region: r.name, points: r.points, days: r.days, verdict: vd };
   document.getElementById('tog').setAttribute('aria-checked', String(graphic));
   document.getElementById('view').innerHTML = graphic ? `<div class="scroll">${panelSVG(data, di)}</div>`
     : `<div style="padding:10px 10px 4px"><div style="font-weight:800;font-size:22px">${r.title}</div>${panelText(data, di)}</div>`;
   const s = r.days[di] && r.days[di].summary;
   const dir = a => ['N','NE','E','SE','S','SW','W','NW'][Math.round(a / 45) % 8];
   const hh = h => (h === 12 ? '12' : h > 12 ? h - 12 : h);
-  document.getElementById('sum').innerHTML = s ? `<b>${r.days[di].label}, best ${hh(s.window[0])}–${hh(s.window[1] + 1)} ${s.window[1] + 1 >= 12 ? 'pm' : 'am'}:</b> climbs ~${s.climb.toFixed(1)} m/s, usable to ~${s.top_ft.toLocaleString('en-US')} ft${s.cu && s.base_ft ? `, cumulus from ${s.base_ft.toLocaleString('en-US')} ft` : ', blue'}${s.w5k && s.w5k[1] != null ? `; wind at 5k ft ${dir(s.w5k[0])} ${s.w5k[1]} mph` : ''}. Points: ${r.points.map(p => p.name).join(', ')}.` : 'No thermals forecast.';
+  document.getElementById('sum').innerHTML = (vd ? `<b style="color:${vd.color}">●</b> <b>Radar: ${vd.site} ${vd.score.toFixed(1).replace('.0', '')}/5, ${vd.label}</b>${vd.why ? ` (${vd.why})` : ''}. Thermals: ` : '') + (s ? `<b>${r.days[di].label}, best ${hh(s.window[0])}–${hh(s.window[1] + 1)} ${s.window[1] + 1 >= 12 ? 'pm' : 'am'}:</b> climbs ~${s.climb.toFixed(1)} m/s, usable to ~${s.top_ft.toLocaleString('en-US')} ft${s.cu && s.base_ft ? `, cumulus from ${s.base_ft.toLocaleString('en-US')} ft` : ', blue'}${s.w5k && s.w5k[1] != null ? `; wind at 5k ft ${dir(s.w5k[0])} ${s.w5k[1]} mph` : ''}. Points: ${r.points.map(p => p.name).join(', ')}.` : 'No thermals forecast.');
   document.getElementById('ov').classList.add('open');
 }
 document.getElementById('x').onclick = () => { document.getElementById('ov').classList.remove('open'); openR = null; };
