@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-07T07:27Z",
+ "generated": "2026-11-07T07:29Z",
  "region": "San Diego inland",
  "title": "SAN DIEGO",
  "points": [
@@ -41,7 +41,10 @@
  ],
  "models": {
   "HRRR": "ncep_hrrr_conus",
-  "GFS": "gfs_seamless"
+  "RRFS": "ncep_rrfs_conus",
+  "GFS": "gfs_global",
+  "ECMWF": "ecmwf_ifs025",
+  "ICON": "icon_global"
  },
  "source": "https://open-meteo.com",
  "variables": {
@@ -64,6 +67,45 @@
    "geopotential_height_975hPa",
    "precipitation",
    "precipitation_probability",
+   "sensible_heat_flux",
+   "shortwave_radiation",
+   "temperature_2m",
+   "temperature_500hPa",
+   "temperature_600hPa",
+   "temperature_700hPa",
+   "temperature_800hPa",
+   "temperature_850hPa",
+   "temperature_900hPa",
+   "temperature_925hPa",
+   "temperature_950hPa",
+   "temperature_975hPa",
+   "time",
+   "wind_direction_10m",
+   "wind_direction_700hPa",
+   "wind_direction_850hPa",
+   "wind_gusts_10m",
+   "wind_speed_10m",
+   "wind_speed_700hPa",
+   "wind_speed_850hPa"
+  ],
+  "RRFS": [
+   "boundary_layer_height",
+   "cape",
+   "cloud_cover",
+   "cloud_cover_high",
+   "cloud_cover_low",
+   "cloud_cover_mid",
+   "dew_point_2m",
+   "geopotential_height_500hPa",
+   "geopotential_height_600hPa",
+   "geopotential_height_700hPa",
+   "geopotential_height_800hPa",
+   "geopotential_height_850hPa",
+   "geopotential_height_900hPa",
+   "geopotential_height_925hPa",
+   "geopotential_height_950hPa",
+   "geopotential_height_975hPa",
+   "precipitation",
    "sensible_heat_flux",
    "shortwave_radiation",
    "temperature_2m",
@@ -124,39 +166,112 @@
    "wind_speed_10m",
    "wind_speed_700hPa",
    "wind_speed_850hPa"
+  ],
+  "ECMWF": [
+   "cape",
+   "cloud_cover",
+   "cloud_cover_high",
+   "cloud_cover_low",
+   "cloud_cover_mid",
+   "dew_point_2m",
+   "geopotential_height_500hPa",
+   "geopotential_height_600hPa",
+   "geopotential_height_700hPa",
+   "geopotential_height_850hPa",
+   "geopotential_height_925hPa",
+   "precipitation",
+   "precipitation_probability",
+   "shortwave_radiation",
+   "temperature_2m",
+   "temperature_500hPa",
+   "temperature_600hPa",
+   "temperature_700hPa",
+   "temperature_850hPa",
+   "temperature_925hPa",
+   "time",
+   "wind_direction_10m",
+   "wind_direction_700hPa",
+   "wind_direction_850hPa",
+   "wind_gusts_10m",
+   "wind_speed_10m",
+   "wind_speed_700hPa",
+   "wind_speed_850hPa"
+  ],
+  "ICON": [
+   "cape",
+   "cloud_cover",
+   "cloud_cover_high",
+   "cloud_cover_low",
+   "cloud_cover_mid",
+   "dew_point_2m",
+   "geopotential_height_500hPa",
+   "geopotential_height_600hPa",
+   "geopotential_height_700hPa",
+   "geopotential_height_800hPa",
+   "geopotential_height_850hPa",
+   "geopotential_height_900hPa",
+   "geopotential_height_925hPa",
+   "geopotential_height_950hPa",
+   "geopotential_height_975hPa",
+   "precipitation",
+   "precipitation_probability",
+   "sensible_heat_flux",
+   "shortwave_radiation",
+   "temperature_2m",
+   "temperature_500hPa",
+   "temperature_600hPa",
+   "temperature_700hPa",
+   "temperature_800hPa",
+   "temperature_850hPa",
+   "temperature_900hPa",
+   "temperature_925hPa",
+   "temperature_950hPa",
+   "temperature_975hPa",
+   "time",
+   "wind_direction_10m",
+   "wind_direction_700hPa",
+   "wind_direction_850hPa",
+   "wind_gusts_10m",
+   "wind_speed_10m",
+   "wind_speed_700hPa",
+   "wind_speed_850hPa"
   ]
  },
  "days": [
   {
    "date": "2026-11-07",
-   "model": "HRRR",
+   "model": "HRRR + RRFS",
+   "models": [
+    "HRRR",
+    "RRFS"
+   ],
    "hours": {
     "7": {
      "climb": 0.0,
      "climb_max": 0.0,
-     "wstar": 0.19,
+     "wstar": 0.18,
      "top_ft": 1800,
      "top_max_ft": 4400,
      "base_ft": null,
      "cu": 0.0,
-     "t_f": 61,
+     "t_f": 60,
      "cloud": 0,
      "cl_mh": 0,
      "rain_mm": 0.0,
      "rain_p": 0,
      "cape": 0,
      "sfc": [
-      52,
-      10,
-      16
+      59,
+      9,
+      15
      ],
      "w5k": [
-      59,
-      31
+      58,
+      32
      ],
      "w10k": [
-      35,
-      23
+      34,
+      25
      ],
      "okta": [
       0,
@@ -164,34 +279,38 @@
       0
      ],
      "grid": {},
+     "models": [
+      "HRRR",
+      "RRFS"
+     ],
      "score": 1
     },
     "8": {
      "climb": 0.0,
      "climb_max": 0.0,
-     "wstar": 0.39,
+     "wstar": 0.37,
      "top_ft": 1900,
      "top_max_ft": 4500,
      "base_ft": null,
      "cu": 0.0,
-     "t_f": 67,
+     "t_f": 66,
      "cloud": 0,
      "cl_mh": 0,
      "rain_mm": 0.0,
      "rain_p": 0,
      "cape": 0,
      "sfc": [
-      46,
-      11,
-      22
+      49,
+      10,
+      20
      ],
      "w5k": [
       62,
-      30
+      31
      ],
      "w10k": [
       31,
-      20
+      21
      ],
      "okta": [
       0,
@@ -199,17 +318,21 @@
       0
      ],
      "grid": {},
+     "models": [
+      "HRRR",
+      "RRFS"
+     ],
      "score": 1
     },
     "9": {
      "climb": 0.3,
-     "climb_max": 0.7,
-     "wstar": 1.03,
+     "climb_max": 0.6,
+     "wstar": 0.96,
      "top_ft": 2500,
-     "top_max_ft": 4700,
+     "top_max_ft": 4800,
      "base_ft": null,
      "cu": 0.0,
-     "t_f": 73,
+     "t_f": 72,
      "cloud": 0,
      "cl_mh": 0,
      "rain_mm": 0.0,
@@ -221,12 +344,12 @@
       23
      ],
      "w5k": [
-      67,
-      27
+      68,
+      28
      ],
      "w10k": [
-      27,
-      18
+      28,
+      19
      ],
      "okta": [
       0,
@@ -234,19 +357,23 @@
       0
      ],
      "grid": {
+      "3000": 0.0,
       "1500": 0.0,
       "2000": 0.0,
-      "2500": 0.0,
-      "3000": 0.0
+      "2500": 0.0
      },
+     "models": [
+      "HRRR",
+      "RRFS"
+     ],
      "score": 1
     },
     "10": {
      "climb": 0.9,
      "climb_max": 1.2,
-     "wstar": 1.46,
-     "top_ft": 2900,
-     "top_max_ft": 4800,
+     "wstar": 1.42,
+     "top_ft": 3100,
+     "top_max_ft": 4900,
      "base_ft": null,
      "cu": 0.0,
      "t_f": 75,
@@ -256,16 +383,16 @@
      "rain_p": 0,
      "cape": 0,
      "sfc": [
-      79,
+      72,
       11,
       20
      ],
      "w5k": [
       68,
-      22
+      23
      ],
      "w10k": [
-      30,
+      27,
       19
      ],
      "okta": [
@@ -275,18 +402,22 @@
      ],
      "grid": {
       "1500": 1.0,
+      "3000": 0.5,
       "2000": 1.0,
       "2500": 0.5,
-      "3000": 0.5,
       "3500": 0.5
      },
-     "score": 1.1
+     "models": [
+      "HRRR",
+      "RRFS"
+     ],
+     "score": 1.0
     },
     "11": {
      "climb": 1.4,
      "climb_max": 1.8,
-     "wstar": 1.79,
-     "top_ft": 3400,
+     "wstar": 1.76,
+     "top_ft": 3700,
      "top_max_ft": 5200,
      "base_ft": null,
      "cu": 0.0,
@@ -297,16 +428,16 @@
      "rain_p": 0,
      "cape": 0,
      "sfc": [
-      62,
-      12,
+      68,
+      11,
       18
      ],
      "w5k": [
-      70,
+      71,
       18
      ],
      "w10k": [
-      32,
+      31,
       19
      ],
      "okta": [
@@ -316,20 +447,24 @@
      ],
      "grid": {
       "1500": 2.0,
+      "4000": 0.0,
+      "3000": 1.0,
       "2000": 1.5,
       "2500": 1.5,
-      "3000": 1.0,
-      "3500": 0.5,
-      "4000": 0.0,
-      "4500": 0.5
+      "4500": 0.5,
+      "3500": 0.5
      },
-     "score": 2.3
+     "models": [
+      "HRRR",
+      "RRFS"
+     ],
+     "score": 2.4
     },
     "12": {
-     "climb": 1.9,
+     "climb": 1.8,
      "climb_max": 2.3,
-     "wstar": 2.14,
-     "top_ft": 4600,
+     "wstar": 2.09,
+     "top_ft": 4700,
      "top_max_ft": 5500,
      "base_ft": null,
      "cu": 0.0,
@@ -340,16 +475,16 @@
      "rain_p": 0,
      "cape": 0,
      "sfc": [
-      49,
-      11,
-      16
+      50,
+      10,
+      15
      ],
      "w5k": [
       70,
       14
      ],
      "w10k": [
-      33,
+      34,
       20
      ],
      "okta": [
@@ -359,44 +494,48 @@
      ],
      "grid": {
       "1500": 2.0,
-      "2000": 2.0,
-      "2500": 2.0,
-      "3000": 2.0,
-      "3500": 2.0,
       "4000": 1.5,
-      "4500": 1.0,
+      "3000": 2.0,
+      "2000": 2.0,
       "5000": 0.5,
+      "6500": 0.0,
+      "2500": 2.0,
+      "4500": 1.0,
+      "3500": 2.0,
       "5500": 0.0,
-      "6000": 0.0,
-      "6500": 0.0
+      "6000": 0.0
      },
-     "score": 3.7
+     "models": [
+      "HRRR",
+      "RRFS"
+     ],
+     "score": 3.6
     },
     "13": {
-     "climb": 1.9,
-     "climb_max": 2.3,
-     "wstar": 2.14,
+     "climb": 1.8,
+     "climb_max": 2.2,
+     "wstar": 2.09,
      "top_ft": 5000,
      "top_max_ft": 5700,
      "base_ft": null,
      "cu": 0.0,
-     "t_f": 80,
+     "t_f": 79,
      "cloud": 0,
      "cl_mh": 0,
      "rain_mm": 0.0,
      "rain_p": 0,
      "cape": 0,
      "sfc": [
-      53,
+      60,
       9,
       13
      ],
      "w5k": [
-      67,
+      68,
       12
      ],
      "w10k": [
-      34,
+      37,
       21
      ],
      "okta": [
@@ -406,45 +545,49 @@
      ],
      "grid": {
       "1500": 2.0,
-      "2000": 2.0,
-      "2500": 2.0,
-      "3000": 2.0,
-      "3500": 2.0,
       "4000": 1.5,
-      "4500": 1.0,
+      "3000": 2.0,
+      "2000": 2.0,
       "5000": 1.0,
-      "5500": 0.5,
-      "6000": 0.5,
       "6500": 0.0,
-      "7000": 0.0
+      "7000": 0.0,
+      "2500": 2.0,
+      "4500": 1.0,
+      "3500": 2.0,
+      "5500": 0.5,
+      "6000": 0.5
      },
-     "score": 3.8
+     "models": [
+      "HRRR",
+      "RRFS"
+     ],
+     "score": 3.7
     },
     "14": {
-     "climb": 1.6,
-     "climb_max": 2.0,
-     "wstar": 1.93,
-     "top_ft": 4700,
+     "climb": 1.5,
+     "climb_max": 1.9,
+     "wstar": 1.88,
+     "top_ft": 4500,
      "top_max_ft": 5600,
      "base_ft": null,
      "cu": 0.0,
-     "t_f": 80,
+     "t_f": 79,
      "cloud": 0,
      "cl_mh": 0,
      "rain_mm": 0.0,
      "rain_p": 0,
      "cape": 0,
      "sfc": [
-      66,
+      47,
       10,
       13
      ],
      "w5k": [
-      66,
+      65,
       13
      ],
      "w10k": [
-      34,
+      38,
       22
      ],
      "okta": [
@@ -454,25 +597,29 @@
      ],
      "grid": {
       "1500": 2.0,
-      "2000": 1.5,
-      "2500": 2.0,
-      "3000": 2.0,
-      "3500": 1.5,
       "4000": 1.5,
-      "4500": 1.0,
+      "3000": 2.0,
+      "2000": 1.5,
       "5000": 1.0,
-      "5500": 0.5,
-      "6000": 0.0,
       "6500": 0.0,
-      "7000": 0.0
+      "7000": 0.0,
+      "2500": 2.0,
+      "4500": 1.0,
+      "3500": 1.5,
+      "5500": 0.5,
+      "6000": 0.0
      },
-     "score": 3.4
+     "models": [
+      "HRRR",
+      "RRFS"
+     ],
+     "score": 3.2
     },
     "15": {
      "climb": 0.9,
      "climb_max": 1.3,
-     "wstar": 1.46,
-     "top_ft": 4100,
+     "wstar": 1.42,
+     "top_ft": 3800,
      "top_max_ft": 5200,
      "base_ft": null,
      "cu": 0.0,
@@ -483,16 +630,16 @@
      "rain_p": 0,
      "cape": 0,
      "sfc": [
-      65,
+      56,
       9,
-      12
+      13
      ],
      "w5k": [
-      66,
+      63,
       13
      ],
      "w10k": [
-      34,
+      38,
       22
      ],
      "okta": [
@@ -502,25 +649,29 @@
      ],
      "grid": {
       "1500": 1.0,
-      "2000": 1.0,
-      "2500": 1.0,
-      "3000": 1.0,
-      "3500": 1.0,
       "4000": 1.0,
-      "4500": 0.5,
+      "3000": 1.0,
+      "2000": 1.0,
       "5000": 0.5,
+      "6500": 0.0,
+      "2500": 1.0,
+      "4500": 0.5,
+      "3500": 1.0,
       "5500": 0.0,
-      "6000": 0.0,
-      "6500": 0.0
+      "6000": 0.0
      },
-     "score": 2.4
+     "models": [
+      "HRRR",
+      "RRFS"
+     ],
+     "score": 2.3
     },
     "16": {
      "climb": 0.0,
      "climb_max": 0.1,
-     "wstar": 0.65,
-     "top_ft": 2600,
-     "top_max_ft": 4500,
+     "wstar": 0.64,
+     "top_ft": 2400,
+     "top_max_ft": 4600,
      "base_ft": null,
      "cu": 0.0,
      "t_f": 76,
@@ -530,17 +681,17 @@
      "rain_p": 0,
      "cape": 0,
      "sfc": [
-      69,
+      57,
       9,
       13
      ],
      "w5k": [
-      61,
-      15
+      60,
+      14
      ],
      "w10k": [
-      39,
-      22
+      41,
+      23
      ],
      "okta": [
       0,
@@ -549,17 +700,21 @@
      ],
      "grid": {
       "1500": 0.0,
+      "3000": 0.0,
       "2000": 0.0,
       "2500": 0.0,
-      "3000": 0.0,
       "3500": 0.0
      },
+     "models": [
+      "HRRR",
+      "RRFS"
+     ],
      "score": 1
     },
     "17": {
      "climb": 0.0,
      "climb_max": 0.0,
-     "wstar": 0.0,
+     "wstar": 0.07,
      "top_ft": 1800,
      "top_max_ft": 4400,
      "base_ft": null,
@@ -571,17 +726,17 @@
      "rain_p": 0,
      "cape": 0,
      "sfc": [
-      43,
+      22,
       6,
-      11
+      10
      ],
      "w5k": [
       61,
-      16
+      15
      ],
      "w10k": [
-      42,
-      22
+      46,
+      23
      ],
      "okta": [
       0,
@@ -589,6 +744,10 @@
       0
      ],
      "grid": {},
+     "models": [
+      "HRRR",
+      "RRFS"
+     ],
      "score": 1
     },
     "18": {
@@ -606,17 +765,17 @@
      "rain_p": 0,
      "cape": 0,
      "sfc": [
-      321,
-      6,
+      350,
+      5,
       8
      ],
      "w5k": [
-      61,
-      18
+      62,
+      17
      ],
      "w10k": [
-      47,
-      21
+      51,
+      22
      ],
      "okta": [
       0,
@@ -624,6 +783,10 @@
       0
      ],
      "grid": {},
+     "models": [
+      "HRRR",
+      "RRFS"
+     ],
      "score": 1
     },
     "19": {
@@ -641,17 +804,17 @@
      "rain_p": 0,
      "cape": 0,
      "sfc": [
-      45,
-      4,
+      55,
+      5,
       6
      ],
      "w5k": [
-      62,
-      19
+      64,
+      18
      ],
      "w10k": [
-      52,
-      20
+      56,
+      21
      ],
      "okta": [
       0,
@@ -659,6 +822,10 @@
       0
      ],
      "grid": {},
+     "models": [
+      "HRRR",
+      "RRFS"
+     ],
      "score": 1
     }
    },
@@ -668,21 +835,25 @@
      12,
      14
     ],
-    "score": 3.6,
-    "climb": 1.8,
-    "top_ft": 4800,
+    "score": 3.5,
+    "climb": 1.7,
+    "top_ft": 4700,
     "cu": false,
     "base_ft": null,
     "w5k": [
-     67,
+     68,
      12
     ],
-    "high_f": 80
+    "high_f": 79
    }
   },
   {
    "date": "2026-11-08",
-   "model": "GFS",
+   "model": "HRRR + RRFS",
+   "models": [
+    "HRRR",
+    "RRFS"
+   ],
    "hours": {
     "7": {
      "climb": 0.0,
@@ -692,23 +863,23 @@
      "top_max_ft": 4300,
      "base_ft": null,
      "cu": 0.0,
-     "t_f": 64,
+     "t_f": 63,
      "cloud": 0,
      "cl_mh": 0,
      "rain_mm": 0.0,
      "rain_p": 0,
      "cape": 0,
      "sfc": [
-      68,
+      67,
       9,
       13
      ],
      "w5k": [
-      81,
-      20
+      80,
+      17
      ],
      "w10k": [
-      49,
+      51,
       17
      ],
      "okta": [
@@ -717,34 +888,38 @@
       0
      ],
      "grid": {},
+     "models": [
+      "HRRR",
+      "RRFS"
+     ],
      "score": 1
     },
     "8": {
      "climb": 0.0,
      "climb_max": 0.0,
-     "wstar": 0.34,
+     "wstar": 0.33,
      "top_ft": 1900,
      "top_max_ft": 4400,
      "base_ft": null,
      "cu": 0.0,
-     "t_f": 69,
+     "t_f": 68,
      "cloud": 0,
      "cl_mh": 0,
      "rain_mm": 0.0,
      "rain_p": 0,
      "cape": 0,
      "sfc": [
-      59,
+      62,
       9,
-      20
+      18
      ],
      "w5k": [
-      80,
-      19
+      81,
+      16
      ],
      "w10k": [
-      55,
-      16
+      54,
+      17
      ],
      "okta": [
       0,
@@ -752,14 +927,18 @@
       0
      ],
      "grid": {},
+     "models": [
+      "HRRR",
+      "RRFS"
+     ],
      "score": 1
     },
     "9": {
-     "climb": 0.3,
-     "climb_max": 0.6,
-     "wstar": 0.99,
+     "climb": 0.2,
+     "climb_max": 0.5,
+     "wstar": 0.92,
      "top_ft": 2400,
-     "top_max_ft": 4500,
+     "top_max_ft": 4600,
      "base_ft": null,
      "cu": 0.0,
      "t_f": 74,
@@ -769,13 +948,57 @@
      "rain_p": 0,
      "cape": 0,
      "sfc": [
-      76,
-      14,
-      24
+      75,
+      13,
+      22
      ],
      "w5k": [
       81,
+      16
+     ],
+     "w10k": [
+      55,
       17
+     ],
+     "okta": [
+      0,
+      0,
+      0
+     ],
+     "grid": {
+      "3000": 0.0,
+      "1500": 0.0,
+      "2000": 0.0,
+      "2500": 0.0
+     },
+     "models": [
+      "HRRR",
+      "RRFS"
+     ],
+     "score": 1.1
+    },
+    "10": {
+     "climb": 0.8,
+     "climb_max": 1.4,
+     "wstar": 1.4,
+     "top_ft": 3000,
+     "top_max_ft": 4700,
+     "base_ft": null,
+     "cu": 0.0,
+     "t_f": 76,
+     "cloud": 0,
+     "cl_mh": 0,
+     "rain_mm": 0.0,
+     "rain_p": 0,
+     "cape": 0,
+     "sfc": [
+      78,
+      14,
+      21
+     ],
+     "w5k": [
+      81,
+      15
      ],
      "w10k": [
       57,
@@ -787,59 +1010,23 @@
       0
      ],
      "grid": {
-      "1500": 0.0,
-      "2000": 0.0,
-      "2500": 0.0,
-      "3000": 0.0
-     },
-     "score": 1.1
-    },
-    "10": {
-     "climb": 0.9,
-     "climb_max": 1.4,
-     "wstar": 1.44,
-     "top_ft": 2800,
-     "top_max_ft": 4700,
-     "base_ft": null,
-     "cu": 0.0,
-     "t_f": 77,
-     "cloud": 0,
-     "cl_mh": 0,
-     "rain_mm": 0.0,
-     "rain_p": 0,
-     "cape": 0,
-     "sfc": [
-      80,
-      16,
-      23
-     ],
-     "w5k": [
-      83,
-      16
-     ],
-     "w10k": [
-      59,
-      15
-     ],
-     "okta": [
-      0,
-      0,
-      0
-     ],
-     "grid": {
       "1500": 1.0,
+      "3000": 0.0,
       "2000": 1.0,
       "2500": 0.5,
-      "3000": 0.0,
       "3500": 0.0
      },
+     "models": [
+      "HRRR",
+      "RRFS"
+     ],
      "score": 1.9
     },
     "11": {
      "climb": 1.4,
      "climb_max": 1.9,
-     "wstar": 1.77,
-     "top_ft": 3400,
+     "wstar": 1.76,
+     "top_ft": 3700,
      "top_max_ft": 5000,
      "base_ft": null,
      "cu": 0.0,
@@ -850,17 +1037,17 @@
      "rain_p": 0,
      "cape": 0,
      "sfc": [
-      86,
-      15,
-      21
+      83,
+      14,
+      19
      ],
      "w5k": [
-      85,
-      15
+      82,
+      14
      ],
      "w10k": [
-      57,
-      15
+      55,
+      16
      ],
      "okta": [
       0,
@@ -869,21 +1056,125 @@
      ],
      "grid": {
       "1500": 1.5,
-      "2000": 1.5,
-      "2500": 1.5,
-      "3000": 1.0,
-      "3500": 1.0,
       "4000": 0.5,
+      "3000": 1.0,
+      "2000": 1.5,
+      "5000": 0.0,
+      "2500": 1.5,
       "4500": 0.5,
-      "5000": 0.0
+      "3500": 1.0
      },
-     "score": 2.7
+     "models": [
+      "HRRR",
+      "RRFS"
+     ],
+     "score": 2.8
     },
     "12": {
      "climb": 1.7,
      "climb_max": 2.1,
-     "wstar": 2.0,
-     "top_ft": 4100,
+     "wstar": 1.99,
+     "top_ft": 4300,
+     "top_max_ft": 5200,
+     "base_ft": null,
+     "cu": 0.0,
+     "t_f": 79,
+     "cloud": 0,
+     "cl_mh": 0,
+     "rain_mm": 0.0,
+     "rain_p": 0,
+     "cape": 0,
+     "sfc": [
+      85,
+      13,
+      18
+     ],
+     "w5k": [
+      82,
+      14
+     ],
+     "w10k": [
+      56,
+      15
+     ],
+     "okta": [
+      0,
+      0,
+      0
+     ],
+     "grid": {
+      "1500": 2.0,
+      "4000": 1.0,
+      "3000": 1.5,
+      "2000": 2.0,
+      "5000": 0.5,
+      "2500": 2.0,
+      "4500": 1.0,
+      "3500": 1.0,
+      "5500": 0.0
+     },
+     "models": [
+      "HRRR",
+      "RRFS"
+     ],
+     "score": 3.3
+    },
+    "13": {
+     "climb": 1.8,
+     "climb_max": 2.2,
+     "wstar": 2.05,
+     "top_ft": 4700,
+     "top_max_ft": 5300,
+     "base_ft": null,
+     "cu": 0.0,
+     "t_f": 80,
+     "cloud": 0,
+     "cl_mh": 0,
+     "rain_mm": 0.0,
+     "rain_p": 0,
+     "cape": 0,
+     "sfc": [
+      83,
+      13,
+      16
+     ],
+     "w5k": [
+      79,
+      12
+     ],
+     "w10k": [
+      56,
+      16
+     ],
+     "okta": [
+      0,
+      0,
+      0
+     ],
+     "grid": {
+      "1500": 2.0,
+      "4000": 1.5,
+      "3000": 2.0,
+      "2000": 2.0,
+      "5000": 0.5,
+      "6500": 0.0,
+      "2500": 2.0,
+      "4500": 1.0,
+      "3500": 1.5,
+      "5500": 0.0,
+      "6000": 0.0
+     },
+     "models": [
+      "HRRR",
+      "RRFS"
+     ],
+     "score": 3.6
+    },
+    "14": {
+     "climb": 1.5,
+     "climb_max": 2.0,
+     "wstar": 1.86,
+     "top_ft": 4500,
      "top_max_ft": 5200,
      "base_ft": null,
      "cu": 0.0,
@@ -894,63 +1185,18 @@
      "rain_p": 0,
      "cape": 0,
      "sfc": [
-      85,
-      14,
-      19
+      77,
+      12,
+      15
      ],
      "w5k": [
-      85,
-      14
+      74,
+      11
      ],
      "w10k": [
       60,
-      15
-     ],
-     "okta": [
-      0,
-      0,
-      0
-     ],
-     "grid": {
-      "1500": 2.0,
-      "2000": 2.0,
-      "2500": 2.0,
-      "3000": 1.5,
-      "3500": 1.0,
-      "4000": 1.0,
-      "4500": 1.0,
-      "5000": 0.5,
-      "5500": 0.0
-     },
-     "score": 3.3
-    },
-    "13": {
-     "climb": 1.8,
-     "climb_max": 2.2,
-     "wstar": 2.07,
-     "top_ft": 4600,
-     "top_max_ft": 5300,
-     "base_ft": null,
-     "cu": 0.0,
-     "t_f": 80,
-     "cloud": 0,
-     "cl_mh": 0,
-     "rain_mm": 0.0,
-     "rain_p": 0,
-     "cape": 0,
-     "sfc": [
-      82,
-      14,
       17
      ],
-     "w5k": [
-      80,
-      12
-     ],
-     "w10k": [
-      60,
-      16
-     ],
      "okta": [
       0,
       0,
@@ -958,91 +1204,49 @@
      ],
      "grid": {
       "1500": 2.0,
-      "2000": 2.0,
-      "2500": 2.0,
-      "3000": 2.0,
-      "3500": 1.5,
-      "4000": 1.5,
-      "4500": 1.0,
-      "5000": 0.5,
-      "5500": 0.0,
-      "6000": 0.0,
-      "6500": 0.0
-     },
-     "score": 3.6
-    },
-    "14": {
-     "climb": 1.4,
-     "climb_max": 1.7,
-     "wstar": 1.8,
-     "top_ft": 4400,
-     "top_max_ft": 5300,
-     "base_ft": null,
-     "cu": 0.0,
-     "t_f": 80,
-     "cloud": 0,
-     "cl_mh": 0,
-     "rain_mm": 0.0,
-     "rain_p": 0,
-     "cape": 0,
-     "sfc": [
-      114,
-      12,
-      14
-     ],
-     "w5k": [
-      83,
-      10
-     ],
-     "w10k": [
-      61,
-      15
-     ],
-     "okta": [
-      0,
-      0,
-      0
-     ],
-     "grid": {
-      "1500": 1.5,
-      "2000": 1.5,
-      "2500": 1.5,
-      "3000": 1.5,
-      "3500": 1.5,
       "4000": 1.0,
-      "4500": 0.5,
+      "3000": 1.5,
+      "2000": 1.5,
       "5000": 0.5,
+      "6500": 0.0,
+      "2500": 2.0,
+      "4500": 0.5,
+      "3500": 1.5,
       "5500": 0.0,
       "6000": 0.0
      },
-     "score": 3.0
+     "models": [
+      "HRRR",
+      "RRFS"
+     ],
+     "score": 3.2
     },
     "15": {
-     "climb": 0.7,
-     "climb_max": 1.0,
-     "wstar": 1.27,
-     "top_ft": 3400,
-     "top_max_ft": 5100,
+     "climb": 0.8,
+     "climb_max": 1.3,
+     "wstar": 1.37,
+     "top_ft": 3600,
+     "top_max_ft": 4800,
      "base_ft": null,
      "cu": 0.0,
-     "t_f": 79,
+     "t_f": 78,
      "cloud": 0,
      "cl_mh": 0,
      "rain_mm": 0.0,
      "rain_p": 0,
      "cape": 0,
      "sfc": [
-      151,
-      11,
-      12
+      78,
+      12,
+      16
      ],
      "w5k": [
-      82,
-      9
+      72,
+      11
      ],
      "w10k": [
-      61,
-      14
+      65,
+      17
      ],
      "okta": [
       0,
@@ -1051,22 +1255,27 @@
      ],
      "grid": {
       "1500": 1.0,
+      "4000": 0.5,
+      "3000": 1.0,
       "2000": 1.0,
-      "2500": 0.5,
-      "3000": 0.5,
-      "3500": 0.5,
-      "4000": 0.0,
-      "4500": 0.0,
       "5000": 0.0,
-      "5500": 0.0
+      "2500": 1.0,
+      "4500": 0.5,
+      "3500": 0.5,
+      "5500": 0.0,
+      "6000": 0.0
      },
-     "score": 1.9
+     "models": [
+      "HRRR",
+      "RRFS"
+     ],
+     "score": 2.1
     },
     "16": {
      "climb": 0.0,
-     "climb_max": 0.0,
-     "wstar": 0.45,
-     "top_ft": 1900,
+     "climb_max": 0.1,
+     "wstar": 0.56,
+     "top_ft": 2100,
      "top_max_ft": 4500,
      "base_ft": null,
      "cu": 0.0,
@@ -1077,254 +1286,17 @@
      "rain_p": 0,
      "cape": 0,
      "sfc": [
-      214,
-      8,
-      9
+      77,
+      12,
+      19
      ],
      "w5k": [
-      75,
-      8
+      73,
+      11
      ],
      "w10k": [
-      59,
-      12
-     ],
-     "okta": [
-      0,
-      0,
-      0
-     ],
-     "grid": {
-      "1500": 0.0
-     },
-     "score": 1
-    },
-    "17": {
-     "climb": 0.0,
-     "climb_max": 0.0,
-     "wstar": 0.16,
-     "top_ft": 1800,
-     "top_max_ft": 4300,
-     "base_ft": null,
-     "cu": 0.0,
-     "t_f": 69,
-     "cloud": 0,
-     "cl_mh": 0,
-     "rain_mm": 0.0,
-     "rain_p": 0,
-     "cape": 0,
-     "sfc": [
-      39,
-      4,
-      4
-     ],
-     "w5k": [
-      72,
-      7
-     ],
-     "w10k": [
-      58,
-      10
-     ],
-     "okta": [
-      0,
-      0,
-      0
-     ],
-     "grid": {},
-     "score": 1
-    },
-    "18": {
-     "climb": 0.0,
-     "climb_max": 0.0,
-     "wstar": 0.0,
-     "top_ft": 1800,
-     "top_max_ft": 4300,
-     "base_ft": null,
-     "cu": 0.0,
-     "t_f": 68,
-     "cloud": 0,
-     "cl_mh": 0,
-     "rain_mm": 0.0,
-     "rain_p": 0,
-     "cape": 0,
-     "sfc": [
-      74,
-      5,
-      5
-     ],
-     "w5k": [
-      74,
-      7
-     ],
-     "w10k": [
-      62,
-      9
-     ],
-     "okta": [
-      0,
-      0,
-      0
-     ],
-     "grid": {},
-     "score": 1
-    },
-    "19": {
-     "climb": 0.0,
-     "climb_max": 0.0,
-     "wstar": 0.0,
-     "top_ft": 1800,
-     "top_max_ft": 4300,
-     "base_ft": null,
-     "cu": 0.0,
-     "t_f": 67,
-     "cloud": 0,
-     "cl_mh": 0,
-     "rain_mm": 0.0,
-     "rain_p": 0,
-     "cape": 0,
-     "sfc": [
-      79,
-      6,
-      5
-     ],
-     "w5k": [
-      81,
-      7
-     ],
-     "w10k": [
-      66,
-      9
-     ],
-     "okta": [
-      0,
-      0,
-      0
-     ],
-     "grid": {},
-     "score": 1
-    }
-   },
-   "label": "Sunday",
-   "summary": {
-    "window": [
-     12,
-     14
-    ],
-    "score": 3.3,
-    "climb": 1.6,
-    "top_ft": 4400,
-    "cu": false,
-    "base_ft": null,
-    "w5k": [
-     80,
-     12
-    ],
-    "high_f": 80
-   }
-  },
-  {
-   "date": "2026-11-09",
-   "model": "GFS",
-   "hours": {
-    "7": {
-     "climb": 0.0,
-     "climb_max": 0.0,
-     "wstar": 0.16,
-     "top_ft": 1800,
-     "top_max_ft": 4300,
-     "base_ft": null,
-     "cu": 0.0,
-     "t_f": 65,
-     "cloud": 6,
-     "cl_mh": 5,
-     "rain_mm": 0.0,
-     "rain_p": 0,
-     "cape": 0,
-     "sfc": [
-      80,
-      6,
-      5
-     ],
-     "w5k": [
-      101,
-      3
-     ],
-     "w10k": [
-      67,
-      2
-     ],
-     "okta": [
-      0,
-      0,
-      0
-     ],
-     "grid": {},
-     "score": 1
-    },
-    "8": {
-     "climb": 0.0,
-     "climb_max": 0.0,
-     "wstar": 0.36,
-     "top_ft": 1900,
-     "top_max_ft": 4400,
-     "base_ft": null,
-     "cu": 0.0,
-     "t_f": 70,
-     "cloud": 6,
-     "cl_mh": 5,
-     "rain_mm": 0.0,
-     "rain_p": 0,
-     "cape": 0,
-     "sfc": [
-      81,
-      5,
-      5
-     ],
-     "w5k": [
-      103,
-      3
-     ],
-     "w10k": [
-      63,
-      3
-     ],
-     "okta": [
-      0,
-      0,
-      0
-     ],
-     "grid": {
-      "1500": 0.0
-     },
-     "score": 1
-    },
-    "9": {
-     "climb": 0.0,
-     "climb_max": 0.2,
-     "wstar": 0.71,
-     "top_ft": 2200,
-     "top_max_ft": 5000,
-     "base_ft": null,
-     "cu": 0.0,
-     "t_f": 74,
-     "cloud": 6,
-     "cl_mh": 5,
-     "rain_mm": 0.0,
-     "rain_p": 0,
-     "cape": 0,
-     "sfc": [
-      84,
-      3,
-      4
-     ],
-     "w5k": [
-      106,
-      3
-     ],
-     "w10k": [
-      62,
-      3
+      69,
+      17
      ],
      "okta": [
       0,
@@ -1336,348 +1308,48 @@
       "2000": 0.0,
       "2500": 0.0
      },
-     "score": 1
-    },
-    "10": {
-     "climb": 0.6,
-     "climb_max": 0.8,
-     "wstar": 1.18,
-     "top_ft": 2900,
-     "top_max_ft": 5400,
-     "base_ft": null,
-     "cu": 0.0,
-     "t_f": 77,
-     "cloud": 6,
-     "cl_mh": 5,
-     "rain_mm": 0.0,
-     "rain_p": 0,
-     "cape": 0,
-     "sfc": [
-      214,
-      3,
-      2
+     "models": [
+      "HRRR",
+      "RRFS"
      ],
-     "w5k": [
-      103,
-      3
-     ],
-     "w10k": [
-      56,
-      3
-     ],
-     "okta": [
-      0,
-      0,
-      0
-     ],
-     "grid": {
-      "1500": 0.5,
-      "2000": 0.5,
-      "2500": 0.5,
-      "3000": 0.5,
-      "3500": 0.0,
-      "4000": 0.0
-     },
-     "score": 1.7
-    },
-    "11": {
-     "climb": 1.1,
-     "climb_max": 1.3,
-     "wstar": 1.54,
-     "top_ft": 3700,
-     "top_max_ft": 6000,
-     "base_ft": null,
-     "cu": 0.0,
-     "t_f": 78,
-     "cloud": 7,
-     "cl_mh": 7,
-     "rain_mm": 0.0,
-     "rain_p": 0,
-     "cape": 0,
-     "sfc": [
-      259,
-      4,
-      3
-     ],
-     "w5k": [
-      103,
-      3
-     ],
-     "w10k": [
-      52,
-      3
-     ],
-     "okta": [
-      0,
-      0,
-      1
-     ],
-     "grid": {
-      "1500": 1.0,
-      "2000": 1.0,
-      "2500": 1.0,
-      "3000": 1.0,
-      "3500": 0.5,
-      "4000": 0.5,
-      "4500": 0.5,
-      "5000": 0.5,
-      "5500": 0.5
-     },
-     "score": 2.5
-    },
-    "12": {
-     "climb": 1.3,
-     "climb_max": 1.5,
-     "wstar": 1.73,
-     "top_ft": 4200,
-     "top_max_ft": 6300,
-     "base_ft": null,
-     "cu": 0.0,
-     "t_f": 79,
-     "cloud": 7,
-     "cl_mh": 6,
-     "rain_mm": 0.0,
-     "rain_p": 0,
-     "cape": 0,
-     "sfc": [
-      266,
-      6,
-      4
-     ],
-     "w5k": [
-      94,
-      2
-     ],
-     "w10k": [
-      45,
-      2
-     ],
-     "okta": [
-      0,
-      0,
-      1
-     ],
-     "grid": {
-      "1500": 1.5,
-      "2000": 1.0,
-      "2500": 1.5,
-      "3000": 1.0,
-      "3500": 1.0,
-      "4000": 0.5,
-      "4500": 0.5,
-      "5000": 0.5,
-      "5500": 0.5,
-      "6000": 0.5,
-      "6500": 0.0
-     },
-     "score": 2.9
-    },
-    "13": {
-     "climb": 1.4,
-     "climb_max": 1.5,
-     "wstar": 1.77,
-     "top_ft": 4300,
-     "top_max_ft": 6400,
-     "base_ft": null,
-     "cu": 0.0,
-     "t_f": 80,
-     "cloud": 6,
-     "cl_mh": 5,
-     "rain_mm": 0.0,
-     "rain_p": 0,
-     "cape": 0,
-     "sfc": [
-      271,
-      8,
-      5
-     ],
-     "w5k": [
-      25,
-      2
-     ],
-     "w10k": [
-      48,
-      3
-     ],
-     "okta": [
-      0,
-      0,
-      0
-     ],
-     "grid": {
-      "1500": 1.5,
-      "2000": 1.5,
-      "2500": 1.5,
-      "3000": 1.5,
-      "3500": 1.0,
-      "4000": 0.5,
-      "4500": 0.5,
-      "5000": 0.5,
-      "5500": 0.5,
-      "6000": 0.5,
-      "6500": 0.0
-     },
-     "score": 3.0
-    },
-    "14": {
-     "climb": 1.1,
-     "climb_max": 1.3,
-     "wstar": 1.56,
-     "top_ft": 3800,
-     "top_max_ft": 6300,
-     "base_ft": null,
-     "cu": 0.0,
-     "t_f": 79,
-     "cloud": 6,
-     "cl_mh": 5,
-     "rain_mm": 0.0,
-     "rain_p": 0,
-     "cape": 0,
-     "sfc": [
-      273,
-      9,
-      5
-     ],
-     "w5k": [
-      348,
-      2
-     ],
-     "w10k": [
-      56,
-      3
-     ],
-     "okta": [
-      0,
-      0,
-      0
-     ],
-     "grid": {
-      "1500": 1.5,
-      "2000": 1.0,
-      "2500": 1.0,
-      "3000": 1.0,
-      "3500": 0.5,
-      "4000": 0.5,
-      "4500": 0.0,
-      "5000": 0.5,
-      "5500": 0.5
-     },
-     "score": 2.5
-    },
-    "15": {
-     "climb": 0.5,
-     "climb_max": 0.8,
-     "wstar": 1.13,
-     "top_ft": 3000,
-     "top_max_ft": 6000,
-     "base_ft": null,
-     "cu": 0.0,
-     "t_f": 78,
-     "cloud": 65,
-     "cl_mh": 65,
-     "rain_mm": 0.0,
-     "rain_p": 0,
-     "cape": 0,
-     "sfc": [
-      277,
-      8,
-      6
-     ],
-     "w5k": [
-      348,
-      3
-     ],
-     "w10k": [
-      50,
-      3
-     ],
-     "okta": [
-      0,
-      0,
-      5
-     ],
-     "grid": {
-      "1500": 0.5,
-      "2000": 0.5,
-      "2500": 0.5,
-      "3000": 0.5,
-      "3500": 0.0,
-      "4000": 0.0,
-      "4500": 0.0
-     },
-     "score": 1.6
-    },
-    "16": {
-     "climb": 0.0,
-     "climb_max": 0.2,
-     "wstar": 0.42,
-     "top_ft": 1900,
-     "top_max_ft": 4300,
-     "base_ft": null,
-     "cu": 0.0,
-     "t_f": 75,
-     "cloud": 59,
-     "cl_mh": 58,
-     "rain_mm": 0.0,
-     "rain_p": 0,
-     "cape": 0,
-     "sfc": [
-      284,
-      6,
-      6
-     ],
-     "w5k": [
-      350,
-      3
-     ],
-     "w10k": [
-      47,
-      2
-     ],
-     "okta": [
-      0,
-      0,
-      5
-     ],
-     "grid": {
-      "1500": 0.0,
-      "2000": 0.0
-     },
      "score": 1
     },
     "17": {
      "climb": 0.0,
      "climb_max": 0.0,
-     "wstar": 0.17,
+     "wstar": 0.2,
      "top_ft": 1800,
-     "top_max_ft": 4300,
+     "top_max_ft": 4400,
      "base_ft": null,
      "cu": 0.0,
-     "t_f": 69,
-     "cloud": 37,
-     "cl_mh": 36,
+     "t_f": 70,
+     "cloud": 0,
+     "cl_mh": 0,
      "rain_mm": 0.0,
-     "rain_p": 0,
+     "rain_p": null,
      "cape": 0,
      "sfc": [
-      299,
-      4,
-      4
+      71,
+      8,
+      14
      ],
      "w5k": [
-      344,
-      3
+      66,
+      13
      ],
      "w10k": [
-      56,
-      3
+      58,
+      20
      ],
      "okta": [
       0,
       0,
-      3
+      0
      ],
      "grid": {},
+     "models": [
+      "RRFS"
+     ],
      "score": 1
     },
     "18": {
@@ -1685,34 +1357,37 @@
      "climb_max": 0.0,
      "wstar": 0.0,
      "top_ft": 1800,
-     "top_max_ft": 4300,
+     "top_max_ft": 4400,
      "base_ft": null,
      "cu": 0.0,
      "t_f": 67,
-     "cloud": 30,
-     "cl_mh": 29,
+     "cloud": 0,
+     "cl_mh": 0,
      "rain_mm": 0.0,
-     "rain_p": 0,
+     "rain_p": null,
      "cape": 0,
      "sfc": [
-      329,
-      2,
-      2
+      73,
+      7,
+      11
      ],
      "w5k": [
-      353,
-      3
+      68,
+      14
      ],
      "w10k": [
-      68,
-      3
+      61,
+      19
      ],
      "okta": [
       0,
       0,
-      2
+      0
      ],
      "grid": {},
+     "models": [
+      "RRFS"
+     ],
      "score": 1
     },
     "19": {
@@ -1720,27 +1395,585 @@
      "climb_max": 0.0,
      "wstar": 0.0,
      "top_ft": 1800,
-     "top_max_ft": 4300,
+     "top_max_ft": 4400,
      "base_ft": null,
      "cu": 0.0,
      "t_f": 66,
-     "cloud": 10,
-     "cl_mh": 9,
+     "cloud": 0,
+     "cl_mh": 0,
+     "rain_mm": 0.0,
+     "rain_p": null,
+     "cape": 0,
+     "sfc": [
+      63,
+      8,
+      11
+     ],
+     "w5k": [
+      68,
+      15
+     ],
+     "w10k": [
+      63,
+      19
+     ],
+     "okta": [
+      0,
+      0,
+      0
+     ],
+     "grid": {},
+     "models": [
+      "RRFS"
+     ],
+     "score": 1
+    }
+   },
+   "label": "Sunday",
+   "summary": {
+    "window": [
+     12,
+     14
+    ],
+    "score": 3.4,
+    "climb": 1.7,
+    "top_ft": 4500,
+    "cu": false,
+    "base_ft": null,
+    "w5k": [
+     79,
+     12
+    ],
+    "high_f": 80
+   }
+  },
+  {
+   "date": "2026-11-09",
+   "model": "RRFS + GFS + ECMWF + ICON",
+   "models": [
+    "RRFS",
+    "GFS",
+    "ECMWF",
+    "ICON"
+   ],
+   "hours": {
+    "7": {
+     "climb": 0.0,
+     "climb_max": 0.0,
+     "wstar": 0.17,
+     "top_ft": 1800,
+     "top_max_ft": 4400,
+     "base_ft": null,
+     "cu": 0.0,
+     "t_f": 61,
+     "cloud": 1,
+     "cl_mh": 1,
      "rain_mm": 0.0,
      "rain_p": 0,
      "cape": 0,
      "sfc": [
-      28,
-      2,
-      2
+      92,
+      7,
+      13
      ],
      "w5k": [
-      354,
-      3
+      104,
+      8
      ],
      "w10k": [
-      73,
-      3
+      64,
+      9
+     ],
+     "okta": [
+      0,
+      0,
+      0
+     ],
+     "grid": {},
+     "models": [
+      "RRFS",
+      "GFS",
+      "ECMWF",
+      "ICON"
+     ],
+     "score": 1
+    },
+    "8": {
+     "climb": 0.0,
+     "climb_max": 0.0,
+     "wstar": 0.37,
+     "top_ft": 1900,
+     "top_max_ft": 4500,
+     "base_ft": null,
+     "cu": 0.0,
+     "t_f": 67,
+     "cloud": 1,
+     "cl_mh": 1,
+     "rain_mm": 0.0,
+     "rain_p": 0,
+     "cape": 0,
+     "sfc": [
+      89,
+      8,
+      15
+     ],
+     "w5k": [
+      103,
+      9
+     ],
+     "w10k": [
+      62,
+      9
+     ],
+     "okta": [
+      0,
+      0,
+      0
+     ],
+     "grid": {
+      "1500": 0.0
+     },
+     "models": [
+      "RRFS",
+      "GFS",
+      "ECMWF",
+      "ICON"
+     ],
+     "score": 1
+    },
+    "9": {
+     "climb": 0.1,
+     "climb_max": 0.3,
+     "wstar": 0.8,
+     "top_ft": 2300,
+     "top_max_ft": 4800,
+     "base_ft": null,
+     "cu": 0.0,
+     "t_f": 73,
+     "cloud": 1,
+     "cl_mh": 1,
+     "rain_mm": 0.0,
+     "rain_p": 0,
+     "cape": 0,
+     "sfc": [
+      91,
+      7,
+      13
+     ],
+     "w5k": [
+      106,
+      9
+     ],
+     "w10k": [
+      63,
+      9
+     ],
+     "okta": [
+      0,
+      0,
+      0
+     ],
+     "grid": {
+      "1500": 0.0,
+      "2000": 0.5,
+      "2500": 0.0
+     },
+     "models": [
+      "RRFS",
+      "GFS",
+      "ECMWF",
+      "ICON"
+     ],
+     "score": 1.1
+    },
+    "10": {
+     "climb": 0.8,
+     "climb_max": 1.2,
+     "wstar": 1.35,
+     "top_ft": 3400,
+     "top_max_ft": 5100,
+     "base_ft": null,
+     "cu": 0.0,
+     "t_f": 76,
+     "cloud": 1,
+     "cl_mh": 1,
+     "rain_mm": 0.0,
+     "rain_p": 0,
+     "cape": 0,
+     "sfc": [
+      100,
+      7,
+      12
+     ],
+     "w5k": [
+      105,
+      9
+     ],
+     "w10k": [
+      63,
+      9
+     ],
+     "okta": [
+      0,
+      0,
+      0
+     ],
+     "grid": {
+      "1500": 0.5,
+      "4000": 0.5,
+      "3000": 1.0,
+      "2000": 0.5,
+      "5000": 0.5,
+      "2500": 0.5,
+      "4500": 0.5,
+      "3500": 0.5,
+      "5500": 0.0
+     },
+     "models": [
+      "RRFS",
+      "GFS",
+      "ECMWF",
+      "ICON"
+     ],
+     "score": 2.0
+    },
+    "11": {
+     "climb": 1.4,
+     "climb_max": 1.9,
+     "wstar": 1.78,
+     "top_ft": 4400,
+     "top_max_ft": 5500,
+     "base_ft": null,
+     "cu": 0.0,
+     "t_f": 78,
+     "cloud": 1,
+     "cl_mh": 1,
+     "rain_mm": 0.0,
+     "rain_p": 0,
+     "cape": 0,
+     "sfc": [
+      97,
+      7,
+      10
+     ],
+     "w5k": [
+      105,
+      8
+     ],
+     "w10k": [
+      63,
+      9
+     ],
+     "okta": [
+      0,
+      0,
+      0
+     ],
+     "grid": {
+      "1500": 1.5,
+      "4000": 1.0,
+      "3000": 1.5,
+      "2000": 1.5,
+      "5000": 0.5,
+      "6500": 0.0,
+      "2500": 1.5,
+      "4500": 0.5,
+      "3500": 1.5,
+      "5500": 0.0,
+      "6000": 0.0
+     },
+     "models": [
+      "RRFS",
+      "GFS",
+      "ECMWF",
+      "ICON"
+     ],
+     "score": 3.0
+    },
+    "12": {
+     "climb": 1.7,
+     "climb_max": 2.1,
+     "wstar": 1.99,
+     "top_ft": 4900,
+     "top_max_ft": 5600,
+     "base_ft": null,
+     "cu": 0.0,
+     "t_f": 80,
+     "cloud": 1,
+     "cl_mh": 1,
+     "rain_mm": 0.0,
+     "rain_p": 0,
+     "cape": 1,
+     "sfc": [
+      84,
+      6,
+      9
+     ],
+     "w5k": [
+      98,
+      7
+     ],
+     "w10k": [
+      61,
+      9
+     ],
+     "okta": [
+      0,
+      0,
+      0
+     ],
+     "grid": {
+      "1500": 2.0,
+      "4000": 1.5,
+      "3000": 2.0,
+      "2000": 2.0,
+      "5000": 1.0,
+      "6500": 0.0,
+      "7000": 0.0,
+      "2500": 2.0,
+      "4500": 1.0,
+      "3500": 2.0,
+      "5500": 0.5,
+      "6000": 0.0
+     },
+     "models": [
+      "RRFS",
+      "GFS",
+      "ECMWF",
+      "ICON"
+     ],
+     "score": 3.6
+    },
+    "13": {
+     "climb": 1.7,
+     "climb_max": 2.1,
+     "wstar": 2.0,
+     "top_ft": 4700,
+     "top_max_ft": 5600,
+     "base_ft": null,
+     "cu": 0.0,
+     "t_f": 80,
+     "cloud": 1,
+     "cl_mh": 1,
+     "rain_mm": 0.0,
+     "rain_p": 0,
+     "cape": 1,
+     "sfc": [
+      7,
+      7,
+      11
+     ],
+     "w5k": [
+      81,
+      6
+     ],
+     "w10k": [
+      62,
+      9
+     ],
+     "okta": [
+      0,
+      0,
+      0
+     ],
+     "grid": {
+      "1500": 2.0,
+      "4000": 1.5,
+      "3000": 2.0,
+      "2000": 1.5,
+      "5000": 1.0,
+      "6500": 0.0,
+      "7000": 0.0,
+      "2500": 2.0,
+      "4500": 1.0,
+      "3500": 1.5,
+      "5500": 0.5,
+      "6000": 0.0
+     },
+     "models": [
+      "RRFS",
+      "GFS",
+      "ECMWF",
+      "ICON"
+     ],
+     "score": 3.5
+    },
+    "14": {
+     "climb": 1.5,
+     "climb_max": 1.9,
+     "wstar": 1.81,
+     "top_ft": 4300,
+     "top_max_ft": 5500,
+     "base_ft": null,
+     "cu": 0.0,
+     "t_f": 79,
+     "cloud": 2,
+     "cl_mh": 1,
+     "rain_mm": 0.0,
+     "rain_p": 0,
+     "cape": 0,
+     "sfc": [
+      10,
+      7,
+      11
+     ],
+     "w5k": [
+      65,
+      5
+     ],
+     "w10k": [
+      62,
+      9
+     ],
+     "okta": [
+      0,
+      0,
+      0
+     ],
+     "grid": {
+      "1500": 1.0,
+      "4000": 1.5,
+      "3000": 2.0,
+      "2000": 1.0,
+      "5000": 1.0,
+      "6500": 0.0,
+      "2500": 2.0,
+      "4500": 1.0,
+      "3500": 1.5,
+      "5500": 0.5,
+      "6000": 0.0
+     },
+     "models": [
+      "RRFS",
+      "GFS",
+      "ECMWF",
+      "ICON"
+     ],
+     "score": 3.1
+    },
+    "15": {
+     "climb": 0.9,
+     "climb_max": 1.3,
+     "wstar": 1.4,
+     "top_ft": 3500,
+     "top_max_ft": 5300,
+     "base_ft": null,
+     "cu": 0.0,
+     "t_f": 77,
+     "cloud": 8,
+     "cl_mh": 8,
+     "rain_mm": 0.0,
+     "rain_p": 0,
+     "cape": 0,
+     "sfc": [
+      357,
+      8,
+      11
+     ],
+     "w5k": [
+      57,
+      6
+     ],
+     "w10k": [
+      59,
+      9
+     ],
+     "okta": [
+      0,
+      0,
+      1
+     ],
+     "grid": {
+      "1500": 0.5,
+      "4000": 1.0,
+      "3000": 1.0,
+      "2000": 1.0,
+      "5000": 0.5,
+      "6500": 0.0,
+      "2500": 1.0,
+      "4500": 1.0,
+      "3500": 1.0,
+      "5500": 0.0,
+      "6000": 0.0
+     },
+     "models": [
+      "RRFS",
+      "GFS",
+      "ECMWF",
+      "ICON"
+     ],
+     "score": 2.2
+    },
+    "16": {
+     "climb": 0.1,
+     "climb_max": 0.4,
+     "wstar": 0.69,
+     "top_ft": 2300,
+     "top_max_ft": 4800,
+     "base_ft": null,
+     "cu": 0.0,
+     "t_f": 75,
+     "cloud": 9,
+     "cl_mh": 8,
+     "rain_mm": 0.0,
+     "rain_p": 0,
+     "cape": 0,
+     "sfc": [
+      1,
+      7,
+      12
+     ],
+     "w5k": [
+      60,
+      7
+     ],
+     "w10k": [
+      55,
+      9
+     ],
+     "okta": [
+      0,
+      0,
+      1
+     ],
+     "grid": {
+      "1500": 0.0,
+      "2000": 0.0
+     },
+     "models": [
+      "RRFS",
+      "GFS",
+      "ECMWF",
+      "ICON"
+     ],
+     "score": 1.1
+    },
+    "17": {
+     "climb": 0.0,
+     "climb_max": 0.0,
+     "wstar": 0.22,
+     "top_ft": 1800,
+     "top_max_ft": 4400,
+     "base_ft": null,
+     "cu": 0.0,
+     "t_f": 69,
+     "cloud": 6,
+     "cl_mh": 6,
+     "rain_mm": 0.0,
+     "rain_p": 0,
+     "cape": 0,
+     "sfc": [
+      21,
+      4,
+      9
+     ],
+     "w5k": [
+      61,
+      6
+     ],
+     "w10k": [
+      55,
+      9
      ],
      "okta": [
       0,
@@ -1748,23 +1981,111 @@
       1
      ],
      "grid": {},
+     "models": [
+      "RRFS",
+      "GFS",
+      "ECMWF",
+      "ICON"
+     ],
+     "score": 1
+    },
+    "18": {
+     "climb": 0.0,
+     "climb_max": 0.0,
+     "wstar": 0.0,
+     "top_ft": 1800,
+     "top_max_ft": 4400,
+     "base_ft": null,
+     "cu": 0.0,
+     "t_f": 66,
+     "cloud": 8,
+     "cl_mh": 8,
+     "rain_mm": 0.0,
+     "rain_p": 0,
+     "cape": 0,
+     "sfc": [
+      68,
+      3,
+      7
+     ],
+     "w5k": [
+      58,
+      6
+     ],
+     "w10k": [
+      56,
+      9
+     ],
+     "okta": [
+      0,
+      0,
+      1
+     ],
+     "grid": {},
+     "models": [
+      "RRFS",
+      "GFS",
+      "ECMWF",
+      "ICON"
+     ],
+     "score": 1
+    },
+    "19": {
+     "climb": 0.0,
+     "climb_max": 0.0,
+     "wstar": 0.0,
+     "top_ft": 1800,
+     "top_max_ft": 4400,
+     "base_ft": null,
+     "cu": 0.0,
+     "t_f": 65,
+     "cloud": 7,
+     "cl_mh": 7,
+     "rain_mm": 0.0,
+     "rain_p": 0,
+     "cape": 0,
+     "sfc": [
+      75,
+      5,
+      9
+     ],
+     "w5k": [
+      49,
+      6
+     ],
+     "w10k": [
+      52,
+      9
+     ],
+     "okta": [
+      0,
+      0,
+      1
+     ],
+     "grid": {},
+     "models": [
+      "RRFS",
+      "GFS",
+      "ECMWF",
+      "ICON"
+     ],
      "score": 1
     }
    },
    "label": "Monday",
    "summary": {
     "window": [
-     11,
-     13
+     12,
+     14
     ],
-    "score": 2.8,
-    "climb": 1.3,
-    "top_ft": 4100,
+    "score": 3.4,
+    "climb": 1.6,
+    "top_ft": 4600,
     "cu": false,
     "base_ft": null,
     "w5k": [
-     94,
-     2
+     81,
+     6
     ],
     "high_f": 80
    }
