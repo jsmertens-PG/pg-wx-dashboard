@@ -65,8 +65,8 @@ h1 small{font-size:11px;font-weight:600;color:#b45309;background:#fef3c7;border-
 <div class="ov" id="ov"><div class="sheet"><div class="bar"><div class="tg"><span>Text</span><button type="button" id="tog" role="switch" aria-checked="true" aria-label="Graphic view"><i></i></button><span>Graphic</span></div><button class="x" id="x" aria-label="Close">×</button></div>
   <div id="view"></div><div class="sum" id="sum"></div>
   <div class="dnav"><button type="button" id="prev" aria-label="Previous day">‹</button><span id="dlab"></span><button type="button" id="next" aria-label="Next day">›</button></div></div></div>
-<script src="scripts/region/panel.js"></script>
-<script src="scripts/region/regionmap.js"></script>
+<script src="scripts/region/panel.js?v=202611070754"></script>
+<script src="scripts/region/regionmap.js?v=202611070754"></script>
 <script>
 let RADAR = null;
 let D = null, day = 0, graphic = true, openR = null;
@@ -130,7 +130,7 @@ document.getElementById('tog').onclick = () => { graphic = !graphic; try { local
       document.getElementById('days').innerHTML = ref.days.map((d, i) => {
         const dt = new Date(d.date + 'T12:00:00');
         const wd = i === 0 && d.label === 'Today' ? 'Today' : dt.toLocaleDateString('en-US', { weekday: 'short' });
-        return `<button type="button" title="${d.label} · ${(d.models || []).join(' + ')}"><span class="mm">${miniMapSVG(D, i, RADAR)}</span><span class="dl">${wd}<b>${dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</b></span></button>`;
+        return `<button type="button" title="${d.label} · ${(d.models || []).join(' + ')}">${typeof miniMapSVG === 'function' ? `<span class="mm">${miniMapSVG(D, i, RADAR)}</span>` : ''}<span class="dl">${wd}<b>${dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</b></span></button>`;
       }).join('');
     };
     renderDays();
