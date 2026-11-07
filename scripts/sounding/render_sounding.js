@@ -8,6 +8,7 @@ let forecast = null;
 try { forecast = JSON.parse(fs.readFileSync(path.join(dir, 'surface_forecast.json'), 'utf8')); } catch (e) { /* optional */ }
 const { svg, analysis: A } = renderSVG(snd, { forecast });
 fs.writeFileSync(path.join(dir, 'nkx_latest.svg'), svg);
+fs.writeFileSync(path.join(dir, 'nkx_latest_heatmap.svg'), renderSVG(snd, { forecast, layout: 'heatmap' }).svg);
 const s = snd.levels[0];
 const summary = {
   title: snd.title,

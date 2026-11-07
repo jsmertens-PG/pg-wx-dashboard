@@ -163,15 +163,12 @@ function analyze(lv, opts = {}) {
     return 20;
   };
   const thermals = [];
-  const n = opts.nThermals || 7;
-  for (let k = 0; k < n; k++) {
-    const Ts = Math.round(T0) + 8 + 6 * k;
-    let top = null;
-    for (let z = z0 + 0.05; z <= 20; z += 0.01) {
-      const T = interp(lv, 't', z); if (!isFinite(T)) break;
-      if (Ts - lapseAdiabat * (z - z0) - T < EXCESS) { top = z; break; }
-    }
-    if (top === null) top = 20;
+  const FC0 = opts.forecast && isFinite(opts.forecast.median_f) ? opts.forecast : null;
+  const tlo = FC0 ? Math.min(FC0.p10_f, FC0.median_f) - 5 : T0 - 2;
+  const thi = FC0 ? Math.max(FC0.p90_f, FC0.median_f) + 5 : T0 + 18;
+  for (let Ts = Math.floor(tlo / 5) * 5; Ts <= Math.ceil(thi / 5) * 5; Ts += 5) {
+    if (Ts <= T0 - 8) continue;
+    const top = topFor(Ts);
     thermals.push({ ts: Ts, z0, top, ttop: Ts - lapseAdiabat * (top - z0) });
   }
   // lapse rate between levels (thinned to >= ~0.35 kft spacing)
@@ -212,25 +209,125 @@ function prettyTitle(t) {
   return m ? { main: `${m[1].toUpperCase()} sounding`, sub: `${m[2]}Z · ${+m[3]} ${m[4]} ${m[5]}` } : { main: String(t), sub: '' };
 }
 
+
+// ---------- heatmap + notes panel (alternative to lapse/wind plots) ----------
+function lerpColor(stops, v) {
+  if (v <= stops[0][0]) return stops[0][1];
+  for (let i = 1; i < stops.length; i++) if (v <= stops[i][0]) {
+    const [a, ca] = stops[i - 1], [b, cb] = stops[i], t = (v - a) / (b - a);
+    const h = c => [1, 3, 5].map(k => parseInt(c.slice(k, k + 2), 16));
+    const A = h(ca), B = h(cb);
+    return '#' + A.map((x, k) => Math.round(x + (B[k] - x) * t).toString(16).padStart(2, '0')).join('');
+  }
+  return stops[stops.length - 1][1];
+}
+const LAPSE_STOPS = [[-3, '#2c5aa0'], [0, '#8fb8de'], [2.5, '#e8edf2'], [4, '#fde3a7'], [5.4, '#f4874b'], [7, '#c0392b']];
+const WIND_STOPS = [[0, '#f3faf0'], [6, '#cdebc2'], [10, '#fde68a'], [15, '#fb923c'], [20, '#e11d48'], [30, '#7e22ce']];
+const lum = c => { const h = [1, 3, 5].map(k => parseInt(c.slice(k, k + 2), 16)); return 0.299 * h[0] + 0.587 * h[1] + 0.114 * h[2]; };
+
+function heatmapPanel(o, lv, A, FC, g) {
+  const { x0, x1, top, bot, Y, f, INK, MUTED, EDGE, C, r100 } = g;
+  const cL = [x0, x0 + 64], cW = [x0 + 70, x0 + 150], cN = [x0 + 160, x1];
+  const zTop = 18;
+  // column headers
+  o.push(`<text x="${cL[0]}" y="${top - 9}" font-size="12.5" font-weight="600" fill="${INK}">Stability</text>`);
+  o.push(`<text x="${cW[0]}" y="${top - 9}" font-size="12.5" font-weight="600" fill="${INK}">Wind (kt)</text>`);
+  o.push(`<text x="${cN[0]}" y="${top - 9}" font-size="12.5" font-weight="600" fill="${INK}">What stands out</text>`);
+  const zs = lv.map(l => l.z), zmin = zs[0];
+  for (let k = 0; k < zTop; k++) {
+    const za = Math.max(k, zmin), zb = k + 1;
+    if (zb <= zmin) continue;
+    const y0 = Y(zb), y1 = Y(za), h = y1 - y0;
+    // lapse over the band, and the minimum sub-layer lapse (to catch thin inversions)
+    const Ta = interp(lv, 't', za), Tb = interp(lv, 't', zb);
+    const lr = -(Tb - Ta) / (zb - za);
+    // flag an inversion only if some 200 ft sub-layer warms by >= 0.5 °F
+    let minLr = lr;
+    for (let z = za; z < zb - 0.19; z += 0.2) { const v = -(interp(lv, 't', z + 0.2) - interp(lv, 't', z)) / 0.2; if (v < minLr) minLr = v; }
+    if (minLr > -2.5) minLr = Math.max(minLr, 0);
+    const lcol = lerpColor(LAPSE_STOPS, minLr < 0 ? Math.min(lr, minLr) : lr);
+    o.push(`<rect x="${cL[0]}" y="${f(y0)}" width="${cL[1] - cL[0]}" height="${f(h - 1)}" rx="3" fill="${lcol}"/>`);
+    if (isFinite(lr) && h > 14) o.push(`<text x="${(cL[0] + cL[1]) / 2}" y="${f(y0 + h / 2 + 4)}" text-anchor="middle" font-size="10" font-weight="${minLr < 0 ? 700 : 500}" fill="${lum(lcol) < 140 ? '#fff' : INK}">${minLr < 0 ? 'inv' : lr.toFixed(1)}</text>`);
+    // wind: vector mean of levels in the band
+    const inb = lv.filter(l => l.z >= za && l.z < zb && isFinite(l.spd) && isFinite(l.dir));
+    if (inb.length) {
+      let u = 0, v = 0, sp = 0;
+      for (const l of inb) { const r = l.dir * Math.PI / 180; u += -l.spd * Math.sin(r); v += -l.spd * Math.cos(r); sp += l.spd; }
+      u /= inb.length; v /= inb.length; sp /= inb.length;
+      const dir = (Math.atan2(-u, -v) * 180 / Math.PI + 360) % 360;
+      const wcol = lerpColor(WIND_STOPS, sp), tc = lum(wcol) < 140 ? '#fff' : INK;
+      o.push(`<rect x="${cW[0]}" y="${f(y0)}" width="${cW[1] - cW[0]}" height="${f(h - 1)}" rx="3" fill="${wcol}"/>`);
+      if (h > 14) {
+        const cx = cW[0] + 14, cy = y0 + h / 2;
+        o.push(`<g transform="translate(${cx} ${f(cy)}) rotate(${((dir + 180) % 360).toFixed(0)})"><path d="M0 5V-5M-3 -2L0 -5L3 -2" fill="none" stroke="${tc}" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></g>`);
+        o.push(`<text x="${cx + 10}" y="${f(cy + 4)}" font-size="10.5" font-weight="600" fill="${tc}">${Math.round(sp)}<tspan font-weight="400" font-size="9.5" dx="3">${String(Math.round(dir) % 360).padStart(3, '0')}°</tspan></text>`);
+      }
+    }
+  }
+  // ---- notes: auto-generated, placed at their altitude ----
+  const notes = [];
+  if (FC && A.forecastTops) notes.push({ z: A.forecastTops.median_ft / 1000, c: '#e07b00', t: `Thermal tops ~${A.forecastTops.median_ft.toLocaleString('en-US')} ft`, s: `at ${Math.round(FC.median_f)}°F; ${A.forecastTops.low_ft.toLocaleString('en-US')}–${A.forecastTops.high_ft.toLocaleString('en-US')} ft range` });
+  if (A.cb) notes.push({ z: A.cb.z, c: C.cloud, t: `Cloudbase ${r100(A.cb.z)} ft`, s: FC && FC.p90_f < A.cb.trigger ? `needs ~${Math.round(A.cb.trigger)}°F: likely blue` : `trigger ~${Math.round(A.cb.trigger)}°F` });
+  // inversions (>= 1 °F warming), from 100 ft steps
+  let inv = null;
+  for (let z = zmin; z < zTop; z += 0.1) {
+    const d = interp(lv, 't', z + 0.1) - interp(lv, 't', z);
+    if (d > 0) { if (!inv) inv = { a: z, t0: interp(lv, 't', z) }; }
+    else if (inv) { const dt = interp(lv, 't', z) - inv.t0; if (dt >= 1) notes.push({ z: inv.a, c: '#2c5aa0', t: `Inversion ${r100(inv.a)}–${r100(z)} ft`, s: `+${Math.round(dt)}°F, caps weak thermals` }); inv = null; }
+  }
+  // freezing level
+  for (let z = zmin; z < zTop; z += 0.05) if (interp(lv, 't', z) <= 32) { notes.push({ z, c: MUTED, t: `Freezing level ${r100(z)} ft`, s: '' }); break; }
+  // first height with wind >= 15 kt
+  const strong = lv.find(l => isFinite(l.spd) && l.spd >= 15 && l.z <= zTop);
+  if (strong) notes.push({ z: strong.z, c: '#e11d48', t: `Wind ≥15 kt above ${r100(strong.z)} ft`, s: `${String(Math.round(strong.dir) % 360).padStart(3, '0')}° at ${Math.round(strong.spd)} kt` });
+  // lay out: keep at their altitude, push apart to avoid overlap
+  notes.sort((a, b) => b.z - a.z);
+  let lastY = top - 4;
+  for (const n of notes) {
+    const yz = Y(Math.min(n.z, zTop));
+    const y = Math.min(Math.max(yz, lastY + 30), bot - 18);
+    lastY = y;
+    o.push(`<path d="M${cW[1] + 2} ${f(yz)}H${cN[0] - 6}L${cN[0]} ${f(y)}" fill="none" stroke="${n.c}" stroke-width="1.2" opacity="0.8"/>`);
+    o.push(`<circle cx="${cW[1] + 2}" cy="${f(yz)}" r="2.2" fill="${n.c}"/>`);
+    o.push(`<text x="${cN[0] + 4}" y="${f(y + 1)}" font-size="12" font-weight="650" fill="${n.c === MUTED ? INK : n.c}">${n.t}</text>`);
+    if (n.s) o.push(`<text x="${cN[0] + 4}" y="${f(y + 15)}" font-size="10.5" fill="${MUTED}">${n.s}</text>`);
+  }
+  // colour keys under the strips
+  const key = (x, w, stops, lo, hi, label) => {
+    const id = 'k' + Math.round(x);
+    o.push(`<defs><linearGradient id="${id}">${stops.map(([v, c]) => `<stop offset="${((v - lo) / (hi - lo) * 100).toFixed(0)}%" stop-color="${c}"/>`).join('')}</linearGradient></defs>`);
+    o.push(`<rect x="${x}" y="${bot + 10}" width="${w}" height="8" rx="2" fill="url(#${id})"/>`);
+    o.push(`<text x="${x}" y="${bot + 30}" font-size="9.5">${label[0]}</text><text x="${x + w}" y="${bot + 30}" font-size="9.5" text-anchor="end">${label[1]}</text>`);
+  };
+  key(cL[0], cL[1] - cL[0], LAPSE_STOPS, -3, 7, ['inv', 'dry']);
+  key(cW[0], cW[1] - cW[0], WIND_STOPS, 0, 30, ['0', '30 kt']);
+  o.push(`<text x="${cN[0] + 4}" y="${bot + 30}" font-size="9.5">Stability: °F lost per 1000 ft (5.4 = dry, inv = warming)</text>`);
+}
+
 function renderSVG(snd, opts = {}) {
   const C = Object.assign({}, COLORS, opts.colors || {});
   const lv = snd.levels;
   const A = analyze(lv, opts);
-  const W = 800, Hh = 600, top = 62, bot = 548, ZMAX = 18;
+  const FC = opts.forecast && isFinite(opts.forecast.median_f) ? opts.forecast : null;
+  const HM = opts.layout === 'heatmap';
+  const W = 800, Hh = 640, top = 84, bot = 584, ZMAX = 18;
   const dense = lv.filter(l => l.z < ZMAX).length > 150;
   const maxSpd = Math.max(0, ...lv.filter(l => l.z <= ZMAX && isFinite(l.spd)).map(l => l.spd));
-  const P1 = { x0: 44, x1: 352, lo: -20, hi: 100 };
-  const P2 = { x0: 372, x1: 532, lo: -2, hi: 6 };
-  const P3 = { x0: 552, x1: 780, lo: 0, hi: Math.max(30, Math.ceil(maxSpd / 10) * 10) };
+  const P1 = { x0: 46, x1: 362, lo: -20, hi: 100 };
+  const P2 = { x0: 380, x1: 530, lo: -2, hi: 6 };
+  const P3 = { x0: 548, x1: 780, lo: 0, hi: Math.max(30, Math.ceil(maxSpd / 10) * 10), gutter: 72 };
+  P3.d0 = P3.x0 + P3.gutter;               // wind data area starts after the label column
   const Y = z => bot - (z / ZMAX) * (bot - top);
-  const X = (P, v) => P.x0 + (v - P.lo) / (P.hi - P.lo) * (P.x1 - P.x0);
+  const X = (P, v) => (P.d0 || P.x0) + (v - P.lo) / (P.hi - P.lo) * (P.x1 - (P.d0 || P.x0));
   const f = v => v.toFixed(1);
   const INK = '#111827', MUTED = '#6b7280', GRID = '#e5e7eb', PANEL = '#fafbfc', EDGE = '#d1d5db';
+  const FCOL = '#e07b00';
+  const r100 = z => (Math.round(z * 10) * 100).toLocaleString('en-US');
   const o = [];
   o.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${Hh}" font-family="Inter, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" fill="${MUTED}">`);
   o.push(`<rect width="${W}" height="${Hh}" fill="#fff"/>`);
   o.push('<defs>' + [P1, P2, P3].map((P, i) =>
-    `<clipPath id="c${i}"><rect x="${P.x0}" y="${top}" width="${P.x1 - P.x0}" height="${bot - top}" rx="6"/></clipPath>`).join('') + '</defs>');
+    `<clipPath id="c${i}"><rect x="${P.d0 || P.x0}" y="${top}" width="${P.x1 - (P.d0 || P.x0)}" height="${bot - top}"/></clipPath>`).join('') + '</defs>');
   const poly = (pts, color, clip, opt = {}) => {
     const segs = [[]];
     for (const p of pts) { if (!isFinite(p[0]) || !isFinite(p[1])) { segs.push([]); continue; } segs[segs.length - 1].push(p); }
@@ -239,109 +336,115 @@ function renderSVG(snd, opts = {}) {
   };
   const L = lv.filter(l => l.z <= ZMAX + 1);
 
-  const panel = (P, xt, xlabel, title, first) => {
-    o.push(`<rect x="${P.x0}" y="${top}" width="${P.x1 - P.x0}" height="${bot - top}" rx="6" fill="${PANEL}" stroke="${EDGE}"/>`);
-    for (let z = 3; z < ZMAX; z += 3) o.push(`<path d="M${P.x0} ${f(Y(z))}H${P.x1}" stroke="${GRID}"/>`);
-    for (const t of xt.slice(1, -1)) o.push(`<path d="M${f(X(P, t))} ${top}V${bot}" stroke="${GRID}"/>`);
-    for (const t of xt) o.push(`<text x="${f(X(P, t))}" y="${bot + 16}" text-anchor="middle">${t}</text>`);
-    if (first) for (let z = 0; z <= ZMAX; z += 3) o.push(`<text x="${P.x0 - 8}" y="${f(Y(z) + 4)}" text-anchor="end">${z}${z === ZMAX ? 'k' : ''}</text>`);
-    o.push(`<text x="${f((P.x0 + P.x1) / 2)}" y="${bot + 34}" text-anchor="middle" font-size="11">${xlabel}</text>`);
-    o.push(`<text x="${P.x0 + 2}" y="${top - 10}" font-size="12.5" font-weight="600" fill="${INK}">${title}</text>`);
-  };
+  // ---- header (all text lives here, off the plots) ----
   const pt = prettyTitle(snd.title);
-  panel(P1, [-20, 0, 20, 40, 60, 80, 100], 'Temperature (°F)', '', true);
-  panel(P2, [-2, 0, 2, 4, 6], 'Lapse rate (°F / 1000 ft)', 'Lapse rate', false);
-  panel(P3, P3.hi <= 30 ? [0, 5, 10, 15, 20, 25, 30] : Array.from({ length: P3.hi / 10 + 1 }, (_, i) => i * 10), 'Wind speed (kt)', 'Wind', false);
-  o.push(`<text x="${P1.x0 + 2}" y="${top - 10}" font-size="15" font-weight="700" fill="${INK}">${pt.main}<tspan dx="8" font-size="12" font-weight="500" fill="${MUTED}">${pt.sub}</tspan></text>`);
-  o.push(`<text x="14" y="${f((top + bot) / 2)}" transform="rotate(-90 14 ${f((top + bot) / 2)})" text-anchor="middle">Altitude MSL (1000 ft)</text>`);
+  o.push(`<text x="${P1.x0}" y="24" font-size="16" font-weight="700" fill="${INK}">${pt.main}<tspan dx="8" font-size="12.5" font-weight="500" fill="${MUTED}">${pt.sub}</tspan></text>`);
+  if (FC) {
+    const tm = A.topFor(FC.median_f), lo = Math.min(FC.p10_f, FC.median_f), hi = Math.max(FC.p90_f, FC.median_f);
+    A.forecastTops = { median_ft: Math.round(tm * 10) * 100, low_ft: Math.round(A.topFor(lo) * 10) * 100, high_ft: Math.round(A.topFor(hi) * 10) * 100 };
+    o.push(`<text x="${P3.x1}" y="24" text-anchor="end" font-size="13" font-weight="700" fill="${FCOL}">${FC.label === 'today' ? 'Today' : 'Tomorrow'}: high ${Math.round(FC.median_f)}°F <tspan font-weight="500">(${Math.round(lo)}–${Math.round(hi)})</tspan> → thermals ~${r100(tm)} ft <tspan font-weight="500">(${r100(A.topFor(lo))}–${r100(A.topFor(hi))})</tspan></text>`);
+  }
+  // legend row
+  const lg = [['Temperature', C.temp, 2.4], ['Dew point', C.dew, 2.4], ['Cloudbase', C.cloud, 2.4], ['Thermals', C.thermal, 1.6]]
+    .concat(FC ? [['Forecast high', FCOL, 3.2]] : []);
+  let lx = P1.x0;
+  for (const [name, c, w] of lg) {
+    o.push(`<path d="M${lx} 45h16" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>`);
+    o.push(`<text x="${lx + 22}" y="49" fill="${INK}">${name}</text>`);
+    lx += 30 + name.length * 6.3;
+  }
+  if (FC) { o.push(`<rect x="${lx}" y="40" width="16" height="10" rx="2" fill="${FCOL}" fill-opacity="0.22"/><text x="${lx + 22}" y="49" fill="${INK}">Likely range</text>`); lx += 100; }
+  if (A.cb) o.push(`<text x="${P3.x1}" y="49" text-anchor="end" font-weight="600" fill="${C.cloud}">Cloudbase ${r100(A.cb.z)} ft · trigger ${Math.round(A.cb.trigger)}°F</text>`);
+
+  // ---- panels ----
+  const panel = (P, xt, xlabel, title, first) => {
+    const xa = P.d0 || P.x0;
+    o.push(`<rect x="${P.x0}" y="${top}" width="${P.x1 - P.x0}" height="${bot - top}" rx="6" fill="${PANEL}" stroke="${EDGE}"/>`);
+    if (P.gutter) o.push(`<path d="M${xa} ${top}V${bot}" stroke="${EDGE}"/>`);
+    for (let z = 3; z < ZMAX; z += 3) o.push(`<path d="M${xa} ${f(Y(z))}H${P.x1}" stroke="${GRID}"/>`);
+    for (const t of xt.slice(1, -1)) o.push(`<path d="M${f(X(P, t))} ${top}V${bot}" stroke="${GRID}"/>`);
+    for (const t of xt) o.push(`<text x="${f(X(P, t))}" y="${bot + 28}" text-anchor="middle">${t}</text>`);
+    if (first) for (let z = 0; z <= ZMAX; z += 3) o.push(`<text x="${P.x0 - 8}" y="${f(Y(z) + 4)}" text-anchor="end">${z}${z === ZMAX ? 'k' : ''}</text>`);
+    o.push(`<text x="${f((xa + P.x1) / 2)}" y="${bot + 45}" text-anchor="middle">${xlabel}</text>`);
+    if (title) o.push(`<text x="${P.x0 + 2}" y="${top - 9}" font-size="12.5" font-weight="600" fill="${INK}">${title}</text>`);
+  };
+  panel(P1, [-20, 0, 20, 40, 60, 80, 100], 'Temperature (°F)', 'Temperature &amp; thermals', true);
+  if (!HM) panel(P2, [-2, 0, 2, 4, 6], 'Lapse (°F / 1000 ft)', 'Lapse rate', false);
+  if (!HM) panel(P3, P3.hi <= 30 ? [0, 10, 20, 30] : Array.from({ length: P3.hi / 10 + 1 }, (_, i) => i * 10), 'Wind speed (kt)', 'Wind', false);
+  o.push(`<text x="13" y="${f((top + bot) / 2)}" transform="rotate(-90 13 ${f((top + bot) / 2)})" text-anchor="middle">Altitude MSL (1000 ft)</text>`);
 
   // ---- panel 1 ----
-  const FC = opts.forecast;
-  const late = [];
-  if (FC && isFinite(FC.median_f)) {
-    const z0 = A.z0, G = 5.4;
+  const G = 5.4, z0 = A.z0;
+  if (FC) {
     const lo = Math.min(FC.p10_f, FC.median_f), hi = Math.max(FC.p90_f, FC.median_f);
     const tLo = A.topFor(lo), tHi = A.topFor(hi);
-    // band: right edge = warm adiabat, top edge = where air runs out of lift, left edge = cool adiabat
     const band = [[hi, z0], [hi - G * (tHi - z0), tHi]];
     for (let z = tHi - 0.05; z > tLo; z -= 0.05) band.push([interp(lv, 't', z) + A.EXCESS, z]);
     band.push([lo - G * (tLo - z0), tLo], [lo, z0]);
-    o.push(`<polygon clip-path="url(#c0)" points="${band.map(([t, z]) => f(X(P1, t)) + ',' + f(Y(z))).join(' ')}" fill="${C.thermal}" fill-opacity="0.22" stroke="none"/>`);
-    const tm = A.topFor(FC.median_f);
-    o.push(poly([[X(P1, FC.median_f), Y(z0)], [X(P1, FC.median_f - G * (tm - z0)), Y(tm)]], '#e07b00', 'c0', { w: 3.2 }));
-    o.push(`<circle cx="${f(X(P1, FC.median_f - G * (tm - z0)))}" cy="${f(Y(tm))}" r="4" fill="#e07b00" stroke="#fff" stroke-width="1.5"/>`);
-    // callout: forecast high and resulting thermal top with range
-    const r100 = z => (Math.round(z * 10) * 100).toLocaleString('en-US');
-    const lines = [`${FC.label === 'today' ? 'Today' : 'Tomorrow'}: high ${Math.round(FC.median_f)}°F (${Math.round(lo)}–${Math.round(hi)})`,
-                   `Thermals ~${r100(tm)} ft (${r100(tLo)}–${r100(tHi)})`];
-    const bx = P1.x0 + 8, by = bot - 50, bw = Math.max(...lines.map(t => t.length)) * 7.8 + 22;
-    late.push(`<rect x="${bx}" y="${by}" width="${bw}" height="40" rx="7" fill="#fff" fill-opacity="0.8" stroke="#f3c27a"/>`);
-    late.push(`<text x="${bx + 10}" y="${by + 16}" font-size="11.5" font-weight="700" fill="#b35f00">${lines[0]}</text>`);
-    late.push(`<text x="${bx + 10}" y="${by + 31}" font-size="11" fill="${INK}">${lines[1]}</text>`);
-    A.forecastTops = { median_ft: Math.round(tm * 10) * 100, low_ft: Math.round(tLo * 10) * 100, high_ft: Math.round(tHi * 10) * 100 };
+    o.push(`<polygon clip-path="url(#c0)" points="${band.map(([t, z]) => f(X(P1, t)) + ',' + f(Y(z))).join(' ')}" fill="${FCOL}" fill-opacity="0.22"/>`);
   }
+  const strip = [];   // thermal start temperatures, in a strip just under the frame
   for (const th of A.thermals) {
-    o.push(poly([[X(P1, th.ts), Y(th.z0)], [X(P1, th.ttop), Y(th.top)]], C.thermal, 'c0', { w: 1.6, op: 0.9 }));
+    if (FC && Math.abs(th.ts - FC.median_f) < 2.5) continue;
+    o.push(poly([[X(P1, th.ts), Y(th.z0)], [X(P1, th.ttop), Y(th.top)]], C.thermal, 'c0', { w: 1.5, op: 0.85 }));
     const tx = X(P1, th.ttop), ty = Y(th.top);
-    if (tx > P1.x0 && tx < P1.x1 && ty > top + 4) o.push(`<circle cx="${f(tx)}" cy="${f(ty)}" r="2.6" fill="${C.thermal}"/>`);
+    if (ty > top + 4) o.push(`<circle cx="${f(tx)}" cy="${f(ty)}" r="2.4" fill="${C.thermal}"/>`);
+    strip.push([th.ts, false]);
   }
-  // surface-temperature label on each thermal line, near its top (like pgweather)
-  // labels sit on the lines in a column just right of the surface temperature
-  A.thermals.forEach((th, k) => {
-    const zl = th.z0 + 0.8 + (6 / 5.4) * k;
-    if (zl > Math.min(th.top - 0.3, ZMAX - 0.4)) return;
-    const tl = th.ts - 5.4 * (zl - th.z0);
-    if (tl < interp(lv, 't', zl) + 4) return;
-    const xl = X(P1, tl), yl = Y(zl);
-    if (xl > P1.x1 - 14) return;
-    o.push(`<text x="${f(xl)}" y="${f(yl + 4)}" text-anchor="middle" font-size="10.5" font-weight="700" fill="#e08e00" stroke="${PANEL}" stroke-width="4" paint-order="stroke">${th.ts}°</text>`);
-  });
   if (A.cb) {
     const pts = [];
-    for (let z = A.z0; z < A.cb.z; z += 0.1) pts.push([X(P1, A.parcelTd(z)), Y(z)]);
+    for (let z = z0; z < A.cb.z; z += 0.1) pts.push([X(P1, A.parcelTd(z)), Y(z)]);
     pts.push([X(P1, A.cb.t), Y(A.cb.z)]);
     o.push(poly(pts, C.cloud, 'c0', { simp: 0.6, w: 1.6 }));
-    o.push(poly([[P1.x0, Y(A.cb.z)], [P1.x1, Y(A.cb.z)]], C.cloud, 'c0', { w: 1.4, dash: '6 4' }));
-    const lbl = `Cloudbase ${(Math.round(A.cb.z * 10) * 100).toLocaleString('en-US')} ft · trigger ${Math.round(A.cb.trigger)}°F`;
-    const yy = Y(A.cb.z) - 7;
-    o.push(`<text x="${P1.x0 + 8}" y="${f(yy)}" font-size="11" font-weight="600" fill="${C.cloud}" stroke="${PANEL}" stroke-width="3" paint-order="stroke">${lbl}</text>`);
+    o.push(poly([[P1.x0, Y(A.cb.z)], [P1.x1, Y(A.cb.z)]], C.cloud, 'c0', { w: 1.3, dash: '6 4' }));
     o.push(`<circle cx="${f(X(P1, A.cb.t))}" cy="${f(Y(A.cb.z))}" r="3.2" fill="#fff" stroke="${C.cloud}" stroke-width="1.6"/>`);
+    // tag on the axis instead of text on the plot
+    const yc = Y(A.cb.z);
+    o.push(`<rect x="${P1.x1 + 1}" y="${f(yc - 7)}" width="16" height="14" rx="3" fill="${C.cloud}"/><text x="${P1.x1 + 9}" y="${f(yc + 3.5)}" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">CB</text>`);
   }
   o.push(poly(L.map(l => [X(P1, l.td), Y(l.z)]), C.dew, 'c0', { simp: dense ? 1.2 : 0, w: 2.2 }));
   o.push(poly(L.map(l => [X(P1, l.t), Y(l.z)]), C.temp, 'c0', { simp: dense ? 1.2 : 0, w: 2.2 }));
-  // legend card
-  const lg = [['Temperature', C.temp], ['Dew point', C.dew], ['Cloudbase', C.cloud], ['Thermals (sfc °F)', C.thermal]].concat(FC && isFinite(FC.median_f) ? [['Forecast high', '#e07b00']] : []);
-  const lx = P1.x1 - 130, ly = top + 10;
-  o.push(`<rect x="${lx}" y="${ly}" width="120" height="${lg.length * 16 + 10}" rx="6" fill="#fff" fill-opacity="0.92" stroke="${EDGE}"/>`);
-  lg.forEach(([name, c], i) => {
-    const y = ly + 14 + i * 16;
-    o.push(`<path d="M${lx + 10} ${y}h16" stroke="${c}" stroke-width="2.4" stroke-linecap="round"/>`);
-    o.push(`<text x="${lx + 32}" y="${y + 4}" fill="${INK}">${name}</text>`);
-  });
+  if (FC) {
+    const tm = A.topFor(FC.median_f);
+    o.push(poly([[X(P1, FC.median_f), Y(z0)], [X(P1, FC.median_f - G * (tm - z0)), Y(tm)]], FCOL, 'c0', { w: 3.4 }));
+    o.push(`<circle cx="${f(X(P1, FC.median_f - G * (tm - z0)))}" cy="${f(Y(tm))}" r="4.2" fill="${FCOL}" stroke="#fff" stroke-width="1.6"/>`);
+    // thermal-top tag on the left axis, like the cloudbase tag
+    strip.push([FC.median_f, true]);
+  }
+  // start-temperature strip: skip labels that would collide
+  strip.sort((a, b) => (b[1] - a[1]) || ((Math.round(a[0]) % 10 ? 1 : 0) - (Math.round(b[0]) % 10 ? 1 : 0)));
+  const used = [];
+  for (const [t, bold] of strip) {
+    const x = X(P1, t);
+    if (x < P1.x0 + 6 || x > P1.x1 - 6) continue;
+    if (used.some(u => Math.abs(u - x) < 18)) continue;
+    used.push(x);
+    o.push(`<text x="${f(x)}" y="${bot + 13}" text-anchor="middle" font-size="${bold ? 11.5 : 10}" font-weight="${bold ? 800 : 600}" fill="${bold ? FCOL : '#d08a00'}">${Math.round(t)}</text>`);
+  }
 
-  o.push(...late);
-
-  // ---- panel 2: lapse rate, with dry-adiabatic and standard references ----
-  for (const [v, name] of [[5.4, 'dry'], [3.6, 'std']]) {
-    o.push(`<path d="M${f(X(P2, v))} ${top}V${bot}" stroke="${MUTED}" stroke-width="1" stroke-dasharray="3 3" opacity="0.7"/>`);
-    o.push(`<text x="${f(X(P2, v) - 3)}" y="${top + 12}" text-anchor="end" font-size="10">${name}</text>`);
+  if (HM) heatmapPanel(o, lv, A, FC, { x0: 380, x1: 780, top, bot, Y, f, INK, MUTED, EDGE, PANEL, GRID, C, r100 });
+  else {
+  // ---- panel 2: lapse rate, references labelled above the panel ----
+  for (const [v, name] of [[3.6, 'std'], [5.4, 'dry']]) {
+    o.push(`<path d="M${f(X(P2, v))} ${top}V${bot}" stroke="${MUTED}" stroke-width="1" stroke-dasharray="3 3" opacity="0.6"/>`);
+    o.push(`<text x="${f(X(P2, v))}" y="${top - 9}" text-anchor="middle" font-size="9.5">${name}</text>`);
   }
   o.push(poly(A.lapse.filter(p => p.z <= ZMAX + 1).map(p => [X(P2, p.v), Y(p.z)]), C.lapse, 'c1', { w: 1.8 }));
 
-  // ---- panel 3: wind ----
+  // ---- panel 3: wind, labels in their own column ----
   const W3 = L.filter(l => isFinite(l.spd));
   o.push(poly(W3.map(l => [X(P3, l.spd), Y(l.z)]), C.wind, 'c2', { simp: dense ? 1.2 : 0, w: 2 }));
-  let lab = W3.filter(l => isFinite(l.dir) && l.z <= ZMAX - 0.6);
+  let lab = W3.filter(l => isFinite(l.dir) && l.z <= ZMAX - 0.4);
   if (dense) { const t = []; for (const l of lab) if (!t.length || l.z - t[t.length - 1].z >= 1.0) t.push(l); lab = t; }
   let lastY = 1e9;
   for (const l of lab) {
     const y = Y(l.z);
     if (lastY - y < 12) continue;
     lastY = y;
-    const dir = Math.round(l.dir) % 360 || 360, ax = P3.x0 + 14;
-    // arrow points where the wind blows to
+    const dir = Math.round(l.dir) % 360 || 360, ax = P3.x0 + 11;
     o.push(`<g transform="translate(${ax} ${f(y)}) rotate(${(dir + 180) % 360})"><path d="M0 5V-5M-3 -2L0 -5L3 -2" fill="none" stroke="${INK}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></g>`);
-    o.push(`<text x="${ax + 10}" y="${f(y + 4)}" fill="${INK}" stroke="${PANEL}" stroke-width="3" paint-order="stroke">${String(dir).padStart(3, '0')}° <tspan fill="${MUTED}">@</tspan> ${Math.round(l.spd)}</text>`);
+    o.push(`<text x="${ax + 9}" y="${f(y + 4)}" font-size="10.5" fill="${INK}">${String(dir).padStart(3, '0')}<tspan fill="${MUTED}">@</tspan>${Math.round(l.spd)}</text>`);
+  }
   }
   o.push('</svg>');
   return { svg: o.join('\n'), analysis: A };
