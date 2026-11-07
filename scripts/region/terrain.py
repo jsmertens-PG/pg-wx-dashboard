@@ -29,7 +29,7 @@ def inside(la, lo, poly):
 
 
 def key():
-    return hashlib.sha1(json.dumps(["v2-land-only"] + [[r["id"], r["poly"], r["points"]] for r in REGIONS]).encode()).hexdigest()[:12]
+    return hashlib.sha1(json.dumps(["v3-bucket-means"] + [[r["id"], r["poly"], r["points"]] for r in REGIONS]).encode()).hexdigest()[:12]
 
 
 def main():
@@ -68,6 +68,7 @@ def main():
     for ri, r in enumerate(REGIONS):
         pts = r["points"]
         hist = [{} for _ in pts]
+        hsum = [{} for _ in pts]
         n = 0
         for (cri, la, lo), e in zip(cells, elev):
             if cri != ri or e is None or e <= 1:   # sea (and the bay) is not ground
@@ -76,11 +77,13 @@ def main():
             j = min(range(len(pts)), key=lambda j: (pts[j][1] - la) ** 2 + ((pts[j][2] - lo) * cl) ** 2)
             b = str(int(max(0, e) * FT // 500 * 500))
             hist[j][b] = hist[j].get(b, 0) + 1
+            hsum[j][b] = hsum[j].get(b, 0) + max(0, e) * FT
             n += 1
         if not n:
             continue
-        out["regions"][r["id"]] = {"cells": n, "probes": [{"name": p[0], "hist": {b: round(c / n, 4) for b, c in sorted(h.items(), key=lambda x: int(x[0]))}}
-                                                          for p, h in zip(pts, hist)]}
+        out["regions"][r["id"]] = {"cells": n, "probes": [{"name": p[0], "hist": {b: round(c / n, 4) for b, c in sorted(h.items(), key=lambda x: int(x[0]))},
+                                                           "mean_ft": {b: round(hs[b] / c) for b, c in h.items()}}
+                                                          for p, h, hs in zip(pts, hist, hsum)]}
         share = [round(sum(h.values()) / n, 2) for h in hist]
         print(r["id"], n, "cells, probe shares", share)
     os.makedirs(os.path.dirname(OUT), exist_ok=True)

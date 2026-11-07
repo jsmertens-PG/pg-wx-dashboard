@@ -383,7 +383,7 @@ def terrain_entries(ps, terr):
         if not p:
             continue
         for b, w in (tp.get("hist") or {}).items():
-            e = (int(b) + 250) / FT
+            e = (tp.get("mean_ft") or {}).get(b, int(b) + 250) / FT   # the bucket's mean ground height
             top = p["elev"] + p["zi"]
             zi = max(0.0, top - e)
             ws = p["wstar"] * (zi / p["zi"]) ** (1 / 3) if p["zi"] > 0 and zi > 0 else 0.0
