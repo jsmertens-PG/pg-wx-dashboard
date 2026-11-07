@@ -1,0 +1,26 @@
+{
+ "NKX": {
+  "name": "San Diego / Miramar",
+  "lat": 32.85,
+  "lon": -117.12,
+  "obs": "2026-11-07T12:00Z",
+  "file": "stations/NKX_latest.txt",
+  "levels": 3828
+ },
+ "VBG": {
+  "name": "Vandenberg",
+  "lat": 34.75,
+  "lon": -120.57,
+  "obs": "2026-11-07T12:00Z",
+  "file": "stations/VBG_latest.txt",
+  "levels": 105
+ },
+ "VEF": {
+  "name": "Las Vegas",
+  "lat": 36.05,
+  "lon": -115.18,
+  "obs": "2026-11-07T12:00Z",
+  "file": "stations/VEF_latest.txt",
+  "levels": 5344
+ }
+}
