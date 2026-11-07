@@ -1228,8 +1228,20 @@ function daySummary(d, big, other) {
 }
 let openDays = new Set();
 try { openDays = new Set(JSON.parse(sessionStorage.getItem("radar-open") || "[]")); } catch (e) {}
+/* phones: only one day open at a time (opening a day closes the others) */
+const ONE_DAY = () => window.matchMedia("(max-width: 700px)").matches;
+if (ONE_DAY() && openDays.size > 1) openDays = new Set([[...openDays][openDays.size - 1]]);
 document.addEventListener("toggle", (e) => {
   const el = e.target; if (!el.matches || !el.matches("details.day") || !el.dataset.date) return;
+  if (el.open && ONE_DAY()) {
+    let above = false;
+    document.querySelectorAll("details.day[open]").forEach((d) => {
+      if (d === el || d.id === "story" || !d.dataset.date) return;
+      if (d.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING) above = true;
+      d.open = false; openDays.delete(d.dataset.date);
+    });
+    if (above) requestAnimationFrame(() => el.scrollIntoView({ block: "start", behavior: "smooth" }));
+  }
   if (el.open) openDays.add(el.dataset.date); else openDays.delete(el.dataset.date);
   try { sessionStorage.setItem("radar-open", JSON.stringify([...openDays])); } catch (err) {}
 }, true);
