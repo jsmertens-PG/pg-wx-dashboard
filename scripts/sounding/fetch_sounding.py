@@ -146,6 +146,14 @@ def fetch_surface_forecast():
                 print(f"forecast {name} {mid}: {e}")
     if len(members) < 5:
         print("forecast: not enough ensemble members")
+        stale = os.path.join(OUT, "surface_forecast.json")
+        try:   # never show yesterday's "tomorrow" as today's forecast
+            with open(stale) as f:
+                if json.load(f).get("day") != d:
+                    os.remove(stale)
+                    print("forecast: removed stale forecast for another day")
+        except Exception:  # noqa: BLE001
+            pass
         return 1
     out = {"day": d, "label": "today" if day == now.date() else "tomorrow",
            "median_f": round(pct(members, 0.5), 1), "p10_f": round(pct(members, 0.1), 1),

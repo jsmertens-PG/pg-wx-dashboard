@@ -2,7 +2,8 @@ name: Update sounding
 
 on:
   schedule:
-    - cron: "47 1,2,13,14 * * *"   # after the 00Z and 12Z NKX launches (~5:47 pm / 5:47 am PST, plus a retry an hour later)
+    - cron: "47 13,14,15,16 * * *" # mornings 5:47-8:47 am PST (6:47-9:47 PDT): 12Z sounding + today's forecast high, refreshed hourly
+    - cron: "47 1,2 * * *"         # evenings after the 00Z launch (~5:47 pm PST) for tomorrow
   workflow_dispatch: {}
 
 permissions:
