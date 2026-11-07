@@ -113,15 +113,7 @@ function miniMapSVG(D, day, radar) {
   for (const rg of D.regions) {
     const dd = rg.days.find(x => x.date === (D.regions[0].days[day] || {}).date) || rg.days[Math.min(day, rg.days.length - 1)];
     const v = regionRate(rg, dd, radar);
-    o.push(`<polygon points="${rg.poly.map(P).join(' ')}" fill="${v != null ? scoreCol(v) : '#cbd5e1'}" stroke="#fff" stroke-width="10" stroke-linejoin="round"/>`);
-  }
-  // mountains as the same peak symbols as the main map, bigger and darker so they read at thumbnail size
-  const rr = rng(11);
-  for (const [spine, size, n] of RANGES) for (let i = 0; i <= Math.max(1, Math.round(n * 0.45)); i++) {
-    const m = Math.max(1, Math.round(n * 0.45)), t = i / m, seg = t * (spine.length - 1), k = Math.min(spine.length - 2, Math.floor(seg)), u = seg - k;
-    const la = spine[k][0] + (spine[k + 1][0] - spine[k][0]) * u, lo = spine[k][1] + (spine[k + 1][1] - spine[k][1]) * u;
-    const x = fx(lo) + (rr() - 0.5) * size, y = fy(la) + (rr() - 0.5) * size, h = size * (3.4 + rr() * 0.8), w = h * 0.8;
-    o.push(`<path d="M${(x - w).toFixed(1)} ${y.toFixed(1)} L${x.toFixed(1)} ${(y - h).toFixed(1)} L${x.toFixed(1)} ${y.toFixed(1)} Z" fill="#6f6553"/><path d="M${x.toFixed(1)} ${(y - h).toFixed(1)} L${(x + w).toFixed(1)} ${y.toFixed(1)} L${x.toFixed(1)} ${y.toFixed(1)} Z" fill="#2f281d"/>`);
+    o.push(`<polygon points="${rg.poly.map(P).join(' ')}" fill="${v != null ? scoreCol(v) : '#cbd5e1'}" fill-opacity=".6" stroke="#fff" stroke-width="8" stroke-linejoin="round"/>`);
   }
   o.push('</svg>');
   return o.join('');
