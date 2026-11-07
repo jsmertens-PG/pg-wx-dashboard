@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Regions (experimental) – SoCal Flying Radar</title>
+<link rel="icon" href="favicon.svg">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<style>
+:root{--ink:#111827;--muted:#6b7280;--line:#e5e7eb;--bg:#f3f4f6}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{font-family:Inter,Roboto,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
+header{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;padding-top:max(10px,env(safe-area-inset-top));background:#fff;border-bottom:1px solid var(--line);gap:8px}
+h1{font-size:17px;margin:0;font-weight:700}
+h1 small{font-size:11px;font-weight:600;color:#b45309;background:#fef3c7;border-radius:999px;padding:2px 8px;margin-left:6px;vertical-align:2px}
+.back{font-size:13px;color:var(--ink);text-decoration:none;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;white-space:nowrap}
+#map{flex:1;min-height:300px;background:#e8ecef}
+.days{display:flex;gap:6px;padding:8px 10px;padding-bottom:max(8px,env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--line);overflow-x:auto}
+.days button{flex:1 0 auto;font:inherit;font-size:13px;border:1px solid var(--line);background:#fff;padding:7px 12px;border-radius:12px;color:var(--muted);text-align:center}
+.days button b{display:block;font-size:11px;font-weight:600}
+.days button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+/* region labels on the map */
+.rlab{background:rgba(255,255,255,.92);border-radius:8px;padding:3px 7px;box-shadow:0 1px 3px rgba(0,0,0,.18);font-size:11.5px;line-height:1.2;text-align:center;white-space:nowrap;pointer-events:none}
+.rlab b{display:block;font-size:12px}
+.rlab span{color:#374151}
+.lm{font-size:11px;font-weight:600;color:#1f2937;white-space:nowrap;text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 3px #fff;pointer-events:none}
+.lm.site{color:#b45309}
+.lm.town{font-weight:500;color:#374151}
+.lm.peak{font-weight:500;color:#4b5563;font-style:italic}
+.key{background:rgba(255,255,255,.95);border-radius:8px;padding:6px 8px;font-size:10.5px;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.key i{display:inline-block;width:20px;height:10px;margin-right:1px;vertical-align:-1px}
+/* region view, like XCTherm's pop-up */
+.ov{position:fixed;inset:0;background:rgba(17,24,39,.45);display:none;z-index:2000;padding:12px;padding-top:max(12px,env(safe-area-inset-top));overflow:auto}
+.ov.open{display:block}
+.sheet{position:relative;max-width:1040px;margin:0 auto;background:#fff;border-radius:14px;box-shadow:0 10px 40px rgba(0,0,0,.3);overflow:hidden}
+.x{position:absolute;right:8px;top:6px;z-index:3;border:0;background:none;font-size:30px;line-height:1;color:#9ca3af;cursor:pointer;padding:4px 8px}
+.tg{position:absolute;left:50%;top:12px;transform:translateX(-50%);display:flex;align-items:center;gap:7px;font-size:13px;color:#374151;z-index:2}
+.tg button{width:40px;height:22px;border-radius:999px;border:0;background:#1f2328;position:relative;padding:0;cursor:pointer}
+.tg button i{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s}
+.tg button[aria-checked="true"] i{left:21px}
+.scroll{overflow-x:auto}
+.scroll svg{display:block;width:100%;min-width:720px;height:auto}
+.sum{font-size:13px;line-height:1.4;padding:8px 12px;border-top:1px solid var(--line);color:#374151}
+.tt{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+.tt th{text-align:left;font-size:11px;color:var(--muted);font-weight:600;padding:6px 8px;border-bottom:1px solid var(--line)}
+.tt td{padding:7px 8px;border-bottom:1px solid #f0f1f3;vertical-align:top}
+.tt td:first-child{white-space:nowrap;font-weight:600}
+.sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+@media (max-width:560px){.tg{top:8px;font-size:11px}.tt{font-size:12px}.tt td:nth-child(5),.tt th:nth-child(5){display:none}}
+</style></head><body>
+<header><h1>Regions<small>experimental</small></h1><a class="back" href="./">← Radar</a></header>
+<div id="map"></div>
+<nav class="days" id="days"></nav>
+<div class="ov" id="ov"><div class="sheet"><button class="x" id="x" aria-label="Close">×</button>
+  <div class="tg"><span>Text</span><button type="button" id="tog" role="switch" aria-checked="true" aria-label="Graphic view"><i></i></button><span>Graphic</span></div>
+  <div id="view"></div><div class="sum" id="sum"></div></div></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script src="scripts/region/panel.js"></script>
+<script>
+const LANDMARKS = [
+  // flying sites
+  ['site', 'Torrey Pines', 32.890, -117.252], ['site', 'Little Black', 32.988, -117.122], ['site', 'Blossom', 32.877, -116.848],
+  ['site', 'Otay', 32.574, -116.894], ['site', "Whale's V", 32.645, -116.887], ['site', 'Laguna', 32.86, -116.43],
+  ['site', 'Elsinore', 33.630, -117.371], ['site', 'Soboba', 33.822, -116.959],
+  // peaks
+  ['peak', 'Palomar Mtn', 33.36, -116.84], ['peak', 'Cuyamaca Pk', 32.95, -116.61], ['peak', 'El Cajon Mtn', 32.90, -116.80],
+  ['peak', 'Otay Mtn', 32.60, -116.85], ['peak', 'Mt Woodson', 33.01, -116.97],
+  // towns
+  ['town', 'San Diego', 32.72, -117.16], ['town', 'Oceanside', 33.20, -117.38], ['town', 'Escondido', 33.12, -117.09],
+  ['town', 'El Cajon', 32.79, -116.96], ['town', 'Ramona', 33.04, -116.87], ['town', 'Julian', 33.08, -116.60],
+  ['town', 'Temecula', 33.49, -117.15], ['town', 'Hemet', 33.75, -116.97], ['town', 'Borrego Springs', 33.26, -116.37],
+  ['town', 'Tijuana', 32.52, -117.03],
+];
+let D = null, day = 0, graphic = true, openR = null;
+try { graphic = localStorage.getItem('region_view') !== 'text'; } catch (e) {}
+const map = L.map('map', { zoomControl: true, attributionControl: true }).setView([33.1, -116.85], 9);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>', subdomains: 'abcd', maxZoom: 13 }).addTo(map);
+map.createPane('labels'); map.getPane('labels').style.zIndex = 650;
+// landmarks
+for (const [k, name, la, lo] of LANDMARKS) {
+  const sym = k === 'site' ? '<svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 1 L11 10 H1 Z" fill="#f59e0b" stroke="#78350f" stroke-width="1"/></svg>'
+    : k === 'peak' ? '<svg width="9" height="9" viewBox="0 0 10 10"><path d="M5 1 L9 9 H1 Z" fill="#9ca3af"/></svg>'
+    : '<svg width="7" height="7" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" fill="#374151"/></svg>';
+  L.marker([la, lo], { pane: 'labels', interactive: false, icon: L.divIcon({ className: '', iconSize: [0, 0],
+    html: `<div class="lm ${k}" style="transform:translate(-6px,-6px);display:flex;align-items:center;gap:3px">${sym}<span>${name}</span></div>` }) }).addTo(map);
+}
+const layers = [];
+function climbCol(v) { return pick(PANEL_CLIMB, Math.round((v || 0) * 2) / 2); }
+function draw() {
+  layers.forEach(l => map.removeLayer(l)); layers.length = 0;
+  for (const r of D.regions) {
+    const dd = r.days[day], s = dd && dd.summary;
+    const col = s ? climbCol(s.climb) : '#d1d5db';
+    const poly = L.polygon(r.poly, { color: '#ffffff', weight: 2, fillColor: col, fillOpacity: 0.58 }).addTo(map);
+    poly.on('click', () => openRegion(r));
+    poly.on('mouseover', () => poly.setStyle({ weight: 3, color: '#111827' }));
+    poly.on('mouseout', () => poly.setStyle({ weight: 2, color: '#ffffff' }));
+    const c = r.points.reduce((a, p) => [a[0] + p.lat / r.points.length, a[1] + p.lon / r.points.length], [0, 0]);
+    const txt = s ? `${s.climb.toFixed(1)} m/s · ${(s.top_ft / 1000).toFixed(1)}k${s.cu && s.base_ft ? ' · cu' : ''}` : 'no thermals';
+    const lab = L.marker(c, { pane: 'labels', interactive: false, icon: L.divIcon({ className: '', iconSize: [0, 0],
+      html: `<div class="rlab" style="transform:translate(-50%,-50%)"><b>${r.name}</b><span>${txt}</span></div>` }) }).addTo(map);
+    layers.push(poly, lab);
+  }
+  document.querySelectorAll('#days button').forEach((b, i) => b.setAttribute('aria-pressed', String(i === day)));
+  if (openR) openRegion(openR);
+}
+function openRegion(r) {
+  openR = r;
+  const data = { generated: D.generated, title: r.title, region: r.name, points: r.points, days: r.days };
+  const di = Math.min(day, r.days.length - 1);
+  document.getElementById('tog').setAttribute('aria-checked', String(graphic));
+  document.getElementById('view').innerHTML = graphic ? `<div class="scroll">${panelSVG(data, di)}</div>`
+    : `<div style="padding:44px 10px 4px"><div style="font-weight:800;font-size:22px">${r.title}</div>${panelText(data, di)}</div>`;
+  const s = r.days[di] && r.days[di].summary;
+  const dir = a => ['N','NE','E','SE','S','SW','W','NW'][Math.round(a / 45) % 8];
+  const hh = h => (h === 12 ? '12' : h > 12 ? h - 12 : h);
+  document.getElementById('sum').innerHTML = s ? `<b>${r.days[di].label}, best ${hh(s.window[0])}–${hh(s.window[1] + 1)} ${s.window[1] + 1 >= 12 ? 'pm' : 'am'}:</b> climbs ~${s.climb.toFixed(1)} m/s, usable to ~${s.top_ft.toLocaleString('en-US')} ft${s.cu && s.base_ft ? `, cumulus from ${s.base_ft.toLocaleString('en-US')} ft` : ', blue'}${s.w5k && s.w5k[1] != null ? `; wind at 5k ft ${dir(s.w5k[0])} ${s.w5k[1]} mph` : ''}. Points: ${r.points.map(p => p.name).join(', ')}.` : 'No thermals forecast.';
+  document.getElementById('ov').classList.add('open');
+}
+document.getElementById('x').onclick = () => { document.getElementById('ov').classList.remove('open'); openR = null; };
+document.getElementById('ov').onclick = e => { if (e.target.id === 'ov') document.getElementById('x').onclick(); };
+document.getElementById('tog').onclick = () => { graphic = !graphic; try { localStorage.setItem('region_view', graphic ? 'graphic' : 'text'); } catch (e) {} if (openR) openRegion(openR); };
+// colour key
+const key = L.control({ position: 'bottomleft' });
+key.onAdd = () => { const d = L.DomUtil.create('div', 'key'); d.innerHTML = 'best climb m/s<br>' + PANEL_CLIMB.map(([v, c]) => `<i style="background:${c}" title="${v}"></i>`).join('') + '<br><span style="display:flex;justify-content:space-between"><span>0</span><span>3.5</span></span>'; return d; };
+key.addTo(map);
+(async () => {
+  try {
+    D = await (await fetch('data/region/regions.json?' + Date.now())).json();
+    const n = Math.max(...D.regions.map(r => r.days.length));
+    const ref = D.regions.find(r => r.days.length === n);
+    document.getElementById('days').innerHTML = ref.days.map((d, i) => {
+      const dt = new Date(d.date + 'T12:00:00');
+      return `<button type="button">${d.label}<b>${dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} · ${d.model}</b></button>`;
+    }).join('');
+    document.querySelectorAll('#days button').forEach((b, i) => b.onclick = () => { day = i; draw(); });
+    draw();
+    map.fitBounds(L.latLngBounds(D.regions.flatMap(r => r.poly)), { padding: [8, 8] });
+  } catch (e) { document.getElementById('map').innerHTML = '<p style="padding:20px">Could not load regions: ' + e.message + '</p>'; }
+})();
+</script></body></html>
