@@ -1395,11 +1395,11 @@ function detail(d, s, inline) {
   const hourStrip = hm ? "" : Object.keys(hrs).length ? `<div class="hstrip">${Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => {
       const v = hrs[String(h)];
       return `<span class="hc" title="${h > 12 ? h - 12 : h} ${h >= 12 ? "pm" : "am"}${v != null ? ` · ${v}` : ""}" style="background:${v != null ? qgrad(v) : "var(--sunk)"}"></span>`;
-    }).join("")}${c.hwind ? Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => {
-      /* ridge site: the launch wind each hour, an arrow for where it blows and the speed (gust) */
-      const w = c.hwind[String(h)];
+    }).join("")}${(c.hwind || c.hwind_avg) ? Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => {
+      /* launch wind each hour (ridge: lead model; other sites: average of the models used), arrow + speed (gust) */
+      const w = (c.hwind || c.hwind_avg)[String(h)];
       if (!w || w[1] == null) return `<span class="hw"></span>`;
-      return `<span class="hw" title="${w[1]}${w[2] != null && w[2] > w[1] ? "g" + w[2] : ""} mph">${w[0] != null ? `<i style="transform:rotate(${(w[0] + 180) % 360}deg)">↑</i>` : ""}<b>${w[1]}</b>${w[2] != null && w[2] > w[1] ? `<small>g${w[2]}</small>` : ""}</span>`;
+      return `<span class="hw" title="${w[1]}${w[2] != null && w[2] > w[1] ? "g" + w[2] : ""} mph${w[3] ? ` · average of ${w[3]} model${w[3] > 1 ? "s" : ""}` : ""}">${w[0] != null ? `<i style="transform:rotate(${(w[0] + 180) % 360}deg)">↑</i>` : ""}<b>${w[1]}</b>${w[2] != null && w[2] > w[1] ? `<small>g${w[2]}</small>` : ""}</span>`;
     }).join("") : ""}${[[win, "wbr", "flying window: the 3 hours with the best height of lift, then thermal strength"], [c.gwin || [], "wbr glass", "glass-off: still working in the last 3 hours before sunset"]].map(([w, cl, tt]) => w.length === 2 && w[1] - w[0] < 7 ? `<span class="${cl}" title="${tt}" style="grid-column:${Math.max(1, w[0] - 8)} / ${Math.min(11, w[1] - 7)}"><svg viewBox="0 0 100 10" preserveAspectRatio="none"><path vector-effect="non-scaling-stroke" d="M1 1 Q1 5 8 5 L44 5 Q50 5 50 9.5 Q50 5 56 5 L92 5 Q99 5 99 1"/></svg></span>` : "").join("")}${Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => `<span class="hl">${h === 9 ? "9 am" : h === 18 ? "6 pm" : h > 12 ? h - 12 : h}</span>`).join("")}</div>` : "";
   const barRow = (k, x, v, sub0, xs, sub = String(sub0 || "").replace(/\s*·?\s*best 4 readings over \d+ points/, "").replace(/^\s*·\s*/, "")) => `<div class="factor">
       <span class="fk">${esc(k)}</span>

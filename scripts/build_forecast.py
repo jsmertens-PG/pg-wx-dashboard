@@ -90,6 +90,25 @@ CALIB_SITES = ("lb", "blossom", "elsinore", "owens")
 CORRIDOR_DBG = {}                  # per corridor point, midday: model ground and usable top (ft), for calibration
 
 
+
+def avg_hw(hws):
+    """Average hourly launch winds [dir, mph, gust] across models: mean speed and gust, vector-mean direction."""
+    out = {}
+    for h in range(9, 19):
+        ws = [hw[h] for hw in hws if hw and h in hw and hw[h] and hw[h][1] is not None]
+        if not ws:
+            continue
+        spd = sum(w[1] for w in ws) / len(ws)
+        gs = [w[2] for w in ws if w[2] is not None]
+        ds = [w[0] for w in ws if w[0] is not None]
+        d = None
+        if ds:
+            u = sum(math.sin(math.radians(x)) for x in ds)
+            v = sum(math.cos(math.radians(x)) for x in ds)
+            d = round(math.degrees(math.atan2(u, v))) % 360
+        out[str(h)] = [d, round(spd), round(sum(gs) / len(gs)) if gs else None, len(ws)]
+    return out
+
 def rating_models(names):
     """The models that decide a day: HRRR+RRFS; RRFS + globals once HRRR runs out; otherwise the globals."""
     names = list(names)
@@ -2120,6 +2139,9 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                 "hwind_m": {m: {str(h): v for h, v in (cell["all"][m].get("hw") or {}).items()}
                             for m in ("HRRR", "RRFS", "ECMWF") if m in cell["all"] and cell["all"][m].get("hw")
                             and (m in D or m == "ECMWF")} if ridge else None,
+                # every other site: launch wind hour by hour averaged across the models used for the day
+                # (third level of the card); [direction, mph, gust mph, number of models]
+                "hwind_avg": avg_hw([cell["all"][m].get("hw") for m in D if m in cell["all"]]) if not ridge else None,
                 "gwin": lead.get("gwin") if lead and lead.get("glass") and not ridge and (lead.get("style") not in ("convergence", "switch") or s.get("glass_off")) else None,
                 "note": note_for(s, lead_view, xc),
                 "p_fly": round(p_fly, 2), "p_xc": round(p_xc, 2),
