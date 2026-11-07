@@ -791,6 +791,14 @@ html body details.day .list .sgrp { margin: 4px 2px -2px; font-size: .62rem; }
 /* first-layer site pills: skinnier */
 html body details.day:not(#story) > summary.hd .sum .sc.sc.sc, html body details.day:not(#story) > summary.hd .sum .sc.sc.sc.trip{min-height:21px!important;padding:0 8px!important;line-height:1.1}
 @media (min-width:700px){ html body details.day:not(#story) > summary.hd .sum .sc.sc.sc, html body details.day:not(#story) > summary.hd .sum .sc.sc.sc.trip{min-height:26px!important;padding:1px 12px!important} }
+
+/* ridge site (Torrey): launch wind under each hour, arrow for where it blows, speed and gust */
+.hstrip .hw { grid-row: 2; display: flex; flex-direction: column; align-items: center; line-height: 1; font-size: .62rem; color: #26303a; font-variant-numeric: tabular-nums; padding-top: 2px; }
+.hstrip .hw i { font-style: normal; font-weight: 700; display: inline-block; font-size: .7rem; }
+.hstrip .hw b { font-weight: 700; }
+.hstrip .hw small { font-size: .52rem; color: var(--muted); }
+.hstrip:has(.hw) .wbr { grid-row: 3; }
+.hstrip:has(.hw) .hl { grid-row: 4; }
 </style>
 </head>
 <body>
@@ -1312,7 +1320,12 @@ function detail(d, s, inline) {
   const hourStrip = Object.keys(hrs).length ? `<div class="hstrip">${Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => {
       const v = hrs[String(h)];
       return `<span class="hc" title="${h > 12 ? h - 12 : h} ${h >= 12 ? "pm" : "am"}${v != null ? ` · ${v}` : ""}" style="background:${v != null ? qgrad(v) : "var(--sunk)"}"></span>`;
-    }).join("")}${[[win, "wbr", "flying window: the 3 hours with the best height of lift, then thermal strength"], [c.gwin || [], "wbr glass", "glass-off: still working in the last 3 hours before sunset"]].map(([w, cl, tt]) => w.length === 2 && w[1] - w[0] < 7 ? `<span class="${cl}" title="${tt}" style="grid-column:${Math.max(1, w[0] - 8)} / ${Math.min(11, w[1] - 7)}"><svg viewBox="0 0 100 10" preserveAspectRatio="none"><path vector-effect="non-scaling-stroke" d="M1 1 Q1 5 8 5 L44 5 Q50 5 50 9.5 Q50 5 56 5 L92 5 Q99 5 99 1"/></svg></span>` : "").join("")}${Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => `<span class="hl">${h === 9 ? "9 am" : h === 18 ? "6 pm" : h > 12 ? h - 12 : h}</span>`).join("")}</div>` : "";
+    }).join("")}${c.hwind ? Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => {
+      /* ridge site: the launch wind each hour, an arrow for where it blows and the speed (gust) */
+      const w = c.hwind[String(h)];
+      if (!w || w[1] == null) return `<span class="hw"></span>`;
+      return `<span class="hw" title="${w[1]}${w[2] != null && w[2] > w[1] ? "g" + w[2] : ""} mph">${w[0] != null ? `<i style="transform:rotate(${(w[0] + 180) % 360}deg)">↑</i>` : ""}<b>${w[1]}</b>${w[2] != null && w[2] > w[1] ? `<small>g${w[2]}</small>` : ""}</span>`;
+    }).join("") : ""}${[[win, "wbr", "flying window: the 3 hours with the best height of lift, then thermal strength"], [c.gwin || [], "wbr glass", "glass-off: still working in the last 3 hours before sunset"]].map(([w, cl, tt]) => w.length === 2 && w[1] - w[0] < 7 ? `<span class="${cl}" title="${tt}" style="grid-column:${Math.max(1, w[0] - 8)} / ${Math.min(11, w[1] - 7)}"><svg viewBox="0 0 100 10" preserveAspectRatio="none"><path vector-effect="non-scaling-stroke" d="M1 1 Q1 5 8 5 L44 5 Q50 5 50 9.5 Q50 5 56 5 L92 5 Q99 5 99 1"/></svg></span>` : "").join("")}${Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => `<span class="hl">${h === 9 ? "9 am" : h === 18 ? "6 pm" : h > 12 ? h - 12 : h}</span>`).join("")}</div>` : "";
   const barRow = (k, x, v, sub0, xs, sub = String(sub0 || "").replace(/\s*·?\s*best 4 readings over \d+ points/, "").replace(/^\s*·\s*/, "")) => `<div class="factor">
       <span class="fk">${esc(k)}</span>
       <span class="fbar">${(xs || [x]).map((q) => `<i style="width:${Math.max(3, Math.round(q * 100))}%;background:${barCol(q)}${xs && xs.length > 1 ? ";opacity:.55" : ""}"></i>`).join("")}</span>
@@ -1323,7 +1336,7 @@ function detail(d, s, inline) {
   const sink = c.sink || 1.1, core = c.core || 1.4, climb = c.wstar != null ? Math.max(0, core * c.wstar - sink) : null;
   const strength = climb != null && c.style !== "ridge"
     ? barRow("Climb rate", Math.max(0, Math.min(1, climb / 2.5)), `${climb.toFixed(1)} m/s`, "") : "";
-  const rows = fac.filter((f) => !isFlag(f)).map((f) => barRow(f.k === "Wind 1 pm" ? "Launch wind" : f.k, f.q, f.v, f.sub, f.qs)).join("").replace(/(<\/div>)/, `$1${strength}`)
+  const rows = fac.filter((f) => !isFlag(f) && !(c.hwind && f.k === "Wind 1 pm")).map((f) => barRow(f.k === "Wind 1 pm" ? "Launch wind" : f.k, f.q, f.v, f.sub, f.qs)).join("").replace(/(<\/div>)/, `$1${strength}`)
     + (c.rain_p != null ? barRow("Dry", 1 - c.rain_p, `${Math.round(c.rain_p * 100)}% rain`, "") : "")
     + (c.cloud ? barRow("Sun", 1 - (c.cloud.sun_loss || 0), `−${Math.round((c.cloud.sun_loss || 0) * 100)}%`, `mid/high cloud ${c.cloud.okta}/8`) : "");
   const agreeF = fac.find((f) => f.k === "Model agreement");

@@ -1288,6 +1288,10 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         "hr": {h: round((1.0 + 2.0 * clamp(x["q"] / 0.7)) if style == "ridge"
                         else (1.0 + (ceil_level(site, x["peak_top"] * FT) - 1.0) * clamp(x["q"] / 0.6)), 2)
                for h, x in hours if 9 <= h <= 18},
+        # launch wind each hour (direction, mph, gust mph), for the ridge site's hour strip
+        "hw": {h: [round(x["ld"]) if x["ld"] is not None else None, round(x["lw"]) if x["lw"] is not None else None,
+                   round(x["lg"]) if x["lg"] is not None else None]
+               for h, x in hours if 9 <= h <= 18},
         "xc_block": sum(1 for h, s in win if s["xc_block"]) >= max(1, len(win) // 2) if win else False,
         "pr": sum(s["pr"] for _, s in hours), "pr_win": window_rain,
         "wet_f": (sum(1 for _, s in win if s["pr"] >= WET_MM) / len(win)) if win else 0.0, "cape": max(s["cape"] for _, s in hours),
@@ -2108,6 +2112,7 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                 "hours": {str(h): round(blend({m: a["hr"][h] for m, a in D.items() if h in (a.get("hr") or {})}), 1)
                           for h in range(9, 19) if any(h in (a.get("hr") or {}) for a in D.values())},
                 "win": (lead.get("win") if lead else None) or s.get("window"),
+                "hwind": {str(h): v for h, v in (lead.get("hw") or {}).items()} if ridge and lead else None,
                 "gwin": lead.get("gwin") if lead and lead.get("glass") and not ridge and (lead.get("style") not in ("convergence", "switch") or s.get("glass_off")) else None,
                 "note": note_for(s, lead_view, xc),
                 "p_fly": round(p_fly, 2), "p_xc": round(p_xc, 2),
