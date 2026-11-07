@@ -17,13 +17,60 @@ function timelineSVG({ now = new Date(), shown = null, fetched = null } = {}) {
   const H = 3600e3;
   const W = 800, Hh = 160;
   const t0 = new Date(now.getTime() - 15 * H), t1 = new Date(now.getTime() + 9 * H);
-  const x0 = 18, x1 = 782, yAxis = 84;
+  const x0 = 162, x1 = 782, yAxis = 84;
   const X = t => x0 + (t - t0) / (t1 - t0) * (x1 - x0);
   const f = v => v.toFixed(1);
   const INK = '#111827', MUTED = '#6b7280', EDGE = '#e5e7eb', ACC = '#e07b00', BLUE = '#2563eb';
   const o = [];
   o.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${Hh}" font-family="Inter, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" fill="${MUTED}">`);
   o.push(`<rect width="${W}" height="${Hh}" rx="12" fill="#fff"/>`);
+
+  // ---- little scene: two happy Marines letting the balloon go at a generic airfield ----
+  const flying = (() => {
+    for (let k = -1; k <= 1; k++) {
+      const c = Math.round(now / (12 * H)) * 12 * H + k * 12 * H;
+      const a = c - TL_LAUNCH_BEFORE_H * H;
+      if (now >= a && now <= a + TL_FLIGHT_H * H) return true;
+    }
+    return false;
+  })();
+  const marine = (x, flip) => `<g transform="translate(${x} 0) scale(${flip ? -1 : 1} 1)">
+      <path d="M-5 128 l-2 14 M5 128 l2 14" stroke="#3f4a2c" stroke-width="4" stroke-linecap="round"/>
+      <path d="M-7 141.5h-3M7 141.5h3" stroke="#1f2937" stroke-width="3" stroke-linecap="round"/>
+      <rect x="-8" y="104" width="16" height="26" rx="6" fill="#6b7a4b"/>
+      <path d="M-4 110l3 4M2 118l3 3M-5 122l2 2" stroke="#55623a" stroke-width="2" stroke-linecap="round"/>
+      <path d="M6 108 Q16 96 14 84" fill="none" stroke="#6b7a4b" stroke-width="4" stroke-linecap="round"/>
+      <path d="M-6 108 Q-14 100 -16 92" fill="none" stroke="#6b7a4b" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="14" cy="83" r="2.6" fill="#e8b98f"/><circle cx="-16" cy="91" r="2.6" fill="#e8b98f"/>
+      <circle cx="0" cy="96" r="7.5" fill="#e8b98f"/>
+      <path d="M-8 92 Q0 82 8 92 Z" fill="#55623a"/><path d="M6 91.5h5" stroke="#55623a" stroke-width="2.2" stroke-linecap="round"/>
+      <circle cx="-2.6" cy="96" r="0.95" fill="#1f2937"/><circle cx="2.6" cy="96" r="0.95" fill="#1f2937"/>
+      <path d="M-3.2 99 Q0 102.6 3.2 99" fill="none" stroke="#1f2937" stroke-width="1.1" stroke-linecap="round"/>
+      <circle cx="-4.6" cy="98.6" r="1.2" fill="#f4a3a3" opacity="0.7"/><circle cx="4.6" cy="98.6" r="1.2" fill="#f4a3a3" opacity="0.7"/>
+    </g>`;
+  o.push(`<style>
+    @keyframes tlbob { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-4px) } }
+    @keyframes tlrise { 0% { transform: translateY(10px); opacity: 0 } 12% { opacity: 1 } 85% { opacity: 1 } 100% { transform: translateY(-60px); opacity: 0 } }
+    .tl-bob { animation: tlbob 3.5s ease-in-out infinite; }
+    .tl-rise { animation: tlrise 6s linear infinite; }
+    @media (prefers-reduced-motion: reduce) { .tl-bob, .tl-rise { animation: none } }
+  </style>`);
+  o.push(`<g transform="translate(10 4)">
+    <rect x="0" y="4" width="136" height="148" rx="10" fill="#eef4fb"/>
+    <circle cx="118" cy="26" r="7" fill="#fde68a"/>
+    <path d="M0 134 Q34 128 68 132 T136 130 V142 a10 10 0 0 1 -10 10 H10 a10 10 0 0 1 -10 -10Z" fill="#d9e7c9"/>
+    <path d="M4 132 Q20 118 36 132 Z" fill="#cbd5e1"/>
+    <rect x="112" y="108" width="5" height="26" fill="#cbd5e1"/><rect x="108" y="102" width="13" height="7" rx="2" fill="#94a3b8"/>
+    <g class="${flying ? 'tl-rise' : 'tl-bob'}">
+      <path d="M68 52 Q66 66 69 80" fill="none" stroke="#64748b" stroke-width="0.9"/>
+      <ellipse cx="68" cy="36" rx="13" ry="16" fill="#fff" stroke="#cbd5e1"/>
+      <ellipse cx="63" cy="30" rx="3.5" ry="5" fill="#f1f5f9"/>
+      <rect x="65" y="80" width="7" height="5" rx="1" fill="${ACC}"/>
+    </g>
+    ${marine(52, false)}
+    ${marine(86, true)}
+    <text x="68" y="17" text-anchor="middle" font-size="9.5" font-weight="700" fill="${INK}">MCAS Miramar</text>
+  </g>`);
 
   // ---- timeline ----
   o.push(`<text x="${x0}" y="22" font-size="12" font-weight="700" fill="${INK}">NKX balloon timeline <tspan font-weight="500" fill="${MUTED}">(Pacific time)</tspan></text>`);
