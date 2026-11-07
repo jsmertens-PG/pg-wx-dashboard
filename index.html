@@ -819,6 +819,15 @@ html body details.day:not(#story) > summary.hd .sum .sc.sc.sc, html body details
 .srow .wtab .hwt { max-width: none; }
 .srow .wtab .hwt .wc b small { display: block; text-align: center; }
 .srow .wtab .hwt .wc b { font-size: .6rem; }
+/* compact: one averaged row, smaller cells, gust beside the speed */
+.srow .wtab { margin-top: 4px; }
+.srow .wtab .hwt { row-gap: 2px; }
+.srow .wtab .hwt .hc { height: 9px; }
+.srow .wtab .hwt .hh { font-size: .5rem; }
+.srow .wtab .hwt .wc { padding: 1px 0; line-height: 1; }
+.srow .wtab .hwt .wc i { width: 8px; height: 9px; margin-bottom: 0; }
+.srow .wtab .hwt .wc b { font-size: .56rem; }
+.srow .wtab .hwt .wc b small { display: inline; font-size: .44rem; }
 .hwt .wc.late { opacity: .45; }   /* after sunset: wind only, greyed */
 .hwt .wc i { display: block; width: 10px; height: 12px; margin-bottom: 1px; }
 .hwt .wc i svg { display: block; width: 100%; height: 100%; fill: currentColor; }
@@ -1333,7 +1342,22 @@ function windTable(c) {
   return `<div class="hwt"><span></span>${HH.map((h) => `<span class="hh">${hlab(h)}</span>`).join("")}<span class="ml">score</span>${HH.map((h) => {
       const v = hrs[String(h)];
       return `<span class="hc" style="background:${v != null ? qgrad(v) : "var(--sunk)"}"></span>`;
-    }).join("")}${Object.entries(hm).map(([m, ws], k) => `<span class="ml${k % 2 ? "" : " z"}">${m === "ECMWF" ? "EC" : m}</span>${HH.map((h) => wcell(ws[String(h)]).replace('class="wc', `class="wc${k % 2 ? "" : " z"}${hrs[String(h)] == null ? " late" : ""}`)).join("")}`).join("")}</div>`;
+    }).join("")}<span class="ml" title="average of ${Object.keys(hm).map((m) => (m === "ECMWF" ? "EC" : m)).join(", ")}">avg</span>${HH.map((h) => {
+      /* one row: wind averaged across the models (mean speed and gust, vector-mean direction); each model in the tooltip */
+      const ws = Object.entries(hm).map(([m, w]) => [m, w[String(h)]]).filter(([, w]) => w && w[1] != null);
+      if (!ws.length) return wcell(null).replace('class="wc', `class="wc${hrs[String(h)] == null ? " late" : ""}`);
+      const n = ws.length, sp = ws.reduce((a, [, w]) => a + w[1], 0) / n;
+      const gs = ws.filter(([, w]) => w[2] != null).map(([, w]) => w[2]);
+      const dirs = ws.filter(([, w]) => w[0] != null);
+      let dir = null;
+      if (dirs.length) {
+        const u = dirs.reduce((a, [, w]) => a + Math.sin(w[0] * Math.PI / 180), 0), v = dirs.reduce((a, [, w]) => a + Math.cos(w[0] * Math.PI / 180), 0);
+        dir = Math.round((Math.atan2(u, v) * 180 / Math.PI + 360) % 360);
+      }
+      const cell = wcell([dir, Math.round(sp), gs.length ? Math.round(gs.reduce((a, b) => a + b, 0) / gs.length) : null]);
+      const tip = ws.map(([m, w]) => `${m === "ECMWF" ? "EC" : m} ${w[1]}${w[2] != null && w[2] > w[1] ? "g" + w[2] : ""}`).join(" · ");
+      return cell.replace(/ title="[^"]*"/, ` title="${tip} mph"`).replace('class="wc', `class="wc${hrs[String(h)] == null ? " late" : ""}`);
+    }).join("")}</div>`;
 }
 function miniStrip(c) {
   const hrs = c.hours || {}, win = c.win || [];
