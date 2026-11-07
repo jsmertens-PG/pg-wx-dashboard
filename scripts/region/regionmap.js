@@ -115,21 +115,20 @@ function miniMapSVG(D, day, radar) {
     const v = regionRate(rg, dd, radar);
     o.push(`<polygon points="${rg.poly.map(P).join(' ')}" fill="${v != null ? scoreCol(v) : '#cbd5e1'}" stroke="#fff" stroke-width="10" stroke-linejoin="round"/>`);
   }
-  // mountains, louder than on the main map so they read at thumbnail size
+  // mountains as the same peak symbols as the main map, bigger and darker so they read at thumbnail size
   const rr = rng(11);
-  o.push(`<defs><filter id="mmrel" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="9"/></filter></defs><g fill="#2b2418" opacity=".38" filter="url(#mmrel)">`);
-  for (const [spine, size, n] of RANGES) for (let i = 0; i <= n * 2; i++) {
-    const t = i / (n * 2), seg = t * (spine.length - 1), k = Math.min(spine.length - 2, Math.floor(seg)), u = seg - k;
+  for (const [spine, size, n] of RANGES) for (let i = 0; i <= Math.max(1, Math.round(n * 0.45)); i++) {
+    const m = Math.max(1, Math.round(n * 0.45)), t = i / m, seg = t * (spine.length - 1), k = Math.min(spine.length - 2, Math.floor(seg)), u = seg - k;
     const la = spine[k][0] + (spine[k + 1][0] - spine[k][0]) * u, lo = spine[k][1] + (spine[k + 1][1] - spine[k][1]) * u;
-    o.push(`<circle cx="${fx(lo).toFixed(1)}" cy="${fy(la).toFixed(1)}" r="${(size * (1.6 + rr() * 0.5)).toFixed(1)}"/>`);
+    const x = fx(lo) + (rr() - 0.5) * size, y = fy(la) + (rr() - 0.5) * size, h = size * (3.4 + rr() * 0.8), w = h * 0.8;
+    o.push(`<path d="M${(x - w).toFixed(1)} ${y.toFixed(1)} L${x.toFixed(1)} ${(y - h).toFixed(1)} L${x.toFixed(1)} ${y.toFixed(1)} Z" fill="#6f6553"/><path d="M${x.toFixed(1)} ${(y - h).toFixed(1)} L${(x + w).toFixed(1)} ${y.toFixed(1)} L${x.toFixed(1)} ${y.toFixed(1)} Z" fill="#2f281d"/>`);
   }
-  o.push(`</g>`);
   o.push('</svg>');
   return o.join('');
 }
 
 function mapSVG(D, day = 0, radar = null, opts = {}) {
-  const MTN = opts.mtn || 'relief';
+  const MTN = opts.mtn || 'peaks';
   BOXES.length = 0;
   const { W, H } = FM, f = v => v.toFixed(1), r = rng(7);
   const LAND = '#f5f4f0', WATER = '#cfe2ee', SHORE = '#9dbdd2', INK = '#1f2937', MUTED = '#6b7280', ROAD = '#e2b36a';
