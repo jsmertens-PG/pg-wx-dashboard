@@ -23,28 +23,47 @@ h1{font-size:19px;font-weight:700;margin:0;letter-spacing:-.01em}
 .stat b{display:block;font-size:13px;color:var(--ink);margin-top:1px;font-weight:650}
 .note{font-size:11px;color:var(--muted);line-height:1.4;margin:6px 2px}
 a{color:#2563eb}
+.hb{display:flex;gap:8px;align-items:center}
+.seg.stn{margin:0 0 10px}
+.seg.stn a{font-size:13px;padding:5px 12px;border-radius:999px;color:var(--muted);text-decoration:none}
+.seg.stn a[aria-current="page"]{background:var(--ink);color:#fff}
+.pathbox{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0 0}
+.pathbox .ph{font-size:13px;font-weight:700;margin:0 2px 6px}
+.pathbox svg{width:100%;height:auto;display:block;border-radius:10px}
 </style></head><body><div class="wrap">
-<header><h1>NKX sounding</h1><a class="back" href="./">← Radar</a></header>
+<header><h1 id="h1">NKX sounding</h1><a class="back" href="./">← Radar</a></header>
+<div class="seg stn" id="stn"><a href="sounding.html" data-s="nkx">Miramar</a><a href="sounding.html?stn=edw" data-s="edw">Edwards</a></div>
 <div id="plot">Loading…</div>
 <div class="stats" id="stats"></div>
 <div id="tl" class="tl"></div>
 <p class="note" id="src"></p>
-<p class="note">Cloudbase = surface dewpoint lifted at constant mixing ratio until it meets the temperature curve. Orange lines = dry adiabats (5.4 °F/1000 ft) from the surface every 5 °F, ending at the thermal top for that surface temperature. Zoomed to the flyable range. Blue bands = inversions. Bold line = forecast afternoon high at Miramar (median of the GFS, ECMWF and ICON ensembles); shaded band = 10th–90th percentile of those runs. Updated by a GitHub Action after each 00Z/12Z launch. Thanks Rob!</p>
+<div id="pathbox" class="pathbox" hidden><div class="ph" id="ph">Balloon path</div><div id="path"></div><p class="note" id="pnote"></p></div>
+<p class="note">Cloudbase = surface dewpoint lifted at constant mixing ratio until it meets the temperature curve. Orange lines = dry adiabats (5.4 °F/1000 ft) from the surface every 5 °F, ending at the thermal top for that surface temperature. Zoomed to the flyable range. Blue bands = inversions. Bold line = forecast afternoon high at the launch site (median of the GFS, ECMWF and ICON ensembles); shaded band = 10th–90th percentile of those runs. Updated by a GitHub Action after each 00Z/12Z launch. Thanks Rob!</p>
 </div>
 <script src="scripts/sounding/core.js?v=202611070758"></script>
 <script src="scripts/sounding/timeline.js?v=202611070758"></script>
+<script src="scripts/region/regionmap.js?v=202611071100"></script>
+<script src="scripts/sounding/pathmap.js?v=202611071100"></script>
 <script>
 (async () => {
   try {
-    const txt = await (await fetch('data/sounding/nkx_latest.txt?' + Date.now())).text();
+    const STN = /[?&]stn=edw/.test(location.search) ? 'edw' : 'nkx';
+    const INFO = { nkx: { file: 'data/sounding/nkx_latest.txt', fc: 'surface_forecast.json', name: 'Miramar', lat: 32.85, lon: -117.12, h1: 'NKX sounding', track: 'data/sounding/stations/NKX_track.csv' },
+                   edw: { file: 'data/sounding/stations/EDW_latest.txt', fc: 'surface_forecast_edw.json', name: 'Edwards AFB', lat: 34.90, lon: -117.92, h1: 'Edwards sounding', track: 'data/sounding/stations/EDW_track.csv' } }[STN];
+    document.querySelectorAll('#stn a').forEach(a => { if (a.dataset.s === STN) a.setAttribute('aria-current', 'page'); });
+    document.getElementById('h1').textContent = INFO.h1;
+    document.title = INFO.h1 + ' – SoCal Flying Radar';
+    const res = await fetch(INFO.file + '?' + Date.now());
+    if (!res.ok) throw new Error(STN === 'edw' ? 'no Edwards launch on file yet (they do not fly every day)' : 'HTTP ' + res.status);
+    const txt = await res.text();
     let forecast = null;
-    try { forecast = await (await fetch('data/sounding/surface_forecast.json?' + Date.now())).json(); } catch (e) {}
+    try { forecast = await (await fetch('data/sounding/' + INFO.fc + '?' + Date.now())).json(); } catch (e) {}
     const snd = parseSounding(txt);
     // which launch this chart shows (nominal 00Z/12Z), for the balloon timeline
     const tm = snd.title.match(/_(\d\d)00Z_(\d\d)_(\w{3})_(\d{4})$/);
     const shown = tm ? new Date(Date.UTC(+tm[4], ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'].indexOf(tm[3]), +tm[2], +tm[1])) : null;
     const drawTl = () => { document.getElementById('tl').innerHTML = timelineSVG({ now: new Date(), shown }); };
-    drawTl(); setInterval(drawTl, 60000);
+    if (STN === 'nkx') { drawTl(); setInterval(drawTl, 60000); } else document.getElementById('tl').hidden = true;
     const r = renderSVG(snd, { forecast }), A = r.analysis, s = snd.levels[0];
     document.getElementById('plot').innerHTML = r.svg;
     const st = [['Surface', `${Math.round(s.z*1000)} ft · ${Math.round(s.t)}°F / Td ${isFinite(s.td)?Math.round(s.td):'–'}°F`]];
@@ -56,6 +75,21 @@ a{color:#2563eb}
     document.getElementById('stats').innerHTML = st.map(([a,b]) => `<div class="stat">${a}<b>${b}</b></div>`).join('');
     const src = (txt.match(/^# source: (.*)$/m)||[])[1], fe = (txt.match(/^# fetched: (.*)$/m)||[])[1];
     if (src) document.getElementById('src').innerHTML = `Data: <a href="${src}">${new URL(src).hostname}</a> · fetched ${fe}`;
+    // the balloon's path: published track if the data has positions, else reconstructed from the winds
+    try {
+      let tr = null, how = '';
+      try { const r2 = await fetch(INFO.track + '?' + Date.now()); if (r2.ok) { tr = trackFromCSV(await r2.text()); how = 'published track'; } } catch (e) {}
+      if (!tr) { tr = trackFromWinds(snd.levels, INFO.lat, INFO.lon); how = 'reconstructed from the winds, assuming the usual ~1,000 ft/min climb'; }
+      const svg = tr ? balloonPathSVG(tr, { lat: INFO.lat, lon: INFO.lon, name: INFO.name }, { top_ft: 30000 }) : '';
+      if (svg) {
+        document.getElementById('path').innerHTML = svg;
+        const end = tr.filter(p => p.z_ft <= 30000).pop();
+        const km = Math.hypot((end.lon - INFO.lon) * 111.2 * Math.cos(INFO.lat * Math.PI / 180), (end.lat - INFO.lat) * 111.2);
+        document.getElementById('ph').textContent = `Balloon path to 30,000 ft · drifted ~${Math.round(km / 1.609)} mi`;
+        document.getElementById('pnote').textContent = `Path ${how}. Dots mark 5k, 10k, 20k and 30k ft; the balloon keeps rising to ~100k ft before it bursts.`;
+        document.getElementById('pathbox').hidden = false;
+      }
+    } catch (e) {}
   } catch (e) { document.getElementById('plot').textContent = 'Could not load sounding: ' + e.message; }
 })();
 </script></body></html>

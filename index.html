@@ -1429,8 +1429,8 @@ function siteRow(d, s, i, kind) {
   </button>`;
 }
 
-/* region thermals (XC-style time x height panel) inside the third level; trial behind ?therm=1 */
-const THERM = /[?&]therm=1/.test(location.search);
+/* region thermals (time x height panel, pure model) inside each site's third level; ?therm=0 hides it */
+const THERM = !/[?&]therm=0/.test(location.search);
 const SITE_REGION = { torrey: "coast", lb: "north", blossom: "east", otay: "south", whalesv: "south", lagunahorse: "mountains", elsinore: "inland_empire", soboba: "inland_empire", marshall: "marshall" };
 let REGIONS_D = null;
 if (THERM) fetch(`data/region/regions.json?t=${Date.now()}`, { cache: "no-store" }).then((r) => r.json()).then((j) => { REGIONS_D = j; }).catch(() => {});

@@ -93,8 +93,8 @@ ENS = {"GFS ens": ["gfs025", "gfs_seamless"], "ECMWF ens": ["ecmwf_ifs025"], "IC
 DET = {"HRRR": ["ncep_hrrr_conus", "gfs_hrrr"]}
 
 
-def om(base, model):
-    return (f"{base}?latitude={LAT}&longitude={LON}&hourly=temperature_2m&models={model}"
+def om(base, model, lat=None, lon=None):
+    return (f"{base}?latitude={lat or LAT}&longitude={lon or LON}&hourly=temperature_2m&models={model}"
             f"&temperature_unit=fahrenheit&timezone={TZ.replace('/', '%2F')}&forecast_days=3")
 
 
@@ -119,7 +119,7 @@ def pct(xs, q):
     return xs[lo] + (xs[hi] - xs[lo]) * (i - lo)
 
 
-def fetch_surface_forecast():
+def fetch_surface_forecast(lat=LAT, lon=LON, fname="surface_forecast.json"):
     now = dt.datetime.now(ZoneInfo(TZ))
     day = now.date() if now.hour < 14 else now.date() + dt.timedelta(days=1)
     d = day.isoformat()
@@ -127,7 +127,7 @@ def fetch_surface_forecast():
     for name, ids in ENS.items():
         for mid in ids:
             try:
-                h = json.loads(get(om("https://ensemble-api.open-meteo.com/v1/ensemble", mid)))["hourly"]
+                h = json.loads(get(om("https://ensemble-api.open-meteo.com/v1/ensemble", mid, lat, lon)))["hourly"]
                 m = day_max(h, d)
                 if m:
                     members += m
@@ -138,7 +138,7 @@ def fetch_surface_forecast():
     for name, ids in DET.items():
         for mid in ids:
             try:
-                m = day_max(json.loads(get(om("https://api.open-meteo.com/v1/forecast", mid)))["hourly"], d)
+                m = day_max(json.loads(get(om("https://api.open-meteo.com/v1/forecast", mid, lat, lon)))["hourly"], d)
                 if m:
                     hrrr = round(m[0], 1)
                     break
@@ -146,7 +146,7 @@ def fetch_surface_forecast():
                 print(f"forecast {name} {mid}: {e}")
     if len(members) < 5:
         print("forecast: not enough ensemble members")
-        stale = os.path.join(OUT, "surface_forecast.json")
+        stale = os.path.join(OUT, fname)
         try:   # never show yesterday's "tomorrow" as today's forecast
             with open(stale) as f:
                 if json.load(f).get("day") != d:
@@ -158,10 +158,10 @@ def fetch_surface_forecast():
     out = {"day": d, "label": "today" if day == now.date() else "tomorrow",
            "median_f": round(pct(members, 0.5), 1), "p10_f": round(pct(members, 0.1), 1),
            "p90_f": round(pct(members, 0.9), 1), "hrrr_f": hrrr, "members": len(members),
-           "models": models, "lat": LAT, "lon": LON, "window": "10:00-17:00 local",
+           "models": models, "lat": lat, "lon": lon, "window": "10:00-17:00 local",
            "source": "https://open-meteo.com/en/docs/ensemble-api",
            "fetched": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ")}
-    with open(os.path.join(OUT, "surface_forecast.json"), "w") as f:
+    with open(os.path.join(OUT, fname), "w") as f:
         json.dump(out, f, indent=2)
     print("forecast:", out)
     return 0
@@ -171,6 +171,7 @@ if __name__ == "__main__":
     rc = main()
     try:
         fetch_surface_forecast()
+        fetch_surface_forecast(34.90, -117.92, "surface_forecast_edw.json")   # Edwards AFB balloon page
     except Exception as e:  # noqa: BLE001  (forecast is optional)
         print("forecast failed:", e)
     sys.exit(rc)

@@ -63,7 +63,7 @@ def main():
     except Exception:  # noqa: BLE001
         meta = {}
     for stn, (wmo, name, la, lo) in STATIONS.items():
-        if meta.get(stn, {}).get("obs") == f"{c:%Y-%m-%dT%H}:00Z":
+        if meta.get(stn, {}).get("obs") == f"{c:%Y-%m-%dT%H}:00Z" and meta[stn].get("v") == 2:
             print(f"{stn}: have {c:%Y-%m-%d %HZ}")
             continue
         for fn, arg in ((uwyo, wmo), (iem, stn)):
@@ -76,9 +76,21 @@ def main():
                 print(f"{stn} {fn.__name__} {c:%Y-%m-%d %HZ}: {str(e)[:100]}")
                 continue
             path = f"stations/{stn}_latest.txt"
+            if "Observations at" not in text:
+                text = f"{wmo} {stn} {name} Observations at {c:%H}Z {c:%d %b %Y}\n" + text
             with open(os.path.join(OUT, path), "w") as f:
                 f.write(f"# source: {url}\n# fetched: {now:%Y-%m-%dT%H:%MZ}\n" + text)
-            meta[stn] = {"name": name, "lat": la, "lon": lo, "obs": f"{c:%Y-%m-%dT%H}:00Z", "file": path, "levels": n}
+            # the balloon's own track, where the high-resolution (BUFR) data carries positions
+            try:
+                csv = get(f"https://weather.uwyo.edu/wsgi/sounding?datetime={c:%Y-%m-%d}%20{c:%H}:00:00&id={wmo}&type=TEXT:CSV&src=UNKNOWN")
+                head = csv.strip().splitlines()[0].lower() if csv.strip() else ""
+                print(f"{stn}: csv header: {head[:160]}")
+                if "lat" in head and "lon" in head:
+                    with open(os.path.join(OUT, f"stations/{stn}_track.csv"), "w") as f:
+                        f.write(csv)
+            except Exception as e:  # noqa: BLE001
+                print(f"{stn}: no csv ({str(e)[:80]})")
+            meta[stn] = {"name": name, "lat": la, "lon": lo, "obs": f"{c:%Y-%m-%dT%H}:00Z", "file": path, "levels": n, "v": 2}
             print(f"{stn}: saved {c:%Y-%m-%d %HZ} ({n} lines) from {fn.__name__}")
             break
         else:

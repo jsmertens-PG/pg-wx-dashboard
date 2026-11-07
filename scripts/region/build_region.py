@@ -208,6 +208,7 @@ def tune(rid):
 # this morning's weather balloons: each region blends the closest one that flew today into today's mixing depth
 # (the 6 model levels miss the inversions a sounding resolves); weight 0.5 at the station, fading to 0 at 300 km
 SND_MAX_KM, SND_W0 = 300.0, 0.5
+USE_BALLOONS = False   # off: the region panels stay pure model; the real balloon data lives on the sounding page
 
 
 def parse_sounding(txt):
@@ -624,7 +625,7 @@ def main():
         allpts += pts
     acc = {gid: {} for gid, _ in groups}
     global RSND, TERR
-    snds, TERR = load_soundings(today), load_terrain()
+    snds, TERR = (load_soundings(today) if USE_BALLOONS else {}), load_terrain()
     RSND = {}
     for r in REGIONS:
         rs = region_sounding(r, snds)
