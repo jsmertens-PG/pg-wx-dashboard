@@ -799,6 +799,20 @@ html body details.day:not(#story) > summary.hd .sum .sc.sc.sc, html body details
 .hstrip .hw small { font-size: .52rem; color: var(--muted); }
 .hstrip:has(.hw) .wbr { grid-row: 3; }
 .hstrip:has(.hw) .hl { grid-row: 4; }
+
+/* Torrey: score strip plus a launch-wind row per model (HRRR, RRFS, EC), arrow over 7g11 */
+.hwt { display: grid; grid-template-columns: 26px repeat(10, minmax(0, 1fr)); gap: 1px; max-width: 540px; align-items: center; }
+.hwt .hh { font-size: .56rem; color: var(--muted); text-align: center; font-weight: 600; }
+.hwt .ml { font-size: .52rem; font-weight: 700; color: #475467; align-self: stretch; display: flex; align-items: center; padding-left: 2px; border-radius: 3px 0 0 3px; }
+.hwt .hc { height: 14px; border-radius: 2px; box-shadow: inset 0 0 0 1.5px rgba(38,48,58,.75); }
+.hwt .wc { display: flex; flex-direction: column; align-items: center; line-height: 1.05; padding: 3px 0; color: #26303a; font-variant-numeric: tabular-nums; min-width: 0; }
+.hwt .z { background: rgba(38,48,58,.045); }
+.hwt .wc i { font-style: normal; font-weight: 800; font-size: .62rem; display: inline-block; }
+.hwt .wc b { font-size: .56rem; font-weight: 700; letter-spacing: -.045em; white-space: nowrap; }
+.hwt .wc b small { font-size: .47rem; font-weight: 500; opacity: .75; letter-spacing: -.03em; }
+.hwt .wc.lo { color: #98a2b3; }
+.hwt .wc.hi { color: #c23434; }
+@media (max-width: 380px) { .hwt .wc b small { display: block; text-align: center; } }
 </style>
 </head>
 <body>
@@ -1317,7 +1331,21 @@ function detail(d, s, inline) {
   const fac = (c.factors || []);
   /* hour by hour, 9 am to 6 pm, coloured by how good each hour is; the site's window outlined */
   const hrs = c.hours || {}, win = c.win || [];
-  const hourStrip = Object.keys(hrs).length ? `<div class="hstrip">${Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => {
+  /* ridge site with model winds: the score strip on top, then one row of launch wind per model (Windy style) */
+  const hm = c.hwind_m && Object.keys(c.hwind_m).length ? c.hwind_m : null;
+  const HH = Array.from({ length: 10 }, (_, k) => 9 + k);
+  const hlab = (h) => (h === 9 ? "9a" : h === 18 ? "6p" : h === 12 ? "12" : h > 12 ? `${h - 12}p` : `${h}a`);
+  const wcell = (w) => {
+    if (!w || w[1] == null) return `<span class="wc"></span>`;
+    const g = w[2] != null && w[2] > w[1] ? w[2] : null;
+    const cls = w[1] >= 20 || (g || 0) >= 20 ? " hi" : w[1] < 6 ? " lo" : "";
+    return `<span class="wc${cls}" title="${w[1]}${g ? "g" + g : ""} mph">${w[0] != null ? `<i style="transform:rotate(${(w[0] + 180) % 360}deg)">↑</i>` : ""}<b>${w[1]}${g ? `<small>g${g}</small>` : ""}</b></span>`;
+  };
+  const modelTable = hm ? `<div class="hwt"><span></span>${HH.map((h) => `<span class="hh">${hlab(h)}</span>`).join("")}<span class="ml">score</span>${HH.map((h) => {
+      const v = hrs[String(h)];
+      return `<span class="hc" style="background:${v != null ? qgrad(v) : "var(--sunk)"}"></span>`;
+    }).join("")}${Object.entries(hm).map(([m, ws], k) => `<span class="ml${k % 2 ? "" : " z"}">${m === "ECMWF" ? "EC" : m}</span>${HH.map((h) => wcell(ws[String(h)]).replace('class="wc', `class="wc${k % 2 ? "" : " z"}`)).join("")}`).join("")}</div>` : "";
+  const hourStrip = hm ? modelTable : Object.keys(hrs).length ? `<div class="hstrip">${Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => {
       const v = hrs[String(h)];
       return `<span class="hc" title="${h > 12 ? h - 12 : h} ${h >= 12 ? "pm" : "am"}${v != null ? ` · ${v}` : ""}" style="background:${v != null ? qgrad(v) : "var(--sunk)"}"></span>`;
     }).join("")}${c.hwind ? Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => {
