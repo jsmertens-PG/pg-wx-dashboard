@@ -254,13 +254,24 @@ function renderSVG(snd, opts = {}) {
     const tx = X(P1, th.ttop), ty = Y(th.top);
     if (tx > P1.x0 && tx < P1.x1 && ty > top + 4) o.push(`<circle cx="${f(tx)}" cy="${f(ty)}" r="2.6" fill="${C.thermal}"/>`);
   }
+  // surface-temperature label on each thermal line, near its top (like pgweather)
+  // labels sit on the lines in a column just right of the surface temperature
+  A.thermals.forEach((th, k) => {
+    const zl = th.z0 + 0.8 + (6 / 5.4) * k;
+    if (zl > Math.min(th.top - 0.3, ZMAX - 0.4)) return;
+    const tl = th.ts - 5.4 * (zl - th.z0);
+    if (tl < interp(lv, 't', zl) + 4) return;
+    const xl = X(P1, tl), yl = Y(zl);
+    if (xl > P1.x1 - 14) return;
+    o.push(`<text x="${f(xl)}" y="${f(yl + 4)}" text-anchor="middle" font-size="10.5" font-weight="700" fill="#e08e00" stroke="${PANEL}" stroke-width="4" paint-order="stroke">${th.ts}°</text>`);
+  });
   if (A.cb) {
     const pts = [];
     for (let z = A.z0; z < A.cb.z; z += 0.1) pts.push([X(P1, A.parcelTd(z)), Y(z)]);
     pts.push([X(P1, A.cb.t), Y(A.cb.z)]);
     o.push(poly(pts, C.cloud, 'c0', { simp: 0.6, w: 1.6 }));
     o.push(poly([[P1.x0, Y(A.cb.z)], [P1.x1, Y(A.cb.z)]], C.cloud, 'c0', { w: 1.4, dash: '6 4' }));
-    const lbl = `Cloudbase ${(Math.round(A.cb.z * 10) * 100).toLocaleString('en-US')} ft`;
+    const lbl = `Cloudbase ${(Math.round(A.cb.z * 10) * 100).toLocaleString('en-US')} ft · trigger ${Math.round(A.cb.trigger)}°F`;
     const yy = Y(A.cb.z) - 7;
     o.push(`<text x="${P1.x0 + 8}" y="${f(yy)}" font-size="11" font-weight="600" fill="${C.cloud}" stroke="${PANEL}" stroke-width="3" paint-order="stroke">${lbl}</text>`);
     o.push(`<circle cx="${f(X(P1, A.cb.t))}" cy="${f(Y(A.cb.z))}" r="3.2" fill="#fff" stroke="${C.cloud}" stroke-width="1.6"/>`);
@@ -268,9 +279,9 @@ function renderSVG(snd, opts = {}) {
   o.push(poly(L.map(l => [X(P1, l.td), Y(l.z)]), C.dew, 'c0', { simp: dense ? 1.2 : 0, w: 2.2 }));
   o.push(poly(L.map(l => [X(P1, l.t), Y(l.z)]), C.temp, 'c0', { simp: dense ? 1.2 : 0, w: 2.2 }));
   // legend card
-  const lg = [['Temperature', C.temp], ['Dew point', C.dew], ['Cloudbase', C.cloud], ['Thermal tops', C.thermal]];
-  const lx = P1.x1 - 112, ly = top + 10;
-  o.push(`<rect x="${lx}" y="${ly}" width="102" height="${lg.length * 16 + 10}" rx="6" fill="#fff" fill-opacity="0.92" stroke="${EDGE}"/>`);
+  const lg = [['Temperature', C.temp], ['Dew point', C.dew], ['Cloudbase', C.cloud], ['Thermals (sfc °F)', C.thermal]];
+  const lx = P1.x1 - 130, ly = top + 10;
+  o.push(`<rect x="${lx}" y="${ly}" width="120" height="${lg.length * 16 + 10}" rx="6" fill="#fff" fill-opacity="0.92" stroke="${EDGE}"/>`);
   lg.forEach(([name, c], i) => {
     const y = ly + 14 + i * 16;
     o.push(`<path d="M${lx + 10} ${y}h16" stroke="${c}" stroke-width="2.4" stroke-linecap="round"/>`);
