@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-07T04:58+00:00",
+ "generated": "2026-11-07T05:03+00:00",
  "sample": false,
  "calib": {
   "2026-11-06": {
@@ -31432,20 +31432,20 @@
  },
  "log": [
   "HRRR: ok (ncep_hrrr_conus), surface heat flux (7124 values)",
-  "HRRR trips: using the last good run, fetched 3.6 h ago",
+  "HRRR trips: using the last good run, fetched 3.7 h ago",
   "RRFS: ok (ncep_rrfs_conus), surface heat flux (8736 values)",
-  "RRFS trips: using the last good run, fetched 0.8 h ago",
-  "GFS: using the last good run, fetched 3.6 h ago",
-  "ECMWF: using the last good run, fetched 3.5 h ago",
-  "ICON: using the last good run, fetched 3.5 h ago",
-  "ens GFS ens: using the last good run, fetched 3.5 h ago",
-  "ens ECMWF ens: using the last good run, fetched 0.2 h ago",
-  "ens ICON ens: using the last good run, fetched 0.8 h ago",
+  "RRFS trips: using the last good run, fetched 0.9 h ago",
+  "GFS: using the last good run, fetched 3.7 h ago",
+  "ECMWF: using the last good run, fetched 3.6 h ago",
+  "ICON: using the last good run, fetched 3.6 h ago",
+  "ens GFS ens: using the last good run, fetched 3.6 h ago",
+  "ens ECMWF ens: using the last good run, fetched 0.3 h ago",
+  "ens ICON ens: using the last good run, fetched 0.9 h ago",
   "NWS AFD: ok",
   "clouds HRRR: ok (ncep_hrrr_conus)",
   "clouds RRFS: ok (ncep_rrfs_conus)",
-  "clouds ECMWF: using the last good run, fetched 3.5 h ago",
-  "clouds ICON: using the last good run, fetched 3.5 h ago",
+  "clouds ECMWF: using the last good run, fetched 3.6 h ago",
+  "clouds ICON: using the last good run, fetched 3.6 h ago",
   "wind: GFS and ICON use ECMWF's winds where RRFS and ECMWF overlap"
  ],
  "sources": [
@@ -31456,7 +31456,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-11-07T02:00+00:00",
-   "fetched": "2026-11-07T04:58+00:00",
+   "fetched": "2026-11-07T05:03+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -31465,8 +31465,8 @@
    "provider": "Open-Meteo",
    "id": "ncep_rrfs_conus",
    "status": "ok",
-   "run": "2026-11-07T00:00+00:00",
-   "fetched": "2026-11-07T04:58+00:00",
+   "run": "2026-11-06T18:00+00:00",
+   "fetched": "2026-11-07T05:03+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -31511,7 +31511,7 @@
    "run": null,
    "fetched": "2026-11-07T01:29+00:00",
    "url": "https://open-meteo.com/en/docs/ensemble-api",
-   "note": "cached, fetched 3 h ago"
+   "note": "cached, fetched 4 h ago"
   },
   {
    "name": "ECMWF ens",
@@ -31542,7 +31542,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-11-07T00:58:00+00:00",
-   "fetched": "2026-11-07T04:58+00:00",
+   "fetched": "2026-11-07T05:03+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   },
   {
@@ -31552,7 +31552,7 @@
    "id": "cloud_cover_mid/high",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-07T04:58+00:00",
+   "fetched": "2026-11-07T05:03+00:00",
    "url": "https://open-meteo.com/en/docs"
   }
  ],
@@ -31731,12 +31731,12 @@
      "hours": {
       "9": 1.3,
       "10": 1.3,
-      "11": 2.2,
-      "12": 2.9,
-      "13": 2.7,
+      "11": 2.9,
+      "12": 3.0,
+      "13": 3.0,
       "14": 3.0,
       "15": 3.0,
-      "16": 2.7
+      "16": 3.0
      },
      "win": [
       10,
@@ -31872,7 +31872,7 @@
      },
      "gwin": null,
      "note": "W 7 mph",
-     "p_fly": 0.89,
+     "p_fly": 1.0,
      "p_xc": 0.01,
      "agree": "agree",
      "models": {
@@ -31892,7 +31892,7 @@
        "k": "Wind 1 pm",
        "v": "W 7",
        "sub": "",
-       "q": 0.43
+       "q": 0.8
       },
       {
        "k": "Rain & storms",
@@ -31940,7 +31940,7 @@
       },
       "RRFS": {
        "r": 3.0,
-       "top": 500.0,
+       "top": 300.0,
        "w": 1.1,
        "wind": [
         297,
@@ -34011,7 +34011,7 @@
      "launch_name": "EJ Bowl",
      "cloud": {
       "okta": 0,
-      "cover": 0.02,
+      "cover": 0.01,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
@@ -34020,7 +34020,7 @@
         0.0
        ],
        "RRFS": [
-        0.05,
+        0.01,
         0.0
        ]
       }
@@ -34326,7 +34326,7 @@
      "hours": {
       "9": 1.0,
       "10": 2.8,
-      "11": 2.9,
+      "11": 3.0,
       "12": 3.0,
       "13": 3.0,
       "14": 2.6,
@@ -34467,7 +34467,7 @@
      },
      "gwin": null,
      "note": "WNW 11 mph",
-     "p_fly": 0.94,
+     "p_fly": 0.98,
      "p_xc": 0.03,
      "agree": "agree",
      "models": {
@@ -36847,7 +36847,7 @@
      "launch_name": "Walt's Point",
      "cloud": {
       "okta": 2,
-      "cover": 0.24,
+      "cover": 0.23,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
@@ -36856,7 +36856,7 @@
         0.0
        ],
        "RRFS": [
-        0.22,
+        0.19,
         0.0
        ]
       }
@@ -36930,22 +36930,22 @@
    "date": "2026-11-08",
    "sites": {
     "torrey": {
-     "rating": 2.73,
+     "rating": 3.0,
      "label": "Ridge soaring",
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
      "good_glass": true,
-     "base": 2.73,
+     "base": 3.0,
      "adj": [],
      "hours": {
       "9": 1.3,
-      "10": 1.3,
-      "11": 2.8,
-      "12": 2.7,
-      "13": 2.7,
-      "14": 2.7,
-      "15": 2.7,
+      "10": 2.2,
+      "11": 3.0,
+      "12": 3.0,
+      "13": 3.0,
+      "14": 3.0,
+      "15": 3.0,
       "16": 2.4
      },
      "win": [
@@ -37082,12 +37082,12 @@
      },
      "gwin": null,
      "note": "W 8 mph",
-     "p_fly": 0.76,
+     "p_fly": 0.92,
      "p_xc": 0.0,
      "agree": "agree",
      "models": {
-      "HRRR": 2.7,
-      "RRFS": 2.8
+      "HRRR": 3.0,
+      "RRFS": 3.0
      },
      "n_members": 122,
      "lead": "HRRR",
@@ -37102,7 +37102,7 @@
        "k": "Wind 1 pm",
        "v": "W 8g10",
        "sub": "",
-       "q": 0.0
+       "q": 0.54
       },
       {
        "k": "Rain & storms",
@@ -37113,23 +37113,19 @@
       {
        "k": "Model agreement",
        "v": "agree",
-       "sub": "HRRR 2.7 \u00b7 RRFS 2.8",
-       "q": 0.98
+       "sub": "HRRR 3.0 \u00b7 RRFS 3.0",
+       "q": 1.0
       }
      ],
      "alt_source": "RRFS",
      "ground_ft": 0,
      "launch_ft": 300,
      "style": "ridge",
-     "why": [
-      "light"
-     ],
-     "when": {
-      "light": "am"
-     },
+     "why": [],
+     "when": {},
      "diag": {
       "HRRR": {
-       "r": 2.7,
+       "r": 3.0,
        "top": 700.0,
        "w": 1.6,
        "wind": [
@@ -37143,13 +37139,11 @@
        ],
        "wet": 0.0,
        "wind_src": "HRRR",
-       "why": [
-        "light"
-       ],
+       "why": [],
        "used": true
       },
       "RRFS": {
-       "r": 2.8,
+       "r": 3.0,
        "top": 300.0,
        "w": 0.9,
        "wind": [
@@ -37170,7 +37164,7 @@
        "used": true
       },
       "GFS": {
-       "r": 2.7,
+       "r": 3.0,
        "top": 900.0,
        "w": 1.4,
        "wind": [
@@ -37190,7 +37184,7 @@
        "used": false
       },
       "ECMWF": {
-       "r": 2.7,
+       "r": 3.0,
        "top": 100.0,
        "w": 0.7,
        "wind": [
@@ -37210,7 +37204,7 @@
        "used": false
       },
       "ICON": {
-       "r": 2.7,
+       "r": 3.0,
        "top": 1500.0,
        "w": 1.5,
        "wind": [
@@ -37247,7 +37241,7 @@
       }
      },
      "was": 1.8,
-     "trend": 0.9
+     "trend": 1.2
     },
     "lb": {
      "rating": 1.0,
@@ -39176,8 +39170,8 @@
      },
      "launch_name": "EJ Bowl",
      "cloud": {
-      "okta": 0,
-      "cover": 0.0,
+      "okta": 1,
+      "cover": 0.07,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
@@ -39186,7 +39180,7 @@
         0.0
        ],
        "RRFS": [
-        0.0,
+        0.22,
         0.0
        ]
       }
@@ -39367,7 +39361,7 @@
      "launch_name": "Walt's Point",
      "cloud": {
       "okta": 0,
-      "cover": 0.03,
+      "cover": 0.01,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
@@ -39376,7 +39370,7 @@
         0.0
        ],
        "RRFS": [
-        0.05,
+        0.02,
         0.0
        ]
       }
@@ -39455,22 +39449,22 @@
    "date": "2026-11-09",
    "sites": {
     "torrey": {
-     "rating": 2.91,
+     "rating": 3.0,
      "label": "Ridge soaring",
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
      "good_glass": true,
-     "base": 2.91,
+     "base": 3.0,
      "adj": [],
      "hours": {
       "9": 1.3,
       "10": 1.3,
-      "11": 1.3,
-      "12": 2.2,
-      "13": 2.7,
-      "14": 2.9,
-      "15": 2.9,
+      "11": 2.2,
+      "12": 2.9,
+      "13": 3.0,
+      "14": 3.0,
+      "15": 3.0,
       "16": 2.6
      },
      "win": [
@@ -39607,19 +39601,19 @@
      },
      "gwin": null,
      "note": "W 8 mph",
-     "p_fly": 0.58,
+     "p_fly": 0.82,
      "p_xc": 0.01,
      "agree": "agree",
      "models": {
       "RRFS": 3.0,
-      "GFS": 2.7,
-      "ECMWF": 2.7,
-      "ICON": 2.7
+      "GFS": 3.0,
+      "ECMWF": 3.0,
+      "ICON": 3.0
      },
      "n_members": 122,
      "lead": "RRFS",
      "top_ft": 200.0,
-     "base_ft": 3300.0,
+     "base_ft": 3900.0,
      "wstar": 0.9,
      "sink": 1.1,
      "core": 1.4,
@@ -39629,7 +39623,7 @@
        "k": "Wind 1 pm",
        "v": "W 8g9",
        "sub": "",
-       "q": 0.23
+       "q": 0.51
       },
       {
        "k": "Rain & storms",
@@ -39640,8 +39634,8 @@
       {
        "k": "Model agreement",
        "v": "agree",
-       "sub": "RRFS 3.0 \u00b7 GFS 2.7 \u00b7 ECMWF 2.7 \u00b7 ICON 2.7",
-       "q": 0.9
+       "sub": "RRFS 3.0 \u00b7 GFS 3.0 \u00b7 ECMWF 3.0 \u00b7 ICON 3.0",
+       "q": 1.0
       }
      ],
      "alt_source": "RRFS",
@@ -39676,9 +39670,9 @@
        "used": true
       },
       "GFS": {
-       "r": 2.7,
-       "top": 800.0,
-       "w": 1.3,
+       "r": 3.0,
+       "top": 1200.0,
+       "w": 1.5,
        "wind": [
         287,
         7,
@@ -39696,9 +39690,9 @@
        "used": true
       },
       "ECMWF": {
-       "r": 2.7,
-       "top": 200.0,
-       "w": 0.9,
+       "r": 3.0,
+       "top": 300.0,
+       "w": 1.0,
        "wind": [
         287,
         7,
@@ -39716,9 +39710,9 @@
        "used": true
       },
       "ICON": {
-       "r": 2.7,
-       "top": 300.0,
-       "w": 0.9,
+       "r": 3.0,
+       "top": 700.0,
+       "w": 1.3,
        "wind": [
         287,
         7,
@@ -39757,7 +39751,7 @@
       }
      },
      "was": 2.7,
-     "trend": 0.2
+     "trend": 0.3
     },
     "lb": {
      "rating": 3.62,
@@ -40822,7 +40816,7 @@
       {
        "k": "Wind 1 pm",
        "v": "E 6g8",
-       "sub": "later WNW 9g11 \u00b7 over the back",
+       "sub": "later WNW 9g11",
        "q": 0.2
       },
       {
@@ -41560,8 +41554,12 @@
      "base": 3.37,
      "adj": [
       [
+       "little sun (mid/high cloud)",
+       -0.1
+      ],
+      [
        "off season: 2 at most",
-       -1.4
+       -1.2
       ]
      ],
      "hours": {
@@ -41722,13 +41720,13 @@
      },
      "launch_name": "Walt's Point",
      "cloud": {
-      "okta": 1,
-      "cover": 0.15,
+      "okta": 5,
+      "cover": 0.59,
       "sun_loss": 0.0,
       "agree": 0.0,
       "models": {
        "RRFS": [
-        0.06,
+        0.72,
         0.0
        ],
        "ECMWF": [
@@ -41810,23 +41808,23 @@
    "date": "2026-11-10",
    "sites": {
     "torrey": {
-     "rating": 2.71,
+     "rating": 3.0,
      "label": "Ridge soaring",
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
      "good_glass": false,
-     "base": 2.71,
+     "base": 3.0,
      "adj": [],
      "hours": {
       "9": 1.3,
       "10": 1.3,
       "11": 1.3,
-      "12": 1.3,
-      "13": 2.7,
-      "14": 2.7,
-      "15": 2.7,
-      "16": 2.5
+      "12": 2.7,
+      "13": 3.0,
+      "14": 3.0,
+      "15": 3.0,
+      "16": 2.7
      },
      "win": [
       10,
@@ -41920,13 +41918,13 @@
      },
      "gwin": null,
      "note": "W 7 mph",
-     "p_fly": 0.62,
+     "p_fly": 0.84,
      "p_xc": 0.0,
      "agree": "agree",
      "models": {
       "GFS": 3.0,
-      "ECMWF": 2.7,
-      "ICON": 2.7
+      "ECMWF": 3.0,
+      "ICON": 3.0
      },
      "n_members": 122,
      "lead": "ECMWF",
@@ -41941,7 +41939,7 @@
        "k": "Wind 1 pm",
        "v": "W 7g15",
        "sub": "",
-       "q": 0.0
+       "q": 0.37
       },
       {
        "k": "Rain & storms",
@@ -41952,8 +41950,8 @@
       {
        "k": "Model agreement",
        "v": "agree",
-       "sub": "GFS 3.0 \u00b7 ECMWF 2.7 \u00b7 ICON 2.7",
-       "q": 0.88
+       "sub": "GFS 3.0 \u00b7 ECMWF 3.0 \u00b7 ICON 3.0",
+       "q": 1.0
       }
      ],
      "alt_source": "models",
@@ -41964,7 +41962,7 @@
       "light"
      ],
      "when": {
-      "light": "am & midday"
+      "light": "am"
      },
      "diag": {
       "GFS": {
@@ -41988,7 +41986,7 @@
        "used": true
       },
       "ECMWF": {
-       "r": 2.7,
+       "r": 3.0,
        "top": 400.0,
        "w": 1.1,
        "wind": [
@@ -42008,7 +42006,7 @@
        "used": true
       },
       "ICON": {
-       "r": 2.7,
+       "r": 3.0,
        "top": 500.0,
        "w": 1.2,
        "wind": [
@@ -42045,7 +42043,7 @@
       }
      },
      "was": 2.7,
-     "trend": 0.0
+     "trend": 0.3
     },
     "lb": {
      "rating": 4.0,
@@ -43810,23 +43808,23 @@
    "date": "2026-11-11",
    "sites": {
     "torrey": {
-     "rating": 2.71,
+     "rating": 3.0,
      "label": "Ridge soaring",
      "tags": [],
      "xc": false,
      "rain_p": 0.0,
      "good_glass": false,
-     "base": 2.71,
+     "base": 3.0,
      "adj": [],
      "hours": {
       "9": 1.3,
       "10": 1.3,
       "11": 1.3,
-      "12": 1.3,
-      "13": 2.7,
-      "14": 2.7,
-      "15": 1.3,
-      "16": 1.3
+      "12": 2.7,
+      "13": 3.0,
+      "14": 3.0,
+      "15": 2.7,
+      "16": 2.7
      },
      "win": [
       10,
@@ -43920,13 +43918,13 @@
      },
      "gwin": null,
      "note": "WNW 8 mph",
-     "p_fly": 0.65,
+     "p_fly": 0.77,
      "p_xc": 0.01,
-     "agree": "mixed",
+     "agree": "agree",
      "models": {
       "GFS": 3.0,
-      "ECMWF": 2.7,
-      "ICON": 2.2
+      "ECMWF": 3.0,
+      "ICON": 3.0
      },
      "n_members": 122,
      "lead": "ECMWF",
@@ -43941,7 +43939,7 @@
        "k": "Wind 1 pm",
        "v": "WNW 8g14",
        "sub": "",
-       "q": 0.0
+       "q": 0.43
       },
       {
        "k": "Rain & storms",
@@ -43951,9 +43949,9 @@
       },
       {
        "k": "Model agreement",
-       "v": "mixed",
-       "sub": "GFS 3.0 \u00b7 ECMWF 2.7 \u00b7 ICON 2.2",
-       "q": 0.7
+       "v": "agree",
+       "sub": "GFS 3.0 \u00b7 ECMWF 3.0 \u00b7 ICON 3.0",
+       "q": 1.0
       }
      ],
      "alt_source": "models",
@@ -43964,7 +43962,7 @@
       "light"
      ],
      "when": {
-      "light": "am & pm"
+      "light": "am"
      },
      "diag": {
       "GFS": {
@@ -43988,7 +43986,7 @@
        "used": true
       },
       "ECMWF": {
-       "r": 2.7,
+       "r": 3.0,
        "top": 400.0,
        "w": 1.1,
        "wind": [
@@ -44008,7 +44006,7 @@
        "used": true
       },
       "ICON": {
-       "r": 2.2,
+       "r": 3.0,
        "top": 900.0,
        "w": 1.2,
        "wind": [
@@ -44045,7 +44043,7 @@
       }
      },
      "was": 2.5,
-     "trend": 0.2
+     "trend": 0.5
     },
     "lb": {
      "rating": 1.0,
@@ -45836,13 +45834,13 @@
    "date": "2026-11-12",
    "sites": {
     "torrey": {
-     "rating": 2.23,
-     "label": "Marginal",
+     "rating": 3.0,
+     "label": "Ridge soaring",
      "tags": [],
      "xc": false,
      "rain_p": 0.04,
      "good_glass": false,
-     "base": 2.23,
+     "base": 3.0,
      "adj": [],
      "hours": {
       "9": 1.3,
@@ -45850,9 +45848,9 @@
       "11": 1.3,
       "12": 1.3,
       "13": 1.3,
-      "14": 1.3,
-      "15": 2.7,
-      "16": 1.3
+      "14": 2.7,
+      "15": 3.0,
+      "16": 2.7
      },
      "win": [
       10,
@@ -45860,44 +45858,44 @@
      ],
      "hwind": {
       "9": [
-       243,
-       0,
-       0
+       301,
+       1,
+       2
       ],
       "10": [
-       252,
+       285,
        3,
-       9
+       3
       ],
       "11": [
-       250,
-       3,
-       11
+       284,
+       5,
+       5
       ],
       "12": [
-       249,
-       3,
-       13
+       285,
+       7,
+       7
       ],
       "13": [
-       252,
-       3,
-       14
+       287,
+       8,
+       8
       ],
       "14": [
-       258,
-       3,
-       16
+       292,
+       8,
+       8
       ],
       "15": [
-       266,
-       4,
-       17
+       297,
+       7,
+       7
       ],
       "16": [
-       270,
-       4,
-       18
+       302,
+       6,
+       6
       ]
      },
      "hwind_m": {
@@ -45945,17 +45943,17 @@
       }
      },
      "gwin": null,
-     "note": "too light to soar",
-     "p_fly": 0.44,
+     "note": "WNW 8 mph",
+     "p_fly": 0.65,
      "p_xc": 0.07,
      "agree": "split",
      "models": {
       "GFS": 3.0,
       "ECMWF": 1.3,
-      "ICON": 2.2
+      "ICON": 3.0
      },
      "n_members": 122,
-     "lead": "ECMWF",
+     "lead": "GFS",
      "top_ft": 1200.0,
      "base_ft": 4600.0,
      "wstar": 1.4,
@@ -45965,9 +45963,9 @@
      "factors": [
       {
        "k": "Wind 1 pm",
-       "v": "WSW 3g14",
+       "v": "WNW 8",
        "sub": "",
-       "q": 0.0
+       "q": 0.46
       },
       {
        "k": "Rain & storms",
@@ -45978,7 +45976,7 @@
       {
        "k": "Model agreement",
        "v": "split",
-       "sub": "GFS 3.0 \u00b7 ECMWF 1.3 \u00b7 ICON 2.2",
+       "sub": "GFS 3.0 \u00b7 ECMWF 1.3 \u00b7 ICON 3.0",
        "q": 0.31
       }
      ],
@@ -45990,7 +45988,7 @@
       "light"
      ],
      "when": {
-      "light": "all day"
+      "light": "am"
      },
      "diag": {
       "GFS": {
@@ -46034,7 +46032,7 @@
        "used": true
       },
       "ICON": {
-       "r": 2.2,
+       "r": 3.0,
        "top": 900.0,
        "w": 1.4,
        "wind": [
