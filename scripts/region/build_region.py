@@ -205,31 +205,13 @@ def tune(rid):
     return {**TUNE_DEFAULT, **TUNE.get(rid, {})}
 
 
-# the morning NKX sounding (Miramar) corrects today's mixing depth for the regions on its side of the mountains
-SND_REGIONS = {"coast", "north", "east", "south"}
-SND_WEIGHT = 0.5      # blend with the model's own profile (the sounding is from ~4 am; the day changes it)
+# this morning's weather balloons: each region blends the closest one that flew today into today's mixing depth
+# (the 6 model levels miss the inversions a sounding resolves); weight 0.5 at the station, fading to 0 at 300 km
+SND_MAX_KM, SND_W0 = 300.0, 0.5
 
 
-def load_sounding(today):
-    """Today's observed profile [(z_m, t_c)] from the latest NKX sounding, or None if it is not from this morning."""
-    base = os.path.join(os.path.dirname(__file__), "..", "..", "data", "sounding")
-    try:
-        with open(os.path.join(base, "nkx_latest.json")) as f:
-            meta = json.load(f)
-        with open(os.path.join(base, "nkx_latest.txt")) as f:
-            txt = f.read()
-    except Exception:  # noqa: BLE001
-        return None
+def parse_sounding(txt):
     import re
-    t = meta.get("title", "")
-    mm = re.search(r"(\d{2})(\d{2})Z_(\d{2})_(\w{3})_(\d{4})", t)
-    if not mm:
-        return None
-    hh = int(mm.group(1))
-    obs = dt.datetime.strptime(f"{mm.group(3)} {mm.group(4)} {mm.group(5)} {hh}", "%d %b %Y %H").replace(tzinfo=dt.timezone.utc)
-    obs_local = obs.astimezone(__import__("zoneinfo").ZoneInfo(TZ))
-    if obs_local.date() != today or obs_local.hour > 10:      # only this morning's 12Z ascent
-        return None
     pts, last = [], -1e9
     for line in txt.splitlines():
         nums = re.findall(r"-?\d+(?:\.\d+)?", line.replace(",", " "))
@@ -241,6 +223,45 @@ def load_sounding(today):
         pts.append((z, tc))
         last = z
     return pts if len(pts) > 10 else None
+
+
+def load_soundings(today):
+    """{station: (lat, lon, [(z_m, t_c)])} for every balloon launched this morning (12Z = 4-5 am local)."""
+    base = os.path.join(os.path.dirname(__file__), "..", "..", "data", "sounding")
+    out = {}
+    try:
+        with open(os.path.join(base, "stations.json")) as f:
+            meta = json.load(f)
+    except Exception:  # noqa: BLE001
+        meta = {}
+    for stn, m in meta.items():
+        try:
+            obs = dt.datetime.strptime(m["obs"], "%Y-%m-%dT%H:%MZ").replace(tzinfo=dt.timezone.utc)
+            if obs.astimezone(__import__("zoneinfo").ZoneInfo(TZ)).date() != today:
+                continue
+            with open(os.path.join(base, m["file"])) as f:
+                pts = parse_sounding(f.read())
+            if pts:
+                out[stn] = (m["lat"], m["lon"], pts)
+        except Exception:  # noqa: BLE001
+            continue
+    return out
+
+
+def km(la1, lo1, la2, lo2):
+    x = (lo2 - lo1) * math.cos(math.radians((la1 + la2) / 2)) * 111.2
+    return math.hypot(x, (la2 - la1) * 111.2)
+
+
+def region_sounding(r, snds):
+    """(profile, weight, station, km) of the closest balloon that flew today, or None."""
+    la = sum(p[1] for p in r["points"]) / len(r["points"])
+    lo = sum(p[2] for p in r["points"]) / len(r["points"])
+    best = min(((km(la, lo, v[0], v[1]), k) for k, v in snds.items()), default=None)
+    if not best or best[0] > SND_MAX_KM:
+        return None
+    d, k = best
+    return snds[k][2], round(SND_W0 * (1 - d / SND_MAX_KM), 2), k, round(d)
 
 
 def load_terrain():
@@ -292,10 +313,10 @@ def point_hour(h, i, elev_m, tn=None, snd=None):
     if blh:
         zi = min(zi, blh) if pts else blh
     if snd:                                   # this morning's observed profile resolves the inversion the 6 levels miss
-        sp = [(z, t) for z, t in snd if z > elev_m + 20]
+        sp = [(z, t) for z, t in snd[0] if z > elev_m + 20]
         st = parcel_top(sp, t2, elev_m) if sp else None
         if st is not None:
-            zi = (1 - SND_WEIGHT) * zi + SND_WEIGHT * max(0.0, st - elev_m)
+            zi = (1 - snd[1]) * zi + snd[1] * max(0.0, st - elev_m)
     shf = at(h, "sensible_heat_flux", i)
     heat = clamp(abs(shf), 0.10 * sw, 0.60 * sw) if (shf is not None and sw > 50) else tn["frac"] * sw
     heat *= tn["heat"]
@@ -495,7 +516,7 @@ def build_days(data, idx, today, now_local, name, acc, gid=None, snd=None, terr=
         k = (dt.date.fromisoformat(d) - today).days
         if k < 0 or k > 6 or (k == 0 and now_local.hour >= 19):   # 7 days like the radar; after 7 pm today is over
             continue
-        sk = snd if (k == 0 and gid in SND_REGIONS) else None
+        sk = snd if k == 0 else None
         ps = [point_hour(data[j]["hourly"], i, data[j].get("elevation") or 300, tune(gid), sk) for j in idx]
         rh = region_hour(ps, terr)
         if rh:
@@ -540,7 +561,7 @@ REGION_SITES = {"coast": ["torrey"], "north": ["lb"], "east": ["blossom"], "sout
 REGION_PEAK = {"palomar": ("Palomar Mtn", 6140), "desert": ("Villager Pk", 5756), "palmsj": ("San Jacinto Pk", 10834)}
 
 
-SND, TERR = None, {}
+RSND, TERR, SND_USED = {}, {}, {}
 ELEV = {}   # probe ground height (ft) from the model replies
 
 
@@ -598,9 +619,15 @@ def main():
         idx[gid] = list(range(len(allpts), len(allpts) + len(pts)))
         allpts += pts
     acc = {gid: {} for gid, _ in groups}
-    global SND, TERR
-    SND, TERR = load_sounding(today), load_terrain()
-    print(f"sounding: {'this morning, ' + str(len(SND)) + ' levels' if SND else 'none for today'}; terrain: {len(TERR)} regions")
+    global RSND, TERR
+    snds, TERR = load_soundings(today), load_terrain()
+    RSND = {}
+    for r in REGIONS:
+        rs = region_sounding(r, snds)
+        if rs:
+            RSND[r["id"]] = rs[:2]
+            SND_USED[r["id"]] = {"station": rs[2], "km": rs[3], "weight": rs[1]}
+    print(f"balloons today: {sorted(snds) or 'none'}; per region: {SND_USED}; terrain: {len(TERR)} regions")
     models_used, debug = {}, {}
     cache_dir = os.path.join(os.path.dirname(__file__), "..", "..", "cache", "region")
     os.makedirs(cache_dir, exist_ok=True)
@@ -643,7 +670,7 @@ def main():
         models_used[name] = mid1 or mid2
         debug[name] = sorted(k for k, v in data[0]["hourly"].items() if any(x is not None for x in v))
         for gid, _ in groups:
-            build_days(data, idx[gid], today, now_local, name, acc[gid], gid, SND, (TERR.get(gid) or {}).get("probes"))
+            build_days(data, idx[gid], today, now_local, name, acc[gid], gid, RSND.get(gid), (TERR.get(gid) or {}).get("probes"))
     sps = {r["id"]: r.get("score") for r in REGIONS}
     by = {gid: blend_days(acc[gid], sps.get(gid)) for gid, _ in groups}
     gen = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
@@ -653,6 +680,7 @@ def main():
                      "points": [{"name": n, "lat": la, "lon": lo, "elev_ft": ELEV.get((la, lo))} for n, la, lo in r["points"]],
                      "floor_ft": terrain_floor(r) ,
                      "marks": region_marks(r["id"]),
+                     "sounding": SND_USED.get(r["id"]),
                      "days": finish(by[r["id"]], today)})
         for dd in regs[-1]["days"]:
             print(r["id"], dd["date"], dd["model"], json.dumps(dd["summary"]))

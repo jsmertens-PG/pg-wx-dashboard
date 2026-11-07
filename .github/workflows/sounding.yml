@@ -24,6 +24,9 @@ jobs:
           python-version: "3.12"
       - name: Fetch NKX sounding
         run: python -u scripts/sounding/fetch_sounding.py
+      - name: Fetch nearby balloons (Edwards, Vandenberg, Yuma, Las Vegas) for the regions
+        continue-on-error: true
+        run: python -u scripts/sounding/fetch_stations.py
       - name: Render plot
         run: node scripts/sounding/render_sounding.js
       - name: Commit data

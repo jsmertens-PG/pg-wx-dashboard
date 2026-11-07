@@ -29,7 +29,7 @@ def inside(la, lo, poly):
 
 
 def key():
-    return hashlib.sha1(json.dumps([[r["id"], r["poly"], r["points"]] for r in REGIONS]).encode()).hexdigest()[:12]
+    return hashlib.sha1(json.dumps(["v2-land-only"] + [[r["id"], r["poly"], r["points"]] for r in REGIONS]).encode()).hexdigest()[:12]
 
 
 def main():
@@ -70,7 +70,7 @@ def main():
         hist = [{} for _ in pts]
         n = 0
         for (cri, la, lo), e in zip(cells, elev):
-            if cri != ri or e is None:
+            if cri != ri or e is None or e <= 1:   # sea (and the bay) is not ground
                 continue
             cl = math.cos(math.radians(la))
             j = min(range(len(pts)), key=lambda j: (pts[j][1] - la) ** 2 + ((pts[j][2] - lo) * cl) ** 2)
