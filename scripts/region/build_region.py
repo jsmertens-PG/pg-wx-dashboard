@@ -565,7 +565,7 @@ RSND, TERR, SND_USED = {}, {}, {}
 ELEV = {}   # probe ground height (ft) from the model replies
 
 
-SHORT = {"Blossom Valley": "Blossom", "Otay Mesa": "Otay", "Lake Elsinore": "Elsinore", "Horse Canyon": "Horse"}
+SHORT = {"Little Black": "LB 300 launch", "Blossom Valley": "Blossom", "Otay Mesa": "Otay", "Lake Elsinore": "Elsinore", "Horse Canyon": "Horse"}
 
 
 def terrain_floor(r):
@@ -582,6 +582,9 @@ def terrain_floor(r):
             if acc >= 0.08:
                 return b
     return int(min([ELEV[(la, lo)] for _, la, lo in r["points"] if ELEV.get((la, lo)) is not None] or [500]) // 500 * 500)
+
+
+EXTRA_MARKS = {"north": [{"name": "LB tower", "ft": 1550}]}   # Black Mountain tower launch (summit ~1,554 ft)
 
 
 def region_marks(rid):
@@ -601,6 +604,7 @@ def region_marks(rid):
         subs = [x for v in site.values() if isinstance(v, list) for x in v if isinstance(x, dict) and x.get("launch_ft") and x.get("name")]
         for x in (subs or [site]):
             out.append({"name": SHORT.get(x.get("short") or x["name"], x.get("short") or x["name"]), "ft": x["launch_ft"], "kind": "launch"})
+    out += [dict(m, kind="launch") for m in EXTRA_MARKS.get(rid, [])]
     seen, uniq = set(), []
     for m in sorted(out, key=lambda m: (m["ft"], len(m["name"]))):
         if m["ft"] not in seen:

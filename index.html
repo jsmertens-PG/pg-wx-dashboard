@@ -590,6 +590,7 @@ details.day > summary.hd .sum .sc.sc.trip { font-size: .76rem; min-height: 26px;
 
 /* top right: the way in to "what this is and how it works" — quiet but easy to find */
 header.top { position: relative; }
+.therm svg { display: block; width: 100%; height: auto; border-radius: 8px; }
 .howbtn { position: absolute; top: 4px; right: 0; display: inline-block; white-space: nowrap; padding: 5px 12px; border-radius: 999px;
   border: 1.25px solid color-mix(in srgb, #2b1d14 45%, transparent); background: rgba(255,255,255,.7); color: #2b1d14; font-weight: 600; font-size: .78rem; text-decoration: none; }
 .howbtn:hover { border-color: #c26a24; color: #c26a24; }
@@ -914,6 +915,7 @@ html body details.day:not(#story) > summary.hd .sum .sc.sc.sc, html body details
 <div class="scrim" id="scrim" hidden></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Site details" hidden></div>
 <script id="seed" type="application/json"></script>
+<script src="scripts/region/panel.js?v=202611071010"></script>
 <script>
 (() => {
 "use strict";
@@ -1427,6 +1429,21 @@ function siteRow(d, s, i, kind) {
   </button>`;
 }
 
+/* region thermals (XC-style time x height panel) inside the third level; trial behind ?therm=1 */
+const THERM = /[?&]therm=1/.test(location.search);
+const SITE_REGION = { torrey: "coast", lb: "north", blossom: "east", otay: "south", whalesv: "south", lagunahorse: "mountains", elsinore: "inland_empire", soboba: "inland_empire", marshall: "marshall" };
+let REGIONS_D = null;
+if (THERM) fetch(`data/region/regions.json?t=${Date.now()}`, { cache: "no-store" }).then((r) => r.json()).then((j) => { REGIONS_D = j; }).catch(() => {});
+function thermPanel(d, s, c) {
+  if (!THERM || !REGIONS_D || typeof panelSVG !== "function") return "";
+  const r = (REGIONS_D.regions || []).find((x) => x.id === SITE_REGION[s.id]);
+  const di = r ? r.days.findIndex((x) => x.date === d.date) : -1;
+  if (di < 0) return "";
+  try {
+    return `<div class="therm">${panelSVG({ generated: REGIONS_D.generated, region: r.name, days: r.days, marks: r.marks, floor_ft: r.floor_ft, compact: true, win: c.win }, di)}</div>`;
+  } catch (e) { return ""; }
+}
+
 function detail(d, s, inline) {
   const c = d.sites[s.id];
   /* bars use the same continuous colour scale as the ratings (0 = red ... 1 = blue) */
@@ -1472,11 +1489,13 @@ function detail(d, s, inline) {
   const rain = fac.find((f) => f.k === "Rain & storms"), agree = fac.find((f) => f.k === "Model agreement");
   const info = "";   // no chips here: glass-off and Elsinore's switch show as pills on the site card
   const half = Math.max(1, Math.min(5, Math.round(c.rating * 2) / 2));
+  const tp = thermPanel(d, s, c);
   const head = inline ? "" : `<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline">
       <h3 style="font-size:1.1rem;font-family:var(--font-body);font-weight:600">${esc(s.name)} <span class="muted" style="font-size:.9rem;font-weight:500">${r1(c.rating)}/5</span></h3>${labelHtml(c)}</div>
     ${c.note && !/thermals/i.test(c.note) ? `<p class="note">${esc(c.note)}</p>` : ""}`;
   return `${head}
-    ${hourStrip ? `<div class="dsec"><span class="dh">Hour by hour</span>${hourStrip}</div>` : hm ? `<div class="dsec"><span class="dh">Launch wind by model</span>${modelWindTable(c)}</div>` : ""}
+    ${hm ? `<div class="dsec"><span class="dh">Launch wind by model</span>${modelWindTable(c)}</div>` : ""}
+    ${tp ? `<div class="dsec">${tp}</div>` : hourStrip ? `<div class="dsec"><span class="dh">Hour by hour</span>${hourStrip}</div>` : ""}
     <div class="dsec"><span class="dh">What made the score</span>
       <div class="factors">${rows}</div>
       ${steps ? `<div class="steps">${steps}</div>` : ""}</div>

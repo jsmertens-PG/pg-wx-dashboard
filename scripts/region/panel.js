@@ -34,8 +34,9 @@ const tlab = t => `${Math.floor(t) > 12 ? Math.floor(t) - 12 : Math.floor(t)}:${
 
 function panelSVG(data, di = 0) {
   const day = data.days[di];
-  const cols = halfHours(day);
-  const W = 1000, L = 74, R = 8, cw = (W - L - R) / cols.length;
+  // compact (inside a radar site card, phone width): whole hours 9 am - 6 pm on a narrower canvas, so the text stays readable
+  const cols = data.compact ? halfHours(day).filter(c => c.t % 1 === 0 && c.t >= 9 && c.t <= 18) : halfHours(day);
+  const W = data.compact ? 560 : 1000, L = data.compact ? 66 : 74, R = 8, cw = (W - L - R) / cols.length;
   const INK = '#1f2328', MUTED = '#6b7280', GRID = '#dfe2e6', GRID2 = '#b9bec5';
   // rows: from the lowest used height to well above the highest (XCTherm shows the open sky above)
   const zs = new Set();
@@ -47,19 +48,25 @@ function panelSVG(data, di = 0) {
   const rows = []; for (let z = zmax; z >= zmin; z -= 500) rows.push(z);
   const rh = 24, ch = 25;
   const nW = (data.windRows || [0, 0]).length;
-  const yC = data.verdict ? 96 : 78, yW = yC + 3 * ch + 18, yG = yW + nW * ch + 22;
+  const yC = data.compact ? 34 : data.verdict ? 96 : 78, yW = yC + 3 * ch + 18, yG = yW + nW * ch + 22;
   const Hh = yG + rows.length * rh + 44;
   const X = k => L + k * cw, f = v => v.toFixed(1);
   const o = [];
   o.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${Hh}" font-family="Inter, Roboto, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" fill="${INK}">`);
   o.push(`<rect width="${W}" height="${Hh}" fill="#fff"/>`);
-  // header (as XCTherm: region, date, model + run on the right)
+  // header (as XCTherm: region, date, model + run on the right); compact (inside a radar site card): one quiet line
   const d = new Date(day.date + 'T12:00:00');
+  if (data.compact) {
+    const gen = new Date(data.generated.replace('Z', ':00Z'));
+    o.push(`<text x="14" y="20" font-size="15" font-weight="700">${data.region || ''} <tspan font-weight="400" fill="${MUTED}">· region thermals</tspan></text>`);
+    o.push(`<text x="${W - R}" y="20" text-anchor="end" font-size="13" font-style="italic" fill="${MUTED}">${day.model} · ${gen.toLocaleTimeString('en-US', { timeZone: 'America/Los_Angeles', hour: 'numeric', minute: '2-digit' })} PT</text>`);
+  } else {
   o.push(`<text x="14" y="34" font-size="30" font-weight="800" letter-spacing="-.01em">${data.title || "SAN DIEGO"}</text>`);
   o.push(`<text x="15" y="56" font-size="17" fill="#374151">${d.toLocaleDateString('en-US', { weekday: 'short' })} ${d.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}</text>`);
   const gen = new Date(data.generated.replace('Z', ':00Z'));
   o.push(`<text x="${W - R}" y="54" text-anchor="end" font-size="15" font-style="italic" fill="#374151">${day.model} · ${gen.toLocaleDateString('en-US', { timeZone: 'America/Los_Angeles', month: '2-digit', day: '2-digit', year: 'numeric' })} ${gen.toLocaleTimeString('en-US', { timeZone: 'America/Los_Angeles', hour: 'numeric', minute: '2-digit' })} PT</text>`);
-  if (data.verdict) {
+  }
+  if (data.verdict && !data.compact) {
     const v = data.verdict;
     o.push(`<rect x="15" y="66" width="12" height="12" rx="6" fill="${v.color}" stroke="#374151" stroke-width=".8"/>`);
     o.push(`<text x="33" y="77" font-size="14.5" fill="${INK}"><tspan font-weight="700">Radar: ${v.site} ${v.score.toFixed(1).replace('.0', '')}/5 · ${v.label}</tspan>${v.why ? `<tspan fill="#6b7280"> · ${v.why}</tspan>` : ''}</text>`);
@@ -115,6 +122,15 @@ function panelSVG(data, di = 0) {
       o.push(`<text x="${f(X(k) + cw / 2)}" y="${y + rh / 2 + 4.5}" text-anchor="middle" font-size="12.5" fill="${v >= 3 ? '#fff' : INK}">${v.toFixed(1)}</text>`);
     });
   });
+  // the site's flying window (radar card): a soft band behind the grid, labelled under the axis
+  if (data.win && data.win.length === 2) {
+    const ks = cols.map((c, k) => c.t >= data.win[0] && c.t < data.win[1] + 1 ? k : -1).filter(k => k >= 0);
+    if (ks.length) {
+      const x0 = X(ks[0]), x1 = X(ks[ks.length - 1] + 1);
+      o.push(`<rect x="${f(x0)}" y="${yG}" width="${f(x1 - x0)}" height="${f(yB - yG)}" fill="none" stroke="#c26a24" stroke-width="2" stroke-dasharray="2 4" rx="3" opacity=".7"/>`);
+      o.push(`<text x="${f((x0 + x1) / 2)}" y="${yG - 5}" text-anchor="middle" font-size="11.5" font-weight="600" fill="#9a5418">flying window</text>`);
+    }
+  }
   // quiet reference lines: the region's launches, or its peak (close ones share one label, at the right where evenings are empty)
   const ms = marks.filter(m => m.ft >= zmin && m.ft <= zmax).sort((p, q) => p.ft - q.ft);
   const yOf = ft => yG + (zmax - ft) / 500 * rh;
@@ -127,7 +143,7 @@ function panelSVG(data, di = 0) {
   });
   // time axis (labels on the grid lines, every hour)
   cols.forEach((c, k) => { if (c.t % 1 === 0) o.push(`<text x="${f(X(k))}" y="${yB + 18}" text-anchor="middle" font-size="13">${tlab(c.t)}${c.t === 12 ? '' : ''}</text>`); });
-  o.push(`<text x="${f((L + W - R) / 2)}" y="${yB + 36}" text-anchor="middle" font-size="13" font-weight="700">Time (PT)</text>`);
+  if (!data.compact) o.push(`<text x="${f((L + W - R) / 2)}" y="${yB + 36}" text-anchor="middle" font-size="13" font-weight="700">Time (PT)</text>`);
   // small colour key, bottom right
   let kx = W - R - PANEL_CLIMB.length * 30;
   PANEL_CLIMB.forEach(([v, c]) => { o.push(`<rect x="${kx}" y="${yB + 27}" width="29" height="12" rx="2" fill="${c}"/><text x="${kx + 14.5}" y="${yB + 37}" text-anchor="middle" font-size="9" fill="${v >= 3 ? '#fff' : INK}">${v}</text>`); kx += 30; });
