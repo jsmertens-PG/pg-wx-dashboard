@@ -598,8 +598,9 @@ header.top { position: relative; }
   border: 1.25px solid color-mix(in srgb, #2b1d14 45%, transparent); background: rgba(255,255,255,.7); color: #2b1d14; font-weight: 600; font-size: .78rem; text-decoration: none; }
 .howbtn:hover { border-color: #c26a24; color: #c26a24; }
 @media (max-width: 480px) { .howbtn { font-size: .72rem; padding: 4px 10px; } .howbtn .hl2 { display: none; } }
-/* quiet sounding button inside the weather overview */
-.sndq { display: table; margin: 6px 0 0; padding: 2px 9px; border-radius: 999px; border: 1px solid color-mix(in srgb, currentColor 22%, transparent); color: var(--muted, #6b6b6b) !important; font-size: .78rem; text-decoration: none !important; white-space: nowrap; }
+/* quiet sounding pill in the weather overview's empty corner (first layer) */
+#story > summary.hd { position: relative; }
+.sndq { position: absolute; right: 12px; top: 52px; display: inline-block; margin: 0; padding: 2px 9px; border-radius: 999px; border: 1px solid color-mix(in srgb, currentColor 22%, transparent); color: var(--muted, #6b6b6b) !important; font-size: .78rem; text-decoration: none !important; white-space: nowrap; }
 .sndq:hover { color: #c26a24 !important; border-color: #c26a24; }
 /* bottom: the disclaimer */
 .disclaimer { font-size: .76rem; line-height: 1.55; color: #4a3b30; border-top: 1px solid var(--line); padding: 14px 2px 4px; display: grid; gap: 7px; max-width: 90ch; }
@@ -1107,12 +1108,13 @@ function render(data) {
   const group = (title, items) => items && items.length ? `<div class="grp"><span class="eyebrow">${title}</span><ul>${items.map((b) => `<li>${esc(b)}</li>`).join("")}</ul></div>` : "";
   const lines = (title, items) => (items && items.length ? `<div class="wsec">${esc(title)}</div>` : "") + (items || []).map((b) => `<div class="wrow"><span>${esc(b)}</span></div>`).join("");
   const ov = data.overview ? `<span class="ov">${esc(data.overview)}</span>` : "";
+  const SNDQ = `<a class="sndq" href="sounding.html" title="Latest weather balloon (Miramar / Edwards)" onclick="event.stopPropagation()">Sounding →</a>`;
   $("#story").innerHTML = n ? `
     <summary class="hd"><span class="when">Weather Overview</span>
-      <span class="flags">${(n.flags || []).map((f) => `<span class="tag">${esc(f)}</span>`).join("")}</span><span class="exp" aria-hidden="true"><i class="chev"></i></span>${ov}</summary>
+      <span class="flags">${(n.flags || []).map((f) => `<span class="tag">${esc(f)}</span>`).join("")}</span><span class="exp" aria-hidden="true"><i class="chev"></i></span>${ov}${SNDQ}</summary>
     <div class="wlist">${sm ? lines("Pattern", sm.pattern) + lines("For flying", sm.flying) : lines("Outlook", bl)}</div>`
-      + `<div class="wrow wlink"><span><a href="${esc(n.url)}" target="_blank" rel="noopener">Full NWS discussion</a> <span class="muted">· ${fmtWhen(n.issued)}</span> <a class="sndq" href="sounding.html" title="Latest NKX radiosonde (Miramar weather balloon)">NKX sounding →</a></span></div>`
-    : `<summary class="hd"><span class="when">Weather Overview</span>${ov}</summary>`;
+      + `<div class="wrow wlink"><span><a href="${esc(n.url)}" target="_blank" rel="noopener">Full NWS discussion</a> <span class="muted">· ${fmtWhen(n.issued)}</span></span></div>`
+    : `<summary class="hd"><span class="when">Weather Overview</span>${ov}${SNDQ}</summary>`;
 
   /* models that rated this day (HRRR+RRFS, then RRFS with NAM/ECMWF help, then global only) */
   const MODEL_ORDER = ["HRRR", "RRFS", "NAM", "ECMWF", "GFS", "ICON"];
