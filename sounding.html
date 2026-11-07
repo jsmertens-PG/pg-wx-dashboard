@@ -11,23 +11,23 @@ body{font-family:Inter,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-seri
 header{display:flex;align-items:center;justify-content:space-between;margin:2px 2px 12px}
 h1{font-size:19px;font-weight:700;margin:0;letter-spacing:-.01em}
 .back{font-size:13px;color:var(--ink);text-decoration:none;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px}
-.tl{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:0 0 10px}
+.tl{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:0 0 8px}
 .tl svg{width:100%;height:auto;display:block}
 #plot{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px -12px rgba(0,0,0,.12);padding:4px}
 #plot svg{width:100%;height:auto;display:block}
 .seg{display:inline-flex;background:#fff;border:1px solid var(--line);border-radius:999px;padding:3px;margin:0 0 10px}
 .seg button{font:inherit;font-size:13px;border:0;background:none;padding:6px 14px;border-radius:999px;color:var(--muted)}
 .seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0}
-.stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:12px;color:var(--muted)}
-.stat b{display:block;font-size:17px;color:var(--ink);margin-top:2px;font-weight:650}
-.note{font-size:12px;color:var(--muted);line-height:1.5;margin:8px 2px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:6px;margin:8px 0}
+.stat{background:#fff;border:1px solid var(--line);border-radius:9px;padding:5px 8px;font-size:10.5px;color:var(--muted);line-height:1.25}
+.stat b{display:block;font-size:13px;color:var(--ink);margin-top:1px;font-weight:650}
+.note{font-size:11px;color:var(--muted);line-height:1.4;margin:6px 2px}
 a{color:#2563eb}
 </style></head><body><div class="wrap">
 <header><h1>NKX sounding</h1><a class="back" href="./">← Radar</a></header>
-<div id="tl" class="tl"></div>
 <div id="plot">Loading…</div>
 <div class="stats" id="stats"></div>
+<div id="tl" class="tl"></div>
 <p class="note" id="src"></p>
 <p class="note">Cloudbase = surface dewpoint lifted at constant mixing ratio until it meets the temperature curve. Orange lines = dry adiabats (5.4 °F/1000 ft) from the surface every 5 °F, ending at the thermal top for that surface temperature. Zoomed to the flyable range. Blue bands = inversions. Bold line = forecast afternoon high at Miramar (median of the GFS, ECMWF and ICON ensembles); shaded band = 10th–90th percentile of those runs. Updated by a GitHub Action after each 00Z/12Z launch.</p>
 </div>
