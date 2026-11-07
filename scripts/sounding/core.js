@@ -155,6 +155,13 @@ function analyze(lv, opts = {}) {
   // thermal lines (as on Topaflyers): dry adiabats from the surface, ~6 °F apart,
   // each ending where the rising air is only ~1.5 °F warmer than the sounding
   const EXCESS = 1.5;
+  const topFor = Ts => {
+    for (let z = z0 + 0.05; z <= 20; z += 0.01) {
+      const T = interp(lv, 't', z); if (!isFinite(T)) return z;
+      if (Ts - lapseAdiabat * (z - z0) - T < EXCESS) return z;
+    }
+    return 20;
+  };
   const thermals = [];
   const n = opts.nThermals || 7;
   for (let k = 0; k < n; k++) {
@@ -178,7 +185,7 @@ function analyze(lv, opts = {}) {
     lapse.push({ z: a.z, v: lr });
     if (i === thin.length - 1) lapse.push({ z: b.z, v: lr });
   }
-  return { cb, thermals, lapse, parcelTd, z0 };
+  return { cb, thermals, lapse, parcelTd, z0, topFor, EXCESS };
 }
 
 // ---------- SVG ----------
@@ -249,6 +256,29 @@ function renderSVG(snd, opts = {}) {
   o.push(`<text x="14" y="${f((top + bot) / 2)}" transform="rotate(-90 14 ${f((top + bot) / 2)})" text-anchor="middle">Altitude MSL (1000 ft)</text>`);
 
   // ---- panel 1 ----
+  const FC = opts.forecast;
+  if (FC && isFinite(FC.median_f)) {
+    const z0 = A.z0, G = 5.4;
+    const lo = Math.min(FC.p10_f, FC.median_f), hi = Math.max(FC.p90_f, FC.median_f);
+    const tLo = A.topFor(lo), tHi = A.topFor(hi);
+    // band: right edge = warm adiabat, top edge = where air runs out of lift, left edge = cool adiabat
+    const band = [[hi, z0], [hi - G * (tHi - z0), tHi]];
+    for (let z = tHi - 0.05; z > tLo; z -= 0.05) band.push([interp(lv, 't', z) + A.EXCESS, z]);
+    band.push([lo - G * (tLo - z0), tLo], [lo, z0]);
+    o.push(`<polygon clip-path="url(#c0)" points="${band.map(([t, z]) => f(X(P1, t)) + ',' + f(Y(z))).join(' ')}" fill="${C.thermal}" fill-opacity="0.22" stroke="none"/>`);
+    const tm = A.topFor(FC.median_f);
+    o.push(poly([[X(P1, FC.median_f), Y(z0)], [X(P1, FC.median_f - G * (tm - z0)), Y(tm)]], '#e07b00', 'c0', { w: 3.2 }));
+    o.push(`<circle cx="${f(X(P1, FC.median_f - G * (tm - z0)))}" cy="${f(Y(tm))}" r="4" fill="#e07b00" stroke="#fff" stroke-width="1.5"/>`);
+    // callout: forecast high and resulting thermal top with range
+    const r100 = z => (Math.round(z * 10) * 100).toLocaleString('en-US');
+    const lines = [`${FC.label === 'today' ? 'Today' : 'Tomorrow'}: high ${Math.round(FC.median_f)}°F (${Math.round(lo)}–${Math.round(hi)})`,
+                   `Thermals ~${r100(tm)} ft (${r100(tLo)}–${r100(tHi)})`];
+    const bx = P1.x0 + 8, by = bot - 50, bw = 238;
+    o.push(`<rect x="${bx}" y="${by}" width="${bw}" height="40" rx="7" fill="#fff" fill-opacity="0.95" stroke="#f3c27a"/>`);
+    o.push(`<text x="${bx + 10}" y="${by + 16}" font-size="11.5" font-weight="700" fill="#b35f00">${lines[0]}</text>`);
+    o.push(`<text x="${bx + 10}" y="${by + 31}" font-size="11" fill="${INK}">${lines[1]}</text>`);
+    A.forecastTops = { median_ft: Math.round(tm * 10) * 100, low_ft: Math.round(tLo * 10) * 100, high_ft: Math.round(tHi * 10) * 100 };
+  }
   for (const th of A.thermals) {
     o.push(poly([[X(P1, th.ts), Y(th.z0)], [X(P1, th.ttop), Y(th.top)]], C.thermal, 'c0', { w: 1.6, op: 0.9 }));
     const tx = X(P1, th.ttop), ty = Y(th.top);
@@ -279,7 +309,7 @@ function renderSVG(snd, opts = {}) {
   o.push(poly(L.map(l => [X(P1, l.td), Y(l.z)]), C.dew, 'c0', { simp: dense ? 1.2 : 0, w: 2.2 }));
   o.push(poly(L.map(l => [X(P1, l.t), Y(l.z)]), C.temp, 'c0', { simp: dense ? 1.2 : 0, w: 2.2 }));
   // legend card
-  const lg = [['Temperature', C.temp], ['Dew point', C.dew], ['Cloudbase', C.cloud], ['Thermals (sfc °F)', C.thermal]];
+  const lg = [['Temperature', C.temp], ['Dew point', C.dew], ['Cloudbase', C.cloud], ['Thermals (sfc °F)', C.thermal]].concat(FC && isFinite(FC.median_f) ? [['Forecast high', '#e07b00']] : []);
   const lx = P1.x1 - 130, ly = top + 10;
   o.push(`<rect x="${lx}" y="${ly}" width="120" height="${lg.length * 16 + 10}" rx="6" fill="#fff" fill-opacity="0.92" stroke="${EDGE}"/>`);
   lg.forEach(([name, c], i) => {

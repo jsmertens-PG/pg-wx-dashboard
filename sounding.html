@@ -23,18 +23,22 @@ a{color:#2563eb}
 <div id="plot">Loading…</div>
 <div class="stats" id="stats"></div>
 <p class="note" id="src"></p>
-<p class="note">Cloudbase = surface dewpoint lifted at constant mixing ratio until it meets the temperature curve. Orange lines = dry adiabats (5.4 °F/1000 ft) from the surface every 5 °F, ending at the thermal top for that surface temperature. Updated by a GitHub Action after each 00Z/12Z launch.</p>
+<p class="note">Cloudbase = surface dewpoint lifted at constant mixing ratio until it meets the temperature curve. Orange lines = dry adiabats (5.4 °F/1000 ft) from the surface every 5 °F, ending at the thermal top for that surface temperature. Bold line = forecast afternoon high at Miramar (median of the GFS, ECMWF and ICON ensembles); shaded band = 10th–90th percentile of those runs. Updated by a GitHub Action after each 00Z/12Z launch.</p>
 </div>
 <script src="scripts/sounding/core.js"></script>
 <script>
 (async () => {
   try {
     const txt = await (await fetch('data/sounding/nkx_latest.txt?' + Date.now())).text();
-    const snd = parseSounding(txt), r = renderSVG(snd), A = r.analysis, s = snd.levels[0];
+    let forecast = null;
+    try { forecast = await (await fetch('data/sounding/surface_forecast.json?' + Date.now())).json(); } catch (e) {}
+    const snd = parseSounding(txt), r = renderSVG(snd, { forecast }), A = r.analysis, s = snd.levels[0];
     document.getElementById('plot').innerHTML = r.svg;
     const st = [['Surface', `${Math.round(s.z*1000)} ft · ${Math.round(s.t)}°F / Td ${isFinite(s.td)?Math.round(s.td):'–'}°F`]];
     if (A.cb) st.push(['Cloudbase', `${(Math.round(A.cb.z*10)*100).toLocaleString()} ft MSL`], ['Trigger temp', `~${Math.round(A.cb.trigger)}°F`]);
     else st.push(['Cloudbase', 'none below 18k']);
+    if (A.forecastTops) st.unshift([`Forecast high (${forecast.label})`, `${Math.round(forecast.median_f)}°F → ~${A.forecastTops.median_ft.toLocaleString()} ft`],
+      ['Likely range', `${Math.round(forecast.p10_f)}–${Math.round(forecast.p90_f)}°F → ${A.forecastTops.low_ft.toLocaleString()}–${A.forecastTops.high_ft.toLocaleString()} ft`]);
     st.push(['Thermal tops', A.thermals.slice(0,4).map(t => `${t.ts}°→${(Math.round(t.top*10)/10)}k`).join(' · ')]);
     document.getElementById('stats').innerHTML = st.map(([a,b]) => `<div class="stat">${a}<b>${b}</b></div>`).join('');
     const src = (txt.match(/^# source: (.*)$/m)||[])[1], fe = (txt.match(/^# fetched: (.*)$/m)||[])[1];

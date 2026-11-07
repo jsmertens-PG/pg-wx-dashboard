@@ -7,6 +7,20 @@
   "surface_dewpoint_f": 51,
   "cloudbase_ft_msl": 8700,
   "trigger_temp_f": 88,
+  "forecast_high": {
+    "day": "2026-11-07",
+    "label": "tomorrow",
+    "median_f": 80,
+    "p10_f": 76,
+    "p90_f": 84,
+    "hrrr_f": 79,
+    "members": 120,
+    "thermal_tops": {
+      "median_ft": 1800,
+      "low_ft": 500,
+      "high_ft": 4600
+    }
+  },
   "thermal_tops_ft": [
     {
       "surface_f": 85,
