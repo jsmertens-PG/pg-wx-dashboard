@@ -261,7 +261,8 @@ def summarize(hours):
 
 def main():
     os.makedirs(OUT, exist_ok=True)
-    today = dt.datetime.now(dt.timezone.utc).astimezone(__import__("zoneinfo").ZoneInfo(TZ)).date()
+    now_local = dt.datetime.now(dt.timezone.utc).astimezone(__import__("zoneinfo").ZoneInfo(TZ))
+    today = now_local.date()
     by_day, models_used, debug = {}, {}, {}
     for name, ids, days in MODELS:
         data = None
@@ -281,7 +282,7 @@ def main():
             if hh not in HOURS:
                 continue
             k = (dt.date.fromisoformat(d) - today).days
-            if k < 0 or k > 3:
+            if k < 0 or k > 3 or (k == 0 and now_local.hour >= 19):   # after 7 pm today is over
                 continue
             if d in by_day and by_day[d]["model"] != name:
                 continue        # HRRR wins for the days it covers
