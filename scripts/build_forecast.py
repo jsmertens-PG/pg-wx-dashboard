@@ -1094,10 +1094,9 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
     switch_h, switch_tag = None, None
     ridge_great = False
     if style == "ridge":
-        # Torrey: ridge soaring 2-3; a 4 is a great ridge day: a straight enough WSW-W-WNW wind in the double
-        # digits that holds through the afternoon (the models tend to run light on the sea breeze here, so
-        # 8+ mph holding counts); not a storm. A thermal day is a 5.
-        rating = 1.0 + 2.0 * clamp(local / 0.7)
+        # Torrey: a good ridge-soaring day is a 4, a light or cross one about 3; a straight WSW-W-WNW wind
+        # that holds through the afternoon is a sure 4; a thermal day is a 5.
+        rating = 1.0 + 3.0 * clamp(local / 0.7)
         hold_mph, peak_mph = site.get("great_ridge_mph", [7, 10])
         d0, d1 = site.get("great_ridge_dir", [240, 300])  # WSW and WNW equally good
         def strong_w(sc):
@@ -1118,7 +1117,7 @@ def assess_day(site, hr, idxs, levels, elev_m, sunset_h):
         clean = sum(1 for _, sc in xhrs if sc["good_launch"] and "cross" not in sc["codes"]) >= 3
         if xc_day > 0 and clean:
             top_ft = (med("usable", blk) or 0) * FT
-            rating = 4.5 + 0.5 * clamp((top_ft - 1200) / 1300)
+            rating = 4.75 + 0.25 * clamp((top_ft - 1200) / 1300)
             xc_now = True
     else:
         def hour_r(sc, allow_xc):
