@@ -794,7 +794,7 @@ html body details.day:not(#story) > summary.hd .sum .sc.sc.sc, html body details
 
 /* ridge site (Torrey): launch wind under each hour, arrow for where it blows, speed and gust */
 .hstrip .hw { grid-row: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.05; font-size: .62rem; color: #26303a; font-variant-numeric: tabular-nums;
-  margin-top: 3px; padding: 3px 0; min-height: 34px; background: rgba(38,48,58,.05); border-radius: 4px; }
+  margin-top: 3px; padding: 3px 0; min-height: 26px; background: rgba(38,48,58,.05); border-radius: 4px; }
 .hstrip .hw i { display: block; width: 10px; height: 12px; margin: 0 auto 2px; }
 .hstrip .hw i svg { display: block; width: 100%; height: 100%; fill: currentColor; }
 .hstrip .hw b { display: block; text-align: center; font-weight: 700; letter-spacing: -.03em; }
@@ -842,6 +842,10 @@ html body details.day:not(#story) > summary.hd .sum .sc.sc.sc, html body details
 .hwt { row-gap: 3px; }
 .hwt .wc b { display: block; text-align: center; }
 .hwt .wc i { margin: 0 auto 1px; }
+
+/* wind cells everywhere: speed and gust always on one line ("10g15"), shrinking to fit the cell */
+.hwt .wc b, .hstrip .hw b, .srow .wtab .hwt .wc b { display: block; white-space: nowrap; text-align: center; font-size: min(.6rem, 2.75vw); letter-spacing: -.06em; overflow: hidden; }
+.hwt .wc b small, .hstrip .hw b small, .srow .wtab .hwt .wc b small { display: inline !important; font-size: .78em; margin-left: .5px; }
 </style>
 </head>
 <body>
@@ -1437,7 +1441,7 @@ function detail(d, s, inline) {
       if (!w || w[1] == null) return `<span class="hw"></span>`;
       const g = w[2] != null && w[2] > w[1] ? w[2] : null;
       const cls = w[1] >= 20 || (g || 0) >= 20 ? " hi" : w[1] < 4 ? " lo" : "";
-      return `<span class="hw${cls}" title="${w[1]}${g ? "g" + g : ""} mph${w[3] ? ` · average of ${w[3]} model${w[3] > 1 ? "s" : ""}` : ""}">${w[0] != null ? `<i style="transform:rotate(${(w[0] + 180) % 360}deg)"><svg viewBox="0 0 10 12" aria-hidden="true"><path d="M5 0.5 L9.2 11 L5 8.4 L0.8 11 Z"/></svg></i>` : "<i></i>"}<b>${w[1]}</b><small>${g ? `g${g}` : "&nbsp;"}</small></span>`;
+      return `<span class="hw${cls}" title="${w[1]}${g ? "g" + g : ""} mph${w[3] ? ` · average of ${w[3]} model${w[3] > 1 ? "s" : ""}` : ""}">${w[0] != null ? `<i style="transform:rotate(${(w[0] + 180) % 360}deg)"><svg viewBox="0 0 10 12" aria-hidden="true"><path d="M5 0.5 L9.2 11 L5 8.4 L0.8 11 Z"/></svg></i>` : "<i></i>"}<b>${w[1]}<small>${g ? `g${g}` : ""}</small></b></span>`;
     }).join("") : ""}${[[win, "wbr", "flying window: the 3 hours with the best height of lift, then thermal strength"], [c.gwin || [], "wbr glass", "glass-off: still working in the last 3 hours before sunset"]].map(([w, cl, tt]) => w.length === 2 && w[1] - w[0] < 7 ? `<span class="${cl}" title="${tt}" style="grid-column:${Math.max(1, w[0] - 8)} / ${Math.min(11, w[1] - 7)}"><svg viewBox="0 0 100 10" preserveAspectRatio="none"><path vector-effect="non-scaling-stroke" d="M1 1 Q1 5 8 5 L44 5 Q50 5 50 9.5 Q50 5 56 5 L92 5 Q99 5 99 1"/></svg></span>` : "").join("")}${Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => `<span class="hl">${h === 9 ? "9 am" : h === 18 ? "6 pm" : h > 12 ? h - 12 : h}</span>`).join("")}</div>` : "";
   const barRow = (k, x, v, sub0, xs, sub = String(sub0 || "").replace(/\s*·?\s*best 4 readings over \d+ points/, "").replace(/^\s*·\s*/, "")) => `<div class="factor">
       <span class="fk">${esc(k)}</span>
