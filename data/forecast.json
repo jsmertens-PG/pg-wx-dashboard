@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-07T04:46+00:00",
+ "generated": "2026-11-07T04:58+00:00",
  "sample": false,
  "calib": {
   "2026-11-06": {
@@ -31432,20 +31432,20 @@
  },
  "log": [
   "HRRR: ok (ncep_hrrr_conus), surface heat flux (7124 values)",
-  "HRRR trips: using the last good run, fetched 3.4 h ago",
+  "HRRR trips: using the last good run, fetched 3.6 h ago",
   "RRFS: ok (ncep_rrfs_conus), surface heat flux (8736 values)",
-  "RRFS trips: using the last good run, fetched 0.6 h ago",
-  "GFS: using the last good run, fetched 3.4 h ago",
-  "ECMWF: using the last good run, fetched 3.3 h ago",
-  "ICON: using the last good run, fetched 3.3 h ago",
-  "ens GFS ens: using the last good run, fetched 3.3 h ago",
-  "ECMWF ens: ok (ecmwf_ifs025)",
-  "ens ICON ens: using the last good run, fetched 0.6 h ago",
+  "RRFS trips: using the last good run, fetched 0.8 h ago",
+  "GFS: using the last good run, fetched 3.6 h ago",
+  "ECMWF: using the last good run, fetched 3.5 h ago",
+  "ICON: using the last good run, fetched 3.5 h ago",
+  "ens GFS ens: using the last good run, fetched 3.5 h ago",
+  "ens ECMWF ens: using the last good run, fetched 0.2 h ago",
+  "ens ICON ens: using the last good run, fetched 0.8 h ago",
   "NWS AFD: ok",
   "clouds HRRR: ok (ncep_hrrr_conus)",
   "clouds RRFS: ok (ncep_rrfs_conus)",
-  "clouds ECMWF: using the last good run, fetched 3.3 h ago",
-  "clouds ICON: using the last good run, fetched 3.3 h ago",
+  "clouds ECMWF: using the last good run, fetched 3.5 h ago",
+  "clouds ICON: using the last good run, fetched 3.5 h ago",
   "wind: GFS and ICON use ECMWF's winds where RRFS and ECMWF overlap"
  ],
  "sources": [
@@ -31456,7 +31456,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-11-07T02:00+00:00",
-   "fetched": "2026-11-07T04:45+00:00",
+   "fetched": "2026-11-07T04:58+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -31465,8 +31465,8 @@
    "provider": "Open-Meteo",
    "id": "ncep_rrfs_conus",
    "status": "ok",
-   "run": "2026-11-06T18:00+00:00",
-   "fetched": "2026-11-07T04:45+00:00",
+   "run": "2026-11-07T00:00+00:00",
+   "fetched": "2026-11-07T04:58+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -31478,7 +31478,7 @@
    "run": null,
    "fetched": "2026-11-07T01:24+00:00",
    "url": "https://open-meteo.com/en/docs",
-   "note": "cached, fetched 3 h ago"
+   "note": "cached, fetched 4 h ago"
   },
   {
    "name": "ECMWF",
@@ -31489,7 +31489,7 @@
    "run": "2026-11-06T18:00+00:00",
    "fetched": "2026-11-07T01:26+00:00",
    "url": "https://open-meteo.com/en/docs",
-   "note": "cached, fetched 3 h ago"
+   "note": "cached, fetched 4 h ago"
   },
   {
    "name": "ICON",
@@ -31500,7 +31500,7 @@
    "run": null,
    "fetched": "2026-11-07T01:26+00:00",
    "url": "https://open-meteo.com/en/docs",
-   "note": "cached, fetched 3 h ago"
+   "note": "cached, fetched 4 h ago"
   },
   {
    "name": "GFS ens",
@@ -31521,7 +31521,8 @@
    "status": "ok",
    "run": null,
    "fetched": "2026-11-07T04:46+00:00",
-   "url": "https://open-meteo.com/en/docs/ensemble-api"
+   "url": "https://open-meteo.com/en/docs/ensemble-api",
+   "note": "cached, fetched 0 h ago"
   },
   {
    "name": "ICON ens",
@@ -31541,7 +31542,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-11-07T00:58:00+00:00",
-   "fetched": "2026-11-07T04:46+00:00",
+   "fetched": "2026-11-07T04:58+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   },
   {
@@ -31551,7 +31552,7 @@
    "id": "cloud_cover_mid/high",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-07T04:46+00:00",
+   "fetched": "2026-11-07T04:58+00:00",
    "url": "https://open-meteo.com/en/docs"
   }
  ],
@@ -31783,6 +31784,92 @@
        9
       ]
      },
+     "hwind_m": {
+      "HRRR": {
+       "9": [
+        186,
+        1,
+        2
+       ],
+       "10": [
+        299,
+        3,
+        4
+       ],
+       "11": [
+        270,
+        7,
+        7
+       ],
+       "12": [
+        256,
+        8,
+        8
+       ],
+       "13": [
+        269,
+        7,
+        7
+       ],
+       "14": [
+        278,
+        8,
+        9
+       ],
+       "15": [
+        283,
+        9,
+        10
+       ],
+       "16": [
+        292,
+        7,
+        9
+       ]
+      },
+      "RRFS": {
+       "9": [
+        276,
+        2,
+        5
+       ],
+       "10": [
+        201,
+        3,
+        3
+       ],
+       "11": [
+        266,
+        5,
+        5
+       ],
+       "12": [
+        280,
+        6,
+        7
+       ],
+       "13": [
+        297,
+        7,
+        9
+       ],
+       "14": [
+        296,
+        9,
+        11
+       ],
+       "15": [
+        294,
+        10,
+        12
+       ],
+       "16": [
+        304,
+        8,
+        10
+       ]
+      }
+     },
      "gwin": null,
      "note": "W 7 mph",
      "p_fly": 0.89,
@@ -31980,6 +32067,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": [
       14,
       16
@@ -32203,6 +32291,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": [
       14,
       16
@@ -32429,6 +32518,7 @@
       16
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "over the back",
      "p_fly": 0.05,
@@ -32652,6 +32742,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "over the back",
      "p_fly": 0.42,
@@ -32683,7 +32774,7 @@
       {
        "k": "Wind 1 pm",
        "v": "SW 4g7",
-       "sub": "later NNE 1g8",
+       "sub": "later NNE 1g8 \u00b7 over the back",
        "q": 0.67
       },
       {
@@ -32872,6 +32963,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": [
       14,
       16
@@ -33084,6 +33176,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "cross wind",
      "p_fly": 0.19,
@@ -33299,6 +33392,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "Horse: over the back",
      "p_fly": 0.0,
@@ -33520,6 +33614,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "over the back",
      "p_fly": 0.0,
@@ -33745,6 +33840,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": [
       15,
       16
@@ -33958,6 +34054,7 @@
       12
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "Walt's Point: over the back",
      "p_fly": 0.0,
@@ -34282,6 +34379,92 @@
        15
       ]
      },
+     "hwind_m": {
+      "HRRR": {
+       "9": [
+        4,
+        3,
+        10
+       ],
+       "10": [
+        305,
+        9,
+        10
+       ],
+       "11": [
+        292,
+        8,
+        11
+       ],
+       "12": [
+        298,
+        11,
+        15
+       ],
+       "13": [
+        294,
+        11,
+        13
+       ],
+       "14": [
+        306,
+        10,
+        12
+       ],
+       "15": [
+        313,
+        9,
+        13
+       ],
+       "16": [
+        326,
+        8,
+        15
+       ]
+      },
+      "RRFS": {
+       "9": [
+        59,
+        5,
+        14
+       ],
+       "10": [
+        326,
+        7,
+        7
+       ],
+       "11": [
+        298,
+        7,
+        8
+       ],
+       "12": [
+        302,
+        8,
+        11
+       ],
+       "13": [
+        300,
+        12,
+        15
+       ],
+       "14": [
+        297,
+        9,
+        13
+       ],
+       "15": [
+        305,
+        9,
+        14
+       ],
+       "16": [
+        326,
+        9,
+        16
+       ]
+      }
+     },
      "gwin": null,
      "note": "WNW 11 mph",
      "p_fly": 0.94,
@@ -34490,6 +34673,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": [
       14,
       16
@@ -34716,6 +34900,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": [
       14,
       16
@@ -34941,6 +35126,7 @@
       16
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "over the back",
      "p_fly": 0.25,
@@ -34972,7 +35158,7 @@
       {
        "k": "Wind 1 pm",
        "v": "NE 11g15",
-       "sub": "",
+       "sub": "over the back",
        "q": 0.0
       },
       {
@@ -35161,6 +35347,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "over the back",
      "p_fly": 0.0,
@@ -35384,6 +35571,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "over the back",
      "p_fly": 0.22,
@@ -35604,6 +35792,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "over the back",
      "p_fly": 0.0,
@@ -35823,6 +36012,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "Horse: over the back",
      "p_fly": 0.0,
@@ -36043,6 +36233,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "over the back",
      "p_fly": 0.0,
@@ -36263,6 +36454,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": [
       14,
       16
@@ -36483,6 +36675,7 @@
       12
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": [
       14,
       16
@@ -36801,6 +36994,92 @@
        11
       ]
      },
+     "hwind_m": {
+      "HRRR": {
+       "9": [
+        213,
+        0,
+        0
+       ],
+       "10": [
+        253,
+        5,
+        7
+       ],
+       "11": [
+        244,
+        7,
+        8
+       ],
+       "12": [
+        247,
+        7,
+        10
+       ],
+       "13": [
+        266,
+        8,
+        10
+       ],
+       "14": [
+        282,
+        7,
+        10
+       ],
+       "15": [
+        297,
+        7,
+        10
+       ],
+       "16": [
+        320,
+        7,
+        11
+       ]
+      },
+      "RRFS": {
+       "9": [
+        128,
+        2,
+        2
+       ],
+       "10": [
+        267,
+        4,
+        4
+       ],
+       "11": [
+        232,
+        5,
+        5
+       ],
+       "12": [
+        244,
+        6,
+        7
+       ],
+       "13": [
+        285,
+        7,
+        9
+       ],
+       "14": [
+        297,
+        7,
+        9
+       ],
+       "15": [
+        290,
+        8,
+        9
+       ],
+       "16": [
+        314,
+        6,
+        9
+       ]
+      }
+     },
      "gwin": null,
      "note": "W 8 mph",
      "p_fly": 0.76,
@@ -36999,6 +37278,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": [
       14,
       16
@@ -37225,6 +37505,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "strong wind aloft",
      "p_fly": 0.03,
@@ -37442,6 +37723,7 @@
       16
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "thermals to 5,500 ft",
      "p_fly": 1.0,
@@ -37644,6 +37926,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "over the back",
      "p_fly": 0.23,
@@ -37868,6 +38151,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "over the back",
      "p_fly": 0.07,
@@ -38088,6 +38372,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "over the back",
      "p_fly": 0.28,
@@ -38308,6 +38593,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "Horse: over the back",
      "p_fly": 0.0,
@@ -38526,6 +38812,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "thermals to 5,400 ft",
      "p_fly": 1.0,
@@ -38739,6 +39026,7 @@
       14
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": [
       15,
       16
@@ -38935,6 +39223,7 @@
       12
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "Walt's Point: low lid, 12,200 ft",
      "p_fly": 0.75,
@@ -39230,6 +39519,92 @@
        12
       ]
      },
+     "hwind_m": {
+      "RRFS": {
+       "9": [
+        123,
+        2,
+        2
+       ],
+       "10": [
+        276,
+        3,
+        3
+       ],
+       "11": [
+        257,
+        6,
+        6
+       ],
+       "12": [
+        259,
+        7,
+        8
+       ],
+       "13": [
+        269,
+        8,
+        9
+       ],
+       "14": [
+        281,
+        9,
+        10
+       ],
+       "15": [
+        295,
+        9,
+        10
+       ],
+       "16": [
+        318,
+        9,
+        12
+       ]
+      },
+      "ECMWF": {
+       "9": [
+        100,
+        3,
+        9
+       ],
+       "10": [
+        166,
+        1,
+        1
+       ],
+       "11": [
+        265,
+        2,
+        12
+       ],
+       "12": [
+        282,
+        6,
+        17
+       ],
+       "13": [
+        287,
+        7,
+        19
+       ],
+       "14": [
+        293,
+        7,
+        19
+       ],
+       "15": [
+        300,
+        7,
+        17
+       ],
+       "16": [
+        306,
+        5,
+        14
+       ]
+      }
+     },
      "gwin": null,
      "note": "W 8 mph",
      "p_fly": 0.58,
@@ -39410,6 +39785,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": [
       14,
       16
@@ -39609,6 +39985,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "over the back",
      "p_fly": 0.13,
@@ -39811,6 +40188,7 @@
       16
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "thermals to 5,700 ft",
      "p_fly": 1.0,
@@ -39996,6 +40374,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "over the back",
      "p_fly": 0.36,
@@ -40202,6 +40581,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": [
       14,
       16
@@ -40409,6 +40789,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "over the back",
      "p_fly": 0.43,
@@ -40606,6 +40987,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "Laguna: blown out",
      "p_fly": 0.0,
@@ -40812,6 +41194,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "thermals to 5,600 ft",
      "p_fly": 1.0,
@@ -40999,6 +41382,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": [
       14,
       16
@@ -41195,6 +41579,7 @@
       12
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "Walt's Point: over the back",
      "p_fly": 0.75,
@@ -41489,6 +41874,50 @@
        19
       ]
      },
+     "hwind_m": {
+      "ECMWF": {
+       "9": [
+        108,
+        1,
+        1
+       ],
+       "10": [
+        239,
+        1,
+        9
+       ],
+       "11": [
+        259,
+        3,
+        10
+       ],
+       "12": [
+        266,
+        6,
+        13
+       ],
+       "13": [
+        272,
+        7,
+        15
+       ],
+       "14": [
+        283,
+        7,
+        17
+       ],
+       "15": [
+        297,
+        7,
+        18
+       ],
+       "16": [
+        310,
+        6,
+        19
+       ]
+      }
+     },
      "gwin": null,
      "note": "W 7 mph",
      "p_fly": 0.62,
@@ -41649,6 +42078,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": [
       14,
       16
@@ -41820,6 +42250,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": [
       14,
       16
@@ -41986,6 +42417,7 @@
       16
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "thermals to 5,100 ft",
      "p_fly": 1.0,
@@ -42154,6 +42586,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "thermals to 5,200 ft",
      "p_fly": 0.52,
@@ -42320,6 +42753,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": [
       14,
       16
@@ -42494,6 +42928,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "blown out",
      "p_fly": 0.39,
@@ -42662,6 +43097,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "Laguna: blown out",
      "p_fly": 0.0,
@@ -42830,6 +43266,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "over the back",
      "p_fly": 0.0,
@@ -43001,6 +43438,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": [
       14,
       16
@@ -43175,6 +43613,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": [
       14,
       16
@@ -43435,6 +43874,50 @@
        21
       ]
      },
+     "hwind_m": {
+      "ECMWF": {
+       "9": [
+        360,
+        1,
+        1
+       ],
+       "10": [
+        288,
+        2,
+        9
+       ],
+       "11": [
+        288,
+        4,
+        10
+       ],
+       "12": [
+        290,
+        7,
+        13
+       ],
+       "13": [
+        290,
+        8,
+        14
+       ],
+       "14": [
+        290,
+        7,
+        17
+       ],
+       "15": [
+        291,
+        6,
+        20
+       ],
+       "16": [
+        292,
+        4,
+        21
+       ]
+      }
+     },
      "gwin": null,
      "note": "WNW 8 mph",
      "p_fly": 0.65,
@@ -43597,6 +44080,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": [
       14,
       16
@@ -43778,6 +44262,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "over the back",
      "p_fly": 0.16,
@@ -43949,6 +44434,7 @@
       16
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "thermals to 5,300 ft",
      "p_fly": 1.0,
@@ -44115,6 +44601,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "over the back",
      "p_fly": 0.2,
@@ -44289,6 +44776,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": [
       14,
       16
@@ -44464,6 +44952,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "over the back",
      "p_fly": 0.21,
@@ -44632,6 +45121,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "Horse: over the back",
      "p_fly": 0.04,
@@ -44803,6 +45293,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "over the back",
      "p_fly": 0.02,
@@ -44972,6 +45463,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "Skyport",
      "p_fly": 1.0,
@@ -45143,6 +45635,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "Walt's Point: over the back",
      "p_fly": 0.33,
@@ -45407,6 +45900,50 @@
        18
       ]
      },
+     "hwind_m": {
+      "ECMWF": {
+       "9": [
+        243,
+        0,
+        0
+       ],
+       "10": [
+        252,
+        3,
+        9
+       ],
+       "11": [
+        250,
+        3,
+        11
+       ],
+       "12": [
+        249,
+        3,
+        13
+       ],
+       "13": [
+        252,
+        3,
+        14
+       ],
+       "14": [
+        258,
+        3,
+        16
+       ],
+       "15": [
+        266,
+        4,
+        17
+       ],
+       "16": [
+        270,
+        4,
+        18
+       ]
+      }
+     },
      "gwin": null,
      "note": "too light to soar",
      "p_fly": 0.44,
@@ -45565,6 +46102,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": [
       14,
       16
@@ -45732,6 +46270,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": [
       14,
       16
@@ -45895,6 +46434,7 @@
       16
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "thermals to 4,800 ft",
      "p_fly": 1.0,
@@ -46058,6 +46598,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": [
       14,
       16
@@ -46229,6 +46770,7 @@
       12
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": [
       14,
       16
@@ -46404,6 +46946,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "cross wind",
      "p_fly": 0.34,
@@ -46571,6 +47114,7 @@
       12
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": [
       14,
       16
@@ -46747,6 +47291,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": [
       14,
       16
@@ -46919,6 +47464,7 @@
       12
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": [
       14,
       16
@@ -47098,6 +47644,7 @@
       13
      ],
      "hwind": null,
+     "hwind_m": null,
      "gwin": null,
      "note": "Walt's Point: low lid, 10,600 ft",
      "p_fly": 0.67,
