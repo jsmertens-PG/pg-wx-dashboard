@@ -813,6 +813,12 @@ html body details.day:not(#story) > summary.hd .sum .sc.sc.sc, html body details
 .hwt .wc.lo { color: #98a2b3; }
 .hwt .wc.hi { color: #c23434; }
 @media (max-width: 380px) { .hwt .wc b small { display: block; text-align: center; } }
+
+/* the wind table right on Torrey's site card */
+.srow .wtab { display: block; flex: 0 0 100%; width: 100%; margin-top: 6px; padding-right: 30px; }
+.srow .wtab .hwt { max-width: none; }
+.srow .wtab .hwt .wc b small { display: block; text-align: center; }
+.srow .wtab .hwt .wc b { font-size: .6rem; }
 </style>
 </head>
 <body>
@@ -1299,6 +1305,24 @@ const CHIP_TIPS = [
 const chipTip = (t) => (CHIP_TIPS.find(([re]) => re.test(t)) || [null, ""])[1];
 /* the site card's mini hour strip (9 am-6 pm, window outlined): only for a site that works, i.e. a score of
    2.5+ or at least two hours in a row at 2.5+ */
+function windTable(c) {
+  const hm = c.hwind_m && Object.keys(c.hwind_m).length ? c.hwind_m : null;
+  if (!hm) return "";
+  const hrs = c.hours || {};
+/* ridge site (Torrey) with model winds: the score strip on top, then one row of launch wind per model (Windy style) */
+  const HH = Array.from({ length: 10 }, (_, k) => 9 + k);
+  const hlab = (h) => (h === 9 ? "9a" : h === 18 ? "6p" : h === 12 ? "12" : h > 12 ? `${h - 12}p` : `${h}a`);
+  const wcell = (w) => {
+    if (!w || w[1] == null) return `<span class="wc"></span>`;
+    const g = w[2] != null && w[2] > w[1] ? w[2] : null;
+    const cls = w[1] >= 20 || (g || 0) >= 20 ? " hi" : w[1] < 4 ? " lo" : "";
+    return `<span class="wc${cls}" title="${w[1]}${g ? "g" + g : ""} mph">${w[0] != null ? `<i style="transform:rotate(${(w[0] + 180) % 360}deg)">↑</i>` : ""}<b>${w[1]}${g ? `<small>g${g}</small>` : ""}</b></span>`;
+  };
+  return `<div class="hwt"><span></span>${HH.map((h) => `<span class="hh">${hlab(h)}</span>`).join("")}<span class="ml">score</span>${HH.map((h) => {
+      const v = hrs[String(h)];
+      return `<span class="hc" style="background:${v != null ? qgrad(v) : "var(--sunk)"}"></span>`;
+    }).join("")}${Object.entries(hm).map(([m, ws], k) => `<span class="ml${k % 2 ? "" : " z"}">${m === "ECMWF" ? "EC" : m}</span>${HH.map((h) => wcell(ws[String(h)]).replace('class="wc', `class="wc${k % 2 ? "" : " z"}`)).join("")}`).join("")}</div>`;
+}
 function miniStrip(c) {
   const hrs = c.hours || {}, win = c.win || [];
   const v = (h) => hrs[String(h)];
@@ -1318,7 +1342,7 @@ function siteRow(d, s, i, kind) {
   const pills = sitePills(c);
   return `<button type="button" class="srow ${kind}" style="--rc:${qv(c.rating)}" data-site="${s.id}" data-day="${i}" aria-expanded="false">
     <span class="nmrow"><span class="nmw"><span class="nm">${esc(name)}</span>${styleLab(c) ? `<span class="lab" style="color:${qv(c.rating)}">${esc(styleLab(c))}</span>` : ""}</span><span class="dscore sm" style="--rc:${qv(c.rating)}"><span class="dsl">Score:</span><b>${(Math.max(1, Math.min(5, Math.round(c.rating * 2) / 2))).toFixed(1).replace(".0", "")}</b><small>/5</small></span></span>
-    ${pills ? `<span class="spills">${pills}</span>` : ""}<span class="tx"><span class="facts">${siteFacts(c)}</span></span>${miniStrip(c)}
+    ${pills ? `<span class="spills">${pills}</span>` : ""}<span class="tx"><span class="facts">${siteFacts(c)}</span></span>${c.hwind_m && Object.keys(c.hwind_m).length ? `<span class="wtab">${windTable(c)}</span>` : miniStrip(c)}
     <span class="exp sm" aria-hidden="true"><span class="chev"></span></span>
   </button>`;
 }
@@ -1331,21 +1355,8 @@ function detail(d, s, inline) {
   const fac = (c.factors || []);
   /* hour by hour, 9 am to 6 pm, coloured by how good each hour is; the site's window outlined */
   const hrs = c.hours || {}, win = c.win || [];
-  /* ridge site with model winds: the score strip on top, then one row of launch wind per model (Windy style) */
   const hm = c.hwind_m && Object.keys(c.hwind_m).length ? c.hwind_m : null;
-  const HH = Array.from({ length: 10 }, (_, k) => 9 + k);
-  const hlab = (h) => (h === 9 ? "9a" : h === 18 ? "6p" : h === 12 ? "12" : h > 12 ? `${h - 12}p` : `${h}a`);
-  const wcell = (w) => {
-    if (!w || w[1] == null) return `<span class="wc"></span>`;
-    const g = w[2] != null && w[2] > w[1] ? w[2] : null;
-    const cls = w[1] >= 20 || (g || 0) >= 20 ? " hi" : w[1] < 4 ? " lo" : "";
-    return `<span class="wc${cls}" title="${w[1]}${g ? "g" + g : ""} mph">${w[0] != null ? `<i style="transform:rotate(${(w[0] + 180) % 360}deg)">↑</i>` : ""}<b>${w[1]}${g ? `<small>g${g}</small>` : ""}</b></span>`;
-  };
-  const modelTable = hm ? `<div class="hwt"><span></span>${HH.map((h) => `<span class="hh">${hlab(h)}</span>`).join("")}<span class="ml">score</span>${HH.map((h) => {
-      const v = hrs[String(h)];
-      return `<span class="hc" style="background:${v != null ? qgrad(v) : "var(--sunk)"}"></span>`;
-    }).join("")}${Object.entries(hm).map(([m, ws], k) => `<span class="ml${k % 2 ? "" : " z"}">${m === "ECMWF" ? "EC" : m}</span>${HH.map((h) => wcell(ws[String(h)]).replace('class="wc', `class="wc${k % 2 ? "" : " z"}`)).join("")}`).join("")}</div>` : "";
-  const hourStrip = hm ? modelTable : Object.keys(hrs).length ? `<div class="hstrip">${Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => {
+  const hourStrip = hm ? "" : Object.keys(hrs).length ? `<div class="hstrip">${Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => {
       const v = hrs[String(h)];
       return `<span class="hc" title="${h > 12 ? h - 12 : h} ${h >= 12 ? "pm" : "am"}${v != null ? ` · ${v}` : ""}" style="background:${v != null ? qgrad(v) : "var(--sunk)"}"></span>`;
     }).join("")}${c.hwind ? Array.from({ length: 10 }, (_, k) => 9 + k).map((h) => {
