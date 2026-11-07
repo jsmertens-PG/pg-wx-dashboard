@@ -193,6 +193,64 @@ def at(h, k, i):
     return v[i] if i < len(v) else None
 
 
+# Per-region tuning (Regtherm-style), neutral unless flights say otherwise.
+#   frac: share of the sunshine that heats the air when a model has no surface heat flux (radar: 0.40 inland, 0.30 coast)
+#   heat: multiplies the heating (drier/barer ground > 1, irrigated or marine-cooled < 1)
+#   climb_off: m/s added to the climb rate
+TUNE_DEFAULT = {"frac": 0.40, "heat": 1.0, "climb_off": 0.0}
+TUNE = {"coast": {"frac": 0.30}}
+
+
+def tune(rid):
+    return {**TUNE_DEFAULT, **TUNE.get(rid, {})}
+
+
+# the morning NKX sounding (Miramar) corrects today's mixing depth for the regions on its side of the mountains
+SND_REGIONS = {"coast", "north", "east", "south"}
+SND_WEIGHT = 0.5      # blend with the model's own profile (the sounding is from ~4 am; the day changes it)
+
+
+def load_sounding(today):
+    """Today's observed profile [(z_m, t_c)] from the latest NKX sounding, or None if it is not from this morning."""
+    base = os.path.join(os.path.dirname(__file__), "..", "..", "data", "sounding")
+    try:
+        with open(os.path.join(base, "nkx_latest.json")) as f:
+            meta = json.load(f)
+        with open(os.path.join(base, "nkx_latest.txt")) as f:
+            txt = f.read()
+    except Exception:  # noqa: BLE001
+        return None
+    import re
+    t = meta.get("title", "")
+    mm = re.search(r"(\d{2})(\d{2})Z_(\d{2})_(\w{3})_(\d{4})", t)
+    if not mm:
+        return None
+    hh = int(mm.group(1))
+    obs = dt.datetime.strptime(f"{mm.group(3)} {mm.group(4)} {mm.group(5)} {hh}", "%d %b %Y %H").replace(tzinfo=dt.timezone.utc)
+    obs_local = obs.astimezone(__import__("zoneinfo").ZoneInfo(TZ))
+    if obs_local.date() != today or obs_local.hour > 10:      # only this morning's 12Z ascent
+        return None
+    pts, last = [], -1e9
+    for line in txt.splitlines():
+        nums = re.findall(r"-?\d+(?:\.\d+)?", line.replace(",", " "))
+        if len(nums) < 3:
+            continue
+        p_, z, tc = float(nums[0]), float(nums[1]), float(nums[2])
+        if not (100 <= p_ <= 1100) or tc < -150 or z < -100 or z <= last or z > 7000:
+            continue
+        pts.append((z, tc))
+        last = z
+    return pts if len(pts) > 10 else None
+
+
+def load_terrain():
+    try:
+        with open(os.path.join(OUT, "terrain.json")) as f:
+            return json.load(f).get("regions", {})
+    except Exception:  # noqa: BLE001
+        return {}
+
+
 def profile(h, i, elev_m):
     pts = []
     for p in LEVELS:
@@ -221,7 +279,8 @@ def clamp(v, a, b):
     return max(a, min(b, v))
 
 
-def point_hour(h, i, elev_m):
+def point_hour(h, i, elev_m, tn=None, snd=None):
+    tn = tn or TUNE_DEFAULT
     t2, td = at(h, "temperature_2m", i), at(h, "dew_point_2m", i)
     if t2 is None:
         return None
@@ -232,8 +291,14 @@ def point_hour(h, i, elev_m):
     blh = at(h, "boundary_layer_height", i)
     if blh:
         zi = min(zi, blh) if pts else blh
+    if snd:                                   # this morning's observed profile resolves the inversion the 6 levels miss
+        sp = [(z, t) for z, t in snd if z > elev_m + 20]
+        st = parcel_top(sp, t2, elev_m) if sp else None
+        if st is not None:
+            zi = (1 - SND_WEIGHT) * zi + SND_WEIGHT * max(0.0, st - elev_m)
     shf = at(h, "sensible_heat_flux", i)
-    heat = clamp(abs(shf), 0.10 * sw, 0.60 * sw) if (shf is not None and sw > 50) else 0.30 * sw
+    heat = clamp(abs(shf), 0.10 * sw, 0.60 * sw) if (shf is not None and sw > 50) else tn["frac"] * sw
+    heat *= tn["heat"]
     wstar = (9.81 / (t2 + 273.15) * heat / 1200.0 * zi) ** (1 / 3) if zi > 0 and heat > 0 else 0.0
     wstar_h = (9.81 / (t2 + 273.15) * 0.30 * sw / 1200.0 * zi) ** (1 / 3) if zi > 0 and sw > 0 else 0.0
     usable = elev_m + zi * clamp(0.4 + 0.2 * (wstar_h - 1.0), 0.3, 0.8)
@@ -243,8 +308,8 @@ def point_hour(h, i, elev_m):
     ctop = (base + min(2500.0, 300.0 + cape * 1.0)) if cu else None   # shallow cu, deeper with CAPE (m)
     if base is not None:
         usable = min(usable, base)
-    climb = max(0.0, 1.4 * wstar - 1.1)
-    return {"t": t2, "td": td, "wstar": wstar, "climb": climb, "top": usable, "base": base, "cu": cu, "ctop": ctop,
+    climb = max(0.0, 1.4 * wstar - 1.1 + tn["climb_off"])
+    return {"climb_off": tn["climb_off"], "t": t2, "td": td, "wstar": wstar, "climb": climb, "top": usable, "base": base, "cu": cu, "ctop": ctop,
             "zi": zi, "elev": elev_m, "cape": at(h, "cape", i) or 0, "rain": max(0.0, at(h, "precipitation", i) or 0),
             "rain_p": None,
             "cloud": max(at(h, "cloud_cover_low", i) or 0, at(h, "cloud_cover_mid", i) or 0, at(h, "cloud_cover_high", i) or 0),
@@ -285,56 +350,90 @@ def climb_at(p, z_m):
     if p["cu"] and p["base"] is not None and z_m > p["base"]:
         return None
     w = p["wstar"] * 2.4 * x ** (1 / 3) * (1 - 1.1 * x)
-    return max(0.0, 1.4 * w - 1.1)
+    return max(0.0, 1.4 * w - 1.1 + p.get("climb_off", 0.0))
 
 
-def region_grid(ps):
+def terrain_entries(ps, terr):
+    """(probe, ground height m, area weight) for every 500 ft ground bucket each probe stands for.
+    The mixed-layer top and cloud base stay at the probe's height above sea level; W* scales with the local depth."""
+    out = []
+    for p, tp in zip(ps, terr):
+        if not p:
+            continue
+        for b, w in (tp.get("hist") or {}).items():
+            e = (int(b) + 250) / FT
+            top = p["elev"] + p["zi"]
+            zi = max(0.0, top - e)
+            ws = p["wstar"] * (zi / p["zi"]) ** (1 / 3) if p["zi"] > 0 and zi > 0 else 0.0
+            out.append(({**p, "elev": e, "zi": zi, "wstar": ws}, e, w))
+    return out
+
+
+def region_grid(ps, terr=None):
+    """Climb per 500 ft band. With terrain: every bit of ground lifts its own thermals (Regtherm-style
+    area-elevation weighting); a band shows once 8% of the region's ground lies below it."""
     cells = {}
+    ent = terrain_entries(ps, terr) if terr and len(terr) == len(ps) else None
+    if not ent:
+        ent = [(p, p["elev"], 1.0) for p in ps if p]
+    tot = sum(w for _, _, w in ent) or 1.0
     for zft in GRID_FT:
         z = (zft + 250) / FT   # middle of the band zft..zft+500
-        above = [p for p in ps if p["elev"] < z]   # down to the valley floor: the lowest probe counts
-        if not above:
+        below = [(p, w) for p, e, w in ent if e < z]
+        wb = sum(w for _, w in below)
+        if not below or wb / tot < (0.08 if terr else 0.0):
             continue
-        cl = [p for p in above if p["cu"] and p["base"] is not None and p["base"] <= z <= (p["ctop"] or p["base"])]
-        if len(cl) >= 0.4 * len(above):
+        wc = sum(w for p, w in below if p["cu"] and p["base"] is not None and p["base"] <= z <= (p["ctop"] or p["base"]))
+        if wc >= 0.4 * wb:
             cells[str(zft)] = "c"
             continue
-        vals = [climb_at(p, z) for p in above]
-        got = [v for v in vals if v is not None]
-        if len(got) >= 0.4 * len(above):
-            cells[str(zft)] = round(sum(got) / len(got) * 2) / 2
+        got = [(climb_at(p, z), w) for p, w in below]
+        got = [(v, w) for v, w in got if v is not None]
+        wg = sum(w for _, w in got)
+        if wg >= 0.4 * wb:
+            cells[str(zft)] = round(sum(v * w for v, w in got) / wg * 2) / 2
     return cells
 
 
-def region_hour(ps):
+def region_hour(ps, terr=None):
+    grid = region_grid(ps, terr)
+    wts = [sum((t.get("hist") or {}).values()) for p, t in zip(ps, terr) if p] if terr and len(terr) == len(ps) else None
     ps = [p for p in ps if p]
     if not ps:
         return None
+    if not wts or sum(wts) <= 0:
+        wts = [1.0] * len(ps)
+
+    def M(xs):   # area-weighted region mean: a probe counts as much ground as it stands for
+        pairs = [(x, w) for x, w in zip(xs, wts) if x is not None]
+        sw_ = sum(w for _, w in pairs)
+        return sum(x * w for x, w in pairs) / sw_ if pairs and sw_ > 0 else None
+
     cu_share = sum(1 for p in ps if p["cu"]) / len(ps)
     bases = [p["base"] for p in ps if p["cu"] and p["base"] is not None]
     sfc = vec_mean([(p["sfc"][0], p["sfc"][1]) for p in ps])
-    gust = mean([p["sfc"][2] for p in ps])
+    gust = M([p["sfc"][2] for p in ps])
     return {
-        "climb": round(mean([p["climb"] for p in ps]), 1),
+        "climb": round(M([p["climb"] for p in ps]), 1),
         "climb_max": round(max(p["climb"] for p in ps), 1),
-        "wstar": round(mean([p["wstar"] for p in ps]), 2),
-        "top_ft": round(mean([p["top"] for p in ps]) * FT / 100) * 100,
+        "wstar": round(M([p["wstar"] for p in ps]), 2),
+        "top_ft": round(M([p["top"] for p in ps]) * FT / 100) * 100,
         "top_max_ft": round(max(p["top"] for p in ps) * FT / 100) * 100,
         "base_ft": round(mean(bases) * FT / 100) * 100 if bases else None,
         "cu": round(cu_share, 2),
-        "t_f": round(mean([p["t"] for p in ps]) * 9 / 5 + 32),
-        "cloud": round(mean([p["cloud"] for p in ps]) or 0),
-        "cl_mh": round(mean([p["cl_mh"] for p in ps]) or 0),
-        "rain_mm": round(mean([p["rain"] for p in ps]), 1),
-        "rain_p": round(mean([p["rain_p"] for p in ps])) if mean([p["rain_p"] for p in ps]) is not None else None,
-        "cape": round(mean([p["cape"] for p in ps])),
+        "t_f": round(M([p["t"] for p in ps]) * 9 / 5 + 32),
+        "cloud": round(M([p["cloud"] for p in ps]) or 0),
+        "cl_mh": round(M([p["cl_mh"] for p in ps]) or 0),
+        "rain_mm": round(M([p["rain"] for p in ps]), 1),
+        "rain_p": round(M([p["rain_p"] for p in ps])) if M([p["rain_p"] for p in ps]) is not None else None,
+        "cape": round(M([p["cape"] for p in ps])),
         "sfc": [sfc[0], sfc[1], round(gust) if gust is not None else None],
         "w5k": list(vec_mean([p["w850"] for p in ps])),
         "w10k": list(vec_mean([p["w700"] for p in ps])),
-        "okta": [round((mean([p["cl_low"] for p in ps]) or 0) / 12.5),
-                 round((mean([at_mid(p) for p in ps]) or 0) / 12.5),
-                 round((mean([p["cl_high"] for p in ps]) or 0) / 12.5)],
-        "grid": region_grid(ps),
+        "okta": [round((M([p["cl_low"] for p in ps]) or 0) / 12.5),
+                 round((M([at_mid(p) for p in ps]) or 0) / 12.5),
+                 round((M([p["cl_high"] for p in ps]) or 0) / 12.5)],
+        "grid": grid,
     }
 
 
@@ -386,7 +485,7 @@ def summarize(hours):
             "w5k": w[len(w) // 2]["w5k"], "high_f": max(v["t_f"] for v in good.values())}
 
 
-def build_days(data, idx, today, now_local, name, acc):
+def build_days(data, idx, today, now_local, name, acc, gid=None, snd=None, terr=None):
     """acc[date][hour][model] = region_hour for the points at positions idx of a multi-point reply."""
     times = data[0]["hourly"]["time"]
     for i, t in enumerate(times):
@@ -396,8 +495,9 @@ def build_days(data, idx, today, now_local, name, acc):
         k = (dt.date.fromisoformat(d) - today).days
         if k < 0 or k > 6 or (k == 0 and now_local.hour >= 19):   # 7 days like the radar; after 7 pm today is over
             continue
-        ps = [point_hour(data[j]["hourly"], i, data[j].get("elevation") or 300) for j in idx]
-        rh = region_hour(ps)
+        sk = snd if (k == 0 and gid in SND_REGIONS) else None
+        ps = [point_hour(data[j]["hourly"], i, data[j].get("elevation") or 300, tune(gid), sk) for j in idx]
+        rh = region_hour(ps, terr)
         if rh:
             acc.setdefault(d, {}).setdefault(str(hh), {})[name] = rh
 
@@ -440,10 +540,27 @@ REGION_SITES = {"coast": ["torrey"], "north": ["lb"], "east": ["blossom"], "sout
 REGION_PEAK = {"palomar": ("Palomar Mtn", 6140), "desert": ("Villager Pk", 5756), "palmsj": ("San Jacinto Pk", 10834)}
 
 
+SND, TERR = None, {}
 ELEV = {}   # probe ground height (ft) from the model replies
 
 
 SHORT = {"Blossom Valley": "Blossom", "Otay Mesa": "Otay", "Lake Elsinore": "Elsinore", "Horse Canyon": "Horse"}
+
+
+def terrain_floor(r):
+    """Lowest band the panel shows: where 8% of the region's ground lies below (or the lowest probe)."""
+    pr = (TERR.get(r["id"]) or {}).get("probes")
+    if pr:
+        h = {}
+        for t in pr:
+            for b, w in (t.get("hist") or {}).items():
+                h[int(b)] = h.get(int(b), 0) + w
+        acc = 0.0
+        for b in sorted(h):
+            acc += h[b]
+            if acc >= 0.08:
+                return b
+    return int(min([ELEV[(la, lo)] for _, la, lo in r["points"] if ELEV.get((la, lo)) is not None] or [500]) // 500 * 500)
 
 
 def region_marks(rid):
@@ -481,6 +598,9 @@ def main():
         idx[gid] = list(range(len(allpts), len(allpts) + len(pts)))
         allpts += pts
     acc = {gid: {} for gid, _ in groups}
+    global SND, TERR
+    SND, TERR = load_sounding(today), load_terrain()
+    print(f"sounding: {'this morning, ' + str(len(SND)) + ' levels' if SND else 'none for today'}; terrain: {len(TERR)} regions")
     models_used, debug = {}, {}
     cache_dir = os.path.join(os.path.dirname(__file__), "..", "..", "cache", "region")
     os.makedirs(cache_dir, exist_ok=True)
@@ -523,7 +643,7 @@ def main():
         models_used[name] = mid1 or mid2
         debug[name] = sorted(k for k, v in data[0]["hourly"].items() if any(x is not None for x in v))
         for gid, _ in groups:
-            build_days(data, idx[gid], today, now_local, name, acc[gid])
+            build_days(data, idx[gid], today, now_local, name, acc[gid], gid, SND, (TERR.get(gid) or {}).get("probes"))
     sps = {r["id"]: r.get("score") for r in REGIONS}
     by = {gid: blend_days(acc[gid], sps.get(gid)) for gid, _ in groups}
     gen = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
@@ -531,7 +651,7 @@ def main():
     for r in REGIONS:
         regs.append({"id": r["id"], "name": r["name"], "title": r["name"].upper(), "poly": r["poly"], "own_score": bool(r.get("score")),
                      "points": [{"name": n, "lat": la, "lon": lo, "elev_ft": ELEV.get((la, lo))} for n, la, lo in r["points"]],
-                     "floor_ft": int(min([ELEV[(la, lo)] for _, la, lo in r["points"] if ELEV.get((la, lo)) is not None] or [500]) // 500 * 500),
+                     "floor_ft": terrain_floor(r) ,
                      "marks": region_marks(r["id"]),
                      "days": finish(by[r["id"]], today)})
         for dd in regs[-1]["days"]:

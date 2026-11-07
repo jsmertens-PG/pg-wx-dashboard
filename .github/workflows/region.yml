@@ -28,6 +28,8 @@ jobs:
           path: cache/region
           key: region-${{ github.run_id }}
           restore-keys: region-
+      - name: Sample region terrain (only when polygons change)
+        run: python -u scripts/region/terrain.py
       - name: Build SD region panel data
         run: python -u scripts/region/build_region.py
       - name: Keep global model runs for next time
