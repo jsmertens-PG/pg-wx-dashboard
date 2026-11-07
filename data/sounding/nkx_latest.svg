@@ -88,44 +88,44 @@
 <text x="690" y="75" font-size="12.5" font-weight="600" fill="#111827">Wind</text>
 <path d="M682 802.7h4" stroke="#d1d5db"/>
 <g transform="translate(696 802.7) rotate(124)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#111827" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="806.7" font-size="11.5" font-weight="650" fill="#111827">12<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">kt</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="6">304°</tspan></text>
+<text x="706" y="806.7" font-size="11.5" font-weight="650" fill="#111827">13<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">304°</tspan></text>
 <path d="M682 749.1h4" stroke="#d1d5db"/>
 <g transform="translate(696 749.1) rotate(116)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#111827" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="753.1" font-size="11.5" font-weight="650" fill="#111827">11<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">kt</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="6">296°</tspan></text>
+<text x="706" y="753.1" font-size="11.5" font-weight="650" fill="#111827">13<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">296°</tspan></text>
 <path d="M682 695.9h4" stroke="#d1d5db"/>
 <g transform="translate(696 695.9) rotate(149)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#111827" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="699.9" font-size="11.5" font-weight="650" fill="#111827">10<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">kt</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="6">329°</tspan></text>
+<text x="706" y="699.9" font-size="11.5" font-weight="650" fill="#111827">11<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">329°</tspan></text>
 <path d="M682 642.2h4" stroke="#d1d5db"/>
 <g transform="translate(696 642.2) rotate(179)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#111827" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="646.2" font-size="11.5" font-weight="650" fill="#111827">8<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">kt</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="6">359°</tspan></text>
+<text x="706" y="646.2" font-size="11.5" font-weight="650" fill="#111827">9<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">359°</tspan></text>
 <path d="M682 588.8h4" stroke="#d1d5db"/>
 <g transform="translate(696 588.8) rotate(213)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#111827" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="592.8" font-size="11.5" font-weight="650" fill="#111827">10<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">kt</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="6">033°</tspan></text>
+<text x="706" y="592.8" font-size="11.5" font-weight="650" fill="#111827">12<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">033°</tspan></text>
 <path d="M682 535.6h4" stroke="#d1d5db"/>
 <g transform="translate(696 535.6) rotate(235)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#ea580c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="539.6" font-size="11.5" font-weight="650" fill="#ea580c">15<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">kt</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="6">055°</tspan></text>
+<text x="706" y="539.6" font-size="11.5" font-weight="650" fill="#ea580c">17<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">055°</tspan></text>
 <path d="M682 481.9h4" stroke="#d1d5db"/>
 <g transform="translate(696 481.9) rotate(234)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#ea580c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="485.9" font-size="11.5" font-weight="650" fill="#ea580c">19<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">kt</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="6">054°</tspan></text>
+<text x="706" y="485.9" font-size="11.5" font-weight="650" fill="#ea580c">22<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">054°</tspan></text>
 <path d="M682 428.3h4" stroke="#d1d5db"/>
 <g transform="translate(696 428.3) rotate(204)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#ea580c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="432.3" font-size="11.5" font-weight="650" fill="#ea580c">18<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">kt</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="6">024°</tspan></text>
+<text x="706" y="432.3" font-size="11.5" font-weight="650" fill="#ea580c">21<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">024°</tspan></text>
 <path d="M682 375.1h4" stroke="#d1d5db"/>
 <g transform="translate(696 375.1) rotate(192)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#ea580c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="379.1" font-size="11.5" font-weight="650" fill="#ea580c">19<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">kt</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="6">012°</tspan></text>
+<text x="706" y="379.1" font-size="11.5" font-weight="650" fill="#ea580c">22<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">012°</tspan></text>
 <path d="M682 321.7h4" stroke="#d1d5db"/>
 <g transform="translate(696 321.7) rotate(194)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="325.7" font-size="11.5" font-weight="650" fill="#dc2626">28<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">kt</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="6">014°</tspan></text>
+<text x="706" y="325.7" font-size="11.5" font-weight="650" fill="#dc2626">32<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">014°</tspan></text>
 <path d="M682 268.5h4" stroke="#d1d5db"/>
 <g transform="translate(696 268.5) rotate(188)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="272.5" font-size="11.5" font-weight="650" fill="#dc2626">32<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">kt</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="6">008°</tspan></text>
+<text x="706" y="272.5" font-size="11.5" font-weight="650" fill="#dc2626">37<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">008°</tspan></text>
 <path d="M682 215.3h4" stroke="#d1d5db"/>
 <g transform="translate(696 215.3) rotate(176)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="219.3" font-size="11.5" font-weight="650" fill="#dc2626">32<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">kt</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="6">356°</tspan></text>
+<text x="706" y="219.3" font-size="11.5" font-weight="650" fill="#dc2626">37<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">356°</tspan></text>
 <path d="M682 162.3h4" stroke="#d1d5db"/>
 <g transform="translate(696 162.3) rotate(171)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="166.3" font-size="11.5" font-weight="650" fill="#dc2626">40<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">kt</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="6">351°</tspan></text>
+<text x="706" y="166.3" font-size="11.5" font-weight="650" fill="#dc2626">46<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">351°</tspan></text>
 <path d="M682 109.1h4" stroke="#d1d5db"/>
 <g transform="translate(696 109.1) rotate(171)"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
-<text x="706" y="113.1" font-size="11.5" font-weight="650" fill="#dc2626">40<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">kt</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="6">351°</tspan></text>
+<text x="706" y="113.1" font-size="11.5" font-weight="650" fill="#dc2626">46<tspan font-size="9.5" font-weight="500" fill="#6b7280" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="#6b7280" dx="5">351°</tspan></text>
 </svg>

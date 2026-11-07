@@ -360,11 +360,11 @@ function renderSVG(snd, opts = {}) {
     const y = Y(l.z);
     if (wy - y < 15) continue;
     wy = y;
-    const dir = Math.round(l.dir) % 360 || 360, sp = Math.round(l.spd);
-    const col = sp >= 20 ? '#dc2626' : sp >= 15 ? '#ea580c' : INK;
+    const dir = Math.round(l.dir) % 360 || 360, sp = Math.round(l.spd * 1.15078);   // knots -> mph
+    const col = sp >= 23 ? '#dc2626' : sp >= 17 ? '#ea580c' : INK;                       // same as 20 / 15 kt
     o.push(`<path d="M${WC.x0 - 8} ${f(y)}h4" stroke="${EDGE}"/>`);
     o.push(`<g transform="translate(${WC.x0 + 6} ${f(y)}) rotate(${(dir + 180) % 360})"><path d="M0 5.5V-5.5M-3.2 -2.2L0 -5.5L3.2 -2.2" fill="none" stroke="${col}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>`);
-    o.push(`<text x="${WC.x0 + 16}" y="${f(y + 4)}" font-size="11.5" font-weight="650" fill="${col}">${sp}<tspan font-size="9.5" font-weight="500" fill="${MUTED}" dx="2">kt</tspan><tspan font-size="10.5" font-weight="500" fill="${MUTED}" dx="6">${String(dir).padStart(3, '0')}°</tspan></text>`);
+    o.push(`<text x="${WC.x0 + 16}" y="${f(y + 4)}" font-size="11.5" font-weight="650" fill="${col}">${sp}<tspan font-size="9.5" font-weight="500" fill="${MUTED}" dx="2">mph</tspan><tspan font-size="10.5" font-weight="500" fill="${MUTED}" dx="5">${String(dir).padStart(3, '0')}°</tspan></text>`);
   }
   o.push('</svg>');
   return { svg: o.join('\n'), analysis: A };
