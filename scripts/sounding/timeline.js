@@ -80,14 +80,13 @@ function timelineSVG({ now = new Date(), shown = null, fetched = null } = {}) {
       <path d="M126 78 v-7" stroke="#8a96a5"/><path d="M126 71 l6 1.8 -6 1.8 z" fill="#ef4444"/>
       <rect x="0" y="134" width="136" height="12" fill="#9aa3ad"/>
       <path d="M6 140h10M26 140h10M46 140h10M66 140h10M86 140h10M106 140h10M126 140h10" stroke="#fff" stroke-width="1.4"/>
-      ${jet(56, 124, 0.95, '#7b8794')}
-      <g class="${flying ? 'tl-rise' : 'tl-bob'}">
+      <g transform="translate(22 0)"><g class="${flying ? 'tl-rise' : 'tl-bob'}">
         <path d="M45 68 Q43.5 80 46 92" fill="none" stroke="#64748b" stroke-width="0.8"/>
         <ellipse cx="45" cy="55" rx="10.5" ry="13" fill="#fff" stroke="#cbd5e1"/>
         <ellipse cx="41" cy="50" rx="3" ry="4" fill="#f1f5f9"/>
         <rect x="42.5" y="92" width="6" height="4" rx="1" fill="${ACC}"/>
-      </g>
-      <g transform="translate(45 132) scale(0.6) translate(-69 -142)">
+      </g></g>
+      <g transform="translate(67 132) scale(0.6) translate(-69 -142)">
         ${marine(52, false)}
         ${marine(86, true)}
       </g>
