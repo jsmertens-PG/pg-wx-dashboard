@@ -1,0 +1,39 @@
+name: Update sounding
+
+on:
+  schedule:
+    - cron: "47 1,2,13,14 * * *"   # after the 00Z and 12Z NKX launches (~5:47 pm / 5:47 am PST, plus a retry an hour later)
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sounding
+  cancel-in-progress: false
+
+jobs:
+  sounding:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Fetch NKX sounding
+        run: python -u scripts/sounding/fetch_sounding.py
+      - name: Render plot
+        run: node scripts/sounding/render_sounding.js
+      - name: Commit data
+        run: |
+          git config user.name "forecast-bot"
+          git config user.email "forecast-bot@users.noreply.github.com"
+          git add data/sounding
+          git diff --cached --quiet && exit 0
+          git commit -m "Sounding update $(date -u +%Y-%m-%dT%H:%MZ)"
+          for i in 1 2 3; do
+            git pull --rebase -X theirs origin main && git push && exit 0
+            sleep 5
+          done
+          exit 1
