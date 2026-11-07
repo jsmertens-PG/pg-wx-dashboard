@@ -1338,7 +1338,7 @@ function detail(d, s, inline) {
   const wcell = (w) => {
     if (!w || w[1] == null) return `<span class="wc"></span>`;
     const g = w[2] != null && w[2] > w[1] ? w[2] : null;
-    const cls = w[1] >= 20 || (g || 0) >= 20 ? " hi" : w[1] < 6 ? " lo" : "";
+    const cls = w[1] >= 20 || (g || 0) >= 20 ? " hi" : w[1] < 4 ? " lo" : "";
     return `<span class="wc${cls}" title="${w[1]}${g ? "g" + g : ""} mph">${w[0] != null ? `<i style="transform:rotate(${(w[0] + 180) % 360}deg)">↑</i>` : ""}<b>${w[1]}${g ? `<small>g${g}</small>` : ""}</b></span>`;
   };
   const modelTable = hm ? `<div class="hwt"><span></span>${HH.map((h) => `<span class="hh">${hlab(h)}</span>`).join("")}<span class="ml">score</span>${HH.map((h) => {

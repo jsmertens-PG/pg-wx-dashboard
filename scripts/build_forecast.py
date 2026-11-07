@@ -856,10 +856,10 @@ def score_hour(site, hr, i, levels, elev_m):
         elif lw_mph > hi:
             q *= 0.5; codes.append("strong"); launch = "strong"
         elif lw_mph < site.get("min_mph", lo) and site["kind"] == "ridge":
-            # Torrey: under 6 mph it's usually not soarable
+            # Torrey: under min_mph (4) it's usually not soarable
             q *= 0.1; codes.append("light"); launch = "too light"
         elif lw_mph < lo and site["kind"] == "ridge":
-            # 6-8 mph: marginal (the real wind is often a bit more than forecast)
+            # min_mph to the low end of the range (4-6 mph): marginal (the real wind is often a bit more than forecast)
             q *= 0.6; launch = "light"
         elif lw_mph < lo:
             launch = "light"
