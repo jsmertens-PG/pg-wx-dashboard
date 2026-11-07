@@ -18,7 +18,7 @@ const ALIASES = {
   temp: ['TEMP', 'TMPC'],
   dwpt: ['DWPT', 'DWPC', 'DEWPT'],
   drct: ['DRCT', 'WDIR', 'DIR'],
-  sknt: ['SKNT', 'WSPD', 'SPEED_KTS', 'SPEED'],
+  sknt: ['SKNT', 'WSPD', 'SPEED_KTS', 'SPEED', 'SPED'],
 };
 function mapCols(names) {
   const up = names.map(n => n.trim().toUpperCase());
@@ -74,6 +74,15 @@ function parseSounding(text) {
       const re = /\S+/g; const cols = []; let mm;
       while ((mm = re.exec(H))) cols.push({ name: mm[0], end: mm.index + mm[0].length });
       const c = mapCols(cols.map(x => x.name));
+      // wind units from the units line under the header (UWyo new site uses m/s)
+      let spdMul = 1;
+      const U = lines[hi + 1] || '';
+      if (c.sknt >= 0) {
+        const st = c.sknt === 0 ? 0 : cols[c.sknt - 1].end;
+        const u = U.slice(st, cols[c.sknt].end + 2).trim().toLowerCase();
+        if (u.startsWith('m/s')) spdMul = 1.94384;
+        else if (u.startsWith('km/h')) spdMul = 0.539957;
+      }
       for (const L of lines.slice(hi + 1)) {
         if (!/^\s*-?\d/.test(L)) { if (rows.length && /^\s*$|<|Station/i.test(L)) break; continue; }
         const get = i => {
@@ -81,7 +90,7 @@ function parseSounding(text) {
           const start = i === 0 ? 0 : cols[i - 1].end;
           return num(L.slice(start, cols[i].end));
         };
-        rows.push({ p: get(c.pres), h: get(c.hght), t: get(c.temp), td: get(c.dwpt), dir: get(c.drct), spd: get(c.sknt) });
+        rows.push({ p: get(c.pres), h: get(c.hght), t: get(c.temp), td: get(c.dwpt), dir: get(c.drct), spd: get(c.sknt) * spdMul });
       }
     }
     const m = text.match(/(\d{5})?\s*([A-Z]{3,4})\s+.*?Observations at\s+(\d\d)Z\s+(\d\d)\s+(\w{3})\s+(\d{4})/);
@@ -158,8 +167,9 @@ function analyze(lv, opts = {}) {
     thermals.push({ ts: Ts, z0, top, ttop: Ts - lapseAdiabat * (top - z0) });
   }
   // lapse rate between levels (thinned to >= ~0.35 kft spacing)
+  const dense = lv.filter(l => l.z < 18).length > 150;
   const thin = [lv[0]];
-  for (const l of lv) if (l.z - thin[thin.length - 1].z >= 0.25) thin.push(l);
+  for (const l of lv) if (l.z - thin[thin.length - 1].z >= (dense ? 0.5 : 0.25)) thin.push(l);
   const lapse = [];
   for (let i = 1; i < thin.length; i++) {
     const a = thin[i - 1], b = thin[i];
@@ -176,7 +186,9 @@ function renderSVG(snd, opts = {}) {
   const W = 800, Hh = 600, top = 38, bot = 558, ZMAX = opts.zmax || 18;
   const P1 = { x0: 45, x1: 340, lo: -20, hi: 100 };
   const P2 = { x0: 377, x1: 493, lo: -2, hi: 6 };
-  const P3 = { x0: 576, x1: 783, lo: 0, hi: 30 };
+  const maxSpd = Math.max(0, ...lv.filter(l => l.z <= ZMAX && isFinite(l.spd)).map(l => l.spd));
+  const P3 = { x0: 576, x1: 783, lo: 0, hi: Math.max(30, Math.ceil(maxSpd / 10) * 10) };
+  const p3ticks = P3.hi <= 30 ? [0, 5, 10, 15, 20, 25, 30] : Array.from({ length: P3.hi / 10 + 1 }, (_, i) => i * 10);
   const Y = z => bot - (z / ZMAX) * (bot - top);
   const X = (P, v) => P.x0 + (v - P.lo) / (P.hi - P.lo) * (P.x1 - P.x0);
   const font = 'font-family="Arial, Helvetica, sans-serif"';
@@ -213,7 +225,7 @@ function renderSVG(snd, opts = {}) {
   };
   frame(P1, [-20, 0, 20, 40, 60, 80, 100], 'deg F', true);
   frame(P2, [-2, 0, 2, 4, 6], 'deg F / 1000 ft', false);
-  frame(P3, [0, 5, 10, 15, 20, 25, 30], 'wind speed (knt)', false);
+  frame(P3, p3ticks, 'wind speed (knt)', false);
   o.push(`<text x="${(P1.x0 + P1.x1) / 2}" y="${top - 12}" text-anchor="middle" font-style="italic" font-size="13">${snd.title}</text>`);
   o.push(`<text x="${(P2.x0 + P2.x1) / 2}" y="${top - 12}" text-anchor="middle" font-style="italic" font-size="13">Lapse Rate</text>`);
   o.push(`<text x="${(P3.x0 + P3.x1) / 2}" y="${top - 12}" text-anchor="middle" font-style="italic" font-size="13">Wind Profile</text>`);
@@ -243,13 +255,15 @@ function renderSVG(snd, opts = {}) {
   o.push(poly(A.lapse.filter(p => p.z <= ZMAX + 1).map(p => [X(P2, p.v), Y(p.z)]), RED, 'c1'));
 
   // panel 3: wind
-  const W3 = L.filter(l => isFinite(l.spd));
+  const dense = L.length > 150;
+  let W3 = L.filter(l => isFinite(l.spd));
+  if (dense) { const t = [W3[0]]; for (const l of W3) if (l.z - t[t.length - 1].z >= 0.2) t.push(l); W3 = t; }
   o.push(poly(W3.map(l => [X(P3, l.spd), Y(l.z)]), RED, 'c2'));
   let lastY = 1e9;
   for (const l of W3) {
     if (!isFinite(l.dir) || l.z > ZMAX - 0.3) continue;
     const y = Y(l.z);
-    if (lastY - y < 15) continue;
+    if (lastY - y < (dense ? 22 : 15)) continue;
     lastY = y;
     o.push(`<text x="${P3.x0 + 10}" y="${y + 4}" font-style="italic">${Math.round(l.dir)} @ ${Math.round(l.spd)}</text>`);
   }
