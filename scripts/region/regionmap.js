@@ -26,7 +26,7 @@ const ROADS = [
   ['5', [[32.54, -117.04], [32.62, -117.09], [32.70, -117.15], [32.76, -117.20], [32.86, -117.22], [32.95, -117.24], [33.05, -117.28], [33.15, -117.33], [33.21, -117.37], [33.30, -117.47], [33.42, -117.61], [33.50, -117.67], [33.62, -117.71], [33.75, -117.82]], 0.55],
   ['15', [[32.70, -117.11], [32.82, -117.11], [32.95, -117.10], [33.02, -117.08], [33.12, -117.09], [33.25, -117.15], [33.40, -117.15], [33.49, -117.15], [33.58, -117.24], [33.66, -117.30], [33.75, -117.38], [33.90, -117.48], [34.06, -117.50], [34.18, -117.42], [34.30, -117.47], [34.40, -117.40]], 0.35],
   ['10', [[34.07, -117.85], [34.07, -117.60], [34.06, -117.40], [34.05, -117.20], [33.99, -117.00], [33.93, -116.80], [33.90, -116.50], [33.80, -116.20], [33.75, -116.0]], 0.5],
-  ['8', [[32.76, -117.21], [32.77, -117.10], [32.79, -116.96], [32.84, -116.77], [32.85, -116.62], [32.84, -116.45], [32.75, -116.25], [32.70, -116.0]], 0.5],
+  ['8', [[32.765, -117.21], [32.77, -117.10], [32.79, -116.96], [32.84, -116.77], [32.835, -116.65], [32.825, -116.53], [32.79, -116.47], [32.744, -116.423], [32.70, -116.405], [32.675, -116.33], [32.665, -116.27], [32.645, -116.21], [32.66, -116.12], [32.70, -116.05], [32.74, -115.99]], 0.28],
   ['805', [[32.56, -117.05], [32.70, -117.10], [32.80, -117.15], [32.90, -117.22]], 0.3],
   ['215', [[33.58, -117.24], [33.68, -117.21], [33.78, -117.23], [33.95, -117.28], [34.07, -117.29], [34.15, -117.33], [34.20, -117.40]], 0.6],
   ['78', [[33.20, -117.36], [33.14, -117.20], [33.12, -117.09], [33.05, -116.88], [33.08, -116.60], [33.10, -116.40], [33.15, -116.10]], 0.25],
@@ -55,7 +55,7 @@ const TOWNS = [['San Diego', 32.72, -117.16, 3], ['Tijuana', 32.52, -117.03, 2],
   ['Lake Elsinore', 33.68, -117.33, 1], ['Riverside', 33.95, -117.40, 2], ['San Bernardino', 34.11, -117.29, 2], ['Lake Arrowhead', 34.25, -117.19, 1], ['Hemet', 33.75, -116.97, 2], ['Borrego Springs', 33.26, -116.37, 1], ['Alpine', 32.84, -116.77, 1]];
 
 const SITES = [['Torrey Pines', 32.890, -117.252], ['Little Black', 32.988, -117.122], ['Blossom', 32.877, -116.848], ['Otay', 32.574, -116.894],
-  ["Whale's V", 32.645, -116.887, 'left'], ['Laguna', 32.934, -116.482], ['Horse / Fuzz', 32.775, -116.477], ['Elsinore', 33.630, -117.371], ['Soboba', 33.822, -116.959], ['Marshall', 34.210, -117.303, 'left']];
+  ["Whale's V", 32.645, -116.887, 'left'], ['Laguna', 32.934, -116.482], ['Horse / Fuzz', 32.744, -116.423], ['Elsinore', 33.630, -117.371], ['Soboba', 33.822, -116.959], ['Marshall', 34.210, -117.303, 'left']];
 
 const SUMMITS = [['Palomar Mtn', 33.363, -116.836, 6140], ['Hot Springs Mtn', 33.312, -116.582, 6533], ['Cuyamaca Pk', 32.947, -116.606, 6512],
     ['Laguna Mtns', 32.867, -116.422, 6271], ['El Cajon Mtn', 32.902, -116.807, 3675], ['Otay Mtn', 32.601, -116.846, 3566],
@@ -113,13 +113,23 @@ function miniMapSVG(D, day, radar) {
   for (const rg of D.regions) {
     const dd = rg.days.find(x => x.date === (D.regions[0].days[day] || {}).date) || rg.days[Math.min(day, rg.days.length - 1)];
     const v = regionRate(rg, dd, radar);
-    o.push(`<polygon points="${rg.poly.map(P).join(' ')}" fill="${v != null ? scoreCol(v) : '#cbd5e1'}" fill-opacity=".9" stroke="#fff" stroke-width="10" stroke-linejoin="round"/>`);
+    o.push(`<polygon points="${rg.poly.map(P).join(' ')}" fill="${v != null ? scoreCol(v) : '#cbd5e1'}" stroke="#fff" stroke-width="10" stroke-linejoin="round"/>`);
   }
+  // mountains, louder than on the main map so they read at thumbnail size
+  const rr = rng(11);
+  o.push(`<defs><filter id="mmrel" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="9"/></filter></defs><g fill="#2b2418" opacity=".38" filter="url(#mmrel)">`);
+  for (const [spine, size, n] of RANGES) for (let i = 0; i <= n * 2; i++) {
+    const t = i / (n * 2), seg = t * (spine.length - 1), k = Math.min(spine.length - 2, Math.floor(seg)), u = seg - k;
+    const la = spine[k][0] + (spine[k + 1][0] - spine[k][0]) * u, lo = spine[k][1] + (spine[k + 1][1] - spine[k][1]) * u;
+    o.push(`<circle cx="${fx(lo).toFixed(1)}" cy="${fy(la).toFixed(1)}" r="${(size * (1.6 + rr() * 0.5)).toFixed(1)}"/>`);
+  }
+  o.push(`</g>`);
   o.push('</svg>');
   return o.join('');
 }
 
-function mapSVG(D, day = 0, radar = null) {
+function mapSVG(D, day = 0, radar = null, opts = {}) {
+  const MTN = opts.mtn || 'relief';
   BOXES.length = 0;
   const { W, H } = FM, f = v => v.toFixed(1), r = rng(7);
   const LAND = '#f5f4f0', WATER = '#cfe2ee', SHORE = '#9dbdd2', INK = '#1f2937', MUTED = '#6b7280', ROAD = '#e2b36a';
@@ -135,8 +145,8 @@ function mapSVG(D, day = 0, radar = null) {
   o.push(`<rect width="${W}" height="${H}" fill="${LAND}"/>`);
   // desert tint east of the crest
   o.push(`<polygon points="${[[34.46, -116.62], [34.46, -116.0], [32.4, -116.0], [32.4, -116.30], [32.75, -116.33], [33.0, -116.40], [33.25, -116.45], [33.45, -116.50], [33.75, -116.62]].map(P).join(' ')}" fill="#f1e9d8" filter="url(#relief)"/>`);
-  // soft relief along the ranges
-  o.push(`<g fill="#d9d6cc" opacity=".75" filter="url(#relief)">`);
+  // soft relief along the ranges (relief style)
+  o.push(`<g fill="#d9d6cc" opacity="${MTN === 'relief' ? .75 : .35}" filter="url(#relief)">`);
   for (const [spine, size, n] of RANGES) {
     for (let i = 0; i <= n * 2; i++) {
       const t = i / (n * 2), seg = t * (spine.length - 1), k = Math.min(spine.length - 2, Math.floor(seg)), u = seg - k;
@@ -161,25 +171,40 @@ function mapSVG(D, day = 0, radar = null) {
   }
   o.push(`</g>`);
   for (const rg of regs) o.push(`<polygon points="${rg.poly.map(P).join(' ')}" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-opacity=".9"/>`);
-  // mountains over the colours: a darker relief tint along every range, then the range names
+  // mountains over the colours, in the chosen style
+  const along = (spine, n, cb) => { for (let i = 0; i <= n; i++) {
+    const t = i / n, seg = t * (spine.length - 1), k = Math.min(spine.length - 2, Math.floor(seg)), u = seg - k;
+    cb(spine[k][0] + (spine[k + 1][0] - spine[k][0]) * u, spine[k][1] + (spine[k + 1][1] - spine[k][1]) * u, k, i);
+  } };
   const rr = rng(11);
-  o.push(`<g fill="#4a3f2c" opacity=".17" filter="url(#relief)">`);
-  for (const [spine, size, n] of RANGES) {
-    for (let i = 0; i <= n * 2; i++) {
-      const t = i / (n * 2), seg = t * (spine.length - 1), k = Math.min(spine.length - 2, Math.floor(seg)), u = seg - k;
-      const la = spine[k][0] + (spine[k + 1][0] - spine[k][0]) * u, lo = spine[k][1] + (spine[k + 1][1] - spine[k][1]) * u;
-      o.push(`<circle cx="${f(fx(lo))}" cy="${f(fy(la))}" r="${f(size * (1.25 + rr() * 0.5))}"/>`);
+  if (MTN === 'relief') {
+    o.push(`<g fill="#4a3f2c" opacity=".17" filter="url(#relief)">`);
+    for (const [spine, size, n] of RANGES) along(spine, n * 2, (la, lo) => o.push(`<circle cx="${f(fx(lo))}" cy="${f(fy(la))}" r="${f(size * (1.25 + rr() * 0.5))}"/>`));
+    o.push(`</g>`);
+  } else if (MTN === 'peaks') {
+    // flat two-tone peak symbols: lit left face, shaded right face
+    for (const [spine, size, n] of RANGES) along(spine, Math.round(n * 1.6), (la, lo) => {
+      const x = fx(lo) + (rr() - 0.5) * size * 0.9, y = fy(la) + (rr() - 0.5) * size * 0.9, h = size * (0.75 + rr() * 0.45), w = h * 0.85;
+      o.push(`<path d="M${f(x - w)} ${f(y)} L${f(x)} ${f(y - h)} L${f(x)} ${f(y)} Z" fill="#8c8270"/><path d="M${f(x)} ${f(y - h)} L${f(x + w)} ${f(y)} L${f(x)} ${f(y)} Z" fill="#5b5141"/>`);
+    });
+  } else if (MTN === 'contours') {
+    // stylised elevation rings: nested outlines around each range spine
+    o.push(`<defs>` + RANGES.map(([spine, size], ri) => [3.4, 2.5, 1.6, 0.8].map((m, li) => {
+      const d = 'M' + spine.map(P).join(' L'), w = size * m * 2;
+      return `<mask id="ct${ri}_${li}" maskUnits="userSpaceOnUse" x="0" y="0" width="${W}" height="${H}"><rect width="${W}" height="${H}" fill="#000"/><path d="${d}" stroke="#fff" stroke-width="${f(w)}" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="${d}" stroke="#000" stroke-width="${f(w - 2.4)}" stroke-linecap="round" stroke-linejoin="round" fill="none"/></mask>`;
+    }).join('')).join('') + `</defs>`);
+    RANGES.forEach((r0, ri) => [0, 1, 2, 3].forEach(li => o.push(`<rect width="${W}" height="${H}" fill="#5b5141" opacity="${(0.28 + li * 0.14).toFixed(2)}" mask="url(#ct${ri}_${li})"/>`)));
+  } else if (MTN === 'ridges') {
+    // crest line with short hachure ticks down both slopes
+    for (const [spine, size, n] of RANGES) {
+      const pts = spine.map(([la, lo]) => [fx(lo), fy(la)]);
+      o.push(`<polyline points="${pts.map(p => p.map(f).join(',')).join(' ')}" fill="none" stroke="#5b5141" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>`);
+      along(spine, n * 4, (la, lo, k) => {
+        const [x1, y1] = pts[k], [x2, y2] = pts[k + 1], L = Math.hypot(x2 - x1, y2 - y1) || 1, nx = -(y2 - y1) / L, ny = (x2 - x1) / L;
+        const x = fx(lo), y = fy(la), len = size * (0.55 + rr() * 0.35);
+        o.push(`<path d="M${f(x + nx * 1.5)} ${f(y + ny * 1.5)} l${f(nx * len)} ${f(ny * len)} M${f(x - nx * 1.5)} ${f(y - ny * 1.5)} l${f(-nx * len)} ${f(-ny * len)}" stroke="#5b5141" stroke-width="1.1" stroke-linecap="round" opacity=".7"/>`);
+      });
     }
-  }
-  o.push(`</g>`);
-  // priority: launches, then towns, then route labels, then summit labels (lower ones are skipped if they would touch)
-  for (const [n, la, lo, side] of SITES) {
-    const x = fx(lo), y = fy(la), lw = tw(n, 11.5, 0.6) + 12, px = side === 'left' ? x - 12 - lw : x + 12;
-    box('site', px + lw / 2, y + 8, lw, 17, 0, 'middle'); box('site', x, y + 2, 22, 26, 0, 'middle');
-  }
-  for (const [n, la, lo, sz] of TOWNS) {
-    const x = fx(lo), y = fy(la), left = x > W - 130, fs = 10 + sz;
-    box('town', left ? x - 7 : x + 7, y + 4, tw(n, fs), fs, 0, left ? 'end' : 'start'); box('town', x, y + 3, 9, 9, 0, 'middle');
   }
   // roads: white casing + warm line, small grey route labels
   for (const [num, pts, at] of ROADS) {
