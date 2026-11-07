@@ -1,8 +1,9 @@
 {
+  "id": "./",
   "name": "SD Flying Radar",
   "short_name": "SD Radar",
-  "start_url": "./",
-  "scope": "./",
+  "start_url": "./index.html",
+  "scope": "./index.html",
   "display": "standalone",
   "background_color": "#f3e5d8",
   "theme_color": "#ffffff",
