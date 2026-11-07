@@ -226,18 +226,22 @@ function renderSVG(snd, opts = {}) {
   const lv = snd.levels;
   const A = analyze(lv, opts);
   const FC = opts.forecast && isFinite(opts.forecast.median_f) ? opts.forecast : null;
-  const W = 800, Hh = 600, top = 84, bot = 546;
+  const W = 800, Hh = 880, top = 84, bot = 826;
   const dense = lv.filter(l => l.z < 18).length > 150;
   const z0 = A.z0, G = 5.4;
   const lo = FC ? Math.min(FC.p10_f, FC.median_f) : lv[0].t, hi = FC ? Math.max(FC.p90_f, FC.median_f) : lv[0].t + 10;
   // ---- zoom to what matters for flying ----
   const tHiTop = A.topFor(hi);
   const ZMAX = Math.min(18, Math.max(8, Math.ceil(Math.max(A.cb ? A.cb.z : 0, tHiTop, ...A.thermals.map(t => Math.min(t.top, 18))) + 2.5)));
-  const tAtTop = interp(lv, 't', Math.min(ZMAX, lv[lv.length - 1].z));
-  const XLO = Math.floor((Math.min(tAtTop, A.cb ? A.cb.t : 99) - 2) / 10) * 10;
+  // keep Topaflyers proportions (same °F-per-1000-ft aspect, so adiabats keep their angle);
+  // the panel width then decides how many °F fit, anchored on the warm side
+  const ASPECT = (2.558 / 28.83);                    // original: px per °F ÷ px per 1000 ft
+  const pxPerKft = (bot - top) / ZMAX, pxPerF = ASPECT * pxPerKft;
+  const P1 = { x0: 52, x1: 600 };
   const XHI = Math.ceil((Math.max(...A.thermals.map(t => t.ts), hi, lv[0].t) + 3) / 10) * 10;
-  const P1 = { x0: 46, x1: 636, lo: XLO, hi: XHI };
-  const WC = { x0: 714, x1: 790 };   // wind text column
+  const XLO = XHI - (P1.x1 - P1.x0) / pxPerF;
+  P1.lo = XLO; P1.hi = XHI;
+  const WC = { x0: 690, x1: 790 };   // wind text column
   const Y = z => bot - (z / ZMAX) * (bot - top);
   const X = v => P1.x0 + (v - P1.lo) / (P1.hi - P1.lo) * (P1.x1 - P1.x0);
   const f = v => v.toFixed(1);
@@ -283,8 +287,8 @@ function renderSVG(snd, opts = {}) {
   o.push(`<rect x="${P1.x0}" y="${top}" width="${P1.x1 - P1.x0}" height="${bot - top}" rx="6" fill="${PANEL}" stroke="${EDGE}"/>`);
   const zstep = ZMAX <= 12 ? 1 : 2;
   for (let z = zstep; z < ZMAX; z += zstep) o.push(`<path d="M${P1.x0} ${f(Y(z))}H${P1.x1}" stroke="${GRID}"/>`);
-  for (let t = XLO + 10; t < XHI; t += 10) o.push(`<path d="M${f(X(t))} ${top}V${bot}" stroke="${GRID}"/>`);
-  for (let t = XLO; t <= XHI; t += 10) o.push(`<text x="${f(X(t))}" y="${bot + 30}" text-anchor="middle">${t}</text>`);
+  for (let t = Math.ceil(XLO / 10) * 10; t < XHI; t += 10) if (t > XLO) o.push(`<path d="M${f(X(t))} ${top}V${bot}" stroke="${GRID}"/>`);
+  for (let t = Math.ceil(XLO / 10) * 10; t <= XHI; t += 10) o.push(`<text x="${f(X(t))}" y="${bot + 30}" text-anchor="middle">${t}</text>`);
   for (let z = 0; z <= ZMAX; z += zstep) o.push(`<text x="${P1.x0 - 8}" y="${f(Y(z) + 4)}" text-anchor="end">${z}${z ? 'k' : ''}</text>`);
   o.push(`<text x="${f((P1.x0 + P1.x1) / 2)}" y="${bot + 47}" text-anchor="middle">Temperature (°F)</text>`);
   o.push(`<text x="13" y="${f((top + bot) / 2)}" transform="rotate(-90 13 ${f((top + bot) / 2)})" text-anchor="middle">Altitude MSL (ft)</text>`);
@@ -331,9 +335,9 @@ function renderSVG(snd, opts = {}) {
   const used = [];
   for (const [t, bold] of strip) {
     const x = X(t);
-    if (x < P1.x0 + 8 || x > P1.x1 - 8 || used.some(u => Math.abs(u - x) < 22)) continue;
+    if (x < P1.x0 + 8 || x > P1.x1 - 8 || used.some(u => Math.abs(u - x) < 19)) continue;
     used.push(x);
-    o.push(`<text x="${f(x)}" y="${bot + 14}" text-anchor="middle" font-size="${bold ? 12 : 10.5}" font-weight="${bold ? 800 : 600}" fill="${bold ? FCOL : '#d08a00'}">${Math.round(t)}°</text>`);
+    o.push(`<text x="${f(x)}" y="${bot + 14}" text-anchor="middle" font-size="${bold ? 12 : 10.5}" font-weight="${bold ? 800 : 600}" fill="${bold ? FCOL : '#d08a00'}">${Math.round(t)}</text>`);
   }
   // right-axis tags, nudged apart
   tags.sort((a, b) => b[0] - a[0]);
