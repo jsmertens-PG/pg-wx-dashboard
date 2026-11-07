@@ -70,6 +70,9 @@ const LANDMARKS = [
   ['town', 'Temecula', 33.49, -117.15], ['town', 'Hemet', 33.75, -116.97], ['town', 'Borrego Springs', 33.26, -116.37],
   ['town', 'Tijuana', 32.52, -117.03],
 ];
+// where each region's label sits (kept clear of the launches and towns)
+const LABEL_AT = { coast: [32.97, -117.40], north: [33.30, -117.13], east: [32.98, -116.76], south: [32.69, -116.80],
+  mountains: [33.20, -116.68], desert: [33.02, -116.22], inland_empire: [33.88, -117.26] };
 let D = null, day = 0, graphic = true, openR = null;
 try { graphic = localStorage.getItem('region_view') !== 'text'; } catch (e) {}
 const map = L.map('map', { zoomControl: true, attributionControl: true }).setView([33.1, -116.85], 9);
@@ -95,7 +98,7 @@ function draw() {
     poly.on('click', () => openRegion(r));
     poly.on('mouseover', () => poly.setStyle({ weight: 3, color: '#111827' }));
     poly.on('mouseout', () => poly.setStyle({ weight: 2, color: '#ffffff' }));
-    const c = r.points.reduce((a, p) => [a[0] + p.lat / r.points.length, a[1] + p.lon / r.points.length], [0, 0]);
+    const c = LABEL_AT[r.id] || r.points.reduce((a, p) => [a[0] + p.lat / r.points.length, a[1] + p.lon / r.points.length], [0, 0]);
     const txt = s ? `${s.climb.toFixed(1)} m/s · ${(s.top_ft / 1000).toFixed(1)}k${s.cu && s.base_ft ? ' · cu' : ''}` : 'no thermals';
     const lab = L.marker(c, { pane: 'labels', interactive: false, icon: L.divIcon({ className: '', iconSize: [0, 0],
       html: `<div class="rlab" style="transform:translate(-50%,-50%)"><b>${r.name}</b><span>${txt}</span></div>` }) }).addTo(map);
