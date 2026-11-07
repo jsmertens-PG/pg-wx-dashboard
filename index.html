@@ -855,6 +855,18 @@ html body details.day:not(#story) > summary.hd .sum .sc.sc.sc, html body details
 /* wind cells everywhere: speed and gust always on one line ("10g15"), shrinking to fit the cell */
 .hwt .wc b, .hstrip .hw b, .srow .wtab .hwt .wc b { display: block; white-space: nowrap; text-align: center; font-size: min(.6rem, 2.75vw); letter-spacing: -.06em; overflow: hidden; }
 .hwt .wc b small, .hstrip .hw b small, .srow .wtab .hwt .wc b small { display: inline !important; font-size: .78em; margin-left: .5px; }
+
+/* third level: compact, to sit with the small thermal panel */
+html body .det .dsec { gap: 4px; }
+html body .det .dsec + .dsec { margin-top: 4px; }
+html body .det .dh { font-size: .5rem !important; letter-spacing: .08em; }
+html body .det .factors { gap: 3px; }
+html body .det .factor { grid-template-columns: 66px minmax(0, 1fr) 74px; gap: 0 8px; }
+html body .det .factor .fk, html body .det .factor .fv { font-size: .6rem; }
+html body .det .factor .fs { font-size: .54rem; margin-top: -1px; }
+html body .det .factor .fbar { height: 4px; }
+html body .det .steps { gap: 3px 4px; }
+html body .det .steps .st { height: 15px; padding: 0 5px; font-size: .48rem !important; }
 </style>
 </head>
 <body>
