@@ -107,7 +107,8 @@ document.getElementById('tog').onclick = () => { graphic = !graphic; try { local
     const ref = D.regions.find(r => r.days.length === n);
     document.getElementById('days').innerHTML = ref.days.map((d, i) => {
       const dt = new Date(d.date + 'T12:00:00');
-      return `<button type="button">${d.label}<b>${dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} · ${d.model}</b></button>`;
+      const ms = d.models || []; const short = ms.includes('HRRR') ? 'HRRR·RRFS' : ms.includes('RRFS') ? 'RRFS+global' : 'GFS·EC·ICON';
+      return `<button type="button">${d.label}<b>${dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} · ${short}</b></button>`;
     }).join('');
     document.querySelectorAll('#days button').forEach((b, i) => b.onclick = () => { day = i; draw(); });
     draw();
