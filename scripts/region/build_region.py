@@ -52,8 +52,94 @@ SURFACE = ["temperature_2m", "dew_point_2m", "precipitation", "precipitation_pro
            "wind_speed_10m", "wind_direction_10m", "wind_gusts_10m", "boundary_layer_height"]
 LEVEL_VARS = [f"{v}_{p}hPa" for p in LEVELS for v in ("temperature", "geopotential_height")] + \
              [f"{v}_{p}hPa" for p in (850, 700) for v in ("wind_speed", "wind_direction")]
-# short range: HRRR (today, tomorrow); then GFS
-MODELS = [("HRRR", ["ncep_hrrr_conus", "gfs_hrrr"], 2), ("GFS", ["gfs_seamless", "gfs_global", "gfs025"], 4)]
+# same models and logic as the radar (scripts/build_forecast.py): HRRR + RRFS where they reach, then the
+# global models; per day: HRRR x2 + RRFS x1; RRFS-led days RRFS x2 + globals together x1; else median of globals
+MODELS = [("HRRR", ["ncep_hrrr_conus", "gfs_hrrr"], 3), ("RRFS", ["ncep_rrfs_conus", "rrfs_conus", "ncep_rrfs"], 4),
+          ("GFS", ["gfs_global", "ncep_gfs025", "gfs025"], 4), ("ECMWF", ["ecmwf_ifs025", "ecmwf_ifs"], 4),
+          ("ICON", ["icon_global", "icon_seamless"], 4)]
+HIRES, GLOBAL = ("HRRR", "RRFS"), ("ECMWF", "GFS", "ICON")
+HIRES_W = {"HRRR": 2, "RRFS": 1}
+MODEL_WEIGHT = {"HRRR": 3, "RRFS": 3, "ECMWF": 1, "GFS": 1, "ICON": 1}
+
+
+def rating_models(names):
+    names = list(names)
+    if "HRRR" in names:
+        return [n for n in names if n in HIRES]
+    if "RRFS" in names:
+        return [n for n in names if n == "RRFS" or n in GLOBAL]
+    g = [n for n in names if n in GLOBAL]
+    return g or names
+
+
+def model_weight(name, names):
+    names = list(names)
+    if "HRRR" in names:
+        return HIRES_W.get(name, 1)
+    if "RRFS" in names:
+        n_glob = sum(1 for n in names if n in GLOBAL)
+        return 2.0 if name == "RRFS" else 1.0 / max(1, n_glob)
+    return MODEL_WEIGHT.get(name, 1)
+
+
+def wcombine(pairs, mean_mode):
+    """pairs [(value, weight)] -> weighted mean (HRRR/RRFS days) or weighted median (global-only days)."""
+    pairs = [(v, w) for v, w in pairs if v is not None]
+    if not pairs:
+        return None
+    if mean_mode:
+        return sum(v * w for v, w in pairs) / sum(w for _, w in pairs)
+    pairs.sort()
+    half, acc = sum(w for _, w in pairs) / 2, 0
+    for v, w in pairs:
+        acc += w
+        if acc >= half:
+            return v
+    return pairs[-1][0]
+
+
+def blend_hours(per_model):
+    """{model: region_hour} -> one region_hour with the radar's weights."""
+    names = rating_models([m for m, v in per_model.items() if v])
+    if not names:
+        return None
+    mean_mode = "HRRR" in names or "RRFS" in names
+    W = {m: model_weight(m, names) for m in names}
+    hs = {m: per_model[m] for m in names}
+    tot = sum(W.values())
+    num = lambda k, r=1: (lambda v: None if v is None else round(v, r) if r else round(v))(wcombine([(h[k], W[m]) for m, h in hs.items()], mean_mode))
+    def wind(k):
+        ps = [(h[k][0], h[k][1], W[m]) for m, h in hs.items() if h[k] and h[k][0] is not None and h[k][1] is not None]
+        if not ps:
+            return [None, None]
+        u = sum(w * math.sin(math.radians(d)) for d, _, w in ps); v = sum(w * math.cos(math.radians(d)) for d, _, w in ps)
+        return [round(math.degrees(math.atan2(u, v))) % 360, round(sum(sp * w for _, sp, w in ps) / sum(w for *_, w in ps))]
+    grid = {}
+    for z in set().union(*[h["grid"].keys() for h in hs.values()]):
+        cw = sum(W[m] for m, h in hs.items() if h["grid"].get(z) == "c")
+        vals = [(h["grid"][z], W[m]) for m, h in hs.items() if isinstance(h["grid"].get(z), (int, float))]
+        have = cw + sum(w for _, w in vals)
+        if have < tot / 2:
+            continue                      # most models have no thermal (or cloud) at this height
+        if cw >= have / 2:
+            grid[z] = "c"
+        else:
+            grid[z] = round(wcombine(vals, mean_mode) * 2) / 2
+    sfc = wind("sfc")
+    gust = wcombine([(h["sfc"][2], W[m]) for m, h in hs.items()], True)
+    bases = [(h["base_ft"], W[m]) for m, h in hs.items() if h["base_ft"]]
+    out = {"climb": num("climb"), "climb_max": num("climb_max"), "wstar": num("wstar", 2),
+           "top_ft": round(wcombine([(h["top_ft"], W[m]) for m, h in hs.items()], mean_mode) / 100) * 100,
+           "top_max_ft": round(wcombine([(h["top_max_ft"], W[m]) for m, h in hs.items()], mean_mode) / 100) * 100,
+           "base_ft": round(wcombine(bases, True) / 100) * 100 if bases else None,
+           "cu": num("cu", 2), "t_f": num("t_f", 0), "cloud": num("cloud", 0), "cl_mh": num("cl_mh", 0),
+           "rain_mm": num("rain_mm"), "rain_p": num("rain_p", 0), "cape": num("cape", 0),
+           "sfc": [sfc[0], sfc[1], round(gust) if gust is not None else None], "w5k": wind("w5k"), "w10k": wind("w10k"),
+           "okta": [round(wcombine([(h["okta"][i], W[m]) for m, h in hs.items()], True) or 0) for i in range(3)],
+           "grid": grid, "models": names}
+    return out
+
+
 HOURS = range(7, 20)
 
 
@@ -282,8 +368,8 @@ def summarize(hours):
             "w5k": w[len(w) // 2]["w5k"], "high_f": max(v["t_f"] for v in good.values())}
 
 
-def build_days(data, idx, today, now_local, name, by_day):
-    """Fill by_day {date: day} for the points at positions idx of a multi-point reply."""
+def build_days(data, idx, today, now_local, name, acc):
+    """acc[date][hour][model] = region_hour for the points at positions idx of a multi-point reply."""
     times = data[0]["hourly"]["time"]
     for i, t in enumerate(times):
         d, hh = t[:10], int(t[11:13])
@@ -292,15 +378,31 @@ def build_days(data, idx, today, now_local, name, by_day):
         k = (dt.date.fromisoformat(d) - today).days
         if k < 0 or k > 3 or (k == 0 and now_local.hour >= 19):   # after 7 pm today is over
             continue
-        if d in by_day and by_day[d]["model"] != name:
-            continue        # HRRR wins for the days it covers
-        if name == "HRRR" and k > 1:
-            continue
         ps = [point_hour(data[j]["hourly"], i, data[j].get("elevation") or 300) for j in idx]
         rh = region_hour(ps)
         if rh:
-            rh["score"] = score(rh)
-            by_day.setdefault(d, {"date": d, "model": name, "hours": {}})["hours"][str(hh)] = rh
+            acc.setdefault(d, {}).setdefault(str(hh), {})[name] = rh
+
+
+def blend_days(acc):
+    """Per day: the models that cover most of the flying day decide (like the radar), blended hour by hour."""
+    by_day = {}
+    for d, hours in acc.items():
+        counts = {}
+        for hm in hours.values():
+            for m in hm:
+                counts[m] = counts.get(m, 0) + 1
+        covering = [m for m, n in counts.items() if n >= 8]
+        used = rating_models(covering)
+        day = {"date": d, "model": " + ".join(m for m in ("HRRR", "RRFS", "GFS", "ECMWF", "ICON") if m in used) if used else "-",
+               "models": used, "hours": {}}
+        for hh, hm in hours.items():
+            rh = blend_hours({m: v for m, v in hm.items() if m in used})
+            if rh:
+                rh["score"] = score(rh)
+                day["hours"][hh] = rh
+        by_day[d] = day
+    return by_day
 
 
 def finish(by_day, today):
@@ -323,7 +425,7 @@ def main():
     for gid, pts in groups:
         idx[gid] = list(range(len(allpts), len(allpts) + len(pts)))
         allpts += pts
-    by = {gid: {} for gid, _ in groups}
+    acc = {gid: {} for gid, _ in groups}
     models_used, debug = {}, {}
     for name, ids, days in MODELS:
         data = None
@@ -338,7 +440,8 @@ def main():
             continue
         debug[name] = sorted(k for k, v in data[0]["hourly"].items() if any(x is not None for x in v))
         for gid, _ in groups:
-            build_days(data, idx[gid], today, now_local, name, by[gid])
+            build_days(data, idx[gid], today, now_local, name, acc[gid])
+    by = {gid: blend_days(acc[gid]) for gid, _ in groups}
     gen = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
     sd_days = finish(by["sd"], today)
     if not sd_days:
