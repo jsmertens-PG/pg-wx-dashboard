@@ -787,6 +787,10 @@ html body details.day > summary.hd .sum .sgrp, html body details.day .list .sgrp
   font-size: .58rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #98a2b3; line-height: 1; margin: 2px 0 -1px; }
 html body details.day > summary.hd .sum .sgrp::after, html body details.day .list .sgrp::after { content: ""; flex: 1; height: 1px; background: #e4e7ec; }
 html body details.day .list .sgrp { margin: 4px 2px -2px; font-size: .62rem; }
+
+/* first-layer site pills: skinnier */
+html body details.day:not(#story) > summary.hd .sum .sc.sc.sc, html body details.day:not(#story) > summary.hd .sum .sc.sc.sc.trip{min-height:21px!important;padding:0 8px!important;line-height:1.1}
+@media (min-width:700px){ html body details.day:not(#story) > summary.hd .sum .sc.sc.sc, html body details.day:not(#story) > summary.hd .sum .sc.sc.sc.trip{min-height:26px!important;padding:1px 12px!important} }
 </style>
 </head>
 <body>
