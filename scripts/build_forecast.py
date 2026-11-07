@@ -2116,8 +2116,10 @@ def build(sites, det, ens, nws, log, sample=False, sources=None, parents=None, c
                 "win": (lead.get("win") if lead else None) or s.get("window"),
                 "hwind": {str(h): v for h, v in (lead.get("hw") or {}).items()} if ridge and lead else None,
                 # the ridge site's launch wind hour by hour per model (HRRR, RRFS, ECMWF when they cover the day)
-                "hwind_m": {m: {str(h): v for h, v in (D[m].get("hw") or {}).items()}
-                            for m in ("HRRR", "RRFS", "ECMWF") if m in D and D[m].get("hw")} if ridge else None,
+                # (ECMWF from all runs, so it also shows on the HRRR/RRFS days where it doesn't rate)
+                "hwind_m": {m: {str(h): v for h, v in (cell["all"][m].get("hw") or {}).items()}
+                            for m in ("HRRR", "RRFS", "ECMWF") if m in cell["all"] and cell["all"][m].get("hw")
+                            and (m in D or m == "ECMWF")} if ridge else None,
                 "gwin": lead.get("gwin") if lead and lead.get("glass") and not ridge and (lead.get("style") not in ("convergence", "switch") or s.get("glass_off")) else None,
                 "note": note_for(s, lead_view, xc),
                 "p_fly": round(p_fly, 2), "p_xc": round(p_xc, 2),
