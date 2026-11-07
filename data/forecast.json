@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-07T07:23+00:00",
+ "generated": "2026-11-07T07:24+00:00",
  "sample": false,
  "calib": {
   "2026-11-06": {
@@ -31936,23 +31936,20 @@
  },
  "log": [
   "HRRR: ok (ncep_hrrr_conus), surface heat flux (7124 values)",
-  "HRRR: ok (ncep_hrrr_conus), surface heat flux (2466 values)",
+  "HRRR trips: using the last good run, fetched 0.1 h ago",
   "RRFS: ok (ncep_rrfs_conus), surface heat flux (8736 values)",
-  "RRFS trips: using the last good run, fetched 3.2 h ago",
-  "GFS: ok (gfs_global), surface heat flux (13728 values)",
-  "GFS: ok (gfs_global), surface heat flux (4752 values)",
-  "ECMWF: ok (ecmwf_ifs025), surface heat flux (0 values)",
-  "ECMWF: ok (ecmwf_ifs025), surface heat flux (0 values)",
-  "ICON: ok (icon_global), surface heat flux (13728 values)",
-  "ICON: ok (icon_global), surface heat flux (4752 values)",
+  "RRFS trips: using the last good run, fetched 3.3 h ago",
+  "GFS: using the last good run, fetched 0.1 h ago",
+  "ECMWF: using the last good run, fetched 0.1 h ago",
+  "ICON: using the last good run, fetched 0.1 h ago",
   "ens GFS ens: using the last good run, fetched 5.9 h ago",
   "ens ECMWF ens: using the last good run, fetched 2.6 h ago",
   "ens ICON ens: using the last good run, fetched 3.2 h ago",
   "NWS AFD: ok",
   "clouds HRRR: ok (ncep_hrrr_conus)",
   "clouds RRFS: ok (ncep_rrfs_conus)",
-  "clouds ECMWF: ok (ecmwf_ifs025)",
-  "clouds ICON: ok (icon_global)",
+  "clouds ECMWF: using the last good run, fetched 0.0 h ago",
+  "clouds ICON: using the last good run, fetched 0.0 h ago",
   "wind: GFS and ICON use ECMWF's winds where RRFS and ECMWF overlap"
  ],
  "sources": [
@@ -31963,7 +31960,7 @@
    "id": "ncep_hrrr_conus",
    "status": "ok",
    "run": "2026-11-07T05:00+00:00",
-   "fetched": "2026-11-07T07:18+00:00",
+   "fetched": "2026-11-07T07:24+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -31973,7 +31970,7 @@
    "id": "ncep_rrfs_conus",
    "status": "ok",
    "run": "2026-11-07T00:00+00:00",
-   "fetched": "2026-11-07T07:18+00:00",
+   "fetched": "2026-11-07T07:24+00:00",
    "url": "https://open-meteo.com/en/docs"
   },
   {
@@ -31984,7 +31981,8 @@
    "status": "ok",
    "run": null,
    "fetched": "2026-11-07T07:20+00:00",
-   "url": "https://open-meteo.com/en/docs"
+   "url": "https://open-meteo.com/en/docs",
+   "note": "cached, fetched 0 h ago"
   },
   {
    "name": "ECMWF",
@@ -31994,7 +31992,8 @@
    "status": "ok",
    "run": null,
    "fetched": "2026-11-07T07:21+00:00",
-   "url": "https://open-meteo.com/en/docs"
+   "url": "https://open-meteo.com/en/docs",
+   "note": "cached, fetched 0 h ago"
   },
   {
    "name": "ICON",
@@ -32004,7 +32003,8 @@
    "status": "ok",
    "run": null,
    "fetched": "2026-11-07T07:21+00:00",
-   "url": "https://open-meteo.com/en/docs"
+   "url": "https://open-meteo.com/en/docs",
+   "note": "cached, fetched 0 h ago"
   },
   {
    "name": "GFS ens",
@@ -32046,7 +32046,7 @@
    "id": "AFD SGX",
    "status": "ok",
    "run": "2026-11-07T06:35:00+00:00",
-   "fetched": "2026-11-07T07:22+00:00",
+   "fetched": "2026-11-07T07:24+00:00",
    "url": "https://forecast.weather.gov/product.php?site=SGX&issuedby=SGX&product=AFD"
   },
   {
@@ -32056,7 +32056,7 @@
    "id": "cloud_cover_mid/high",
    "status": "ok",
    "run": null,
-   "fetched": "2026-11-07T07:23+00:00",
+   "fetched": "2026-11-07T07:24+00:00",
    "url": "https://open-meteo.com/en/docs"
   }
  ],
