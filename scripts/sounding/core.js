@@ -206,7 +206,17 @@ function simplify(pts, tol) {
 
 function prettyTitle(t) {
   const m = String(t).match(/^(\w+)_(\d\d)00Z_(\d\d)_(\w{3})_(\d{4})$/);
-  return m ? { main: `${m[1].toUpperCase()} sounding`, sub: `${m[2]}Z · ${+m[3]} ${m[4]} ${m[5]}` } : { main: String(t), sub: '' };
+  if (!m) return { main: String(t), sub: '' };
+  // nominal launch time in Pacific time next to the UTC cycle, e.g. "12Z (4 am PST)"
+  let local = '';
+  try {
+    const mon = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(m[4]);
+    const d = new Date(Date.UTC(+m[5], mon, +m[3], +m[2]));
+    const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Los_Angeles', hour: 'numeric', timeZoneName: 'short' }).formatToParts(d);
+    const g = k => (parts.find(p => p.type === k) || {}).value || '';
+    local = ` (${g('hour')} ${g('dayPeriod').toLowerCase()} ${g('timeZoneName')})`;
+  } catch (e) { local = ''; }
+  return { main: `${m[1].toUpperCase()} sounding`, sub: `${m[2]}Z${local} · ${+m[3]} ${m[4]} ${m[5]}` };
 }
 
 
