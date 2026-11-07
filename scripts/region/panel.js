@@ -122,15 +122,20 @@ function panelSVG(data, di = 0) {
       o.push(`<text x="${f(X(k) + cw / 2)}" y="${y + rh / 2 + 4.5}" text-anchor="middle" font-size="12.5" fill="${v >= 3 ? '#fff' : INK}">${v.toFixed(1)}</text>`);
     });
   });
-  // the site's flying window (radar card): a soft band behind the grid, labelled under the axis
-  if (data.win && data.win.length === 2) {
-    const ks = cols.map((c, k) => c.t >= data.win[0] && c.t < data.win[1] + 1 ? k : -1).filter(k => k >= 0);
-    if (ks.length) {
-      const x0 = X(ks[0]), x1 = X(ks[ks.length - 1] + 1);
-      o.push(`<rect x="${f(x0)}" y="${yG}" width="${f(x1 - x0)}" height="${f(yB - yG)}" fill="none" stroke="#c26a24" stroke-width="2" stroke-dasharray="2 4" rx="3" opacity=".7"/>`);
-      o.push(`<text x="${f((x0 + x1) / 2)}" y="${yG - 5}" text-anchor="middle" font-size="11.5" font-weight="600" fill="#9a5418">flying window</text>`);
-    }
-  }
+  // the site's flying window and glass-off (radar card): dashed outlines behind the grid; on short winter days
+  // they run into each other, then one outline covers both
+  const span = w => (w && w.length === 2 ? [w[0], w[1] + 1] : null);   // [10, 12] = 10:00-13:00
+  let wins = [];
+  const fw = span(data.win), gw = span(data.gwin);
+  if (fw && gw && gw[0] <= fw[1]) wins = [[Math.min(fw[0], gw[0]), Math.max(fw[1], gw[1]), 'flying window → glass-off', '#c26a24']];
+  else wins = [fw && [fw[0], fw[1], 'flying window', '#c26a24'], gw && [gw[0], gw[1], 'glass-off', '#7c5cc4']].filter(Boolean);
+  wins.forEach(([t0, t1, lab, col]) => {
+    const ks = cols.map((c, k) => (c.t >= t0 && c.t < t1 ? k : -1)).filter(k => k >= 0);
+    if (!ks.length) return;
+    const x0 = X(ks[0]), x1 = X(ks[ks.length - 1] + 1);
+    o.push(`<rect x="${f(x0)}" y="${yG}" width="${f(x1 - x0)}" height="${f(yB - yG)}" fill="none" stroke="${col}" stroke-width="2" stroke-dasharray="2 4" rx="3" opacity=".75"/>`);
+    o.push(`<text x="${f((x0 + x1) / 2)}" y="${yG - 5}" text-anchor="middle" font-size="11.5" font-weight="600" fill="${col}">${lab}</text>`);
+  });
   // quiet reference lines: the region's launches, or its peak (close ones share one label, at the right where evenings are empty)
   const ms = marks.filter(m => m.ft >= zmin && m.ft <= zmax).sort((p, q) => p.ft - q.ft);
   const yOf = ft => yG + (zmax - ft) / 500 * rh;
