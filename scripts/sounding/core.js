@@ -182,8 +182,9 @@ function analyze(lv, opts = {}) {
 }
 
 // ---------- SVG ----------
-// Layout measured from the Topaflyers 800x600 gnuplot PNG.
-const COLORS = { temp: '#d7263d', dew: '#1b998b', cloud: '#2e6fd8', thermal: '#8e44ad', lapse: '#d7263d', wind: '#d7263d' };
+// Same layout and scales as the Topaflyers chart, with a modern finish.
+// Original Topaflyers colours (green slightly deepened so it reads on white).
+const COLORS = { temp: '#ff0000', dew: '#00c400', cloud: '#0000ff', thermal: '#ffa500', lapse: '#ff0000', wind: '#ff0000' };
 
 // Ramer–Douglas–Peucker in screen space, to tame very dense soundings
 function simplify(pts, tol) {
@@ -199,89 +200,104 @@ function simplify(pts, tol) {
   return pts.filter((_, i) => keep[i]);
 }
 
+function prettyTitle(t) {
+  const m = String(t).match(/^(\w+)_(\d\d)00Z_(\d\d)_(\w{3})_(\d{4})$/);
+  return m ? { main: `${m[1].toUpperCase()} sounding`, sub: `${m[2]}Z · ${+m[3]} ${m[4]} ${m[5]}` } : { main: String(t), sub: '' };
+}
+
 function renderSVG(snd, opts = {}) {
   const C = Object.assign({}, COLORS, opts.colors || {});
   const lv = snd.levels;
   const A = analyze(lv, opts);
-  const W = 800, Hh = 600, top = 39, bot = 558, ZMAX = 18;
+  const W = 800, Hh = 600, top = 62, bot = 548, ZMAX = 18;
   const dense = lv.filter(l => l.z < ZMAX).length > 150;
   const maxSpd = Math.max(0, ...lv.filter(l => l.z <= ZMAX && isFinite(l.spd)).map(l => l.spd));
-  const P1 = { x0: 31, x1: 338, lo: -20, hi: 100 };
-  const P2 = { x0: 377, x1: 538, lo: -2, hi: 6 };
-  const P3 = { x0: 577, x1: 778, lo: 0, hi: Math.max(30, Math.ceil(maxSpd / 10) * 10) };
+  const P1 = { x0: 44, x1: 352, lo: -20, hi: 100 };
+  const P2 = { x0: 372, x1: 532, lo: -2, hi: 6 };
+  const P3 = { x0: 552, x1: 780, lo: 0, hi: Math.max(30, Math.ceil(maxSpd / 10) * 10) };
   const Y = z => bot - (z / ZMAX) * (bot - top);
   const X = (P, v) => P.x0 + (v - P.lo) / (P.hi - P.lo) * (P.x1 - P.x0);
+  const f = v => v.toFixed(1);
+  const INK = '#111827', MUTED = '#6b7280', GRID = '#e5e7eb', PANEL = '#fafbfc', EDGE = '#d1d5db';
   const o = [];
-  o.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${Hh}" font-family="Arial, Helvetica, sans-serif" font-size="13" font-style="italic" fill="#000">`);
+  o.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${Hh}" font-family="Inter, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" fill="${MUTED}">`);
   o.push(`<rect width="${W}" height="${Hh}" fill="#fff"/>`);
   o.push('<defs>' + [P1, P2, P3].map((P, i) =>
-    `<clipPath id="c${i}"><rect x="${P.x0}" y="${top}" width="${P.x1 - P.x0}" height="${bot - top}"/></clipPath>`).join('') + '</defs>');
-  const poly = (pts, color, clip, simp = 0) => {
+    `<clipPath id="c${i}"><rect x="${P.x0}" y="${top}" width="${P.x1 - P.x0}" height="${bot - top}" rx="6"/></clipPath>`).join('') + '</defs>');
+  const poly = (pts, color, clip, opt = {}) => {
     const segs = [[]];
     for (const p of pts) { if (!isFinite(p[0]) || !isFinite(p[1])) { segs.push([]); continue; } segs[segs.length - 1].push(p); }
-    return segs.filter(q => q.length > 1).map(q => (simp ? simplify(q, simp) : q)).map(q =>
-      `<polyline clip-path="url(#${clip})" fill="none" stroke="${color}" stroke-width="1.1" stroke-linejoin="round" points="${q.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ')}"/>`).join('');
+    return segs.filter(q => q.length > 1).map(q => (opt.simp ? simplify(q, opt.simp) : q)).map(q =>
+      `<polyline clip-path="url(#${clip})" fill="none" stroke="${color}" stroke-width="${opt.w || 2}" stroke-linejoin="round" stroke-linecap="round"${opt.dash ? ` stroke-dasharray="${opt.dash}"` : ''}${opt.op ? ` opacity="${opt.op}"` : ''} points="${q.map(p => f(p[0]) + ',' + f(p[1])).join(' ')}"/>`).join('');
   };
   const L = lv.filter(l => l.z <= ZMAX + 1);
-  const T = 6; // tick length
 
-  const frame = (P, xt, xlabel, first) => {
-    o.push(`<rect x="${P.x0}" y="${top}" width="${P.x1 - P.x0}" height="${bot - top}" fill="none" stroke="#000"/>`);
-    for (const t of xt) {
-      const x = X(P, t).toFixed(1);
-      o.push(`<path d="M${x} ${bot}v-${T}M${x} ${top}v${T}" stroke="#000"/>`);
-      o.push(`<text x="${x}" y="${bot + 19}" text-anchor="middle">${t}</text>`);
-    }
-    for (let z = 0; z <= ZMAX; z += 3) {
-      const y = Y(z).toFixed(1);
-      if (z > 0 && z < ZMAX) {
-        // panel 1: inward ticks; panels 2 and 3: left ticks cross the frame (as in the original)
-        o.push(first ? `<path d="M${P.x0} ${y}h${T}M${P.x1} ${y}h-${T}" stroke="#000"/>`
-                     : `<path d="M${P.x0 - 4} ${y}h${T + 4}M${P.x1} ${y}h-${T}" stroke="#000"/>`);
-      }
-      if (first) o.push(`<text x="${P.x0 - 7}" y="${(+y + 5).toFixed(1)}" text-anchor="end">${z}</text>`);
-    }
-    o.push(`<text x="${((P.x0 + P.x1) / 2).toFixed(1)}" y="${bot + 37}" text-anchor="middle">${xlabel}</text>`);
+  const panel = (P, xt, xlabel, title, first) => {
+    o.push(`<rect x="${P.x0}" y="${top}" width="${P.x1 - P.x0}" height="${bot - top}" rx="6" fill="${PANEL}" stroke="${EDGE}"/>`);
+    for (let z = 3; z < ZMAX; z += 3) o.push(`<path d="M${P.x0} ${f(Y(z))}H${P.x1}" stroke="${GRID}"/>`);
+    for (const t of xt.slice(1, -1)) o.push(`<path d="M${f(X(P, t))} ${top}V${bot}" stroke="${GRID}"/>`);
+    for (const t of xt) o.push(`<text x="${f(X(P, t))}" y="${bot + 16}" text-anchor="middle">${t}</text>`);
+    if (first) for (let z = 0; z <= ZMAX; z += 3) o.push(`<text x="${P.x0 - 8}" y="${f(Y(z) + 4)}" text-anchor="end">${z}${z === ZMAX ? 'k' : ''}</text>`);
+    o.push(`<text x="${f((P.x0 + P.x1) / 2)}" y="${bot + 34}" text-anchor="middle" font-size="11">${xlabel}</text>`);
+    o.push(`<text x="${P.x0 + 2}" y="${top - 10}" font-size="12.5" font-weight="600" fill="${INK}">${title}</text>`);
   };
-  frame(P1, [-20, 0, 20, 40, 60, 80, 100], 'deg F', true);
-  frame(P2, [-2, 0, 2, 4, 6], 'deg F / 1000 ft', false);
-  frame(P3, P3.hi <= 30 ? [0, 5, 10, 15, 20, 25, 30] : Array.from({ length: P3.hi / 10 + 1 }, (_, i) => i * 10), 'wind speed (knt)', false);
-  const head = (P, t) => o.push(`<text x="${((P.x0 + P.x1) / 2).toFixed(1)}" y="25" text-anchor="middle">${t}</text>`);
-  head(P1, snd.title); head(P2, 'Lapse Rate'); head(P3, 'Wind Profile');
+  const pt = prettyTitle(snd.title);
+  panel(P1, [-20, 0, 20, 40, 60, 80, 100], 'Temperature (°F)', '', true);
+  panel(P2, [-2, 0, 2, 4, 6], 'Lapse rate (°F / 1000 ft)', 'Lapse rate', false);
+  panel(P3, P3.hi <= 30 ? [0, 5, 10, 15, 20, 25, 30] : Array.from({ length: P3.hi / 10 + 1 }, (_, i) => i * 10), 'Wind speed (kt)', 'Wind', false);
+  o.push(`<text x="${P1.x0 + 2}" y="${top - 10}" font-size="15" font-weight="700" fill="${INK}">${pt.main}<tspan dx="8" font-size="12" font-weight="500" fill="${MUTED}">${pt.sub}</tspan></text>`);
+  o.push(`<text x="14" y="${f((top + bot) / 2)}" transform="rotate(-90 14 ${f((top + bot) / 2)})" text-anchor="middle">Altitude MSL (1000 ft)</text>`);
 
   // ---- panel 1 ----
-  for (const th of A.thermals)
-    o.push(poly([[X(P1, th.ts), Y(th.z0)], [X(P1, th.ttop), Y(th.top)]], C.thermal, 'c0'));
+  for (const th of A.thermals) {
+    o.push(poly([[X(P1, th.ts), Y(th.z0)], [X(P1, th.ttop), Y(th.top)]], C.thermal, 'c0', { w: 1.6, op: 0.9 }));
+    const tx = X(P1, th.ttop), ty = Y(th.top);
+    if (tx > P1.x0 && tx < P1.x1 && ty > top + 4) o.push(`<circle cx="${f(tx)}" cy="${f(ty)}" r="2.6" fill="${C.thermal}"/>`);
+  }
   if (A.cb) {
     const pts = [];
     for (let z = A.z0; z < A.cb.z; z += 0.1) pts.push([X(P1, A.parcelTd(z)), Y(z)]);
     pts.push([X(P1, A.cb.t), Y(A.cb.z)]);
-    o.push(poly(pts, C.cloud, 'c0', 0.6));
-    o.push(poly([[P1.x0, Y(A.cb.z)], [P1.x1, Y(A.cb.z)]], C.cloud, 'c0'));
+    o.push(poly(pts, C.cloud, 'c0', { simp: 0.6, w: 1.6 }));
+    o.push(poly([[P1.x0, Y(A.cb.z)], [P1.x1, Y(A.cb.z)]], C.cloud, 'c0', { w: 1.4, dash: '6 4' }));
+    const lbl = `Cloudbase ${(Math.round(A.cb.z * 10) * 100).toLocaleString('en-US')} ft`;
+    const yy = Y(A.cb.z) - 7;
+    o.push(`<text x="${P1.x0 + 8}" y="${f(yy)}" font-size="11" font-weight="600" fill="${C.cloud}" stroke="${PANEL}" stroke-width="3" paint-order="stroke">${lbl}</text>`);
+    o.push(`<circle cx="${f(X(P1, A.cb.t))}" cy="${f(Y(A.cb.z))}" r="3.2" fill="#fff" stroke="${C.cloud}" stroke-width="1.6"/>`);
   }
-  o.push(poly(L.map(l => [X(P1, l.t), Y(l.z)]), C.temp, 'c0', dense ? 1.2 : 0));
-  o.push(poly(L.map(l => [X(P1, l.td), Y(l.z)]), C.dew, 'c0', dense ? 1.2 : 0));
-  [['temperature', C.temp], ['dew point', C.dew], ['cloudbase', C.cloud], ['thermal heights', C.thermal]].forEach(([name, c], i) => {
-    const y = 51 + i * 13;
-    o.push(`<text x="283" y="${y + 5}" text-anchor="end" font-size="13">${name}</text>`);
-    o.push(`<path d="M290 ${y}h35" stroke="${c}" stroke-width="1.1"/>`);
+  o.push(poly(L.map(l => [X(P1, l.td), Y(l.z)]), C.dew, 'c0', { simp: dense ? 1.2 : 0, w: 2.2 }));
+  o.push(poly(L.map(l => [X(P1, l.t), Y(l.z)]), C.temp, 'c0', { simp: dense ? 1.2 : 0, w: 2.2 }));
+  // legend card
+  const lg = [['Temperature', C.temp], ['Dew point', C.dew], ['Cloudbase', C.cloud], ['Thermal tops', C.thermal]];
+  const lx = P1.x1 - 112, ly = top + 10;
+  o.push(`<rect x="${lx}" y="${ly}" width="102" height="${lg.length * 16 + 10}" rx="6" fill="#fff" fill-opacity="0.92" stroke="${EDGE}"/>`);
+  lg.forEach(([name, c], i) => {
+    const y = ly + 14 + i * 16;
+    o.push(`<path d="M${lx + 10} ${y}h16" stroke="${c}" stroke-width="2.4" stroke-linecap="round"/>`);
+    o.push(`<text x="${lx + 32}" y="${y + 4}" fill="${INK}">${name}</text>`);
   });
 
-  // ---- panel 2: lapse rate ----
-  o.push(poly(A.lapse.filter(p => p.z <= ZMAX + 1).map(p => [X(P2, p.v), Y(p.z)]), C.lapse, 'c1'));
+  // ---- panel 2: lapse rate, with dry-adiabatic and standard references ----
+  for (const [v, name] of [[5.4, 'dry'], [3.6, 'std']]) {
+    o.push(`<path d="M${f(X(P2, v))} ${top}V${bot}" stroke="${MUTED}" stroke-width="1" stroke-dasharray="3 3" opacity="0.7"/>`);
+    o.push(`<text x="${f(X(P2, v) - 3)}" y="${top + 12}" text-anchor="end" font-size="10">${name}</text>`);
+  }
+  o.push(poly(A.lapse.filter(p => p.z <= ZMAX + 1).map(p => [X(P2, p.v), Y(p.z)]), C.lapse, 'c1', { w: 1.8 }));
 
   // ---- panel 3: wind ----
-  let W3 = L.filter(l => isFinite(l.spd));
-  o.push(poly(W3.map(l => [X(P3, l.spd), Y(l.z)]), C.wind, 'c2', dense ? 1.2 : 0));
-  // labels at each reported level (dense soundings: about every 1000 ft), like the original
+  const W3 = L.filter(l => isFinite(l.spd));
+  o.push(poly(W3.map(l => [X(P3, l.spd), Y(l.z)]), C.wind, 'c2', { simp: dense ? 1.2 : 0, w: 2 }));
   let lab = W3.filter(l => isFinite(l.dir) && l.z <= ZMAX - 0.6);
   if (dense) { const t = []; for (const l of lab) if (!t.length || l.z - t[t.length - 1].z >= 1.0) t.push(l); lab = t; }
   let lastY = 1e9;
   for (const l of lab) {
     const y = Y(l.z);
-    if (lastY - y < 9) continue;
+    if (lastY - y < 12) continue;
     lastY = y;
-    o.push(`<text x="${P3.x0 + 13}" y="${(y + 5).toFixed(1)}" font-size="13" textLength="" >${Math.round(l.dir) % 360 || 360} @ ${Math.round(l.spd)}</text>`.replace(' textLength=""', ''));
+    const dir = Math.round(l.dir) % 360 || 360, ax = P3.x0 + 14;
+    // arrow points where the wind blows to
+    o.push(`<g transform="translate(${ax} ${f(y)}) rotate(${(dir + 180) % 360})"><path d="M0 5V-5M-3 -2L0 -5L3 -2" fill="none" stroke="${INK}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></g>`);
+    o.push(`<text x="${ax + 10}" y="${f(y + 4)}" fill="${INK}" stroke="${PANEL}" stroke-width="3" paint-order="stroke">${String(dir).padStart(3, '0')}° <tspan fill="${MUTED}">@</tspan> ${Math.round(l.spd)}</text>`);
   }
   o.push('</svg>');
   return { svg: o.join('\n'), analysis: A };
